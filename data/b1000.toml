@@ -714,28 +714,28 @@ solve_date = "2019-06-09"
 [[puzzles]]
 bits = 71
 address = "1PWo3JeB9jrGwfHDNpdGK54CRas7fsVzXU"
-btc = 7.1
+btc = 7.1002257
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 72
 address = "1JTK7s9YVYywfm5XUH7RNhHJH1LshCaRFR"
-btc = 7.2
+btc = 7.20014379
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 73
 address = "12VVRNPi4SJqUTsp6FmqDqY5sGosDtysn4"
-btc = 7.3
+btc = 7.30013849
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 74
 address = "1FWGcVDK3JGzCC3WtkYetULPszMaK2Jksv"
-btc = 7.4
+btc = 7.40004977
 status = "unsolved"
 has_pubkey = false
 
@@ -759,7 +759,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 77
 address = "1Bxk4CQdqL9p22JEtDfdXMsng1XacifUtE"
-btc = 7.7
+btc = 7.70002426
 status = "unsolved"
 has_pubkey = false
 
@@ -790,7 +790,7 @@ solve_date = "2019-06-11"
 [[puzzles]]
 bits = 81
 address = "15qsCm78whspNQFydGJQk5rexzxTQopnHZ"
-btc = 8.1
+btc = 8.100015
 status = "unsolved"
 has_pubkey = false
 
@@ -804,14 +804,14 @@ has_pubkey = false
 [[puzzles]]
 bits = 83
 address = "14MdEb4eFcT3MVG5sPFG4jGLuHJSnt1Dk2"
-btc = 8.3
+btc = 8.30002046
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 84
 address = "1CMq3SvFcVEcpLMuuH8PUcNiqsK1oicG2D"
-btc = 8.4
+btc = 8.400015
 status = "unsolved"
 has_pubkey = false
 
@@ -904,14 +904,14 @@ solve_date = "2019-07-06"
 [[puzzles]]
 bits = 96
 address = "15ANYzzCp5BFHcCnVFzXqyibpzgPLWaD8b"
-btc = 9.6
+btc = 9.600006
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 97
 address = "18ywPwj39nGjqBrQJSzZVq2izR12MDpDr8"
-btc = 9.7
+btc = 9.70002613
 status = "unsolved"
 has_pubkey = false
 
@@ -925,7 +925,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 99
 address = "1JWnE6p6UN7ZJBN7TtcbNDoRcjFtuDWoNL"
-btc = 9.9
+btc = 9.91257338
 status = "unsolved"
 has_pubkey = false
 
@@ -963,7 +963,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 104
 address = "1EQJvpsmhazYCcKX5Au6AZmZKRnzarMVZu"
-btc = 10.4
+btc = 10.400016
 status = "unsolved"
 has_pubkey = false
 
@@ -1001,7 +1001,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 109
 address = "1GvgAXVCbA8FBjXfWiAms4ytFeJcKsoyhL"
-btc = 10.9
+btc = 10.900105
 status = "unsolved"
 has_pubkey = false
 
@@ -1018,7 +1018,7 @@ solve_date = "2020-05-30"
 [[puzzles]]
 bits = 111
 address = "1824ZJQ7nKJ9QFTRBqn7z7dHV5EGpzUpH3"
-btc = 11.1
+btc = 11.1001
 status = "unsolved"
 has_pubkey = false
 
@@ -1056,7 +1056,7 @@ solve_date = "2020-06-16"
 [[puzzles]]
 bits = 116
 address = "1MnJ6hdhvK37VLmqcdEwqC3iFxyWH2PHUV"
-btc = 11.6
+btc = 11.6000121
 status = "unsolved"
 has_pubkey = false
 
@@ -1070,7 +1070,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 118
 address = "1PJZPzvGX19a7twf5HyD2VvNiPdHLzm9F6"
-btc = 11.8
+btc = 11.80000661
 status = "unsolved"
 has_pubkey = false
 
@@ -1198,7 +1198,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 135
 address = "16RGFo6hjq9ym6Pj7N5H7L1NR1rVPJyw2v"
-btc = 13.5
+btc = 13.50003408
 status = "unsolved"
 has_pubkey = true
 public_key = "02145d2611c823a396ef6712ce0f712f09b9b4f3135e3e0aa3230fb9b6d08d1e16"
@@ -1234,7 +1234,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 140
 address = "1QKBaU6WAeycb3DbKbLBkX7vJiaS8r42Xo"
-btc = 14.0
+btc = 14.000016
 status = "unsolved"
 has_pubkey = true
 public_key = "031f6a332d3c5c4f2de2378c012f429cd109ba07d69690c6c701b6bb87860d6640"
@@ -1242,7 +1242,7 @@ public_key = "031f6a332d3c5c4f2de2378c012f429cd109ba07d69690c6c701b6bb87860d6640
 [[puzzles]]
 bits = 141
 address = "1CD91Vm97mLQvXhrnoMChhJx4TP9MaQkJo"
-btc = 14.1
+btc = 14.10014846
 status = "unsolved"
 has_pubkey = false
 
@@ -1270,7 +1270,7 @@ has_pubkey = false
 [[puzzles]]
 bits = 145
 address = "19GpszRNUej5yYqxXoLnbZWKew3KdVLkXg"
-btc = 14.5
+btc = 14.500006
 status = "unsolved"
 has_pubkey = true
 public_key = "03afdda497369e219a2c1c369954a930e4d3740968e5e4352475bcffce3140dae5"
@@ -1299,14 +1299,14 @@ has_pubkey = false
 [[puzzles]]
 bits = 149
 address = "1CXvTzR6qv8wJ7eprzUKeWxyGcHwDYP1i2"
-btc = 14.9
+btc = 14.90001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 150
 address = "1MUJSJYtGPVGkBCTqGspnxyHahpt5Te8jy"
-btc = 15.0
+btc = 15.000016
 status = "unsolved"
 has_pubkey = true
 public_key = "03137807790ea7dc6e97901c2bc87411f45ed74a5629315c4e4b03a0a102250c49"
@@ -1314,35 +1314,35 @@ public_key = "03137807790ea7dc6e97901c2bc87411f45ed74a5629315c4e4b03a0a102250c49
 [[puzzles]]
 bits = 151
 address = "13Q84TNNvgcL3HJiqQPvyBb9m4hxjS3jkV"
-btc = 15.1
+btc = 15.10001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 152
 address = "1LuUHyrQr8PKSvbcY1v1PiuGuqFjWpDumN"
-btc = 15.2
+btc = 15.20001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 153
 address = "18192XpzzdDi2K11QVHR7td2HcPS6Qs5vg"
-btc = 15.3
+btc = 15.30001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 154
 address = "1NgVmsCCJaKLzGyKLFJfVequnFW9ZvnMLN"
-btc = 15.4
+btc = 15.40001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 155
 address = "1AoeP37TmHdFh8uN72fu9AqgtLrUwcv2wJ"
-btc = 15.5
+btc = 15.500116
 status = "unsolved"
 has_pubkey = true
 public_key = "035cd1854cae45391ca4ec428cc7e6c7d9984424b954209a8eea197b9e364c05f6"
@@ -1350,35 +1350,35 @@ public_key = "035cd1854cae45391ca4ec428cc7e6c7d9984424b954209a8eea197b9e364c05f6
 [[puzzles]]
 bits = 156
 address = "1FTpAbQa4h8trvhQXjXnmNhqdiGBd1oraE"
-btc = 15.6
+btc = 15.60001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 157
 address = "14JHoRAdmJg3XR4RjMDh6Wed6ft6hzbQe9"
-btc = 15.7
+btc = 15.70001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 158
 address = "19z6waranEf8CcP8FqNgdwUe1QRxvUNKBG"
-btc = 15.8
+btc = 15.80001
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 159
 address = "14u4nA5sugaswb6SZgn5av2vuChdMnD9E5"
-btc = 15.9
+btc = 15.900026
 status = "unsolved"
 has_pubkey = false
 
 [[puzzles]]
 bits = 160
 address = "1NBC8uXJy1GiJ6drkiZa1WuKn51ps7EPTv"
-btc = 16.0
+btc = 16.00119082
 status = "unsolved"
 has_pubkey = true
 public_key = "02e0a8b039282faf6fe0fd769cfbc4b6b4cf8758ba68220eac420e32b91ddfa673"

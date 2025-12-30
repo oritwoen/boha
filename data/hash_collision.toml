@@ -11,28 +11,28 @@ name = "sha256"
 address = "35Snmmy3uhaer2gTboc81ayCip4m9DT4ko"
 status = "unsolved"
 redeem_script = "6e879169a87ca887"
-btc = 0.277
+btc = 0.27734251
 
 [[puzzles]]
 name = "ripemd160"
 address = "3KyiQEGqqdb4nqfhUzGKN6KPhXmQsLNpay"
 status = "unsolved"
 redeem_script = "6e879169a67ca687"
-btc = 0.116
+btc = 0.11576888
 
 [[puzzles]]
 name = "hash160"
 address = "39VXyuoc6SXYKp9TcAhoiN1mb4ns6z3Yu6"
 status = "unsolved"
 redeem_script = "6e879169a97ca987"
-btc = 0.100
+btc = 0.10026873
 
 [[puzzles]]
 name = "hash256"
 address = "3DUQQvz4t57Jy7jxE86kyFcNpKtURNf1VW"
 status = "unsolved"
 redeem_script = "6e879169aa7caa87"
-btc = 0.100
+btc = 0.10026873
 
 [[puzzles]]
 name = "op_abs"
