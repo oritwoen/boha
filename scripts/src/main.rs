@@ -107,8 +107,8 @@ async fn process_toml_file(
 
     let mut dates_to_update: Vec<(usize, String)> = Vec::new();
 
-    for (idx, address) in &addresses {
-        print!("  [{}/{}] {} ... ", idx + 1, addresses.len(), address);
+    for (i, (idx, address)) in addresses.iter().enumerate() {
+        print!("  [{}/{}] {} ... ", i + 1, addresses.len(), address);
 
         match fetch_first_tx_date(client, address).await {
             Ok(Some(date)) => {
