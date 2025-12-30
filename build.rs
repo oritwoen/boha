@@ -4,7 +4,13 @@ use std::fs;
 use std::path::Path;
 
 #[derive(Debug, Deserialize)]
+struct Btc1000Metadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct Btc1000File {
+    metadata: Option<Btc1000Metadata>,
     puzzles: Vec<Btc1000Puzzle>,
 }
 
@@ -20,10 +26,17 @@ struct Btc1000Puzzle {
     public_key: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct HashCollisionMetadata {
+    source_url: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 struct HashCollisionFile {
+    metadata: Option<HashCollisionMetadata>,
     puzzles: Vec<HashCollisionPuzzle>,
 }
 
@@ -36,6 +49,7 @@ struct HashCollisionPuzzle {
     btc: Option<f64>,
     start_date: Option<String>,
     solve_date: Option<String>,
+    source_url: Option<String>,
 }
 
 fn main() {
@@ -55,6 +69,11 @@ fn generate_b1000(out_dir: &str) {
         fs::read_to_string("data/b1000.toml").expect("Failed to read data/b1000.toml");
 
     let data: Btc1000File = toml::from_str(&toml_content).expect("Failed to parse b1000.toml");
+
+    let default_source_url = data
+        .metadata
+        .as_ref()
+        .and_then(|m| m.source_url.as_ref());
 
     let mut output = String::new();
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
@@ -92,6 +111,13 @@ fn generate_b1000(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "b1000/{}",
@@ -105,6 +131,7 @@ fn generate_b1000(out_dir: &str) {
         prize_btc: {},
         start_date: {},
         solve_date: {},
+        source_url: {},
     }},
 "#,
             puzzle.bits,
@@ -116,6 +143,7 @@ fn generate_b1000(out_dir: &str) {
             prize,
             start_date,
             solve_date,
+            source_url,
         ));
     }
 
@@ -132,6 +160,11 @@ fn generate_hash_collision(out_dir: &str) {
 
     let data: HashCollisionFile =
         toml::from_str(&toml_content).expect("Failed to parse hash_collision.toml");
+
+    let default_source_url = data
+        .metadata
+        .as_ref()
+        .and_then(|m| m.source_url.as_ref());
 
     let mut output = String::new();
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
@@ -159,6 +192,13 @@ fn generate_hash_collision(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "hash_collision/{}",
@@ -172,6 +212,7 @@ fn generate_hash_collision(out_dir: &str) {
         prize_btc: {},
         start_date: {},
         solve_date: {},
+        source_url: {},
     }},
 "#,
             puzzle.name,
@@ -181,6 +222,7 @@ fn generate_hash_collision(out_dir: &str) {
             prize,
             start_date,
             solve_date,
+            source_url,
         ));
     }
 

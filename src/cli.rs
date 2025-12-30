@@ -311,6 +311,13 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         });
     }
 
+    if let Some(url) = p.source_url {
+        rows.push(KeyValueRow {
+            field: "Source".to_string(),
+            value: url.to_string(),
+        });
+    }
+
     let table = Table::new(rows).with(Style::rounded()).to_string();
     println!("{}", table);
 }

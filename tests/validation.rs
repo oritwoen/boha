@@ -167,3 +167,17 @@ fn start_date_before_solve_date() {
         }
     }
 }
+
+#[test]
+fn source_url_format_valid() {
+    for puzzle in boha::all() {
+        if let Some(url) = puzzle.source_url {
+            assert!(
+                url.starts_with("http://") || url.starts_with("https://"),
+                "Invalid source_url format for {}: {}",
+                puzzle.id,
+                url
+            );
+        }
+    }
+}
