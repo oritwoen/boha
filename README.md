@@ -4,22 +4,32 @@ Crypto bounties, puzzles and challenges data library.
 
 ## Installation
 
+### CLI
+
+Arch Linux (AUR):
+
+```bash
+paru -S boha
+```
+
+From crates.io:
+
+```bash
+cargo install boha --features cli,balance
+```
+
+### Library
+
 ```toml
 [dependencies]
-boha = { git = "https://github.com/oritwoen/boha" }
+boha = "0.1"
 ```
 
 With balance fetching:
 
 ```toml
 [dependencies]
-boha = { git = "https://github.com/oritwoen/boha", features = ["balance"] }
-```
-
-With CLI:
-
-```bash
-cargo install --git https://github.com/oritwoen/boha --features cli,balance
+boha = { version = "0.1", features = ["balance"] }
 ```
 
 ## Usage
