@@ -126,3 +126,44 @@ fn stats_are_reasonable() {
     assert!(stats.swept > 90);
     assert!(stats.total_btc > 100.0);
 }
+
+#[test]
+fn all_puzzles_have_start_date() {
+    for puzzle in boha::all() {
+        assert!(
+            puzzle.start_date.is_some(),
+            "Puzzle {} missing start_date",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn start_date_format_valid() {
+    let date_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
+    for puzzle in boha::all() {
+        if let Some(date) = puzzle.start_date {
+            assert!(
+                date_regex.is_match(date),
+                "Invalid start_date format for {}: {}",
+                puzzle.id,
+                date
+            );
+        }
+    }
+}
+
+#[test]
+fn start_date_before_solve_date() {
+    for puzzle in boha::all() {
+        if let (Some(start), Some(solve)) = (puzzle.start_date, puzzle.solve_date) {
+            assert!(
+                start <= solve,
+                "Puzzle {} has start_date {} after solve_date {}",
+                puzzle.id,
+                start,
+                solve
+            );
+        }
+    }
+}

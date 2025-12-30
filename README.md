@@ -4,22 +4,32 @@ Crypto bounties, puzzles and challenges data library.
 
 ## Installation
 
+### CLI
+
+Arch Linux (AUR):
+
+```bash
+paru -S boha
+```
+
+From crates.io:
+
+```bash
+cargo install boha --features cli,balance
+```
+
+### Library
+
 ```toml
 [dependencies]
-boha = { git = "https://github.com/oritwoen/boha" }
+boha = "0.1"
 ```
 
 With balance fetching:
 
 ```toml
 [dependencies]
-boha = { git = "https://github.com/oritwoen/boha", features = ["balance"] }
-```
-
-With CLI:
-
-```bash
-cargo install --git https://github.com/oritwoen/boha --features cli,balance
+boha = { version = "0.1", features = ["balance"] }
 ```
 
 ## Usage
@@ -70,6 +80,7 @@ use boha::{b1000, hash_collision, Status};
 
 let p66 = b1000::get(66).unwrap();
 println!("Address: {}", p66.address);
+println!("Funded: {}", p66.start_date.unwrap_or("unknown"));
 
 let range = b1000::key_range(66).unwrap();
 println!("Range: 0x{:x} - 0x{:x}", range.start(), range.end());
@@ -136,6 +147,8 @@ async fn main() {
 ## Data
 
 All puzzle data is embedded at compile time from TOML files in `data/`.
+
+Each puzzle includes: address, status, BTC amount, public key (if exposed), solve date (if solved), and start date (when funded).
 
 ## License
 

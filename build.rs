@@ -18,6 +18,7 @@ struct Btc1000Puzzle {
     has_pubkey: Option<bool>,
     private_key: Option<String>,
     public_key: Option<String>,
+    start_date: Option<String>,
     solve_date: Option<String>,
 }
 
@@ -33,6 +34,7 @@ struct HashCollisionPuzzle {
     status: String,
     redeem_script: String,
     btc: Option<f64>,
+    start_date: Option<String>,
     solve_date: Option<String>,
 }
 
@@ -80,6 +82,11 @@ fn generate_b1000(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
         let solve_date = match &puzzle.solve_date {
             Some(d) => format!("Some(\"{}\")", d),
             None => "None".to_string(),
@@ -96,6 +103,7 @@ fn generate_b1000(out_dir: &str) {
         redeem_script: None,
         bits: Some({}),
         prize_btc: {},
+        start_date: {},
         solve_date: {},
     }},
 "#,
@@ -106,6 +114,7 @@ fn generate_b1000(out_dir: &str) {
             private_key,
             puzzle.bits,
             prize,
+            start_date,
             solve_date,
         ));
     }
@@ -140,6 +149,11 @@ fn generate_hash_collision(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
         let solve_date = match &puzzle.solve_date {
             Some(d) => format!("Some(\"{}\")", d),
             None => "None".to_string(),
@@ -156,10 +170,17 @@ fn generate_hash_collision(out_dir: &str) {
         redeem_script: Some("{}"),
         bits: None,
         prize_btc: {},
+        start_date: {},
         solve_date: {},
     }},
 "#,
-            puzzle.name, puzzle.address, status, puzzle.redeem_script, prize, solve_date,
+            puzzle.name,
+            puzzle.address,
+            status,
+            puzzle.redeem_script,
+            prize,
+            start_date,
+            solve_date,
         ));
     }
 
