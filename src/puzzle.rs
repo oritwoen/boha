@@ -68,6 +68,8 @@ pub struct Puzzle {
     pub start_date: Option<&'static str>,
     /// Date when solved (YYYY-MM-DD)
     pub solve_date: Option<&'static str>,
+    /// URL to the source/documentation of this puzzle
+    pub source_url: Option<&'static str>,
 }
 
 impl Puzzle {
