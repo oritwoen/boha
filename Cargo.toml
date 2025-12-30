@@ -1,0 +1,76 @@
+[package]
+name = "boha"
+version = "0.1.0"
+edition = "2021"
+authors = ["oritwoen"]
+description = "Crypto bounties, puzzles and challenges data library"
+license = "MIT"
+repository = "https://github.com/oritwoen/boha"
+keywords = ["bitcoin", "puzzle", "bounty", "cryptocurrency"]
+categories = ["data-structures", "cryptography"]
+
+[dependencies]
+bs58 = "0.5"
+sha2 = "0.10"
+ripemd = "0.1"
+hex = "0.4"
+thiserror = "2"
+num-bigint = "0.4"
+num-traits = "0.2"
+serde = { version = "1", features = ["derive"] }
+
+[dependencies.clap]
+version = "4"
+features = ["derive"]
+optional = true
+
+[dependencies.tabled]
+version = "0.17"
+features = ["ansi"]
+optional = true
+
+[dependencies.owo-colors]
+version = "4"
+optional = true
+
+[dependencies.serde_json]
+version = "1"
+optional = true
+
+[dependencies.serde_yaml]
+version = "0.9"
+optional = true
+
+[dependencies.csv]
+version = "1"
+optional = true
+
+[dependencies.reqwest]
+version = "0.12"
+features = ["json"]
+optional = true
+
+[dependencies.tokio]
+version = "1"
+features = ["rt-multi-thread", "macros"]
+optional = true
+
+[dependencies.futures]
+version = "0.3"
+optional = true
+
+[build-dependencies]
+toml = "0.8"
+serde = { version = "1", features = ["derive"] }
+
+[features]
+default = []
+cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv"]
+balance = ["reqwest", "tokio", "futures"]
+
+[[bin]]
+name = "boha"
+path = "src/cli.rs"
+required-features = ["cli"]
+
+[dev-dependencies]
