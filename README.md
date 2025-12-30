@@ -24,42 +24,6 @@ cargo install --git https://github.com/oritwoen/boha --features cli,balance
 
 ## Usage
 
-### Library
-
-```rust
-use boha::{b1000, hash_collision, Status};
-
-let p66 = b1000::get(66).unwrap();
-println!("Address: {}", p66.address);
-
-let range = b1000::key_range(66).unwrap();
-println!("Range: 0x{:x} - 0x{:x}", range.start(), range.end());
-
-let unsolved: Vec<_> = b1000::all()
-    .filter(|p| p.status == Status::Unsolved)
-    .filter(|p| p.pubkey.is_some())
-    .collect();
-
-let sha256 = hash_collision::get("sha256").unwrap();
-
-let puzzle = boha::get("b1000/66").unwrap();
-```
-
-### Balance fetching (async)
-
-```rust
-use boha::{b1000, balance};
-
-#[tokio::main]
-async fn main() {
-    let puzzle = b1000::get(71).unwrap();
-    let bal = balance::fetch(puzzle.address).await.unwrap();
-    
-    println!("Confirmed: {} sats", bal.confirmed);
-    println!("Total: {:.8} BTC", bal.total_btc());
-}
-```
-
 ### CLI
 
 ```bash
@@ -97,6 +61,42 @@ boha -o jsonl list b1000 --unsolved | jq .
 | `jsonl` | `-o jsonl` | JSON Lines (one object per line) |
 | `yaml` | `-o yaml` | YAML |
 | `csv` | `-o csv` | CSV with header |
+
+### Library
+
+```rust
+use boha::{b1000, hash_collision, Status};
+
+let p66 = b1000::get(66).unwrap();
+println!("Address: {}", p66.address);
+
+let range = b1000::key_range(66).unwrap();
+println!("Range: 0x{:x} - 0x{:x}", range.start(), range.end());
+
+let unsolved: Vec<_> = b1000::all()
+    .filter(|p| p.status == Status::Unsolved)
+    .filter(|p| p.pubkey.is_some())
+    .collect();
+
+let sha256 = hash_collision::get("sha256").unwrap();
+
+let puzzle = boha::get("b1000/66").unwrap();
+```
+
+### Balance fetching (async)
+
+```rust
+use boha::{b1000, balance};
+
+#[tokio::main]
+async fn main() {
+    let puzzle = b1000::get(71).unwrap();
+    let bal = balance::fetch(puzzle.address).await.unwrap();
+    
+    println!("Confirmed: {} sats", bal.confirmed);
+    println!("Total: {:.8} BTC", bal.total_btc());
+}
+```
 
 ## Features
 
