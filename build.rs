@@ -174,7 +174,13 @@ fn generate_hash_collision(out_dir: &str) {
         solve_date: {},
     }},
 "#,
-            puzzle.name, puzzle.address, status, puzzle.redeem_script, prize, start_date, solve_date,
+            puzzle.name,
+            puzzle.address,
+            status,
+            puzzle.redeem_script,
+            prize,
+            start_date,
+            solve_date,
         ));
     }
 
