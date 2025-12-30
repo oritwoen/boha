@@ -112,12 +112,13 @@ async fn main() {
 
 [Bitcoin Puzzle Transaction](https://privatekeys.pw/puzzles/bitcoin-puzzle-tx) - 256 puzzles where each puzzle N has a private key in range `[2^(N-1), 2^N - 1]`.
 
-| Puzzles | Status |
-|---------|--------|
-| 1-65 | Solved |
-| 66-125 | Unsolved (with known public key) |
-| 126-160 | Unsolved (no public key) |
-| 161-256 | Unsolved (empty, no funds) |
+**Solved (82):** 1-70, 75, 80, 85, 90, 95, 100, 105, 110, 115, 120, 125, 130
+
+**Unsolved with public key (6):** 135, 140, 145, 150, 155, 160
+
+**Unsolved (72):** 71-74, 76-79, 81-84, 86-89, 91-94, 96-99, 101-104, 106-109, 111-114, 116-119, 121-124, 126-129, 131-134, 136-139, 141-144, 146-149, 151-154, 156-159
+
+**Empty - no funds (96):** 161-256
 
 ### hash_collision
 
