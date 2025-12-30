@@ -21,11 +21,33 @@ struct Btc1000Puzzle {
     solve_date: Option<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct HashCollisionFile {
+    puzzles: Vec<HashCollisionPuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct HashCollisionPuzzle {
+    name: String,
+    address: String,
+    status: String,
+    redeem_script: String,
+    btc: Option<f64>,
+    solve_date: Option<String>,
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
+    println!("cargo:rerun-if-changed=data/hash_collision.toml");
 
     let out_dir = env::var("OUT_DIR").unwrap();
-    let dest_path = Path::new(&out_dir).join("b1000_data.rs");
+
+    generate_b1000(&out_dir);
+    generate_hash_collision(&out_dir);
+}
+
+fn generate_b1000(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("b1000_data.rs");
 
     let toml_content =
         fs::read_to_string("data/b1000.toml").expect("Failed to read data/b1000.toml");
@@ -91,4 +113,57 @@ fn main() {
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write b1000_data.rs");
+}
+
+fn generate_hash_collision(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("hash_collision_data.rs");
+
+    let toml_content = fs::read_to_string("data/hash_collision.toml")
+        .expect("Failed to read data/hash_collision.toml");
+
+    let data: HashCollisionFile =
+        toml::from_str(&toml_content).expect("Failed to parse hash_collision.toml");
+
+    let mut output = String::new();
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.btc {
+            Some(btc) => format!("Some({:.6})", btc),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "hash_collision/{}",
+        address: "{}",
+        address_type: AddressType::P2SH,
+        status: {},
+        pubkey: None,
+        private_key: None,
+        redeem_script: Some("{}"),
+        bits: None,
+        prize_btc: {},
+        solve_date: {},
+    }},
+"#,
+            puzzle.name, puzzle.address, status, puzzle.redeem_script, prize, solve_date,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write hash_collision_data.rs");
 }
