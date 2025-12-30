@@ -108,10 +108,29 @@ async fn main() {
 
 ## Collections
 
-| Collection | Count | Description |
-|------------|-------|-------------|
-| b1000 | 256 | Bitcoin Puzzle Transaction (~1000 BTC) |
-| hash_collision | 6 | Peter Todd's hash collision bounties |
+### b1000
+
+[Bitcoin Puzzle Transaction](https://privatekeys.pw/puzzles/bitcoin-puzzle-tx) - 256 puzzles where each puzzle N has a private key in range `[2^(N-1), 2^N - 1]`.
+
+| Puzzles | Status |
+|---------|--------|
+| 1-65 | Solved |
+| 66-125 | Unsolved (with known public key) |
+| 126-160 | Unsolved (no public key) |
+| 161-256 | Unsolved (empty, no funds) |
+
+### hash_collision
+
+[Peter Todd's hash collision bounties](https://bitcointalk.org/index.php?topic=293382.0) - P2SH addresses that can be claimed by finding hash collisions.
+
+| Puzzle | Hash | Status | Prize |
+|--------|------|--------|-------|
+| sha1 | SHA-1 | ✅ Claimed (2017-02-23) | 2.48 BTC |
+| sha256 | SHA-256 | ⏳ Unsolved | 0.277 BTC |
+| ripemd160 | RIPEMD-160 | ⏳ Unsolved | 0.116 BTC |
+| hash160 | HASH160 | ⏳ Unsolved | 0.100 BTC |
+| hash256 | HASH256 | ⏳ Unsolved | 0.100 BTC |
+| op_abs | OP_ABS | ✅ Claimed (2013-09-13) | - |
 
 ## Data
 
