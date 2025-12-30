@@ -1,3 +1,9 @@
+## [0.2.0] - 2025-12-30
+
+### Features
+
+- *(puzzle)* Add start_date field (#7)
+- *(puzzle)* Add source_url field (#8)
 ## [0.1.0] - 2025-12-30
 
 ### Bug Fixes
@@ -29,3 +35,4 @@
 ### Miscellaneous Tasks
 
 - Track Cargo.lock for reproducible builds
+- *(release)* V0.1.0
