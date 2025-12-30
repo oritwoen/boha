@@ -74,3 +74,4 @@ path = "src/cli.rs"
 required-features = ["cli"]
 
 [dev-dependencies]
+regex = "1"

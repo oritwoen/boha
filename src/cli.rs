@@ -297,6 +297,13 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         });
     }
 
+    if let Some(date) = p.start_date {
+        rows.push(KeyValueRow {
+            field: "Funded".to_string(),
+            value: date.to_string(),
+        });
+    }
+
     if let Some(date) = p.solve_date {
         rows.push(KeyValueRow {
             field: "Solved".to_string(),

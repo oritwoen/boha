@@ -64,6 +64,8 @@ pub struct Puzzle {
     pub bits: Option<u16>,
     /// Prize in BTC
     pub prize_btc: Option<f64>,
+    /// Date when puzzle was funded (YYYY-MM-DD)
+    pub start_date: Option<&'static str>,
     /// Date when solved (YYYY-MM-DD)
     pub solve_date: Option<&'static str>,
 }

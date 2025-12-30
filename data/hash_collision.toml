@@ -5,6 +5,7 @@ status = "claimed"
 redeem_script = "6e879169a77ca787"
 btc = 2.48
 solve_date = "2017-02-23"
+start_date = "2013-09-13"
 
 [[puzzles]]
 name = "sha256"
@@ -12,6 +13,7 @@ address = "35Snmmy3uhaer2gTboc81ayCip4m9DT4ko"
 status = "unsolved"
 redeem_script = "6e879169a87ca887"
 btc = 0.27734251
+start_date = "2013-09-13"
 
 [[puzzles]]
 name = "ripemd160"
@@ -19,6 +21,7 @@ address = "3KyiQEGqqdb4nqfhUzGKN6KPhXmQsLNpay"
 status = "unsolved"
 redeem_script = "6e879169a67ca687"
 btc = 0.11576888
+start_date = "2013-09-13"
 
 [[puzzles]]
 name = "hash160"
@@ -26,6 +29,7 @@ address = "39VXyuoc6SXYKp9TcAhoiN1mb4ns6z3Yu6"
 status = "unsolved"
 redeem_script = "6e879169a97ca987"
 btc = 0.10026873
+start_date = "2013-09-13"
 
 [[puzzles]]
 name = "hash256"
@@ -33,6 +37,7 @@ address = "3DUQQvz4t57Jy7jxE86kyFcNpKtURNf1VW"
 status = "unsolved"
 redeem_script = "6e879169aa7caa87"
 btc = 0.10026873
+start_date = "2013-09-13"
 
 [[puzzles]]
 name = "op_abs"
@@ -40,3 +45,4 @@ address = "3QsT6Sast6ghfsjZ9VJj9u8jkM2qTfDgHV"
 status = "claimed"
 redeem_script = "6e879169907c9087"
 solve_date = "2013-09-13"
+start_date = "2013-09-13"
