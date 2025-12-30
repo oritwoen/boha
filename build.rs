@@ -70,10 +70,7 @@ fn generate_b1000(out_dir: &str) {
 
     let data: Btc1000File = toml::from_str(&toml_content).expect("Failed to parse b1000.toml");
 
-    let default_source_url = data
-        .metadata
-        .as_ref()
-        .and_then(|m| m.source_url.as_ref());
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
     let mut output = String::new();
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
@@ -161,10 +158,7 @@ fn generate_hash_collision(out_dir: &str) {
     let data: HashCollisionFile =
         toml::from_str(&toml_content).expect("Failed to parse hash_collision.toml");
 
-    let default_source_url = data
-        .metadata
-        .as_ref()
-        .and_then(|m| m.source_url.as_ref());
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
     let mut output = String::new();
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
