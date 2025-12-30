@@ -31,6 +31,7 @@ cargo install --git https://github.com/oritwoen/boha --features cli,balance
 boha stats
 
 # List puzzles
+boha list
 boha list b1000
 boha list b1000 --unsolved
 boha list b1000 --with-pubkey
