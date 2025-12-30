@@ -45,23 +45,17 @@ enum Commands {
     },
 
     /// Show puzzle details
-    Show {
-        id: String,
-    },
+    Show { id: String },
 
     /// Show statistics
     Stats,
 
     /// Show key range for puzzle
-    Range {
-        puzzle_number: u32,
-    },
+    Range { puzzle_number: u32 },
 
     /// Check balance (requires balance feature)
     #[cfg(feature = "balance")]
-    Balance {
-        id: String,
-    },
+    Balance { id: String },
 }
 
 #[derive(Tabled)]
@@ -126,8 +120,10 @@ struct BalanceOutput {
 fn output_puzzles(puzzles: &[&Puzzle], format: OutputFormat) {
     match format {
         OutputFormat::Table => {
-            let rows: Vec<PuzzleTableRow> =
-                puzzles.iter().map(|p| PuzzleTableRow::from_puzzle(p)).collect();
+            let rows: Vec<PuzzleTableRow> = puzzles
+                .iter()
+                .map(|p| PuzzleTableRow::from_puzzle(p))
+                .collect();
             let table = Table::new(rows).with(Style::rounded()).to_string();
             println!("{}", table);
             println!(
@@ -423,7 +419,13 @@ fn print_balance_table(balance: &BalanceOutput) {
     println!("{}", table);
 }
 
-fn cmd_list(collection: &str, unsolved: bool, solved: bool, with_pubkey: bool, format: OutputFormat) {
+fn cmd_list(
+    collection: &str,
+    unsolved: bool,
+    solved: bool,
+    with_pubkey: bool,
+    format: OutputFormat,
+) {
     let puzzles: Vec<&Puzzle> = match collection {
         "b1000" => b1000::all().collect(),
         "hash_collision" | "peter_todd" => hash_collision::all().collect(),
@@ -459,7 +461,10 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
     let (start, end) = b1000::key_range_big(puzzle_number);
 
     let (address, pubkey) = if let Ok(p) = b1000::get(puzzle_number) {
-        (Some(p.address.to_string()), p.pubkey.map(|pk| pk.to_string()))
+        (
+            Some(p.address.to_string()),
+            p.pubkey.map(|pk| pk.to_string()),
+        )
     } else {
         (None, None)
     };
