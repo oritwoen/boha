@@ -110,28 +110,50 @@ pub struct Puzzle {
     pub prize: Option<f64>,
     pub start_date: Option<&'static str>,
     pub solve_date: Option<&'static str>,
-    pub solve_time: Option<u32>,
+    pub solve_time: Option<u64>,
     pub source_url: Option<&'static str>,
 }
 
-fn format_days_human_readable(days: u32) -> String {
-    let years = days / 365;
-    let remaining = days % 365;
-    let months = remaining / 30;
-    let d = remaining % 30;
+fn format_duration_human_readable(seconds: u64) -> String {
+    const MINUTE: u64 = 60;
+    const HOUR: u64 = 60 * MINUTE;
+    const DAY: u64 = 24 * HOUR;
+    const MONTH: u64 = 30 * DAY;
+    const YEAR: u64 = 365 * DAY;
+
+    let years = seconds / YEAR;
+    let remaining = seconds % YEAR;
+    let months = remaining / MONTH;
+    let remaining = remaining % MONTH;
+    let days = remaining / DAY;
+    let remaining = remaining % DAY;
+    let hours = remaining / HOUR;
+    let remaining = remaining % HOUR;
+    let minutes = remaining / MINUTE;
 
     let mut parts = Vec::new();
+
     if years > 0 {
         parts.push(format!("{}y", years));
     }
     if months > 0 {
-        parts.push(format!("{}m", months));
+        parts.push(format!("{}mo", months));
     }
-    if d > 0 || parts.is_empty() {
-        parts.push(format!("{}d", d));
+    if days > 0 {
+        parts.push(format!("{}d", days));
+    }
+    if hours > 0 {
+        parts.push(format!("{}h", hours));
+    }
+    if minutes > 0 {
+        parts.push(format!("{}m", minutes));
     }
 
-    parts.join(" ")
+    if parts.is_empty() {
+        format!("{}s", seconds)
+    } else {
+        parts.join(" ")
+    }
 }
 
 impl Puzzle {
@@ -148,7 +170,7 @@ impl Puzzle {
     }
 
     pub fn solve_time_formatted(&self) -> Option<String> {
-        self.solve_time.map(format_days_human_readable)
+        self.solve_time.map(format_duration_human_readable)
     }
 
     pub fn collection(&self) -> &str {

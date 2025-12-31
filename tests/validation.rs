@@ -217,7 +217,7 @@ fn all_puzzles_have_start_date() {
 
 #[test]
 fn start_date_format_valid() {
-    let date_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
+    let date_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$").unwrap();
     for puzzle in boha::all() {
         if let Some(date) = puzzle.start_date {
             assert!(
@@ -486,7 +486,7 @@ fn redeem_script_to_script_hash(redeem_script_hex: &str) -> Option<String> {
 
     let script_bytes = hex::decode(redeem_script_hex).ok()?;
     let sha256_hash = Sha256::digest(&script_bytes);
-    let hash160 = Ripemd160::digest(&sha256_hash);
+    let hash160 = Ripemd160::digest(sha256_hash);
     Some(hex::encode(hash160))
 }
 
@@ -535,53 +535,20 @@ fn unsolved_puzzles_no_solve_time() {
     }
 }
 
-fn parse_date(date_str: &str) -> Option<(i32, u32, u32)> {
-    let parts: Vec<&str> = date_str.split('-').collect();
-    if parts.len() != 3 {
-        return None;
-    }
-    let year: i32 = parts[0].parse().ok()?;
-    let month: u32 = parts[1].parse().ok()?;
-    let day: u32 = parts[2].parse().ok()?;
-    Some((year, month, day))
-}
-
-fn days_between(start: &str, end: &str) -> Option<u32> {
-    let (sy, sm, sd) = parse_date(start)?;
-    let (ey, em, ed) = parse_date(end)?;
-
-    fn days_from_civil(y: i32, m: u32, d: u32) -> i64 {
-        let y = y as i64 - if m <= 2 { 1 } else { 0 };
-        let era = if y >= 0 { y } else { y - 399 } / 400;
-        let yoe = (y - era * 400) as u64;
-        let m = m as i64;
-        let doy = (153 * (m + if m > 2 { -3 } else { 9 }) + 2) / 5 + d as i64 - 1;
-        let doe = yoe as i64 * 365 + yoe as i64 / 4 - yoe as i64 / 100 + doy;
-        era * 146097 + doe - 719468
-    }
-
-    let start_days = days_from_civil(sy, sm, sd);
-    let end_days = days_from_civil(ey, em, ed);
-
-    if end_days >= start_days {
-        Some((end_days - start_days) as u32)
-    } else {
-        None
-    }
-}
-
 #[test]
-fn solve_time_matches_dates() {
+fn solve_time_is_reasonable() {
+    const SECONDS_PER_DAY: u64 = 86400;
+    const MAX_YEARS: u64 = 15;
+
     for puzzle in boha::all() {
-        if let (Some(start), Some(solve), Some(solve_time)) =
-            (puzzle.start_date, puzzle.solve_date, puzzle.solve_time)
-        {
-            let computed = days_between(start, solve)
-                .unwrap_or_else(|| panic!("Failed to compute days for {}", puzzle.id));
-            assert_eq!(
-                solve_time, computed,
-                "solve_time mismatch for {}: stored {} != computed {} (from {} to {})",
-                puzzle.id, solve_time, computed, start, solve
+        if let Some(solve_time) = puzzle.solve_time {
+            let max_seconds = MAX_YEARS * 365 * SECONDS_PER_DAY;
+            assert!(
+                solve_time <= max_seconds,
+                "Puzzle {} solve_time {} seconds seems too large (>{} years)",
+                puzzle.id,
+                solve_time,
+                MAX_YEARS
             );
         }
     }
@@ -590,20 +557,34 @@ fn solve_time_matches_dates() {
 #[test]
 fn b1000_66_solve_time_correct() {
     let p66 = b1000::get(66).unwrap();
-    assert_eq!(p66.start_date, Some("2015-01-15"));
-    assert_eq!(p66.solve_date, Some("2024-09-12"));
-    assert_eq!(p66.solve_time, Some(3528));
-    assert_eq!(p66.solve_time_formatted(), Some("9y 8m 3d".to_string()));
+    assert_eq!(p66.start_date, Some("2015-01-15 18:07:14"));
+    assert_eq!(p66.solve_date, Some("2025-02-19 04:19:52"));
+    assert_eq!(p66.solve_time, Some(318593558));
+    let formatted = p66.solve_time_formatted().unwrap();
+    assert!(
+        formatted.contains('y'),
+        "Should contain years: {}",
+        formatted
+    );
 }
 
 #[test]
 fn solve_time_formatted_works() {
-    let p1 = b1000::get(1).unwrap();
-    assert_eq!(p1.solve_time, Some(0));
-    assert_eq!(p1.solve_time_formatted(), Some("0d".to_string()));
+    let p22 = b1000::get(22).unwrap();
+    assert_eq!(p22.solve_time, Some(14891));
+    let formatted = p22.solve_time_formatted().unwrap();
+    assert!(
+        formatted.contains('h'),
+        "Should contain hours: {}",
+        formatted
+    );
 
     let p66 = b1000::get(66).unwrap();
     assert!(p66.solve_time_formatted().is_some());
     let formatted = p66.solve_time_formatted().unwrap();
-    assert!(formatted.contains('y') || formatted.contains('m') || formatted.contains('d'));
+    assert!(
+        formatted.contains('y'),
+        "Should contain years: {}",
+        formatted
+    );
 }

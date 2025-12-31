@@ -38,7 +38,7 @@ struct Btc1000Puzzle {
     pubkey_format: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
-    solve_time: Option<u32>,
+    solve_time: Option<u64>,
     source_url: Option<String>,
 }
 
@@ -63,7 +63,7 @@ struct HashCollisionPuzzle {
     prize: Option<f64>,
     start_date: Option<String>,
     solve_date: Option<String>,
-    solve_time: Option<u32>,
+    solve_time: Option<u64>,
     source_url: Option<String>,
 }
 
@@ -88,7 +88,7 @@ struct GsmgPuzzle {
     pubkey_format: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
-    solve_time: Option<u32>,
+    solve_time: Option<u64>,
     source_url: Option<String>,
 }
 
