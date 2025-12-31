@@ -102,6 +102,7 @@ pub struct Puzzle {
     pub pubkey: Option<Pubkey>,
     pub private_key: Option<&'static str>,
     pub redeem_script: Option<&'static str>,
+    pub script_hash: Option<&'static str>,
     pub bits: Option<u16>,
     pub prize: Option<f64>,
     pub start_date: Option<&'static str>,

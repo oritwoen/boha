@@ -330,6 +330,13 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         });
     }
 
+    if let Some(script_hash) = p.script_hash {
+        rows.push(KeyValueRow {
+            field: "Script Hash".to_string(),
+            value: script_hash.to_string(),
+        });
+    }
+
     if let Some(prize) = p.prize {
         rows.push(KeyValueRow {
             field: "Prize".to_string(),

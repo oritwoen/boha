@@ -48,6 +48,7 @@ struct HashCollisionPuzzle {
     address: String,
     status: String,
     redeem_script: String,
+    script_hash: Option<String>,
     btc: Option<f64>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -168,6 +169,7 @@ fn generate_b1000(out_dir: &str) {
         pubkey: {},
         private_key: {},
         redeem_script: None,
+        script_hash: None,
         bits: Some({}),
         prize: {},
         start_date: {},
@@ -238,6 +240,11 @@ fn generate_hash_collision(out_dir: &str) {
             .map(|url| format!("Some(\"{}\")", url))
             .unwrap_or_else(|| "None".to_string());
 
+        let script_hash = match &puzzle.script_hash {
+            Some(h) => format!("Some(\"{}\")", h),
+            None => "None".to_string(),
+        };
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "hash_collision/{}",
@@ -249,6 +256,7 @@ fn generate_hash_collision(out_dir: &str) {
         pubkey: None,
         private_key: None,
         redeem_script: Some("{}"),
+        script_hash: {},
         bits: None,
         prize: {},
         start_date: {},
@@ -260,6 +268,7 @@ fn generate_hash_collision(out_dir: &str) {
             puzzle.address,
             status,
             puzzle.redeem_script,
+            script_hash,
             prize,
             start_date,
             solve_date,
@@ -341,6 +350,7 @@ fn generate_gsmg(out_dir: &str) {
     pubkey: {},
     private_key: None,
     redeem_script: None,
+    script_hash: None,
     bits: None,
     prize: {},
     start_date: {},

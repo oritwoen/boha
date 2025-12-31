@@ -7,6 +7,8 @@ edition = "2021"
 bs58 = "0.5"
 chrono = "0.4"
 hex = "0.4"
+ripemd = "0.1"
+sha2 = "0.10"
 reqwest = { version = "0.12", features = ["json"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
@@ -20,3 +22,7 @@ path = "src/main.rs"
 [[bin]]
 name = "generate-h160"
 path = "src/bin/generate_h160.rs"
+
+[[bin]]
+name = "generate-script-hash"
+path = "src/bin/generate_script_hash.rs"
