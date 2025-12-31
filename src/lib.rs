@@ -1,11 +1,10 @@
 mod collections;
 mod puzzle;
 
-
 #[cfg(feature = "balance")]
 pub mod balance;
 
-pub use collections::{b1000, gsmg, hash_collision,arweave};
+pub use collections::{arweave, b1000, gsmg, hash_collision};
 pub use puzzle::{AddressType, IntoPuzzleNum, Puzzle, Status};
 
 use thiserror::Error;
