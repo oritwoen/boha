@@ -1,0 +1,13 @@
+[metadata]
+source_url = "https://www.arweave.org/"
+
+[[puzzles]]
+id = "weave1"
+address = "PbdTDYikdddWfNFlDt2aZokALXKe1mJVSC9TALUBNv8"
+status = "unsolved"
+
+[[puzzles]]
+id = "weave3"
+address = "wHP6OPG5GMF5dedo_CD8AAy6x8La-gfI5b5pk65Tx_0"
+status = "unsolved"
+prize_btc = 1000

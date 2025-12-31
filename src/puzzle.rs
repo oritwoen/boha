@@ -27,6 +27,8 @@ pub enum AddressType {
     P2SH,
     /// Pay to Witness Public Key Hash (bc1q...)
     P2WPKH,
+      /// Arweave address (base64url, AR)
+    Arweave,
 }
 
 impl AddressType {

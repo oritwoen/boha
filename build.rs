@@ -72,17 +72,37 @@ struct GsmgPuzzle {
     solve_date: Option<String>,
     source_url: Option<String>,
 }
+#[derive(Debug, Deserialize)]
+struct ArweaveMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ArweaveFile {
+    metadata: Option<ArweaveMetadata>,
+    puzzles: Vec<ArweavePuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ArweavePuzzle {
+    id: String,
+    address: String,
+    status: String,
+    prize_ar: Option<u64>,
+}
+
 
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
     println!("cargo:rerun-if-changed=data/hash_collision.toml");
     println!("cargo:rerun-if-changed=data/gsmg.toml");
-
+    println!("cargo:rerun-if-changed=data/arweave.toml");
     let out_dir = env::var("OUT_DIR").unwrap();
 
     generate_b1000(&out_dir);
     generate_hash_collision(&out_dir);
     generate_gsmg(&out_dir);
+    generate_arweave(&out_dir);
 }
 
 fn generate_b1000(out_dir: &str) {
@@ -307,4 +327,52 @@ fn generate_gsmg(out_dir: &str) {
     );
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
+}
+
+fn generate_arweave(out_dir:&str){
+    let dest_path =Path::new(out_dir).join("arweave_data.rs");
+    let toml_content =fs::read_to_string("data/arweave.toml").expect("Failed to read data/arweave.toml");
+    let data: ArweaveFile = toml::from_str(&toml_content).expect("Failed to parse arweave.toml");
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+    let mut output =String::new();
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+    for puzzle in &data.puzzles{
+        let status = match puzzle.status.as_str(){
+            "solved"=>"Status::Solved",
+            "claimed" => "Status::Claimed",
+            _ => "Status::Unsolved",
+        };
+        let prize = match puzzle.prize_ar{
+            Some(ar) => format!("Some({}.0)", ar),
+            None => "None".to_string(),
+        };
+        let source_url = default_source_url
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "arweave/{}",
+        address: "{}",
+        address_type: AddressType::P2PKH,
+        status: {},
+        pubkey: None,
+        private_key: None,
+        redeem_script: None,
+        bits: None, 
+        prize_btc: {},
+        start_date: None,
+        solve_date: None,
+        source_url: {},
+        }},
+"#,
+            puzzle.id,
+            puzzle.address,
+            status,
+            prize,
+            source_url,
+        ));
+    }
+    output.push_str("];\n");
+    fs::write(&dest_path, output).expect("Failed to write arweave_data.rs");
+    
 }

@@ -1,10 +1,11 @@
 mod collections;
 mod puzzle;
 
+
 #[cfg(feature = "balance")]
 pub mod balance;
 
-pub use collections::{b1000, gsmg, hash_collision};
+pub use collections::{b1000, gsmg, hash_collision,arweave};
 pub use puzzle::{AddressType, IntoPuzzleNum, Puzzle, Status};
 
 use thiserror::Error;
@@ -39,14 +40,17 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
             b1000::get(num)
         }
         "hash_collision" | "peter_todd" => hash_collision::get(parts[1]),
+        "arweave" => arweave::get(parts[1]),
         _ => Err(Error::NotFound(id.to_string())),
     }
 }
 
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
-    b1000::all().chain(gsmg::all()).chain(hash_collision::all())
+    b1000::all()
+        .chain(gsmg::all())
+        .chain(hash_collision::all())
+        .chain(arweave::all())
 }
-
 #[derive(Debug, Default, Clone, serde::Serialize)]
 pub struct Stats {
     pub total: usize,
