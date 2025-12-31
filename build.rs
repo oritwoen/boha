@@ -1,7 +1,17 @@
+use num_bigint::BigUint;
 use serde::Deserialize;
 use std::env;
 use std::fs;
 use std::path::Path;
+
+fn bits_from_private_key(private_key: &str) -> Option<u16> {
+    let bytes = hex::decode(private_key).ok()?;
+    let key = BigUint::from_bytes_be(&bytes);
+    if key == BigUint::ZERO {
+        return None;
+    }
+    Some(key.bits() as u16)
+}
 
 #[derive(Debug, Deserialize)]
 struct Btc1000Metadata {
@@ -98,6 +108,18 @@ fn generate_b1000(out_dir: &str) {
         fs::read_to_string("data/b1000.toml").expect("Failed to read data/b1000.toml");
 
     let data: Btc1000File = toml::from_str(&toml_content).expect("Failed to parse b1000.toml");
+
+    for puzzle in &data.puzzles {
+        if let Some(pk) = &puzzle.private_key {
+            if let Some(derived_bits) = bits_from_private_key(pk) {
+                assert_eq!(
+                    puzzle.bits, derived_bits,
+                    "Puzzle {} has bits={} but private_key implies bits={}",
+                    puzzle.bits, puzzle.bits, derived_bits
+                );
+            }
+        }
+    }
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 

@@ -99,6 +99,6 @@ cargo run --features cli -- show gsmg
 ## NOTES
 
 - b1000 puzzle #N has private key in range `[2^(N-1), 2^N - 1]`
-- `b1000::key_range(n)` returns the valid key range for puzzle n
+- `Puzzle::key_range()` returns the valid key range for puzzles with `bits` field
 - hash_collision puzzles are Peter Todd's hash collision bounties (P2SH)
 - Balances fetched from mempool.space API (with `balance` feature)

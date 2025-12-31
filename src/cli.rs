@@ -294,11 +294,12 @@ fn print_puzzle_detail_table(p: &Puzzle) {
             field: "Bits".to_string(),
             value: bits.to_string(),
         });
-        let (start, end) = b1000::key_range_big(bits as u32);
-        rows.push(KeyValueRow {
-            field: "Range".to_string(),
-            value: format!("0x{:x} - 0x{:x}", start, end),
-        });
+        if let Some((start, end)) = p.key_range_big() {
+            rows.push(KeyValueRow {
+                field: "Range".to_string(),
+                value: format!("0x{:x} - 0x{:x}", start, end),
+            });
+        }
     }
 
     if let Some(pubkey) = &p.pubkey {
@@ -532,26 +533,23 @@ fn cmd_stats(format: OutputFormat) {
 }
 
 fn cmd_range(puzzle_number: u32, format: OutputFormat) {
-    let (start, end) = b1000::key_range_big(puzzle_number);
-
-    let (address, pubkey) = if let Ok(p) = b1000::get(puzzle_number) {
-        (
-            Some(p.address.to_string()),
-            p.pubkey.map(|pk| pk.key.to_string()),
-        )
-    } else {
-        (None, None)
-    };
-
-    let range = RangeOutput {
-        puzzle: puzzle_number,
-        start: format!("0x{:x}", start),
-        end: format!("0x{:x}", end),
-        address,
-        pubkey,
-    };
-
-    output_range(&range, format);
+    match b1000::get(puzzle_number) {
+        Ok(p) => {
+            let (start, end) = p.key_range_big().expect("b1000 puzzles always have bits");
+            let range = RangeOutput {
+                puzzle: puzzle_number,
+                start: format!("0x{:x}", start),
+                end: format!("0x{:x}", end),
+                address: Some(p.address.to_string()),
+                pubkey: p.pubkey.map(|pk| pk.key.to_string()),
+            };
+            output_range(&range, format);
+        }
+        Err(e) => {
+            eprintln!("{} {}", "Error:".red().bold(), e);
+            std::process::exit(1);
+        }
+    }
 }
 
 #[cfg(feature = "balance")]

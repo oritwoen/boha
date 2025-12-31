@@ -1,4 +1,5 @@
 use boha::{b1000, gsmg, hash_collision, AddressType, Chain, PubkeyFormat, Status};
+use num_bigint::BigUint;
 
 #[test]
 fn b1000_has_256_puzzles() {
@@ -43,21 +44,76 @@ fn b1000_get_accepts_multiple_types() {
 }
 
 #[test]
-fn b1000_key_range_valid() {
-    let range = b1000::key_range(1).unwrap();
+fn puzzle_key_range_valid() {
+    let p1 = b1000::get(1).unwrap();
+    let range = p1.key_range().unwrap();
     assert_eq!(*range.start(), 1);
     assert_eq!(*range.end(), 1);
 
-    let range = b1000::key_range(8).unwrap();
+    let p8 = b1000::get(8).unwrap();
+    let range = p8.key_range().unwrap();
     assert_eq!(*range.start(), 128);
     assert_eq!(*range.end(), 255);
 
-    let range = b1000::key_range(66).unwrap();
+    let p66 = b1000::get(66).unwrap();
+    let range = p66.key_range().unwrap();
     assert_eq!(*range.start(), 1u128 << 65);
     assert_eq!(*range.end(), (1u128 << 66) - 1);
 
-    assert!(b1000::key_range(0).is_none());
-    assert!(b1000::key_range(129).is_none());
+    // bits == 128 edge case (max value for u128)
+    let p128 = b1000::get(128).unwrap();
+    let range = p128.key_range().unwrap();
+    assert_eq!(*range.start(), 1u128 << 127);
+    assert_eq!(*range.end(), u128::MAX);
+
+    let p129 = b1000::get(129).unwrap();
+    assert!(p129.key_range().is_none());
+}
+
+#[test]
+fn puzzle_key_range_big_valid() {
+    let p1 = b1000::get(1).unwrap();
+    let (start, end) = p1.key_range_big().unwrap();
+    assert_eq!(start, BigUint::from(1u32));
+    assert_eq!(end, BigUint::from(1u32));
+
+    let p66 = b1000::get(66).unwrap();
+    let (start, end) = p66.key_range_big().unwrap();
+    assert_eq!(start, BigUint::from(1u128) << 65);
+    assert_eq!(end, (BigUint::from(1u128) << 66) - 1u32);
+
+    let p256 = b1000::get(256).unwrap();
+    let (start, end) = p256.key_range_big().unwrap();
+    assert!(start > BigUint::ZERO);
+    assert!(end > start);
+}
+
+#[test]
+fn puzzle_key_range_none_without_bits() {
+    for puzzle in hash_collision::all() {
+        assert!(puzzle.bits.is_none(), "hash_collision should not have bits");
+        assert!(puzzle.key_range().is_none());
+        assert!(puzzle.key_range_big().is_none());
+    }
+}
+
+#[test]
+fn solved_puzzles_private_key_in_range() {
+    for puzzle in b1000::solved() {
+        let pk_hex = puzzle.private_key.unwrap();
+        let pk_bytes = hex::decode(pk_hex).unwrap();
+        let key = BigUint::from_bytes_be(&pk_bytes);
+
+        let (start, end) = puzzle.key_range_big().unwrap();
+        assert!(
+            key >= start && key <= end,
+            "Puzzle {} private_key not in range: key={}, range=[{}, {}]",
+            puzzle.id,
+            key,
+            start,
+            end
+        );
+    }
 }
 
 #[test]

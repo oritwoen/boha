@@ -1,6 +1,9 @@
 //! Core puzzle types and structures.
 
+use num_bigint::BigUint;
+use num_traits::One;
 use serde::Serialize;
+use std::ops::RangeInclusive;
 
 /// Blockchain network for a puzzle.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -129,6 +132,30 @@ impl Puzzle {
 
     pub fn name(&self) -> &str {
         self.id.split('/').nth(1).unwrap_or("")
+    }
+
+    pub fn key_range(&self) -> Option<RangeInclusive<u128>> {
+        let bits = self.bits?;
+        if !(1..=128).contains(&bits) {
+            return None;
+        }
+        let start = 1u128 << (bits - 1);
+        let end = if bits == 128 {
+            u128::MAX
+        } else {
+            (1u128 << bits) - 1
+        };
+        Some(start..=end)
+    }
+
+    pub fn key_range_big(&self) -> Option<(BigUint, BigUint)> {
+        let bits = self.bits?;
+        if !(1..=256).contains(&bits) {
+            return None;
+        }
+        let start = BigUint::one() << (bits - 1) as usize;
+        let end = (BigUint::one() << bits as usize) - 1u32;
+        Some((start, end))
     }
 }
 

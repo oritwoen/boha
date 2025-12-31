@@ -62,6 +62,8 @@ optional = true
 [build-dependencies]
 toml = "0.8"
 serde = { version = "1", features = ["derive"] }
+num-bigint = "0.4"
+hex = "0.4"
 
 [features]
 default = []
