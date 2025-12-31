@@ -19,7 +19,7 @@ struct Btc1000Puzzle {
     bits: u16,
     address: String,
     h160: Option<String>,
-    btc: Option<f64>,
+    prize: Option<f64>,
     status: String,
     #[allow(dead_code)]
     has_pubkey: Option<bool>,
@@ -49,7 +49,7 @@ struct HashCollisionPuzzle {
     status: String,
     redeem_script: String,
     script_hash: Option<String>,
-    btc: Option<f64>,
+    prize: Option<f64>,
     start_date: Option<String>,
     solve_date: Option<String>,
     source_url: Option<String>,
@@ -71,7 +71,7 @@ struct GsmgPuzzle {
     address: String,
     h160: Option<String>,
     status: String,
-    btc: Option<f64>,
+    prize: Option<f64>,
     public_key: Option<String>,
     pubkey_format: Option<String>,
     start_date: Option<String>,
@@ -131,8 +131,8 @@ fn generate_b1000(out_dir: &str) {
             None => "None".to_string(),
         };
 
-        let prize = match puzzle.btc {
-            Some(btc) => format!("Some({:.6})", btc),
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.6})", p),
             None => "None".to_string(),
         };
 
@@ -218,8 +218,8 @@ fn generate_hash_collision(out_dir: &str) {
             _ => "Status::Unsolved",
         };
 
-        let prize = match puzzle.btc {
-            Some(btc) => format!("Some({:.6})", btc),
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.6})", p),
             None => "None".to_string(),
         };
 
@@ -298,8 +298,8 @@ fn generate_gsmg(out_dir: &str) {
         _ => "Status::Unsolved",
     };
 
-    let prize = match puzzle.btc {
-        Some(btc) => format!("Some({:.8})", btc),
+    let prize = match puzzle.prize {
+        Some(p) => format!("Some({:.8})", p),
         None => "None".to_string(),
     };
 
