@@ -1,4 +1,4 @@
-use boha::{b1000, hash_collision, Puzzle, Stats, Status};
+use boha::{b1000, gsmg, hash_collision, Puzzle, Stats, Status};
 use clap::{Parser, Subcommand, ValueEnum};
 use owo_colors::OwoColorize;
 use serde::Serialize;
@@ -442,6 +442,7 @@ fn cmd_list(
 ) {
     let puzzles: Vec<&Puzzle> = match collection {
         "b1000" => b1000::all().collect(),
+        "gsmg" => gsmg::all().collect(),
         "hash_collision" | "peter_todd" => hash_collision::all().collect(),
         _ => boha::all().collect(),
     };

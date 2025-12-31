@@ -48,6 +48,7 @@ boha list b1000 --with-pubkey
 
 # Show puzzle details
 boha show b1000/66
+boha show gsmg
 boha show hash_collision/sha256
 
 # Get key range
@@ -76,7 +77,7 @@ boha -o jsonl list b1000 --unsolved | jq .
 ### Library
 
 ```rust
-use boha::{b1000, hash_collision, Status};
+use boha::{b1000, gsmg, hash_collision, Status};
 
 let p66 = b1000::get(66).unwrap();
 println!("Address: {}", p66.address);
@@ -90,9 +91,11 @@ let unsolved: Vec<_> = b1000::all()
     .filter(|p| p.pubkey.is_some())
     .collect();
 
+let gsmg_puzzle = gsmg::get();
 let sha256 = hash_collision::get("sha256").unwrap();
 
 let puzzle = boha::get("b1000/66").unwrap();
+let puzzle = boha::get("gsmg").unwrap();
 ```
 
 ### Balance fetching (async)
@@ -130,6 +133,16 @@ async fn main() {
 **Unsolved (72):** 71-74, 76-79, 81-84, 86-89, 91-94, 96-99, 101-104, 106-109, 111-114, 116-119, 121-124, 126-129, 131-134, 136-139, 141-144, 146-149, 151-154, 156-159
 
 **Empty - no funds (96):** 161-256
+
+### gsmg
+
+[GSMG.IO 5 BTC Puzzle](https://gsmg.io/puzzle) - Multi-phase cryptographic challenge with a single Bitcoin address.
+
+| Address | Status | Prize |
+|---------|--------|-------|
+| 1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe | Unsolved | ~1.25 BTC |
+
+Originally 5 BTC, prize halves with each Bitcoin halving.
 
 ### hash_collision
 

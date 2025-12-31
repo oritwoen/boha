@@ -1,4 +1,4 @@
-use boha::{b1000, hash_collision, AddressType, Status};
+use boha::{b1000, gsmg, hash_collision, AddressType, Status};
 
 #[test]
 fn b1000_has_256_puzzles() {
@@ -111,8 +111,23 @@ fn hash_collision_all_p2sh() {
 }
 
 #[test]
+fn gsmg_count() {
+    assert_eq!(gsmg::all().count(), 1);
+}
+
+#[test]
+fn gsmg_get_returns_correct_puzzle() {
+    let puzzle = gsmg::get();
+    assert_eq!(puzzle.id, "gsmg");
+    assert_eq!(puzzle.address, "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe");
+    assert_eq!(puzzle.status, Status::Unsolved);
+    assert_eq!(puzzle.address_type, AddressType::P2PKH);
+}
+
+#[test]
 fn universal_get_works() {
     assert!(boha::get("b1000/66").is_ok());
+    assert!(boha::get("gsmg").is_ok());
     assert!(boha::get("hash_collision/sha256").is_ok());
     assert!(boha::get("peter_todd/sha256").is_ok());
 }
