@@ -7,7 +7,7 @@ source_url = "https://gsmg.io/puzzle"
 [puzzle]
 address = "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe"
 status = "unsolved"
-btc = 1.25364181
+prize = 1.25364181
 public_key = "04f4d1bbd91e65e2a019566a17574e97dae908b784b388891848007e4f55d5a4649c73d25fc5ed8fd7227cab0be4e576c0c6404db5aa546286563e4be12bf33559"
 pubkey_format = "uncompressed"
 start_date = "2019-04-13"

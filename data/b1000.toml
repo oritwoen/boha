@@ -14,7 +14,7 @@ with_pubkey_count = 184
 [[puzzles]]
 bits = 1
 address = "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH"
-btc = 0.001
+prize = 0.001
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000001"
@@ -27,7 +27,7 @@ h160 = "751e76e8199196d454941c45d1b3a323f1433bd6"
 [[puzzles]]
 bits = 2
 address = "1CUNEBjYrCn2y1SdiUMohaKUi4wpP326Lb"
-btc = 0.002
+prize = 0.002
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000003"
@@ -40,7 +40,7 @@ h160 = "7dd65592d0ab2fe0d0257d571abf032cd9db93dc"
 [[puzzles]]
 bits = 3
 address = "19ZewH8Kk1PDbSNdJ97FP4EiCjTRaZMZQA"
-btc = 0.003
+prize = 0.003
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000007"
@@ -53,7 +53,7 @@ h160 = "5dedfbf9ea599dd4e3ca6a80b333c472fd0b3f69"
 [[puzzles]]
 bits = 4
 address = "1EhqbyUMvvs7BfL8goY6qcPbD6YKfPqb7e"
-btc = 0.004
+prize = 0.004
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000008"
@@ -66,7 +66,7 @@ h160 = "9652d86bedf43ad264362e6e6eba6eb764508127"
 [[puzzles]]
 bits = 5
 address = "1E6NuFjCi27W5zoXg8TRdcSRq84zJeBW3k"
-btc = 0.005
+prize = 0.005
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000015"
@@ -79,7 +79,7 @@ h160 = "8f9dff39a81ee4abcbad2ad8bafff090415a2be8"
 [[puzzles]]
 bits = 6
 address = "1PitScNLyp2HCygzadCh7FveTnfmpPbfp8"
-btc = 0.006
+prize = 0.006
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000031"
@@ -92,7 +92,7 @@ h160 = "f93ec34e9e34a8f8ff7d600cdad83047b1bcb45c"
 [[puzzles]]
 bits = 7
 address = "1McVt1vMtCC7yn5b9wgX1833yCcLXzueeC"
-btc = 0.007
+prize = 0.007
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000000000004c"
@@ -105,7 +105,7 @@ h160 = "e2192e8a7dd8dd1c88321959b477968b941aa973"
 [[puzzles]]
 bits = 8
 address = "1M92tSqNmQLYw33fuBvjmeadirh1ysMBxK"
-btc = 0.008
+prize = 0.008
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000000000000e0"
@@ -118,7 +118,7 @@ h160 = "dce76b2613052ea012204404a97b3c25eac31715"
 [[puzzles]]
 bits = 9
 address = "1CQFwcjw1dwhtkVWBttNLDtqL7ivBonGPV"
-btc = 0.009
+prize = 0.009
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000000000001d3"
@@ -131,7 +131,7 @@ h160 = "7d0f6c64afb419bbd7e971e943d7404b0e0daab4"
 [[puzzles]]
 bits = 10
 address = "1LeBZP5QCwwgXRtmVUvTVrraqPUokyLHqe"
-btc = 0.01
+prize = 0.01
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000202"
@@ -144,7 +144,7 @@ h160 = "d7729816650e581d7462d52ad6f732da0e2ec93b"
 [[puzzles]]
 bits = 11
 address = "1PgQVLmst3Z314JrQn5TNiys8Hc38TcXJu"
-btc = 0.011
+prize = 0.011
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000483"
@@ -157,7 +157,7 @@ h160 = "f8c698da3164ef8fa4258692d118cc9a902c5acc"
 [[puzzles]]
 bits = 12
 address = "1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot"
-btc = 0.012
+prize = 0.012
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000000a7b"
@@ -170,7 +170,7 @@ h160 = "85a1f9ba4da24c24e582d9b891dacbd1b043f971"
 [[puzzles]]
 bits = 13
 address = "1Pie8JkxBT6MGPz9Nvi3fsPkr2D8q3GBc1"
-btc = 0.013
+prize = 0.013
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000001460"
@@ -183,7 +183,7 @@ h160 = "f932d0188616c964416b91fb9cf76ba9790a921e"
 [[puzzles]]
 bits = 14
 address = "1ErZWg5cFCe4Vw5BzgfzB74VNLaXEiEkhk"
-btc = 0.014
+prize = 0.014
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000002930"
@@ -196,7 +196,7 @@ h160 = "97f9281a1383879d72ac52a6a3e9e8b9a4a4f655"
 [[puzzles]]
 bits = 15
 address = "1QCbW9HWnwQWiQqVo5exhAnmfqKRrCRsvW"
-btc = 0.015
+prize = 0.015
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000000000068f3"
@@ -209,7 +209,7 @@ h160 = "fe7c45126731f7384640b0b0045fd40bac72e2a2"
 [[puzzles]]
 bits = 16
 address = "1BDyrQ6WoF8VN3g9SAS1iKZcPzFfnDVieY"
-btc = 0.016
+prize = 0.016
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000000000c936"
@@ -222,7 +222,7 @@ h160 = "7025b4efb3ff42eb4d6d71fab6b53b4f4967e3dd"
 [[puzzles]]
 bits = 17
 address = "1HduPEXZRdG26SUT5Yk83mLkPyjnZuJ7Bm"
-btc = 0.017
+prize = 0.017
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000000001764f"
@@ -235,7 +235,7 @@ h160 = "b67cb6edeabc0c8b927c9ea327628e7aa63e2d52"
 [[puzzles]]
 bits = 18
 address = "1GnNTmTVLZiqQfLbAdp9DVdicEnB5GoERE"
-btc = 0.018
+prize = 0.018
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000000003080d"
@@ -248,7 +248,7 @@ h160 = "ad1e852b08eba53df306ec9daa8c643426953f94"
 [[puzzles]]
 bits = 19
 address = "1NWmZRpHH4XSPwsW6dsS3nrNWfL1yrJj4w"
-btc = 0.019
+prize = 0.019
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000000005749f"
@@ -261,7 +261,7 @@ h160 = "ebfbe6819fcdebab061732ce91df7d586a037dee"
 [[puzzles]]
 bits = 20
 address = "1HsMJxNiV7TLxmoF6uJNkydxPFDog4NQum"
-btc = 0.02
+prize = 0.02
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000000000d2c55"
@@ -274,7 +274,7 @@ h160 = "b907c3a2a3b27789dfb509b730dd47703c272868"
 [[puzzles]]
 bits = 21
 address = "14oFNXucftsHiUMY8uctg6N487riuyXs4h"
-btc = 0.021
+prize = 0.021
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000000001ba534"
@@ -287,7 +287,7 @@ h160 = "29a78213caa9eea824acf08022ab9dfc83414f56"
 [[puzzles]]
 bits = 22
 address = "1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv"
-btc = 0.022
+prize = 0.022
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000000002de40f"
@@ -300,7 +300,7 @@ h160 = "7ff45303774ef7a52fffd8011981034b258cb86b"
 [[puzzles]]
 bits = 23
 address = "1L2GM8eE7mJWLdo3HZS6su1832NX2txaac"
-btc = 0.023
+prize = 0.023
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000556e52"
@@ -313,7 +313,7 @@ h160 = "d0a79df189fe1ad5c306cc70497b358415da579e"
 [[puzzles]]
 bits = 24
 address = "1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7"
-btc = 0.024
+prize = 0.024
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000000dc2a04"
@@ -326,7 +326,7 @@ h160 = "0959e80121f36aea13b3bad361c15dac26189e2f"
 [[puzzles]]
 bits = 25
 address = "15JhYXn6Mx3oF4Y7PcTAv2wVVAuCFFQNiP"
-btc = 0.025
+prize = 0.025
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000001fa5ee5"
@@ -339,7 +339,7 @@ h160 = "2f396b29b27324300d0c59b17c3abc1835bd3dbb"
 [[puzzles]]
 bits = 26
 address = "1JVnST957hGztonaWK6FougdtjxzHzRMMg"
-btc = 0.026
+prize = 0.026
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000000340326e"
@@ -352,7 +352,7 @@ h160 = "bfebb73562d4541b32a02ba664d140b5a574792f"
 [[puzzles]]
 bits = 27
 address = "128z5d7nN7PkCuX5qoA4Ys6pmxUYnEy86k"
-btc = 0.027
+prize = 0.027
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000006ac3875"
@@ -365,7 +365,7 @@ h160 = "0c7aaf6caa7e5424b63d317f0f8f1f9fa40d5560"
 [[puzzles]]
 bits = 28
 address = "12jbtzBb54r97TCwW3G1gCFoumpckRAPdY"
-btc = 0.028
+prize = 0.028
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000000d916ce8"
@@ -378,7 +378,7 @@ h160 = "1306b9e4ff56513a476841bac7ba48d69516b1da"
 [[puzzles]]
 bits = 29
 address = "19EEC52krRUK1RkUAEZmQdjTyHT7Gp1TYT"
-btc = 0.029
+prize = 0.029
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000000017e2551e"
@@ -391,7 +391,7 @@ h160 = "5a416cc9148f4a377b672c8ae5d3287adaafadec"
 [[puzzles]]
 bits = 30
 address = "1LHtnpd8nU5VHEMkG2TMYYNUjjLc992bps"
-btc = 0.03
+prize = 0.03
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000003d94cd64"
@@ -404,7 +404,7 @@ h160 = "d39c4704664e1deb76c9331e637564c257d68a08"
 [[puzzles]]
 bits = 31
 address = "1LhE6sCTuGae42Axu1L1ZB7L96yi9irEBE"
-btc = 0.031
+prize = 0.031
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000007d4fe747"
@@ -417,7 +417,7 @@ h160 = "d805f6f251f7479ebd853b3d0f4b9b2656d92f1d"
 [[puzzles]]
 bits = 32
 address = "1FRoHA9xewq7DjrZ1psWJVeTer8gHRqEvR"
-btc = 0.032
+prize = 0.032
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000000b862a62e"
@@ -430,7 +430,7 @@ h160 = "9e42601eeaedc244e15f17375adb0e2cd08efdc9"
 [[puzzles]]
 bits = 33
 address = "187swFMjz1G54ycVU56B7jZFHFTNVQFDiu"
-btc = 0.033
+prize = 0.033
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000001a96ca8d8"
@@ -443,7 +443,7 @@ h160 = "4e15e5189752d1eaf444dfd6bff399feb0443977"
 [[puzzles]]
 bits = 34
 address = "1PWABE7oUahG2AFFQhhvViQovnCr4rEv7Q"
-btc = 0.034
+prize = 0.034
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000034a65911d"
@@ -456,7 +456,7 @@ h160 = "f6d67d7983bf70450f295c9cb828daab265f1bfa"
 [[puzzles]]
 bits = 35
 address = "1PWCx5fovoEaoBowAvF5k91m2Xat9bMgwb"
-btc = 0.035
+prize = 0.035
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000004aed21170"
@@ -469,7 +469,7 @@ h160 = "f6d8ce225ffbdecec170f8298c3fc28ae686df25"
 [[puzzles]]
 bits = 36
 address = "1Be2UF9NLfyLFbtm3TCbmuocc9N1Kduci1"
-btc = 0.036
+prize = 0.036
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000009de820a7c"
@@ -482,7 +482,7 @@ h160 = "74b1e012be1521e5d8d75e745a26ced845ea3d37"
 [[puzzles]]
 bits = 37
 address = "14iXhn8bGajVWegZHJ18vJLHhntcpL4dex"
-btc = 0.037
+prize = 0.037
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000001757756a93"
@@ -495,7 +495,7 @@ h160 = "28c30fb9118ed1da72e7c4f89c0164756e8a021d"
 [[puzzles]]
 bits = 38
 address = "1HBtApAFA9B2YZw3G2YKSMCtb3dVnjuNe2"
-btc = 0.038
+prize = 0.038
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000022382facd0"
@@ -508,7 +508,7 @@ h160 = "b190e2d40cfdeee2cee072954a2be89e7ba39364"
 [[puzzles]]
 bits = 39
 address = "122AJhKLEfkFBaGAd84pLp1kfE7xK3GdT8"
-btc = 0.039
+prize = 0.039
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000004b5f8303e9"
@@ -521,7 +521,7 @@ h160 = "0b304f2a79a027270276533fe1ed4eff30910876"
 [[puzzles]]
 bits = 40
 address = "1EeAxcprB2PpCnr34VfZdFrkUWuxyiNEFv"
-btc = 0.04
+prize = 0.04
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000000e9ae4933d6"
@@ -534,7 +534,7 @@ h160 = "95a156cd21b4a69de969eb6716864f4c8b82a82a"
 [[puzzles]]
 bits = 41
 address = "1L5sU9qvJeuwQUdt4y1eiLmquFxKjtHr3E"
-btc = 0.041
+prize = 0.041
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000153869acc5b"
@@ -547,7 +547,7 @@ h160 = "d1562eb37357f9e6fc41cb2359f4d3eda4032329"
 [[puzzles]]
 bits = 42
 address = "1E32GPWgDyeyQac4aJxm9HVoLrrEYPnM4N"
-btc = 0.042
+prize = 0.042
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000002a221c58d8f"
@@ -560,7 +560,7 @@ h160 = "8efb85f9c5b5db2d55973a04128dc7510075ae23"
 [[puzzles]]
 bits = 43
 address = "1PiFuqGpG8yGM5v6rNHWS3TjsG6awgEGA1"
-btc = 0.043
+prize = 0.043
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000006bd3b27c591"
@@ -573,7 +573,7 @@ h160 = "f92044c7924e5525c61207972c253c9fc9f086f7"
 [[puzzles]]
 bits = 44
 address = "1CkR2uS7LmFwc3T2jV8C1BhWb5mQaoxedF"
-btc = 0.044
+prize = 0.044
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000000e02b35a358f"
@@ -586,7 +586,7 @@ h160 = "80df54e1f612f2fc5bdc05c9d21a83aa8d20791e"
 [[puzzles]]
 bits = 45
 address = "1NtiLNGegHWE3Mp9g2JPkgx6wUg4TW7bbk"
-btc = 0.045
+prize = 0.045
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000122fca143c05"
@@ -599,7 +599,7 @@ h160 = "f0225bfc68a6e17e87cd8b5e60ae3be18f120753"
 [[puzzles]]
 bits = 46
 address = "1F3JRMWudBaj48EhwcHDdpeuy2jwACNxjP"
-btc = 0.046
+prize = 0.046
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000002ec18388d544"
@@ -612,7 +612,7 @@ h160 = "9a012260d01c5113df66c8a8438c9f7a1e3d5dac"
 [[puzzles]]
 bits = 47
 address = "1Pd8VvT49sHKsmqrQiP61RsVwmXCZ6ay7Z"
-btc = 0.047
+prize = 0.047
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000006cd610b53cba"
@@ -625,7 +625,7 @@ h160 = "f828005d41b0f4fed4c8dca3b06011072cfb07d4"
 [[puzzles]]
 bits = 48
 address = "1DFYhaB2J9q1LLZJWKTnscPWos9VBqDHzv"
-btc = 0.048
+prize = 0.048
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000000ade6d7ce3b9b"
@@ -638,7 +638,7 @@ h160 = "8661cb56d9df0a61f01328b55af7e56a3fe7a2b2"
 [[puzzles]]
 bits = 49
 address = "12CiUhYVTTH33w3SPUBqcpMoqnApAV4WCF"
-btc = 0.049
+prize = 0.049
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000174176b015f4d"
@@ -651,7 +651,7 @@ h160 = "0d2f533966c6578e1111978ca698f8add7fffdf3"
 [[puzzles]]
 bits = 50
 address = "1MEzite4ReNuWaL5Ds17ePKt2dCxWEofwk"
-btc = 0.05
+prize = 0.05
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000022bd43c2e9354"
@@ -664,7 +664,7 @@ h160 = "de081b76f840e462fa2cdf360173dfaf4a976a47"
 [[puzzles]]
 bits = 51
 address = "1NpnQyZ7x24ud82b7WiRNvPm6N8bqGQnaS"
-btc = 0.051
+prize = 0.051
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000075070a1a009d4"
@@ -677,7 +677,7 @@ h160 = "ef6419cffd7fad7027994354eb8efae223c2dbe7"
 [[puzzles]]
 bits = 52
 address = "15z9c9sVpu6fwNiK7dMAFgMYSK4GqsGZim"
-btc = 0.052
+prize = 0.052
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000000efae164cb9e3c"
@@ -690,7 +690,7 @@ h160 = "36af659edbe94453f6344e920d143f1778653ae7"
 [[puzzles]]
 bits = 53
 address = "15K1YKJMiJ4fpesTVUcByoz334rHmknxmT"
-btc = 0.53
+prize = 0.53
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000180788e47e326c"
@@ -703,7 +703,7 @@ h160 = "2f4870ef54fa4b048c1365d42594cc7d3d269551"
 [[puzzles]]
 bits = 54
 address = "1KYUv7nSvXx4642TKeuC2SNdTk326uUpFy"
-btc = 0.54
+prize = 0.54
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000000236fb6d5ad1f43"
@@ -716,7 +716,7 @@ h160 = "cb66763cf7fde659869ae7f06884d9a0f879a092"
 [[puzzles]]
 bits = 55
 address = "1LzhS3k3e9Ub8i2W1V8xQFdB8n2MYCHPCa"
-btc = 0.55
+prize = 0.55
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000006abe1f9b67e114"
@@ -729,7 +729,7 @@ h160 = "db53d9bbd1f3a83b094eeca7dd970bd85b492fa2"
 [[puzzles]]
 bits = 56
 address = "17aPYR1m6pVAacXg1PTDDU7XafvK1dxvhi"
-btc = 0.56
+prize = 0.56
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000009d18b63ac4ffdf"
@@ -742,7 +742,7 @@ h160 = "48214c5969ae9f43f75070cea1e2cb41d5bdcccd"
 [[puzzles]]
 bits = 57
 address = "15c9mPGLku1HuW9LRtBf4jcHVpBUt8txKz"
-btc = 0.57
+prize = 0.57
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000001eb25c90795d61c"
@@ -755,7 +755,7 @@ h160 = "328660ef43f66abe2653fa178452a5dfc594c2a1"
 [[puzzles]]
 bits = 58
 address = "1Dn8NF8qDyyfHMktmuoQLGyjWmZXgvosXf"
-btc = 0.58
+prize = 0.58
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000002c675b852189a21"
@@ -768,7 +768,7 @@ h160 = "8c2a6071f89c90c4dab5ab295d7729d1b54ea60f"
 [[puzzles]]
 bits = 59
 address = "1HAX2n9Uruu9YDt4cqRgYcvtGvZj1rbUyt"
-btc = 0.59
+prize = 0.59
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000007496cbb87cab44f"
@@ -781,7 +781,7 @@ h160 = "b14ed3146f5b2c9bde1703deae9ef33af8110210"
 [[puzzles]]
 bits = 60
 address = "1Kn5h2qpgw9mWE5jKpk8PP4qvvJ1QVy8su"
-btc = 0.6
+prize = 0.6
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000000fc07a1825367bbe"
@@ -794,7 +794,7 @@ h160 = "cdf8e5c7503a9d22642e3ecfc87817672787b9c5"
 [[puzzles]]
 bits = 61
 address = "1AVJKwzs9AskraJLGHAZPiaZcrpDr1U6AB"
-btc = 0.61
+prize = 0.61
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000013c96a3742f64906"
@@ -807,7 +807,7 @@ h160 = "68133e19b2dfb9034edf9830a200cfdf38c90cbd"
 [[puzzles]]
 bits = 62
 address = "1Me6EfpwZK5kQziBwBfvLiHjaPGxCKLoJi"
-btc = 0.62
+prize = 0.62
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000363d541eb611abee"
@@ -820,7 +820,7 @@ h160 = "e26646db84b0602f32b34b5a62ca3cae1f91b779"
 [[puzzles]]
 bits = 63
 address = "1NpYjtLira16LfGbGwZJ5JbDPh3ai9bjf4"
-btc = 0.63
+prize = 0.63
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000007cce5efdaccf6808"
@@ -833,7 +833,7 @@ h160 = "ef58afb697b094423ce90721fbb19a359ef7c50e"
 [[puzzles]]
 bits = 64
 address = "16jY7qLJnxb7CHZyqBP8qca9d51gAjyXQN"
-btc = 0.64
+prize = 0.64
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000000f7051f27b09112d4"
@@ -846,7 +846,7 @@ h160 = "3ee4133d991f52fdf6a25c9834e0745ac74248a4"
 [[puzzles]]
 bits = 65
 address = "18ZMbwUFLMHoZBbfpCjUJQTCMCbktshgpe"
-btc = 0.65
+prize = 0.65
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000001a838b13505b26867"
@@ -859,7 +859,7 @@ h160 = "52e763a7ddc1aa4fa811578c491c1bc7fd570137"
 [[puzzles]]
 bits = 66
 address = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so"
-btc = 6.6
+prize = 6.6
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000000000002832ed74f2b5e35ee"
@@ -872,7 +872,7 @@ h160 = "20d45a6a762535700ce9e0b216e31994335db8a5"
 [[puzzles]]
 bits = 67
 address = "1BY8GQbnueYofwSuFAT3USAhGjPrkxDdW9"
-btc = 6.7
+prize = 6.7
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000730fc235c1942c1ae"
@@ -885,7 +885,7 @@ h160 = "739437bb3dd6d1983e66629c5f08c70e52769371"
 [[puzzles]]
 bits = 68
 address = "1MVDYgVaSN6iKKEsbzRUAYFrYJadLYZvvZ"
-btc = 6.8
+prize = 6.8
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000000bebb3940cd0fc1491"
@@ -898,7 +898,7 @@ h160 = "e0b8a2baee1b77fc703455f39d51477451fc8cfc"
 [[puzzles]]
 bits = 69
 address = "19vkiEajfhuZ8bs8Zu2jgmC6oqZbWqhxhG"
-btc = 6.9
+prize = 6.9
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000101d83275fb2bc7e0c"
@@ -911,7 +911,7 @@ h160 = "61eb8a50c86b0584bb727dd65bed8d2400d6d5aa"
 [[puzzles]]
 bits = 70
 address = "19YZECXj3SxEZMoUeJ1yiPsw8xANe7M7QR"
-btc = 0.7
+prize = 0.7
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000000349b84b6431a6c4ef1"
@@ -924,7 +924,7 @@ h160 = "5db8cda53a6a002db10365967d7f85d19e171b10"
 [[puzzles]]
 bits = 71
 address = "1PWo3JeB9jrGwfHDNpdGK54CRas7fsVzXU"
-btc = 7.1002257
+prize = 7.1002257
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -933,7 +933,7 @@ h160 = "f6f5431d25bbf7b12e8add9af5e3475c44a0a5b8"
 [[puzzles]]
 bits = 72
 address = "1JTK7s9YVYywfm5XUH7RNhHJH1LshCaRFR"
-btc = 7.20014379
+prize = 7.20014379
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -942,7 +942,7 @@ h160 = "bf7413e8df4e7a34ce9dc13e2f2648783ec54adb"
 [[puzzles]]
 bits = 73
 address = "12VVRNPi4SJqUTsp6FmqDqY5sGosDtysn4"
-btc = 7.30013849
+prize = 7.30013849
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -951,7 +951,7 @@ h160 = "105b7f253f0ebd7843adaebbd805c944bfb863e4"
 [[puzzles]]
 bits = 74
 address = "1FWGcVDK3JGzCC3WtkYetULPszMaK2Jksv"
-btc = 7.40004977
+prize = 7.40004977
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -960,7 +960,7 @@ h160 = "9f1adb20baeacc38b3f49f3df6906a0e48f2df3d"
 [[puzzles]]
 bits = 75
 address = "1J36UjUByGroXcCvmj13U6uwaVv9caEeAt"
-btc = 0.75
+prize = 0.75
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000000004c5ce114686a1336e07"
@@ -973,7 +973,7 @@ h160 = "badf8b0d34289e679ec65c6c61d3a974353be5cf"
 [[puzzles]]
 bits = 76
 address = "1DJh2eHFYQfACPmrvpyWc8MSTYKh7w9eRF"
-btc = 7.6
+prize = 7.6
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -982,7 +982,7 @@ h160 = "86f9fea5cdecf033161dd2f8f8560768ae0a6d14"
 [[puzzles]]
 bits = 77
 address = "1Bxk4CQdqL9p22JEtDfdXMsng1XacifUtE"
-btc = 7.70002426
+prize = 7.70002426
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -991,7 +991,7 @@ h160 = "783c138ac81f6a52398564bb17455576e8525b29"
 [[puzzles]]
 bits = 78
 address = "15qF6X51huDjqTmF9BJgxXdt1xcj46Jmhb"
-btc = 7.8
+prize = 7.8
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1000,7 +1000,7 @@ h160 = "35003c3ef8759c92092f8488fca59a042859018c"
 [[puzzles]]
 bits = 79
 address = "1ARk8HWJMn8js8tQmGUJeQHjSE7KRkn2t8"
-btc = 7.9
+prize = 7.9
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1009,7 +1009,7 @@ h160 = "67671d5490c272e3ab7ddd34030d587738df33da"
 [[puzzles]]
 bits = 80
 address = "1BCf6rHUW6m3iH2ptsvnjgLruAiPQQepLe"
-btc = 0.8
+prize = 0.8
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000000ea1a5c66dcc11b5ad180"
@@ -1022,7 +1022,7 @@ h160 = "6fe5a36eef0684af0b91f3b6cfc972d68c4f6fab"
 [[puzzles]]
 bits = 81
 address = "15qsCm78whspNQFydGJQk5rexzxTQopnHZ"
-btc = 8.100015
+prize = 8.100015
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1031,7 +1031,7 @@ h160 = "351e605fac813965951ba433b7c2956bf8ad95ce"
 [[puzzles]]
 bits = 82
 address = "13zYrYhhJxp6Ui1VV7pqa5WDhNWM45ARAC"
-btc = 8.2
+prize = 8.2
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1040,7 +1040,7 @@ h160 = "20d28d4e87543947c7e4913bcdceaa16e2f8f061"
 [[puzzles]]
 bits = 83
 address = "14MdEb4eFcT3MVG5sPFG4jGLuHJSnt1Dk2"
-btc = 8.30002046
+prize = 8.30002046
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1049,7 +1049,7 @@ h160 = "24cef184714bbd030833904f5265c9c3e12a95a2"
 [[puzzles]]
 bits = 84
 address = "1CMq3SvFcVEcpLMuuH8PUcNiqsK1oicG2D"
-btc = 8.400015
+prize = 8.400015
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1058,7 +1058,7 @@ h160 = "7c99ce73e19f9fbfcce4825ae88261e2b0b0b040"
 [[puzzles]]
 bits = 85
 address = "1Kh22PvXERd2xpTQk3ur6pPEqFeckCJfAr"
-btc = 0.85
+prize = 0.85
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000000000011720c4f018d51b8cebba8"
@@ -1071,7 +1071,7 @@ h160 = "cd03c1e6268ce9b89e3c3eeab8d0f1b6e8cac281"
 [[puzzles]]
 bits = 86
 address = "1K3x5L6G57Y494fDqBfrojD28UJv4s5JcK"
-btc = 8.6
+prize = 8.6
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1080,7 +1080,7 @@ h160 = "c60111ed3d63b49665747b0e31eb382da5193535"
 [[puzzles]]
 bits = 87
 address = "1PxH3K1Shdjb7gSEoTX7UPDZ6SH4qGPrvq"
-btc = 8.7
+prize = 8.7
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1089,7 +1089,7 @@ h160 = "fbc708d671c03e26661b9c08f77598a529858b5e"
 [[puzzles]]
 bits = 88
 address = "16AbnZjZZipwHMkYKBSfswGWKDmXHjEpSf"
-btc = 8.8
+prize = 8.8
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1098,7 +1098,7 @@ h160 = "38a968fdfb457654c51bcfc4f9174d6ee487bb41"
 [[puzzles]]
 bits = 89
 address = "19QciEHbGVNY4hrhfKXmcBBCrJSBZ6TaVt"
-btc = 8.9
+prize = 8.9
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1107,7 +1107,7 @@ h160 = "5c3862203d1e44ab3af441503e22db97b1c5097e"
 [[puzzles]]
 bits = 90
 address = "1L12FHH2FHjvTviyanuiFVfmzCy46RRATU"
-btc = 0.9
+prize = 0.9
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000002ce00bb2136a445c71e85bf"
@@ -1120,7 +1120,7 @@ h160 = "d06b6e206691295ec345782d7ea0686969d8674b"
 [[puzzles]]
 bits = 91
 address = "1EzVHtmbN4fs4MiNk3ppEnKKhsmXYJ4s74"
-btc = 9.1
+prize = 9.1
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1129,7 +1129,7 @@ h160 = "9978f61b92d16c5f1a463a0995df70da1f7a7d2a"
 [[puzzles]]
 bits = 92
 address = "1AE8NzzgKE7Yhz7BWtAcAAxiFMbPo82NB5"
-btc = 9.2
+prize = 9.2
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1138,7 +1138,7 @@ h160 = "6534b31208fe6e100d29f9c9c75aac8bf06fbb38"
 [[puzzles]]
 bits = 93
 address = "17Q7tuG2JwFFU9rXVj3uZqRtioH3mx2Jad"
-btc = 9.3
+prize = 9.3
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1147,7 +1147,7 @@ h160 = "463013cd41279f2fd0c31d0a16db3972bfffac8d"
 [[puzzles]]
 bits = 94
 address = "1K6xGMUbs6ZTXBnhw1pippqwK6wjBWtNpL"
-btc = 9.4
+prize = 9.4
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1156,7 +1156,7 @@ h160 = "c6927a00970d0165327d0a6db7950f05720c295c"
 [[puzzles]]
 bits = 95
 address = "19eVSDuizydXxhohGh8Ki9WY9KsHdSwoQC"
-btc = 0.95
+prize = 0.95
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000000000527a792b183c7f64a0e8b1f4"
@@ -1169,7 +1169,7 @@ h160 = "5ed822125365274262191d2b77e88d436dd56d88"
 [[puzzles]]
 bits = 96
 address = "15ANYzzCp5BFHcCnVFzXqyibpzgPLWaD8b"
-btc = 9.600006
+prize = 9.600006
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1178,7 +1178,7 @@ h160 = "2da63cbd251d23c7b633cb287c09e6cf888b3fe4"
 [[puzzles]]
 bits = 97
 address = "18ywPwj39nGjqBrQJSzZVq2izR12MDpDr8"
-btc = 9.70002613
+prize = 9.70002613
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1187,7 +1187,7 @@ h160 = "578d94dc6f40fff35f91f6fba9b71c46b361dff2"
 [[puzzles]]
 bits = 98
 address = "1CaBVPrwUxbQYYswu32w7Mj4HR4maNoJSX"
-btc = 9.8
+prize = 9.8
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1196,7 +1196,7 @@ h160 = "7eefddd979a1d6bb6f29757a1f463579770ba566"
 [[puzzles]]
 bits = 99
 address = "1JWnE6p6UN7ZJBN7TtcbNDoRcjFtuDWoNL"
-btc = 9.91257338
+prize = 9.91257338
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1205,7 +1205,7 @@ h160 = "c01bf430a97cbcdaedddba87ef4ea21c456cebdb"
 [[puzzles]]
 bits = 100
 address = "1KCgMv8fo2TPBpddVi9jqmMmcne9uSNJ5F"
-btc = 1.0
+prize = 1.0
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000000af55fc59c335c8ec67ed24826"
@@ -1218,7 +1218,7 @@ h160 = "c7a7b23f6bd98b8aaf527beb724dda9460b1bc6e"
 [[puzzles]]
 bits = 101
 address = "1CKCVdbDJasYmhswB6HKZHEAnNaDpK7W4n"
-btc = 10.1
+prize = 10.1
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1227,7 +1227,7 @@ h160 = "7c1a77205c03b9909663b2034faa0b544e6bc96b"
 [[puzzles]]
 bits = 102
 address = "1PXv28YxmYMaB8zxrKeZBW8dt2HK7RkRPX"
-btc = 10.2
+prize = 10.2
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1236,7 +1236,7 @@ h160 = "f72b812932f6d7102233971d65cec0a22b89e136"
 [[puzzles]]
 bits = 103
 address = "1AcAmB6jmtU6AiEcXkmiNE9TNVPsj9DULf"
-btc = 10.3
+prize = 10.3
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1245,7 +1245,7 @@ h160 = "695fd6dcf33f47166b25de968b2932b351b0afc4"
 [[puzzles]]
 bits = 104
 address = "1EQJvpsmhazYCcKX5Au6AZmZKRnzarMVZu"
-btc = 10.400016
+prize = 10.400016
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1254,7 +1254,7 @@ h160 = "93022af9a38f3ebb0c3f15dd1c83f8fadaf64e74"
 [[puzzles]]
 bits = 105
 address = "1CMjscKB3QW7SDyQ4c3C3DEUHiHRhiZVib"
-btc = 1.05
+prize = 1.05
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000000000016f14fc2054cd87ee6396b33df3"
@@ -1267,7 +1267,7 @@ h160 = "7c957db6fdd0733bb83bc6d6d747711263ba50b0"
 [[puzzles]]
 bits = 106
 address = "18KsfuHuzQaBTNLASyj15hy4LuqPUo1FNB"
-btc = 10.6
+prize = 10.6
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1276,7 +1276,7 @@ h160 = "505aaa63a5e209dfb90cee683a8e227a8c278e47"
 [[puzzles]]
 bits = 107
 address = "15EJFC5ZTs9nhsdvSUeBXjLAuYq3SWaxTc"
-btc = 10.7
+prize = 10.7
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1285,7 +1285,7 @@ h160 = "2e644e46b042ffa86da35c54d7275f1abe6d4911"
 [[puzzles]]
 bits = 108
 address = "1HB1iKUqeffnVsvQsbpC6dNi1XKbyNuqao"
-btc = 10.8
+prize = 10.8
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1294,7 +1294,7 @@ h160 = "b166c44f12c7fc565f37ff6288ee64e0f0ec9a0b"
 [[puzzles]]
 bits = 109
 address = "1GvgAXVCbA8FBjXfWiAms4ytFeJcKsoyhL"
-btc = 10.900105
+prize = 10.900105
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1303,7 +1303,7 @@ h160 = "aeb0a0197442d4ade8ef41442d557b0e22b85ac0"
 [[puzzles]]
 bits = 110
 address = "12JzYkkN76xkwvcPT6AWKZtGX6w2LAgsJg"
-btc = 1.1
+prize = 1.1
 status = "solved"
 has_pubkey = true
 private_key = "00000000000000000000000000000000000035c0d7234df7deb0f20cf7062444"
@@ -1316,7 +1316,7 @@ h160 = "0e5f3c406397442996825fd395543514fd06f207"
 [[puzzles]]
 bits = 111
 address = "1824ZJQ7nKJ9QFTRBqn7z7dHV5EGpzUpH3"
-btc = 11.1001
+prize = 11.1001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1325,7 +1325,7 @@ h160 = "4cfc43fe12a330c8164251e38c0c0c3c84cf86f6"
 [[puzzles]]
 bits = 112
 address = "18A7NA9FTsnJxWgkoFfPAFbQzuQxpRtCos"
-btc = 11.2
+prize = 11.2
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1334,7 +1334,7 @@ h160 = "4e81efec43c5195aeca0e3877664330418b8e48e"
 [[puzzles]]
 bits = 113
 address = "1NeGn21dUDDeqFQ63xb2SpgUuXuBLA4WT4"
-btc = 11.3
+prize = 11.3
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1343,7 +1343,7 @@ h160 = "ed673389e4b12925316f9166d56d701829e53cf8"
 [[puzzles]]
 bits = 114
 address = "174SNxfqpdMGYy5YQcfLbSTK3MRNZEePoy"
-btc = 11.4
+prize = 11.4
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1352,7 +1352,7 @@ h160 = "42773005f9594cd16b10985d428418acb7f352ec"
 [[puzzles]]
 bits = 115
 address = "1NLbHuJebVwUZ1XqDjsAyfTRUPwDQbemfv"
-btc = 1.15
+prize = 1.15
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000060f4d11574f5deee49961d9609ac6"
@@ -1365,7 +1365,7 @@ h160 = "ea0f2b7576bd098921fce9bfebe37f6383e639a4"
 [[puzzles]]
 bits = 116
 address = "1MnJ6hdhvK37VLmqcdEwqC3iFxyWH2PHUV"
-btc = 11.6000121
+prize = 11.6000121
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1374,7 +1374,7 @@ h160 = "e3f381c34a20da049779b44cae0417c7fb2898d0"
 [[puzzles]]
 bits = 117
 address = "1KNRfGWw7Q9Rmwsc6NT5zsdvEb9M2Wkj5Z"
-btc = 11.7
+prize = 11.7
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1383,7 +1383,7 @@ h160 = "c97f9591e28687be1c4d972e25be7c372a3221b4"
 [[puzzles]]
 bits = 118
 address = "1PJZPzvGX19a7twf5HyD2VvNiPdHLzm9F6"
-btc = 11.80000661
+prize = 11.80000661
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1392,7 +1392,7 @@ h160 = "f4a4e1c11a5bbbd2fc139d221825407c66e0b8b4"
 [[puzzles]]
 bits = 119
 address = "1GuBBhf61rnvRe4K8zu8vdQB3kHzwFqSy7"
-btc = 11.9
+prize = 11.9
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1401,7 +1401,7 @@ h160 = "ae6804b35c82f47f8b0a42d8c5e514fe5ef0a883"
 [[puzzles]]
 bits = 120
 address = "17s2b9ksz5y7abUm92cHwG8jEPCzK3dLnT"
-btc = 1.2
+prize = 1.2
 status = "solved"
 has_pubkey = true
 private_key = "0000000000000000000000000000000000b10f22572c497a836ea187f2e1fc23"
@@ -1414,7 +1414,7 @@ h160 = "4b46e10a541aeec6be3fac709c256fb7da69308e"
 [[puzzles]]
 bits = 121
 address = "1GDSuiThEV64c166LUFC9uDcVdGjqkxKyh"
-btc = 12.1
+prize = 12.1
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1423,7 +1423,7 @@ h160 = "a6e4818537e42f7b3f021daa810367dad4dda16f"
 [[puzzles]]
 bits = 122
 address = "1Me3ASYt5JCTAK2XaC32RMeH34PdprrfDx"
-btc = 12.2
+prize = 12.2
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1432,7 +1432,7 @@ h160 = "e263b62ea294b9650615a13b926e75944c823990"
 [[puzzles]]
 bits = 123
 address = "1CdufMQL892A69KXgv6UNBD17ywWqYpKut"
-btc = 12.3
+prize = 12.3
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1441,7 +1441,7 @@ h160 = "7fa4515066ba6905f894b2078f9af7b1379169cf"
 [[puzzles]]
 bits = 124
 address = "1BkkGsX9ZM6iwL3zbqs7HWBV7SvosR6m8N"
-btc = 12.4
+prize = 12.4
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1450,7 +1450,7 @@ h160 = "75f74467ce7214f1767406d5ed12012aa523c48e"
 [[puzzles]]
 bits = 125
 address = "1PXAyUB8ZoH3WD8n5zoAthYjN15yN5CVq5"
-btc = 12.5
+prize = 12.5
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000001c533b6bb7f0804e09960225e44877ac"
@@ -1463,7 +1463,7 @@ h160 = "f7079256aa027dc437cbb539f955472416725fc8"
 [[puzzles]]
 bits = 126
 address = "1AWCLZAjKbV1P7AHvaPNCKiB7ZWVDMxFiz"
-btc = 12.6
+prize = 12.6
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1472,7 +1472,7 @@ h160 = "683ea8a1ef06eada90556017d44323b5c04e00f1"
 [[puzzles]]
 bits = 127
 address = "1G6EFyBRU86sThN3SSt3GrHu1sA7w7nzi4"
-btc = 12.7
+prize = 12.7
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1481,7 +1481,7 @@ h160 = "a58708aa98ad35c889bb36d8049bf9e9cacfd02a"
 [[puzzles]]
 bits = 128
 address = "1MZ2L1gFrCtkkn6DnTT2e4PFUTHw9gNwaj"
-btc = 12.8
+prize = 12.8
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1490,7 +1490,7 @@ h160 = "e170ef514689d7230da362a0c121a07723550512"
 [[puzzles]]
 bits = 129
 address = "1Hz3uv3nNZzBVMXLGadCucgjiCs5W9vaGz"
-btc = 12.9
+prize = 12.9
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1499,7 +1499,7 @@ h160 = "ba4c2748360a6b66263e11d1dc8658463ca5ff18"
 [[puzzles]]
 bits = 130
 address = "1Fo65aKq8s8iquMt6weF1rku1moWVEd5Ua"
-btc = 13.0
+prize = 13.0
 status = "solved"
 has_pubkey = true
 private_key = "000000000000000000000000000000033e7665705359f04f28b88cf897c603c9"
@@ -1512,7 +1512,7 @@ h160 = "a24922852051a9002ebf4c864a55acb75bb4cf75"
 [[puzzles]]
 bits = 131
 address = "16zRPnT8znwq42q7XeMkZUhb1bKqgRogyy"
-btc = 13.1
+prize = 13.1
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1521,7 +1521,7 @@ h160 = "41b4b36a6c036568972380177eca2916cacd71de"
 [[puzzles]]
 bits = 132
 address = "1KrU4dHE5WrW8rhWDsTRjR21r8t3dsrS3R"
-btc = 13.2
+prize = 13.2
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1530,7 +1530,7 @@ h160 = "cecd3ca4319651bd3afd1e23ab66e111ed38d16d"
 [[puzzles]]
 bits = 133
 address = "17uDfp5r4n441xkgLFmhNoSW1KWp6xVLD"
-btc = 13.3
+prize = 13.3
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1539,7 +1539,7 @@ h160 = "014e15e4ea6da460cc7835e262676baa37988e4f"
 [[puzzles]]
 bits = 134
 address = "13A3JrvXmvg5w9XGvyyR4JEJqiLz8ZySY3"
-btc = 13.4
+prize = 13.4
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1548,7 +1548,7 @@ h160 = "17a5ebfaf62e73f149e33ba674836801f13a80b9"
 [[puzzles]]
 bits = 135
 address = "16RGFo6hjq9ym6Pj7N5H7L1NR1rVPJyw2v"
-btc = 13.50003408
+prize = 13.50003408
 status = "unsolved"
 has_pubkey = true
 public_key = "02145d2611c823a396ef6712ce0f712f09b9b4f3135e3e0aa3230fb9b6d08d1e16"
@@ -1559,7 +1559,7 @@ h160 = "3b6f58a75a54bfd85d1bc6c51180fdc732992326"
 [[puzzles]]
 bits = 136
 address = "1UDHPdovvR985NrWSkdWQDEQ1xuRiTALq"
-btc = 13.6
+prize = 13.6
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1568,7 +1568,7 @@ h160 = "05257be4b57ee43fc09762d5d3a9ad4a6e1a0364"
 [[puzzles]]
 bits = 137
 address = "15nf31J46iLuK1ZkTnqHo7WgN5cARFK3RA"
-btc = 13.7
+prize = 13.7
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1577,7 +1577,7 @@ h160 = "3482f8986e13c018692053a784481c63a3554c9c"
 [[puzzles]]
 bits = 138
 address = "1Ab4vzG6wEQBDNQM1B2bvUz4fqXXdFk2WT"
-btc = 13.8
+prize = 13.8
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1586,7 +1586,7 @@ h160 = "692a8e583866fc9056f5c61a45969fb9d868a08c"
 [[puzzles]]
 bits = 139
 address = "1Fz63c775VV9fNyj25d9Xfw3YHE6sKCxbt"
-btc = 13.9
+prize = 13.9
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1595,7 +1595,7 @@ h160 = "a45dae9cd5d3fde21e5aa9a95367d107267b3b8a"
 [[puzzles]]
 bits = 140
 address = "1QKBaU6WAeycb3DbKbLBkX7vJiaS8r42Xo"
-btc = 14.000016
+prize = 14.000016
 status = "unsolved"
 has_pubkey = true
 public_key = "031f6a332d3c5c4f2de2378c012f429cd109ba07d69690c6c701b6bb87860d6640"
@@ -1606,7 +1606,7 @@ h160 = "ffbb35a7bb9bbe16c1aa2534f7ff11d59c8e3d1a"
 [[puzzles]]
 bits = 141
 address = "1CD91Vm97mLQvXhrnoMChhJx4TP9MaQkJo"
-btc = 14.10014846
+prize = 14.10014846
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1615,7 +1615,7 @@ h160 = "7af50f73fd580f1713af3a6f9c5de49643ec6fc6"
 [[puzzles]]
 bits = 142
 address = "15MnK2jXPqTMURX4xC3h4mAZxyCcaWWEDD"
-btc = 14.2
+prize = 14.2
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1624,7 +1624,7 @@ h160 = "2fcea55e6d027a2ba7c7ebe95eedf47766730fe2"
 [[puzzles]]
 bits = 143
 address = "13N66gCzWWHEZBxhVxG18P8wyjEWF9Yoi1"
-btc = 14.3
+prize = 14.3
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1633,7 +1633,7 @@ h160 = "19ed3e03d19ddcedd5fa86543be820b3a7951650"
 [[puzzles]]
 bits = 144
 address = "1NevxKDYuDcCh1ZMMi6ftmWwGrZKC6j7Ux"
-btc = 14.4
+prize = 14.4
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1642,7 +1642,7 @@ h160 = "ed87120066e244ff5331d5f8625873d7a3acc39c"
 [[puzzles]]
 bits = 145
 address = "19GpszRNUej5yYqxXoLnbZWKew3KdVLkXg"
-btc = 14.500006
+prize = 14.500006
 status = "unsolved"
 has_pubkey = true
 public_key = "03afdda497369e219a2c1c369954a930e4d3740968e5e4352475bcffce3140dae5"
@@ -1653,7 +1653,7 @@ h160 = "5abf369388deb8072741b4eb43ef10fa9388a729"
 [[puzzles]]
 bits = 146
 address = "1M7ipcdYHey2Y5RZM34MBbpugghmjaV89P"
-btc = 14.6
+prize = 14.6
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1662,7 +1662,7 @@ h160 = "dca7ebfb78ce21884300f133d89244bc4b1b756f"
 [[puzzles]]
 bits = 147
 address = "18aNhurEAJsw6BAgtANpexk5ob1aGTwSeL"
-btc = 14.7
+prize = 14.7
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1671,7 +1671,7 @@ h160 = "5318b9d7fcc93873f768725eb68ba2c924bb07ee"
 [[puzzles]]
 bits = 148
 address = "1FwZXt6EpRT7Fkndzv6K4b4DFoT4trbMrV"
-btc = 14.8
+prize = 14.8
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1680,7 +1680,7 @@ h160 = "a3e3612e586fd206efb8eee6ccd58318e182829a"
 [[puzzles]]
 bits = 149
 address = "1CXvTzR6qv8wJ7eprzUKeWxyGcHwDYP1i2"
-btc = 14.90001
+prize = 14.90001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1689,7 +1689,7 @@ h160 = "7e827e3b90da24c2a15f7b67e3bbece39955a5d0"
 [[puzzles]]
 bits = 150
 address = "1MUJSJYtGPVGkBCTqGspnxyHahpt5Te8jy"
-btc = 15.000016
+prize = 15.000016
 status = "unsolved"
 has_pubkey = true
 public_key = "03137807790ea7dc6e97901c2bc87411f45ed74a5629315c4e4b03a0a102250c49"
@@ -1700,7 +1700,7 @@ h160 = "e08c4d3bc9cf2b3e2cb88de2bfaa4fe8c7aa3f24"
 [[puzzles]]
 bits = 151
 address = "13Q84TNNvgcL3HJiqQPvyBb9m4hxjS3jkV"
-btc = 15.10001
+prize = 15.10001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1709,7 +1709,7 @@ h160 = "1a4fb632f0de0c53a0a31d57f840a19e56c645ee"
 [[puzzles]]
 bits = 152
 address = "1LuUHyrQr8PKSvbcY1v1PiuGuqFjWpDumN"
-btc = 15.20001
+prize = 15.20001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1718,7 +1718,7 @@ h160 = "da56cd815fa2f0d6a4ce6d25ed7b1a01d9f9bc6b"
 [[puzzles]]
 bits = 153
 address = "18192XpzzdDi2K11QVHR7td2HcPS6Qs5vg"
-btc = 15.30001
+prize = 15.30001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1727,7 +1727,7 @@ h160 = "4ccf94a1b0efd63cddeee0ef5eee5ebe720cfcbf"
 [[puzzles]]
 bits = 154
 address = "1NgVmsCCJaKLzGyKLFJfVequnFW9ZvnMLN"
-btc = 15.40001
+prize = 15.40001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1736,7 +1736,7 @@ h160 = "edd2e206825fa8949d1304cd82c08d64b222f2eb"
 [[puzzles]]
 bits = 155
 address = "1AoeP37TmHdFh8uN72fu9AqgtLrUwcv2wJ"
-btc = 15.500116
+prize = 15.500116
 status = "unsolved"
 has_pubkey = true
 public_key = "035cd1854cae45391ca4ec428cc7e6c7d9984424b954209a8eea197b9e364c05f6"
@@ -1747,7 +1747,7 @@ h160 = "6b8b7830f73c5bf9e8beb9f161ad82b3bde992e4"
 [[puzzles]]
 bits = 156
 address = "1FTpAbQa4h8trvhQXjXnmNhqdiGBd1oraE"
-btc = 15.60001
+prize = 15.60001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1756,7 +1756,7 @@ h160 = "9ea3f29aaedf7da10b1488934c50a39e271b0b64"
 [[puzzles]]
 bits = 157
 address = "14JHoRAdmJg3XR4RjMDh6Wed6ft6hzbQe9"
-btc = 15.70001
+prize = 15.70001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1765,7 +1765,7 @@ h160 = "242d790e5a168043c76f0539fd894b73ee67b3b3"
 [[puzzles]]
 bits = 158
 address = "19z6waranEf8CcP8FqNgdwUe1QRxvUNKBG"
-btc = 15.80001
+prize = 15.80001
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1774,7 +1774,7 @@ h160 = "628dacebb0faa7f81670e174ca4c8a95a7e37029"
 [[puzzles]]
 bits = 159
 address = "14u4nA5sugaswb6SZgn5av2vuChdMnD9E5"
-btc = 15.900026
+prize = 15.900026
 status = "unsolved"
 has_pubkey = false
 start_date = "2015-01-15"
@@ -1783,7 +1783,7 @@ h160 = "2ac1295b4e54b3f15bb0a99f84018d2082495645"
 [[puzzles]]
 bits = 160
 address = "1NBC8uXJy1GiJ6drkiZa1WuKn51ps7EPTv"
-btc = 16.00119082
+prize = 16.00119082
 status = "unsolved"
 has_pubkey = true
 public_key = "02e0a8b039282faf6fe0fd769cfbc4b6b4cf8758ba68220eac420e32b91ddfa673"
@@ -1794,7 +1794,7 @@ h160 = "e84818e1bf7f699aa6e28ef9edfb582099099292"
 [[puzzles]]
 bits = 161
 address = "1JkqBQcC4tHcb1JfdCH6nrWYwTPGznHANh"
-btc = 0.161
+prize = 0.161
 status = "swept"
 has_pubkey = true
 public_key = "031dcf49b480cee5f1a7200ea94795a1c7f69e144f11f031123c14c65077823dcb"
@@ -1805,7 +1805,7 @@ h160 = "c2c43e2b16f53c713bc00307140eaae188413544"
 [[puzzles]]
 bits = 162
 address = "17DTUTXUcUYEgrr5GhivxYei4Lrs1xMnS2"
-btc = 0.162
+prize = 0.162
 status = "swept"
 has_pubkey = true
 public_key = "03294d33f5e7b98c885ff540fd3f747010999f640d8fdb021f5a13ef3d06c36a58"
@@ -1816,7 +1816,7 @@ h160 = "442bd85a46d4acd7b082c1d731fb13c8474ffa6f"
 [[puzzles]]
 bits = 163
 address = "1H6e7SLxv6ZUbuAaZpeUdVNfh3cKBWJRmx"
-btc = 0.163
+prize = 0.163
 status = "swept"
 has_pubkey = true
 public_key = "02ee740ba74efc08bf39d01ccb7e34f50afe2f4677a9e09755e7fe3808e0cbbac9"
@@ -1827,7 +1827,7 @@ h160 = "b093122f7fb36d11c9f2c80cff2971fba7c9c1ff"
 [[puzzles]]
 bits = 164
 address = "1LjQKurNtEDgMdqeCoWRFhHp1FPnLU77Q4"
-btc = 0.164
+prize = 0.164
 status = "swept"
 has_pubkey = true
 public_key = "0312163c60548244d6e565bd877b98808b73830c537efde357c8b5f8c623fb2028"
@@ -1838,7 +1838,7 @@ h160 = "d86f54f73e343d76dd7401639e427d828ba31eab"
 [[puzzles]]
 bits = 165
 address = "1F7ZjibYug9bLW3YvkkwBZLrhfLtNjgYrX"
-btc = 0.165
+prize = 0.165
 status = "swept"
 has_pubkey = true
 public_key = "037c6fcde6a2e0fd57ce21bb4352f7bb38859d2af5388b27ebfed107907e060c5c"
@@ -1849,7 +1849,7 @@ h160 = "9acf9573eb7b4376beca979cfa769f0677cfd949"
 [[puzzles]]
 bits = 166
 address = "12BtvPaamiBCpXmoDrsCxAa1b6hMRnASZ4"
-btc = 0.166
+prize = 0.166
 status = "swept"
 has_pubkey = true
 public_key = "02b02f753542201387815c4754b66202ef6dc4b3415e4c4cc826d6534394702f50"
@@ -1860,7 +1860,7 @@ h160 = "0d07a05f7687824fb4dd4a160ddbdc3808655004"
 [[puzzles]]
 bits = 167
 address = "1AvLwGpkwTZH4qiwy1L4v6TuWXLMNrATN5"
-btc = 0.167
+prize = 0.167
 status = "swept"
 has_pubkey = true
 public_key = "03779c01b4badc5c3883f6ea2b93214a24796154c8eb967695dfc802bf074b4941"
@@ -1871,7 +1871,7 @@ h160 = "6ccfd1cdb43788738536e11e247b0ce31c093f0f"
 [[puzzles]]
 bits = 168
 address = "1PojqbbzJHnn1X2mv6DCECNLUaD2nMssDp"
-btc = 0.168
+prize = 0.168
 status = "swept"
 has_pubkey = true
 public_key = "02788f82521d7557d30c9c4f8bc7098cda23c59729e9cf96057ea1dc49799bd399"
@@ -1882,7 +1882,7 @@ h160 = "fa29a9264b9c18fa5925e38d201934ed89e64dd6"
 [[puzzles]]
 bits = 169
 address = "1G3uazv67BcKRmPFvgvX4ijBTa2898cvCm"
-btc = 0.169
+prize = 0.169
 status = "swept"
 has_pubkey = true
 public_key = "026efbd90dfd84d5bfb7a8ceb2755155d1d39a16be88db336ff18a8d844a269cba"
@@ -1893,7 +1893,7 @@ h160 = "a5169d8bc79e8cc94a36246de6bde7596cc9f4bb"
 [[puzzles]]
 bits = 170
 address = "1EW9W5sGdxVDxAtjRbCjgkZNtPH8ZzikeP"
-btc = 0.17
+prize = 0.17
 status = "swept"
 has_pubkey = true
 public_key = "03e56c48f1bc4a6d06a2e0a4ad53c7674403dbfdaaeee3ecc86aff294b04997d61"
@@ -1904,7 +1904,7 @@ h160 = "941ccb7383109b47b841044c9f865785676b0918"
 [[puzzles]]
 bits = 171
 address = "17zzMMnj5h8StLhnrXpw8iBP21uujNC4Ap"
-btc = 0.171
+prize = 0.171
 status = "swept"
 has_pubkey = true
 public_key = "021b6f7d2e3d33f99fa44985c68ae85827282c64701a2c663bd81e18a229a3562d"
@@ -1915,7 +1915,7 @@ h160 = "4cc856b74f1be643a3a0ac65f5399e018aed7ae5"
 [[puzzles]]
 bits = 172
 address = "15LJKhwQJ7dYMBZX1mktskZqxX1aUCibkr"
-btc = 0.172
+prize = 0.172
 status = "swept"
 has_pubkey = true
 public_key = "02ed75f534f534c536d0732acd70af3e0d173c1f6885381edf8469d1e5a4cae716"
@@ -1926,7 +1926,7 @@ h160 = "2f86ddd3fac7bf830020f97c46b33aabc891e132"
 [[puzzles]]
 bits = 173
 address = "1Mkodin3C3drVaV9JNk1o3i4n4gVGe9GVx"
-btc = 0.173
+prize = 0.173
 status = "swept"
 has_pubkey = true
 public_key = "0233d5bd5790203edab5c63839bee1765735c35254ec24f3073f65d99e1dabf90e"
@@ -1937,7 +1937,7 @@ h160 = "e3ab5452f79c3ba677d230621f865667114ace03"
 [[puzzles]]
 bits = 174
 address = "1C6dHU1gQtVUXZmeXQuQc3EgDJbiLbxFZJ"
-btc = 0.174
+prize = 0.174
 status = "swept"
 has_pubkey = true
 public_key = "03c11209f91946eb81b603d046a296f5754967897d471980fe43ea1aec8bf2ad7c"
@@ -1948,7 +1948,7 @@ h160 = "79b9c06f479cde2a04c871b7534f1d4706c6411a"
 [[puzzles]]
 bits = 175
 address = "1DxZJy7AkqLVAQ5rtSUKfrR3yPE5u5ygk6"
-btc = 0.175
+prize = 0.175
 status = "swept"
 has_pubkey = true
 public_key = "02cb5f1f0d3dd67f0f162353490d98219982f5095bd32daa6c020806cf59ea2c2e"
@@ -1959,7 +1959,7 @@ h160 = "8e235bafd009b1bf67a8475cf1687b09b23c525f"
 [[puzzles]]
 bits = 176
 address = "1NcytLwdqJa8DsQPa9NwkxJTQcx1rZy85A"
-btc = 0.176
+prize = 0.176
 status = "swept"
 has_pubkey = true
 public_key = "02ba9f479c758f5b2842ddef8414e70acfc943d2584258709352061a100e410ee4"
@@ -1970,7 +1970,7 @@ h160 = "ed28af7ebd057c69f2f9f5852fcff8da51b32571"
 [[puzzles]]
 bits = 177
 address = "163vG9mKmAsrvmq42MBDPjf9axZyEgBc9R"
-btc = 0.177
+prize = 0.177
 status = "swept"
 has_pubkey = true
 public_key = "028ae59ec009a07fad636a066f72d567a1fe9a37492b40688c2edfe18de00f284c"
@@ -1981,7 +1981,7 @@ h160 = "3765ebcb90c64c4167674c8c2f35ad3d12245fb5"
 [[puzzles]]
 bits = 178
 address = "12ATwA5VvoPDinSymcQpCAXPLApAVLN24z"
-btc = 0.178
+prize = 0.178
 status = "swept"
 has_pubkey = true
 public_key = "035fd8708ca357691c50a49b0d339227360049b3156c3d32d1c54a315393bda35e"
@@ -1992,7 +1992,7 @@ h160 = "0cc25a433319a84636805fd00f8862aeb3fc8cdd"
 [[puzzles]]
 bits = 179
 address = "12fXbBE7kTfqYk8dYyU9bw7XfKVwEqXnzg"
-btc = 0.179
+prize = 0.179
 status = "swept"
 has_pubkey = true
 public_key = "02064bbc39fd98afca5085c5e9a006c8bb0e466adef24a911e635f835c8061c15f"
@@ -2003,7 +2003,7 @@ h160 = "12417789f9448e8d151699534c43c5b419e4ab7a"
 [[puzzles]]
 bits = 180
 address = "1EkYsB1C7deWxiVUULeZpr42AdYWhv4PEX"
-btc = 0.18
+prize = 0.18
 status = "swept"
 has_pubkey = true
 public_key = "0329420514190479e81640f967e686e2d950e231edd021fc63a17193dac2969a3d"
@@ -2014,7 +2014,7 @@ h160 = "96d61f034c1d3db504e6c84e1d9b5e47b3bbb6ef"
 [[puzzles]]
 bits = 181
 address = "1MPQyhXBT2FpUMCiv5YX3yacKvmc9P5x6S"
-btc = 0.181
+prize = 0.181
 status = "swept"
 has_pubkey = true
 public_key = "02cd62a1cefed68821c2fc3a0e763a0178a323cfba08cde5c0321caa644f1052de"
@@ -2025,7 +2025,7 @@ h160 = "df9faeaaf5c84fb9aca49f923d7ae0286754f13f"
 [[puzzles]]
 bits = 182
 address = "1GZyxmpgtRJNaW1zEhPAa81xZDEJSdwbbZ"
-btc = 0.182
+prize = 0.182
 status = "swept"
 has_pubkey = true
 public_key = "03f7aafd4bcc8478efb01ff830655d88cb60399e3179e24eb0146b013ee5c4d6a1"
@@ -2036,7 +2036,7 @@ h160 = "aac6bf269ddce4d550f9c58eedc720b85ba1dc49"
 [[puzzles]]
 bits = 183
 address = "12E2HWQVHzuGKAQVvPUkHWwibAJfnmcHW1"
-btc = 0.183
+prize = 0.183
 status = "swept"
 has_pubkey = true
 public_key = "036d249dae9d1f3afe5c85ec6f34561a2373d6c0b6cfa8ca1b4ae00d1937e7a59b"
@@ -2047,7 +2047,7 @@ h160 = "0d6e9b09e523e71ad7b9873dadee0d0bc788033c"
 [[puzzles]]
 bits = 184
 address = "14J1fXY2E3fbxjp1zpfqRhk5BNQ4pb97Rs"
-btc = 0.184
+prize = 0.184
 status = "swept"
 has_pubkey = true
 public_key = "0377059f597c2e14d648807db27c8540f7cdd7e176c5baf979dcc00f251bdec6aa"
@@ -2058,7 +2058,7 @@ h160 = "242000d101c4c5b143c63f12ae08caa81d837c28"
 [[puzzles]]
 bits = 185
 address = "1HqHHuFzZhtTtyGbAWCS49qGnCBSEhBSFT"
-btc = 0.185
+prize = 0.185
 status = "swept"
 has_pubkey = true
 public_key = "0208ce81549c729647d7747a6a7e304104435fae445afb4fa90fd384f2640f0ed9"
@@ -2069,7 +2069,7 @@ h160 = "b8a393fd03783ac177243e8c4313a4221b049b8a"
 [[puzzles]]
 bits = 186
 address = "1BJXBDt4e1uaorXPototucUGNRme57nAqt"
-btc = 0.186
+prize = 0.186
 status = "swept"
 has_pubkey = true
 public_key = "03ab1c8c3d6b773758c2a765dd33fa0b9804c55754f9a9278a158a2d02a6edd1a6"
@@ -2080,7 +2080,7 @@ h160 = "710184e0443717cc62b086824b793f4e011b4456"
 [[puzzles]]
 bits = 187
 address = "19ct7Egfi5j6jSefj8X4d5eXJQUmyhtXjC"
-btc = 0.187
+prize = 0.187
 status = "swept"
 has_pubkey = true
 public_key = "028393d6e394d960b1b7e239707d87595f85b7bdca480dafd39d4797124740d9ef"
@@ -2091,7 +2091,7 @@ h160 = "5e8a3a32df85af78e2ce3493985ff4ae2da00623"
 [[puzzles]]
 bits = 188
 address = "1DyWSY1dA3wyjo4eMuQCPfrm3dV96xDDSU"
-btc = 0.188
+prize = 0.188
 status = "swept"
 has_pubkey = true
 public_key = "039705ff013b8514ee6eded8af52879598d19306f3e252f153dbfa02baa06d7dde"
@@ -2102,7 +2102,7 @@ h160 = "8e5160f5d3f432f7421f189d1888b85ed8337180"
 [[puzzles]]
 bits = 189
 address = "1PiLrDyeXtncnsvcVAGGcNnpzQVRCG3fwS"
-btc = 0.189
+prize = 0.189
 status = "swept"
 has_pubkey = true
 public_key = "027a9e387d83df7847566373ef601f2b6dd9adbaf3fde5582199ed71f4b8ca9e08"
@@ -2113,7 +2113,7 @@ h160 = "f92463f967ffc9cea3e1ef846ff106b591e38e68"
 [[puzzles]]
 bits = 190
 address = "1HUoYzoEn2a4WxKvnYYbnR9GKrVqAfq7oY"
-btc = 0.19
+prize = 0.19
 status = "swept"
 has_pubkey = true
 public_key = "03eb37cc02df3bd83f67e581116b2e08b1b4f27354a21d6345fe17484f4ba2ab8a"
@@ -2124,7 +2124,7 @@ h160 = "b4c41a566543c9133f45361d6df0895319113538"
 [[puzzles]]
 bits = 191
 address = "19vnME8b28SzJDuEFNShAG5JCR63V1zzV"
-btc = 0.191
+prize = 0.191
 status = "swept"
 has_pubkey = true
 public_key = "03bd9d14ad1d7d2c3d1f46b5f2c82142a5c0784ff4506c04ae0a99d9737e1630d1"
@@ -2135,7 +2135,7 @@ h160 = "01b038f889ed602266f2c6647f657713e52d8cac"
 [[puzzles]]
 bits = 192
 address = "1GWTEv76C8cusq4h5gV3rLjeFhBkGBHSKg"
-btc = 0.192
+prize = 0.192
 status = "swept"
 has_pubkey = true
 public_key = "024e1799de117b044ea4778a77f0a6267bb84b182f55093be7ed0e8f703b74e5bd"
@@ -2146,7 +2146,7 @@ h160 = "aa1bda87c542102bc484b1fc54f93764f0ccd701"
 [[puzzles]]
 bits = 193
 address = "1NHh2fQDm7KyBs8HRFkVtHgMzkmufk6mNW"
-btc = 0.193
+prize = 0.193
 status = "swept"
 has_pubkey = true
 public_key = "02a7cbaf2cc78bf6686b7a2a2cbcd2d0ed6e03e56f481e18212508364b682ca711"
@@ -2157,7 +2157,7 @@ h160 = "e982b609d7049607fb087a936464fe8915087aee"
 [[puzzles]]
 bits = 194
 address = "1oW8VFRNVKhbzzq8NWNutDYDzv1CzAHAj"
-btc = 0.194
+prize = 0.194
 status = "swept"
 has_pubkey = true
 public_key = "024e951c7b8d0630a84f5f79b6a8ddae01ff2166f322fc4558d20c97aacd8f2839"
@@ -2168,7 +2168,7 @@ h160 = "08cb7331dccb902b5db0a30dcc1ba8adbd6fe4d0"
 [[puzzles]]
 bits = 195
 address = "16q15tpaHQFUENUmRPLgiidCMWLcDpVEgs"
-btc = 0.195
+prize = 0.195
 status = "swept"
 has_pubkey = true
 public_key = "029cfb4b5b2830188161b359fc1fb7ef3023b3212889ee8565a7989de774af192d"
@@ -2179,7 +2179,7 @@ h160 = "3fecaa5f1295e3374ef2b04a365523cfcb56305a"
 [[puzzles]]
 bits = 196
 address = "1AH4d8Bss6eFyugZaN2qPXMBH69T946dSK"
-btc = 0.196
+prize = 0.196
 status = "swept"
 has_pubkey = true
 public_key = "02e56e407ea984475f21ee82e96822c541967dae2a68e85ef883ec46c7646d6f67"
@@ -2190,7 +2190,7 @@ h160 = "65c2cfc6b38650c00242435f1b041a5fb1b733ee"
 [[puzzles]]
 bits = 197
 address = "12gDPuHvZBh6FSjyhHhyDDkM38Y2wyDGQt"
-btc = 0.197
+prize = 0.197
 status = "swept"
 has_pubkey = true
 public_key = "028ab0a2c3a3413f9ea995a2bd5c7a72b79b2c6f76bf7cf49d840028a618046fd3"
@@ -2201,7 +2201,7 @@ h160 = "1262b1eb58a0e55dc874e8c2d097e61194358388"
 [[puzzles]]
 bits = 198
 address = "12jFRwZFUrxUTtuyVzw9FNJsJa7mjBgfca"
-btc = 0.198
+prize = 0.198
 status = "swept"
 has_pubkey = true
 public_key = "0245f61026852cde2db15de4b129ad0e3c54aba03ed9b0f676eb9dfb680277d569"
@@ -2212,7 +2212,7 @@ h160 = "12f5a4496acc2393b6b56408ae7b3e07b6dc9b93"
 [[puzzles]]
 bits = 199
 address = "1BNkFNU3eJz8jDfTkTwe7XmF18BfQwfqW7"
-btc = 0.199
+prize = 0.199
 status = "swept"
 has_pubkey = true
 public_key = "03ec5cd862b5699f09e5341b4315b2a548024718fe9ce70d205dbfbbface07d7ee"
@@ -2223,7 +2223,7 @@ h160 = "71ce182dba6c2838d69248017141117721a7200a"
 [[puzzles]]
 bits = 200
 address = "1DEDEKJVEmXvEqwg3wbq8c1ZNobo4tNw4h"
-btc = 0.2
+prize = 0.2
 status = "swept"
 has_pubkey = true
 public_key = "03fe993e313ad3c5e8ae4d7e99a8cd5131ae04896270e48082d5965dba9616032d"
@@ -2234,7 +2234,7 @@ h160 = "8621202a5e010769fb0fd1a08027f41e173c3bb5"
 [[puzzles]]
 bits = 201
 address = "1DA2RexqNkbVhzfkmQDHRMfKrdesgyMMdQ"
-btc = 0.201
+prize = 0.201
 status = "swept"
 has_pubkey = true
 public_key = "03346fd1b1ca7a7eb88e4b7af48d678a42e8ca8d607d8e4e2967d16394c360d014"
@@ -2245,7 +2245,7 @@ h160 = "85567151f330b69bac3eba86bb3aedd8813ec2b7"
 [[puzzles]]
 bits = 202
 address = "19Ho5YB6y8qRCdUMxWpXqrm8N4AKAq7ZWS"
-btc = 0.202
+prize = 0.202
 status = "swept"
 has_pubkey = true
 public_key = "02669d985185d1894541f6ab7ea7fd57dace5bf97f2c73736b205ab07a5685354b"
@@ -2256,7 +2256,7 @@ h160 = "5aee20366a5523246e1c43dc48462878b0d4806e"
 [[puzzles]]
 bits = 203
 address = "1DVWn7PuRBmsdTBKiboBdSREHdAtSoN6BB"
-btc = 0.203
+prize = 0.203
 status = "swept"
 has_pubkey = true
 public_key = "034fd997afbe4608f743661ae417c5706b044d9d5532a51aef5f4cb244f5f5dce1"
@@ -2267,7 +2267,7 @@ h160 = "89060378aec62c83cd6e20d92865cf9ca80549b1"
 [[puzzles]]
 bits = 204
 address = "14CMU6qvv55Y7xJdVw64ey5yfUP4BZAjct"
-btc = 0.204
+prize = 0.204
 status = "swept"
 has_pubkey = true
 public_key = "038e2790adcbe6d0c89c0c23763c52608ad0fe2a757e9910550f45bfb1855ad54c"
@@ -2278,7 +2278,7 @@ h160 = "230e09c32f5aa23763f8e7c770cee5b5cf4359c1"
 [[puzzles]]
 bits = 205
 address = "1DHL5NuXPjwDsNnXyzAgZTAMM4aYUc1zFW"
-btc = 0.205
+prize = 0.205
 status = "swept"
 has_pubkey = true
 public_key = "030fad8d46d7a7f4e5b5c76a09a05166c8f7515651f0c73bf8329353f412699c99"
@@ -2289,7 +2289,7 @@ h160 = "86b816944ed6fce46ca955b80897996b016f8be0"
 [[puzzles]]
 bits = 206
 address = "1UwsEPMF1NZTWJAuymsLVJpqetBZ3Q9sJ"
-btc = 0.206
+prize = 0.206
 status = "swept"
 has_pubkey = true
 public_key = "0291a1ff9572bcbafd8dabe85c90e10a458a4f71e759747918d4aa1f56af8a66af"
@@ -2300,7 +2300,7 @@ h160 = "054907e50b2feceb0b75f850fd764c197844fea0"
 [[puzzles]]
 bits = 207
 address = "16aELF1f75o464ZhtAZUwbc4ctFQZxS8qi"
-btc = 0.207
+prize = 0.207
 status = "swept"
 has_pubkey = true
 public_key = "030fb4b479aaa51c07c2f660501ccf73a6aaef84e2065ad1dcf97125a5d7248258"
@@ -2311,7 +2311,7 @@ h160 = "3d217c047cabb55395cd9618cee124683ea5c998"
 [[puzzles]]
 bits = 208
 address = "15TJ3wPvdviupvKQFm8hLeXSzeMSq7LSJ2"
-btc = 0.208
+prize = 0.208
 status = "swept"
 has_pubkey = true
 public_key = "03762e52fe281f880581dcd00bf80a7fd949af3439b479aba16b6fa5b04733f4b4"
@@ -2322,7 +2322,7 @@ h160 = "30d98d22a09bf062c9b3706af3c059a72bcb7879"
 [[puzzles]]
 bits = 209
 address = "1JgrGoQbvJS7UnX6j4myiCxo6Q3gyo5Ujk"
-btc = 0.209
+prize = 0.209
 status = "swept"
 has_pubkey = true
 public_key = "0243874c891b55668295d5fb6a734fa8b9c4f73eb80cd4f3be3ed7de520e974e9f"
@@ -2333,7 +2333,7 @@ h160 = "c2037dcac7d46e66c4e06c289c3ccd3170438332"
 [[puzzles]]
 bits = 210
 address = "14Xm5DjBUQTJCzeGhyrhVsxkK8p35srk1S"
-btc = 0.21
+prize = 0.21
 status = "swept"
 has_pubkey = true
 public_key = "03628e54188ca8c8c0b73fdb12064f195417f9fd98a7b0763d83eda2518c526f44"
@@ -2344,7 +2344,7 @@ h160 = "26b9a572ce3f674c9c8d3a0f15386d6848783c25"
 [[puzzles]]
 bits = 211
 address = "19yhSoza8oK3ioCSydMuAGJs4Mm3FwCTht"
-btc = 0.211
+prize = 0.211
 status = "swept"
 has_pubkey = true
 public_key = "036f164c6a628d94338a9dc9dfc1cc2f91a3a9382c198bb05f51fbbc34c6cc583e"
@@ -2355,7 +2355,7 @@ h160 = "627a0fd9f1c2034f9d643a355621842288cf4551"
 [[puzzles]]
 bits = 212
 address = "1JXw9i8dEZGH29mUiuKjWXK9L27r2TerLQ"
-btc = 0.212
+prize = 0.212
 status = "swept"
 has_pubkey = true
 public_key = "020df4abc8bae9c000ea2357b014befe3e6d13dd63951ac0b2b66b37eab76b7ead"
@@ -2366,7 +2366,7 @@ h160 = "c053d1c7b2e7e27c624dcb8087549876af73aa03"
 [[puzzles]]
 bits = 213
 address = "1CNNth43uiVypxHmZLC8hWZsb7UiP7wSkY"
-btc = 0.213
+prize = 0.213
 status = "swept"
 has_pubkey = true
 public_key = "024b5c68b748907bc07afa2f4d9cfeef5524d0675ee4b5a39f2e9e7b7b85f2bd9f"
@@ -2377,7 +2377,7 @@ h160 = "7cb4648719aedaf874354cadf986e89458eb58cc"
 [[puzzles]]
 bits = 214
 address = "16ocVeZDpqcvyMvzAH1r2LR75uEzRhkyV2"
-btc = 0.214
+prize = 0.214
 status = "swept"
 has_pubkey = true
 public_key = "033fb8f6eb9cd60aca4f5ec48c7bd81fbe2c221c7701bcb93be5f50a810055c965"
@@ -2388,7 +2388,7 @@ h160 = "3fa96459d3e03e94794724b8605c9ae47a106862"
 [[puzzles]]
 bits = 215
 address = "15x3tRVyn9SRaxfbFUzqETmCJiz46Vs247"
-btc = 0.215
+prize = 0.215
 status = "swept"
 has_pubkey = true
 public_key = "02dcab1861d56d3b6ca4d741f885c9f7b34d91b460f90b3dc1983acf701ca8092f"
@@ -2399,7 +2399,7 @@ h160 = "3649ca67657d482484f49f8f5c8cdb5222c8700f"
 [[puzzles]]
 bits = 216
 address = "197K7MdYhnN88gcJouJRxMiSAHHfWuPrXC"
-btc = 0.216
+prize = 0.216
 status = "swept"
 has_pubkey = true
 public_key = "022f02cc3458301883c9bd15fe341384f94ce48076f836815f7b89901f3a27abc4"
@@ -2410,7 +2410,7 @@ h160 = "58f29e811ffece9aaf65c7a360382ebcea3a2f18"
 [[puzzles]]
 bits = 217
 address = "1MDsNYfC4LErgwUDqfQ5BgFJqv5bs4Frkn"
-btc = 0.217
+prize = 0.217
 status = "swept"
 has_pubkey = true
 public_key = "023dccddd7460b8000e6ac7bb14f98cad9aeb4b4f858c2a655738ce141d71224fb"
@@ -2421,7 +2421,7 @@ h160 = "ddd18e224de138253a990a4cc8d8e7aaa3998914"
 [[puzzles]]
 bits = 218
 address = "1BDTXmiyyzq9i79RGGTW7cjmYJbxKoV27e"
-btc = 0.218
+prize = 0.218
 status = "swept"
 has_pubkey = true
 public_key = "03d8c17e24c72388998ebe82837a555e57d1db6162738cec8963384c367e393906"
@@ -2432,7 +2432,7 @@ h160 = "700c655d586d1a06b0185b12007a1b195d60271c"
 [[puzzles]]
 bits = 219
 address = "1EiJ59LPWDezXwfAGFTcoEKdNhvRTriBXy"
-btc = 0.219
+prize = 0.219
 status = "swept"
 has_pubkey = true
 public_key = "02ef830a543b3b50c3fc7e42bbc0938039f8d3e19a1e862012f281c51f3581d77d"
@@ -2443,7 +2443,7 @@ h160 = "9668f0ad5f1eaa5c8e68baf1eaa07c1ea16a88de"
 [[puzzles]]
 bits = 220
 address = "1rirV4Y2NxGwKNQNojJhz61jEctni8fvb"
-btc = 0.22
+prize = 0.22
 status = "swept"
 has_pubkey = true
 public_key = "022cc796d5a8ec2c871640152a0db6ffd2b4ea957c8f5ecf706fbc383fa5ad7696"
@@ -2454,7 +2454,7 @@ h160 = "096751c3cb56d4d163186085c81fc8dcf5bfa4ec"
 [[puzzles]]
 bits = 221
 address = "1NxgWntAdMugSNFHEXYizYwk3UjxKPxcDF"
-btc = 0.221
+prize = 0.221
 status = "swept"
 has_pubkey = true
 public_key = "028a874fe6f1ab00358d0b610d536fd67f049c98069eeb35585549250ef9fff4c5"
@@ -2465,7 +2465,7 @@ h160 = "f0e280f15876be99ab63c8aaa4f934f777ed369b"
 [[puzzles]]
 bits = 222
 address = "17A75vEkPPVeY9MMMXUY9M2JUHbbNyVAWC"
-btc = 0.222
+prize = 0.222
 status = "swept"
 has_pubkey = true
 public_key = "021536a0aa8cdb5061debba4f236d311a570f6de6d483419fa23c147f543765602"
@@ -2476,7 +2476,7 @@ h160 = "438993e343b3317a4833a709894145f2374a95f9"
 [[puzzles]]
 bits = 223
 address = "1NUVBXgX35Uax4fpziV7VGMJyji3mUzZbt"
-btc = 0.223
+prize = 0.223
 status = "swept"
 has_pubkey = true
 public_key = "034cfb3bcb83ed739ecc9abc84f68ffaa430f2d685bebfaf8cefaaabcd2b53d984"
@@ -2487,7 +2487,7 @@ h160 = "eb8d65ae18eba8f6a1fcffe0b37e87fa34b09a70"
 [[puzzles]]
 bits = 224
 address = "1F6yxcbDzjumeN77DiABMXzPcvtAdnaoPF"
-btc = 0.224
+prize = 0.224
 status = "swept"
 has_pubkey = true
 public_key = "02a1cf7a8cb1bdd05701aa57ef6e5a9ce28950d93e2369d5fa11ec5bdc8d4ce9d1"
@@ -2498,7 +2498,7 @@ h160 = "9ab3633c60100b0dd631bf1c6755abaea7bc0445"
 [[puzzles]]
 bits = 225
 address = "16YvGEYhAwjf2duwvH8jbFMfVCnY6XiQTq"
-btc = 0.225
+prize = 0.225
 status = "swept"
 has_pubkey = true
 public_key = "03e1819c7597f314943bf847e6ec36c4c95ac1b3ead9948b90e9a2729357712ff7"
@@ -2509,7 +2509,7 @@ h160 = "3ce1fc3304d09e7984c5766fd1134c1e8979821a"
 [[puzzles]]
 bits = 226
 address = "1HtbZg9mPjYcMDMDNyXaFjHX5e7ZPUwWAp"
-btc = 0.226
+prize = 0.226
 status = "swept"
 has_pubkey = true
 public_key = "020d896eac113fac98c2a4a44b1488087b3b4c2d8f2563d2a41789f0324ad62cc7"
@@ -2520,7 +2520,7 @@ h160 = "b944142155bef6fa7280d5f7f8eae49511349ebf"
 [[puzzles]]
 bits = 227
 address = "15a9nXpjnQzw2o5kmvGyKzv7anZkYFHwdK"
-btc = 0.227
+prize = 0.227
 status = "swept"
 has_pubkey = true
 public_key = "02f73589feb03e8ed1de43cc7748111e2f1d73a2a06679951addeee165d378f23e"
@@ -2531,7 +2531,7 @@ h160 = "32259030b93d8f20268aaa2c5222f9366faa2fc3"
 [[puzzles]]
 bits = 228
 address = "18zsQK8ezT32qCqgLJQMkhqyKNwpCP3JU3"
-btc = 0.228
+prize = 0.228
 status = "swept"
 has_pubkey = true
 public_key = "037ac4f241f6ba433da340b08a081323a93c0966fca5c0757685005f8396b09628"
@@ -2542,7 +2542,7 @@ h160 = "57baa9ea3f683b444a06702492443a9057ce2c96"
 [[puzzles]]
 bits = 229
 address = "1AaBhpTnfCin9nCrai2msXzCHoVmwkAe2N"
-btc = 0.229
+prize = 0.229
 status = "swept"
 has_pubkey = true
 public_key = "020d64789d26c0363a2f284a1cddad7b6ab7dd41d65d5afe6ce7554214d4666518"
@@ -2553,7 +2553,7 @@ h160 = "68ffcb39707615a254428f084c859376fa7144be"
 [[puzzles]]
 bits = 230
 address = "13Jtm1mm33Uke7PbmTBYGNZGU7rXUsVs3e"
-btc = 0.23
+prize = 0.23
 status = "swept"
 has_pubkey = true
 public_key = "0216dc9de7fd808beff7fb3bc63767ef34beb0a51b4daf40151bc346781185ceec"
@@ -2564,7 +2564,7 @@ h160 = "1952876e85b0e6fe7c2557c8345975fd44700f06"
 [[puzzles]]
 bits = 231
 address = "18aBXRctVrWN9naDGhKrLdZViNfLJfCdbF"
-btc = 0.231
+prize = 0.231
 status = "swept"
 has_pubkey = true
 public_key = "0378a0cae3e8275916f41b25838e45a8f4c8829c3b1b937c1b1749fd77b23177c1"
@@ -2575,7 +2575,7 @@ h160 = "530f6487090bda616a7846f68160ddd886fbdf24"
 [[puzzles]]
 bits = 232
 address = "1MEEjd99pkEyCdiqVSCa8Jqjaun7fsEXaG"
-btc = 0.232
+prize = 0.232
 status = "swept"
 has_pubkey = true
 public_key = "03d9dd7c018dcf2a57a4d6c4299983c631ff8ab32eb72b57cfcf25be5366a9ed21"
@@ -2586,7 +2586,7 @@ h160 = "dde3637371e3638ef51b3753c028d84902153ea8"
 [[puzzles]]
 bits = 233
 address = "1NnefTEeKQQAts37cQHzVx8oPrUu8LWyUK"
-btc = 0.233
+prize = 0.233
 status = "swept"
 has_pubkey = true
 public_key = "021b6cde6068c69f1156c044dabdf4cf4bef6cc4eb020ff0dc74e03633f72403a8"
@@ -2597,7 +2597,7 @@ h160 = "eefccc98b21f6748888b7b682d9f3ead55796890"
 [[puzzles]]
 bits = 234
 address = "1FYbLcutmRbvu4yUeLmC4TES2Q3ChhXYY"
-btc = 0.234
+prize = 0.234
 status = "swept"
 has_pubkey = true
 public_key = "02d274968fe3b7f79074b9aad3221d71f42f4c0be9bb3a8e22e20396b9a63a847d"
@@ -2608,7 +2608,7 @@ h160 = "02c031f6bc39053653a093d95511eb1197c5029c"
 [[puzzles]]
 bits = 235
 address = "1Pp61TfkztZ9ckpdeUVCzbyA7vMqXAVsdV"
-btc = 0.235
+prize = 0.235
 status = "swept"
 has_pubkey = true
 public_key = "02df2647ed50cded7c031a702c72b5b09209e5fd4a48c7cee7bf847f88c85bf4bd"
@@ -2619,7 +2619,7 @@ h160 = "fa3a7f736604e038a0a7fe5945a114467baba159"
 [[puzzles]]
 bits = 236
 address = "1PytbQzRaf9eTpGax3c6ofKwtbxaLLSNy1"
-btc = 0.236
+prize = 0.236
 status = "swept"
 has_pubkey = true
 public_key = "03e8c806fd610232c5b68d824b3a284e213e523492657965073c54ccaa8a58e8c6"
@@ -2630,7 +2630,7 @@ h160 = "fc152109a2102e72ae6aca2192065e909170d2c3"
 [[puzzles]]
 bits = 237
 address = "194bRtNQVRq4xi26UJZYTHexvLXijpzp3e"
-btc = 0.237
+prize = 0.237
 status = "swept"
 has_pubkey = true
 public_key = "0288bc8b2d55ebc48d906478e7c37a78899632543dce63e6a9330a0a0c933e2095"
@@ -2641,7 +2641,7 @@ h160 = "586efe7cb41fc58c651225492e5c706a3af15d35"
 [[puzzles]]
 bits = 238
 address = "1DxBvzRMdvzop21DhnDJv4xJDYFGVtu7KZ"
-btc = 0.238
+prize = 0.238
 status = "swept"
 has_pubkey = true
 public_key = "039a1c77eb960be561f622d14ad0de0d2660245e629c1b11033f769aec28270b77"
@@ -2652,7 +2652,7 @@ h160 = "8e11830db460be44112d0d0150016fed31172246"
 [[puzzles]]
 bits = 239
 address = "1QLHLvM6XKwygyWqo2cCPbfbf6woZzGEKH"
-btc = 0.239
+prize = 0.239
 status = "swept"
 has_pubkey = true
 public_key = "02dd983a8c8c8c25d3a16b014ad3e09b8188a3dc0333fc3d4b1504b1d3013b344e"
@@ -2663,7 +2663,7 @@ h160 = "fff0706a3d7d599d40406165ad0daaa0fe9dfc9f"
 [[puzzles]]
 bits = 240
 address = "1C8Hw6T5jypz92cNFr9Lkx4Xmr4DtP7zGA"
-btc = 0.24
+prize = 0.24
 status = "swept"
 has_pubkey = true
 public_key = "03d569cafd2c67ce649d9b3484ae8cd392ad7019f0b7963fac095912d545070466"
@@ -2674,7 +2674,7 @@ h160 = "7a0a6e15efc2350d3dd45b88d855062a810ca619"
 [[puzzles]]
 bits = 241
 address = "1L7ZNx5gFPvdVPfdgFBnEUgA64woQwopqr"
-btc = 0.241
+prize = 0.241
 status = "swept"
 has_pubkey = true
 public_key = "03fbf9615ddcc9c0c9e88fb69ed62465ba694f4694f0ea94a7f3476dbf666ba56d"
@@ -2685,7 +2685,7 @@ h160 = "d1a7e9f072b3ebc159327bec2f9ed46362a85bc9"
 [[puzzles]]
 bits = 242
 address = "1EMhTbC4Kp8DYBk5zoLsTqZ2YakhiTgQYh"
-btc = 0.242
+prize = 0.242
 status = "swept"
 has_pubkey = true
 public_key = "0387d4589510248cb352b5c82d7ee75454c507574cb281042eaf5dee2547abd2b2"
@@ -2696,7 +2696,7 @@ h160 = "9283ba38d0bb048fb69d6aafc9a32b666f1c0977"
 [[puzzles]]
 bits = 243
 address = "19CqmBBJ3H8FjxSSeSjv2Kn1cVQFXMY6AM"
-btc = 0.243
+prize = 0.243
 status = "swept"
 has_pubkey = true
 public_key = "0243609cd608d2d4744f3b11ff57875067ff2ac9966b87edc24e2daf2c784fc97d"
@@ -2707,7 +2707,7 @@ h160 = "59fe4938c08cfa18b39d68a376ed2c065a98a55a"
 [[puzzles]]
 bits = 244
 address = "1KMHDrCGho2QuK59UNvfjuiPdDZSgRbneC"
-btc = 0.244
+prize = 0.244
 status = "swept"
 has_pubkey = true
 public_key = "02eaa8294f7cba1ddf4a990032a2a6d9f07eef4309ab1a27a3446f591efe189314"
@@ -2718,7 +2718,7 @@ h160 = "c9481fd7d3d294113c5e53990d9451e32844c0ec"
 [[puzzles]]
 bits = 245
 address = "1HzpmnHxpu4tCJ23ZS9TfWCoX8mXfpdHiq"
-btc = 0.245
+prize = 0.245
 status = "swept"
 has_pubkey = true
 public_key = "03c763aeffae32371612f8585c10710aaf7bf4a211a632c8a18b969a4f4e42db54"
@@ -2729,7 +2729,7 @@ h160 = "ba7199b9bcac99a8ee39e6f103ab3cb049e7dd86"
 [[puzzles]]
 bits = 246
 address = "1LrrNP28PYg1N1z5Uo1gR8cmoPc8h4orBZ"
-btc = 0.246
+prize = 0.246
 status = "swept"
 has_pubkey = true
 public_key = "0396ba2cc3d83caad1a3970670557417e627b7cf32ba4e6219604f8f5e7ca09752"
@@ -2740,7 +2740,7 @@ h160 = "d9d7fb9cf1d10075b0515591e2570c7efabc80c1"
 [[puzzles]]
 bits = 247
 address = "14D2d3WnHThUxyPhGoj2AabBTxpZcoHy3t"
-btc = 0.247
+prize = 0.247
 status = "swept"
 has_pubkey = true
 public_key = "03c3f97e2896f15b0dbe0dcf12fe9ef3d62af375d683a4a93761d3f31785971dd3"
@@ -2751,7 +2751,7 @@ h160 = "232eb8ef367fc06217fbaa43848df87567b2696d"
 [[puzzles]]
 bits = 248
 address = "18oqrdP6uBKsn57gvmWzLuKMAY4ShapiAU"
-btc = 0.248
+prize = 0.248
 status = "swept"
 has_pubkey = true
 public_key = "031037fc1784819309a913864372322768fee8ba8c3d3bf0566936096dab4157db"
@@ -2762,7 +2762,7 @@ h160 = "55a4cc2020c1769dce6c05e560bcff5db9f27f3a"
 [[puzzles]]
 bits = 249
 address = "1Bun4VzuBJ7SUoQn97dinVfDyWAS336Ldg"
-btc = 0.249
+prize = 0.249
 status = "swept"
 has_pubkey = true
 public_key = "02d1d5728abc050fc1c5fefc276616e50573139f89fdd01ac4ce2e52a19f945f8c"
@@ -2773,7 +2773,7 @@ h160 = "77ac8098d4726a592aed489e3880c23cfaf719ae"
 [[puzzles]]
 bits = 250
 address = "1Ruu3JwvGeSmhQV9GzWAnyLCz6g3evmTY"
-btc = 0.25
+prize = 0.25
 status = "swept"
 has_pubkey = true
 public_key = "0230465312b31af6b26c64d58ebc8a890c41f52f57a5c0eb305d83b0351c4bf968"
@@ -2784,7 +2784,7 @@ h160 = "04b623b48cc42741d0c9ec3b1fa297664bcec49b"
 [[puzzles]]
 bits = 251
 address = "1M3u4q5Q35qtQPmDHeubVbk7APYi3VVoBX"
-btc = 0.251
+prize = 0.251
 status = "swept"
 has_pubkey = true
 public_key = "02ec2ca969860c67210de88b622f37fd4c02488d8ff9cc879ae91405523724eb0e"
@@ -2795,7 +2795,7 @@ h160 = "dbeecf6406c1569a483a88e35ed349a521a414ca"
 [[puzzles]]
 bits = 252
 address = "1CaTxB3YwmXZkDnTK4rRvq61SRqs48xmui"
-btc = 0.252
+prize = 0.252
 status = "swept"
 has_pubkey = true
 public_key = "0316bbf51b1574f580cd5ec84fe2371b4fd5644637b713f3a795474a1be794001c"
@@ -2806,7 +2806,7 @@ h160 = "7efd9baf1d6e21bd5f920e7e9e468b5a45ec92c7"
 [[puzzles]]
 bits = 253
 address = "1JqRqUPHHcQu2yrr8JZzxSYDx2jbZxEqFj"
-btc = 0.253
+prize = 0.253
 status = "swept"
 has_pubkey = true
 public_key = "0322ae607614dedc7261f4214dada55f1a0f11926174c3bf1689351c1783f3da48"
@@ -2817,7 +2817,7 @@ h160 = "c3a2d618736baf0d5df7d81d5b8235cf8a266448"
 [[puzzles]]
 bits = 254
 address = "1NKkjFvXmovmjwgUujw655n3BbEvnncyza"
-btc = 0.254
+prize = 0.254
 status = "swept"
 has_pubkey = true
 public_key = "0255d81444d53e97bf282ed8c505a686ca08d270493404c1db86e64b9494ee36cf"
@@ -2828,7 +2828,7 @@ h160 = "e9e6a1ad0ddaf3c372e2e1eae83c8cf9f9163b3a"
 [[puzzles]]
 bits = 255
 address = "17PEUvQmgqPkkvRkMowoR1wRDXYzre4b9Z"
-btc = 0.255
+prize = 0.255
 status = "swept"
 has_pubkey = true
 public_key = "030cea4a0ee0a03b7a5f77b85bb455b10979c2220f0e470ce5e0d4e0c786c04f66"
@@ -2839,7 +2839,7 @@ h160 = "460528d920ce045d9f6fc319182960707b248064"
 [[puzzles]]
 bits = 256
 address = "1FMcotmnqqE5M2x9DDX3VfPAPuBWArGisa"
-btc = 0.256
+prize = 0.256
 status = "swept"
 has_pubkey = true
 public_key = "029125aed5e5342de7c6163a4158a716ac982ba7d2ed85835c6ff99c68702ce710"
