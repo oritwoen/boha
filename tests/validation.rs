@@ -437,8 +437,7 @@ fn redeem_script_to_script_hash(redeem_script_hex: &str) -> Option<String> {
 #[test]
 fn script_hash_matches_redeem_script() {
     for puzzle in hash_collision::all() {
-        if let (Some(redeem_script), Some(script_hash)) =
-            (puzzle.redeem_script, puzzle.script_hash)
+        if let (Some(redeem_script), Some(script_hash)) = (puzzle.redeem_script, puzzle.script_hash)
         {
             let computed = redeem_script_to_script_hash(redeem_script)
                 .unwrap_or_else(|| panic!("Failed to compute script_hash for {}", puzzle.id));
