@@ -38,6 +38,7 @@ struct Btc1000Puzzle {
     pubkey_format: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
+    solve_time: Option<u32>,
     source_url: Option<String>,
 }
 
@@ -62,6 +63,7 @@ struct HashCollisionPuzzle {
     prize: Option<f64>,
     start_date: Option<String>,
     solve_date: Option<String>,
+    solve_time: Option<u32>,
     source_url: Option<String>,
 }
 
@@ -86,6 +88,7 @@ struct GsmgPuzzle {
     pubkey_format: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
+    solve_time: Option<u32>,
     source_url: Option<String>,
 }
 
@@ -168,6 +171,11 @@ fn generate_b1000(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
         let source_url = puzzle
             .source_url
             .as_ref()
@@ -196,6 +204,7 @@ fn generate_b1000(out_dir: &str) {
         prize: {},
         start_date: {},
         solve_date: {},
+        solve_time: {},
         source_url: {},
     }},
 "#,
@@ -209,6 +218,7 @@ fn generate_b1000(out_dir: &str) {
             prize,
             start_date,
             solve_date,
+            solve_time,
             source_url,
         ));
     }
@@ -255,6 +265,11 @@ fn generate_hash_collision(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
         let source_url = puzzle
             .source_url
             .as_ref()
@@ -283,6 +298,7 @@ fn generate_hash_collision(out_dir: &str) {
         prize: {},
         start_date: {},
         solve_date: {},
+        solve_time: {},
         source_url: {},
     }},
 "#,
@@ -294,6 +310,7 @@ fn generate_hash_collision(out_dir: &str) {
             prize,
             start_date,
             solve_date,
+            solve_time,
             source_url,
         ));
     }
@@ -332,6 +349,11 @@ fn generate_gsmg(out_dir: &str) {
 
     let solve_date = match &puzzle.solve_date {
         Some(d) => format!("Some(\"{}\")", d),
+        None => "None".to_string(),
+    };
+
+    let solve_time = match puzzle.solve_time {
+        Some(t) => format!("Some({})", t),
         None => "None".to_string(),
     };
 
@@ -377,10 +399,11 @@ fn generate_gsmg(out_dir: &str) {
     prize: {},
     start_date: {},
     solve_date: {},
+    solve_time: {},
     source_url: {},
 }};
 "#,
-        puzzle.address, h160, status, pubkey, prize, start_date, solve_date, source_url,
+        puzzle.address, h160, status, pubkey, prize, start_date, solve_date, solve_time, source_url,
     );
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");

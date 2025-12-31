@@ -110,7 +110,28 @@ pub struct Puzzle {
     pub prize: Option<f64>,
     pub start_date: Option<&'static str>,
     pub solve_date: Option<&'static str>,
+    pub solve_time: Option<u32>,
     pub source_url: Option<&'static str>,
+}
+
+fn format_days_human_readable(days: u32) -> String {
+    let years = days / 365;
+    let remaining = days % 365;
+    let months = remaining / 30;
+    let d = remaining % 30;
+
+    let mut parts = Vec::new();
+    if years > 0 {
+        parts.push(format!("{}y", years));
+    }
+    if months > 0 {
+        parts.push(format!("{}m", months));
+    }
+    if d > 0 || parts.is_empty() {
+        parts.push(format!("{}d", d));
+    }
+
+    parts.join(" ")
 }
 
 impl Puzzle {
@@ -124,6 +145,10 @@ impl Puzzle {
 
     pub fn has_private_key(&self) -> bool {
         self.private_key.is_some()
+    }
+
+    pub fn solve_time_formatted(&self) -> Option<String> {
+        self.solve_time.map(format_days_human_readable)
     }
 
     pub fn collection(&self) -> &str {

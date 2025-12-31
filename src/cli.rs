@@ -87,10 +87,12 @@ struct PuzzleTableRow {
     status: String,
     #[tabled(rename = "Prize")]
     prize: String,
+    #[tabled(rename = "Solve Time")]
+    solve_time: String,
 }
 
 impl PuzzleTableRow {
-    fn from_puzzle(p: &Puzzle) -> Self {
+    fn from_puzzle(p: &Puzzle, show_solve_time: bool) -> Self {
         let status = match p.status {
             Status::Solved => "solved".green().to_string(),
             Status::Unsolved => "unsolved".yellow().to_string(),
@@ -100,6 +102,12 @@ impl PuzzleTableRow {
         let prize = p.prize.map_or("-".dimmed().to_string(), |v| {
             format!("{:.4} {}", v, p.chain.symbol())
         });
+        let solve_time = if show_solve_time {
+            p.solve_time_formatted()
+                .unwrap_or_else(|| "-".dimmed().to_string())
+        } else {
+            String::new()
+        };
 
         Self {
             id: p.id.to_string(),
@@ -107,6 +115,7 @@ impl PuzzleTableRow {
             address: p.address.to_string(),
             status,
             prize,
+            solve_time,
         }
     }
 }
@@ -137,14 +146,20 @@ struct BalanceOutput {
     total_btc: f64,
 }
 
-fn output_puzzles(puzzles: &[&Puzzle], format: OutputFormat) {
+fn output_puzzles(puzzles: &[&Puzzle], format: OutputFormat, show_solve_time: bool) {
     match format {
         OutputFormat::Table => {
             let rows: Vec<PuzzleTableRow> = puzzles
                 .iter()
-                .map(|p| PuzzleTableRow::from_puzzle(p))
+                .map(|p| PuzzleTableRow::from_puzzle(p, show_solve_time))
                 .collect();
-            let table = Table::new(rows).with(Style::rounded()).to_string();
+            let mut table = Table::new(rows);
+            table.with(Style::rounded());
+            if !show_solve_time {
+                table.with(tabled::settings::Remove::column(
+                    tabled::settings::location::ByColumnName::new("Solve Time"),
+                ));
+            }
             println!("{}", table);
             println!(
                 "\n{} {} puzzles",
@@ -361,6 +376,13 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         });
     }
 
+    if let Some(formatted) = p.solve_time_formatted() {
+        rows.push(KeyValueRow {
+            field: "Solve Time".to_string(),
+            value: formatted,
+        });
+    }
+
     if let Some(url) = p.source_url {
         rows.push(KeyValueRow {
             field: "Source".to_string(),
@@ -514,7 +536,7 @@ fn cmd_list(
         .filter(|p| chain_filter.is_none_or(|c| p.chain == c))
         .collect();
 
-    output_puzzles(&filtered, format);
+    output_puzzles(&filtered, format, solved);
 }
 
 fn cmd_show(id: &str, format: OutputFormat) {

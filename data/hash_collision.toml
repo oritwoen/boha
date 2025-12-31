@@ -10,6 +10,7 @@ prize = 2.48
 solve_date = "2017-02-23"
 start_date = "2013-09-13"
 script_hash = "4266fc6f2c2861d7fe229b279a79803afca7ba34"
+solve_time = 1259
 
 [[puzzles]]
 name = "sha256"
@@ -55,3 +56,4 @@ redeem_script = "6e879169907c9087"
 solve_date = "2013-09-13"
 start_date = "2013-09-13"
 script_hash = "fe441065b6532231de2fac563152205ec4f59c74"
+solve_time = 0

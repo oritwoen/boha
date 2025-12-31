@@ -23,6 +23,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "751e76e8199196d454941c45d1b3a323f1433bd6"
+solve_time = 0
 
 [[puzzles]]
 bits = 2
@@ -36,6 +37,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2014-07-29"
 h160 = "7dd65592d0ab2fe0d0257d571abf032cd9db93dc"
+solve_time = 170
 
 [[puzzles]]
 bits = 3
@@ -49,6 +51,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "5dedfbf9ea599dd4e3ca6a80b333c472fd0b3f69"
+solve_time = 0
 
 [[puzzles]]
 bits = 4
@@ -62,6 +65,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "9652d86bedf43ad264362e6e6eba6eb764508127"
+solve_time = 0
 
 [[puzzles]]
 bits = 5
@@ -75,6 +79,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "8f9dff39a81ee4abcbad2ad8bafff090415a2be8"
+solve_time = 0
 
 [[puzzles]]
 bits = 6
@@ -88,6 +93,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "f93ec34e9e34a8f8ff7d600cdad83047b1bcb45c"
+solve_time = 0
 
 [[puzzles]]
 bits = 7
@@ -101,6 +107,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "e2192e8a7dd8dd1c88321959b477968b941aa973"
+solve_time = 0
 
 [[puzzles]]
 bits = 8
@@ -114,6 +121,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "dce76b2613052ea012204404a97b3c25eac31715"
+solve_time = 0
 
 [[puzzles]]
 bits = 9
@@ -127,6 +135,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "7d0f6c64afb419bbd7e971e943d7404b0e0daab4"
+solve_time = 0
 
 [[puzzles]]
 bits = 10
@@ -140,6 +149,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "d7729816650e581d7462d52ad6f732da0e2ec93b"
+solve_time = 0
 
 [[puzzles]]
 bits = 11
@@ -153,6 +163,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "f8c698da3164ef8fa4258692d118cc9a902c5acc"
+solve_time = 0
 
 [[puzzles]]
 bits = 12
@@ -166,6 +177,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "85a1f9ba4da24c24e582d9b891dacbd1b043f971"
+solve_time = 0
 
 [[puzzles]]
 bits = 13
@@ -179,6 +191,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "f932d0188616c964416b91fb9cf76ba9790a921e"
+solve_time = 0
 
 [[puzzles]]
 bits = 14
@@ -192,6 +205,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "97f9281a1383879d72ac52a6a3e9e8b9a4a4f655"
+solve_time = 0
 
 [[puzzles]]
 bits = 15
@@ -205,6 +219,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "fe7c45126731f7384640b0b0045fd40bac72e2a2"
+solve_time = 0
 
 [[puzzles]]
 bits = 16
@@ -218,6 +233,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "7025b4efb3ff42eb4d6d71fab6b53b4f4967e3dd"
+solve_time = 0
 
 [[puzzles]]
 bits = 17
@@ -231,6 +247,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "b67cb6edeabc0c8b927c9ea327628e7aa63e2d52"
+solve_time = 0
 
 [[puzzles]]
 bits = 18
@@ -244,6 +261,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "ad1e852b08eba53df306ec9daa8c643426953f94"
+solve_time = 0
 
 [[puzzles]]
 bits = 19
@@ -257,6 +275,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "ebfbe6819fcdebab061732ce91df7d586a037dee"
+solve_time = 0
 
 [[puzzles]]
 bits = 20
@@ -270,6 +289,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "b907c3a2a3b27789dfb509b730dd47703c272868"
+solve_time = 0
 
 [[puzzles]]
 bits = 21
@@ -283,6 +303,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "29a78213caa9eea824acf08022ab9dfc83414f56"
+solve_time = 0
 
 [[puzzles]]
 bits = 22
@@ -296,6 +317,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "7ff45303774ef7a52fffd8011981034b258cb86b"
+solve_time = 0
 
 [[puzzles]]
 bits = 23
@@ -309,6 +331,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "d0a79df189fe1ad5c306cc70497b358415da579e"
+solve_time = 0
 
 [[puzzles]]
 bits = 24
@@ -322,6 +345,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "0959e80121f36aea13b3bad361c15dac26189e2f"
+solve_time = 0
 
 [[puzzles]]
 bits = 25
@@ -335,6 +359,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "2f396b29b27324300d0c59b17c3abc1835bd3dbb"
+solve_time = 0
 
 [[puzzles]]
 bits = 26
@@ -348,6 +373,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "bfebb73562d4541b32a02ba664d140b5a574792f"
+solve_time = 0
 
 [[puzzles]]
 bits = 27
@@ -361,6 +387,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "0c7aaf6caa7e5424b63d317f0f8f1f9fa40d5560"
+solve_time = 0
 
 [[puzzles]]
 bits = 28
@@ -374,6 +401,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "1306b9e4ff56513a476841bac7ba48d69516b1da"
+solve_time = 0
 
 [[puzzles]]
 bits = 29
@@ -387,6 +415,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-15"
 start_date = "2015-01-15"
 h160 = "5a416cc9148f4a377b672c8ae5d3287adaafadec"
+solve_time = 0
 
 [[puzzles]]
 bits = 30
@@ -400,6 +429,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-16"
 start_date = "2015-01-15"
 h160 = "d39c4704664e1deb76c9331e637564c257d68a08"
+solve_time = 1
 
 [[puzzles]]
 bits = 31
@@ -413,6 +443,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-16"
 start_date = "2015-01-15"
 h160 = "d805f6f251f7479ebd853b3d0f4b9b2656d92f1d"
+solve_time = 1
 
 [[puzzles]]
 bits = 32
@@ -426,6 +457,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-16"
 start_date = "2015-01-15"
 h160 = "9e42601eeaedc244e15f17375adb0e2cd08efdc9"
+solve_time = 1
 
 [[puzzles]]
 bits = 33
@@ -439,6 +471,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-16"
 start_date = "2015-01-15"
 h160 = "4e15e5189752d1eaf444dfd6bff399feb0443977"
+solve_time = 1
 
 [[puzzles]]
 bits = 34
@@ -452,6 +485,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-17"
 start_date = "2015-01-15"
 h160 = "f6d67d7983bf70450f295c9cb828daab265f1bfa"
+solve_time = 2
 
 [[puzzles]]
 bits = 35
@@ -465,6 +499,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-17"
 start_date = "2015-01-15"
 h160 = "f6d8ce225ffbdecec170f8298c3fc28ae686df25"
+solve_time = 2
 
 [[puzzles]]
 bits = 36
@@ -478,6 +513,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-17"
 start_date = "2015-01-15"
 h160 = "74b1e012be1521e5d8d75e745a26ced845ea3d37"
+solve_time = 2
 
 [[puzzles]]
 bits = 37
@@ -491,6 +527,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-18"
 start_date = "2015-01-15"
 h160 = "28c30fb9118ed1da72e7c4f89c0164756e8a021d"
+solve_time = 3
 
 [[puzzles]]
 bits = 38
@@ -504,6 +541,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-19"
 start_date = "2015-01-15"
 h160 = "b190e2d40cfdeee2cee072954a2be89e7ba39364"
+solve_time = 4
 
 [[puzzles]]
 bits = 39
@@ -517,6 +555,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-21"
 start_date = "2015-01-15"
 h160 = "0b304f2a79a027270276533fe1ed4eff30910876"
+solve_time = 6
 
 [[puzzles]]
 bits = 40
@@ -530,6 +569,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-30"
 start_date = "2015-01-15"
 h160 = "95a156cd21b4a69de969eb6716864f4c8b82a82a"
+solve_time = 15
 
 [[puzzles]]
 bits = 41
@@ -543,6 +583,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-30"
 start_date = "2015-01-15"
 h160 = "d1562eb37357f9e6fc41cb2359f4d3eda4032329"
+solve_time = 15
 
 [[puzzles]]
 bits = 42
@@ -556,6 +597,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-30"
 start_date = "2015-01-15"
 h160 = "8efb85f9c5b5db2d55973a04128dc7510075ae23"
+solve_time = 15
 
 [[puzzles]]
 bits = 43
@@ -569,6 +611,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-30"
 start_date = "2015-01-15"
 h160 = "f92044c7924e5525c61207972c253c9fc9f086f7"
+solve_time = 15
 
 [[puzzles]]
 bits = 44
@@ -582,6 +625,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-30"
 start_date = "2015-01-15"
 h160 = "80df54e1f612f2fc5bdc05c9d21a83aa8d20791e"
+solve_time = 15
 
 [[puzzles]]
 bits = 45
@@ -595,6 +639,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-30"
 start_date = "2015-01-15"
 h160 = "f0225bfc68a6e17e87cd8b5e60ae3be18f120753"
+solve_time = 15
 
 [[puzzles]]
 bits = 46
@@ -608,6 +653,7 @@ pubkey_format = "compressed"
 solve_date = "2015-01-30"
 start_date = "2015-01-15"
 h160 = "9a012260d01c5113df66c8a8438c9f7a1e3d5dac"
+solve_time = 15
 
 [[puzzles]]
 bits = 47
@@ -621,6 +667,7 @@ pubkey_format = "compressed"
 solve_date = "2015-09-01"
 start_date = "2015-01-15"
 h160 = "f828005d41b0f4fed4c8dca3b06011072cfb07d4"
+solve_time = 229
 
 [[puzzles]]
 bits = 48
@@ -634,6 +681,7 @@ pubkey_format = "compressed"
 solve_date = "2015-09-01"
 start_date = "2015-01-15"
 h160 = "8661cb56d9df0a61f01328b55af7e56a3fe7a2b2"
+solve_time = 229
 
 [[puzzles]]
 bits = 49
@@ -647,6 +695,7 @@ pubkey_format = "compressed"
 solve_date = "2015-09-01"
 start_date = "2015-01-15"
 h160 = "0d2f533966c6578e1111978ca698f8add7fffdf3"
+solve_time = 229
 
 [[puzzles]]
 bits = 50
@@ -660,6 +709,7 @@ pubkey_format = "compressed"
 solve_date = "2015-09-01"
 start_date = "2015-01-15"
 h160 = "de081b76f840e462fa2cdf360173dfaf4a976a47"
+solve_time = 229
 
 [[puzzles]]
 bits = 51
@@ -673,6 +723,7 @@ pubkey_format = "compressed"
 solve_date = "2017-04-05"
 start_date = "2015-01-15"
 h160 = "ef6419cffd7fad7027994354eb8efae223c2dbe7"
+solve_time = 811
 
 [[puzzles]]
 bits = 52
@@ -686,6 +737,7 @@ pubkey_format = "compressed"
 solve_date = "2017-04-21"
 start_date = "2015-01-15"
 h160 = "36af659edbe94453f6344e920d143f1778653ae7"
+solve_time = 827
 
 [[puzzles]]
 bits = 53
@@ -699,6 +751,7 @@ pubkey_format = "compressed"
 solve_date = "2017-09-04"
 start_date = "2015-01-15"
 h160 = "2f4870ef54fa4b048c1365d42594cc7d3d269551"
+solve_time = 963
 
 [[puzzles]]
 bits = 54
@@ -712,6 +765,7 @@ pubkey_format = "compressed"
 solve_date = "2017-11-16"
 start_date = "2015-01-15"
 h160 = "cb66763cf7fde659869ae7f06884d9a0f879a092"
+solve_time = 1036
 
 [[puzzles]]
 bits = 55
@@ -725,6 +779,7 @@ pubkey_format = "compressed"
 solve_date = "2018-05-29"
 start_date = "2015-01-15"
 h160 = "db53d9bbd1f3a83b094eeca7dd970bd85b492fa2"
+solve_time = 1230
 
 [[puzzles]]
 bits = 56
@@ -738,6 +793,7 @@ pubkey_format = "compressed"
 solve_date = "2018-09-08"
 start_date = "2015-01-15"
 h160 = "48214c5969ae9f43f75070cea1e2cb41d5bdcccd"
+solve_time = 1332
 
 [[puzzles]]
 bits = 57
@@ -751,6 +807,7 @@ pubkey_format = "compressed"
 solve_date = "2018-11-08"
 start_date = "2015-01-15"
 h160 = "328660ef43f66abe2653fa178452a5dfc594c2a1"
+solve_time = 1393
 
 [[puzzles]]
 bits = 58
@@ -764,6 +821,7 @@ pubkey_format = "compressed"
 solve_date = "2018-12-03"
 start_date = "2015-01-15"
 h160 = "8c2a6071f89c90c4dab5ab295d7729d1b54ea60f"
+solve_time = 1418
 
 [[puzzles]]
 bits = 59
@@ -777,6 +835,7 @@ pubkey_format = "compressed"
 solve_date = "2019-02-12"
 start_date = "2015-01-15"
 h160 = "b14ed3146f5b2c9bde1703deae9ef33af8110210"
+solve_time = 1489
 
 [[puzzles]]
 bits = 60
@@ -790,6 +849,7 @@ pubkey_format = "compressed"
 solve_date = "2019-02-17"
 start_date = "2015-01-15"
 h160 = "cdf8e5c7503a9d22642e3ecfc87817672787b9c5"
+solve_time = 1494
 
 [[puzzles]]
 bits = 61
@@ -803,6 +863,7 @@ pubkey_format = "compressed"
 solve_date = "2019-05-11"
 start_date = "2015-01-15"
 h160 = "68133e19b2dfb9034edf9830a200cfdf38c90cbd"
+solve_time = 1577
 
 [[puzzles]]
 bits = 62
@@ -816,6 +877,7 @@ pubkey_format = "compressed"
 solve_date = "2019-09-08"
 start_date = "2015-01-15"
 h160 = "e26646db84b0602f32b34b5a62ca3cae1f91b779"
+solve_time = 1697
 
 [[puzzles]]
 bits = 63
@@ -829,6 +891,7 @@ pubkey_format = "compressed"
 solve_date = "2019-07-12"
 start_date = "2015-01-15"
 h160 = "ef58afb697b094423ce90721fbb19a359ef7c50e"
+solve_time = 1639
 
 [[puzzles]]
 bits = 64
@@ -842,6 +905,7 @@ pubkey_format = "compressed"
 solve_date = "2022-09-10"
 start_date = "2015-01-15"
 h160 = "3ee4133d991f52fdf6a25c9834e0745ac74248a4"
+solve_time = 2795
 
 [[puzzles]]
 bits = 65
@@ -855,6 +919,7 @@ pubkey_format = "compressed"
 solve_date = "2019-06-07"
 start_date = "2015-01-15"
 h160 = "52e763a7ddc1aa4fa811578c491c1bc7fd570137"
+solve_time = 1604
 
 [[puzzles]]
 bits = 66
@@ -868,6 +933,7 @@ pubkey_format = "compressed"
 solve_date = "2024-09-12"
 start_date = "2015-01-15"
 h160 = "20d45a6a762535700ce9e0b216e31994335db8a5"
+solve_time = 3528
 
 [[puzzles]]
 bits = 67
@@ -881,6 +947,7 @@ pubkey_format = "compressed"
 solve_date = "2025-02-21"
 start_date = "2015-01-15"
 h160 = "739437bb3dd6d1983e66629c5f08c70e52769371"
+solve_time = 3690
 
 [[puzzles]]
 bits = 68
@@ -894,6 +961,7 @@ pubkey_format = "compressed"
 solve_date = "2025-04-06"
 start_date = "2015-01-15"
 h160 = "e0b8a2baee1b77fc703455f39d51477451fc8cfc"
+solve_time = 3734
 
 [[puzzles]]
 bits = 69
@@ -907,6 +975,7 @@ pubkey_format = "compressed"
 solve_date = "2025-04-30"
 start_date = "2015-01-15"
 h160 = "61eb8a50c86b0584bb727dd65bed8d2400d6d5aa"
+solve_time = 3758
 
 [[puzzles]]
 bits = 70
@@ -920,6 +989,7 @@ pubkey_format = "compressed"
 solve_date = "2019-06-09"
 start_date = "2015-01-15"
 h160 = "5db8cda53a6a002db10365967d7f85d19e171b10"
+solve_time = 1606
 
 [[puzzles]]
 bits = 71
@@ -969,6 +1039,7 @@ pubkey_format = "compressed"
 solve_date = "2019-06-10"
 start_date = "2015-01-15"
 h160 = "badf8b0d34289e679ec65c6c61d3a974353be5cf"
+solve_time = 1607
 
 [[puzzles]]
 bits = 76
@@ -1018,6 +1089,7 @@ pubkey_format = "compressed"
 solve_date = "2019-06-11"
 start_date = "2015-01-15"
 h160 = "6fe5a36eef0684af0b91f3b6cfc972d68c4f6fab"
+solve_time = 1608
 
 [[puzzles]]
 bits = 81
@@ -1067,6 +1139,7 @@ pubkey_format = "compressed"
 solve_date = "2019-06-17"
 start_date = "2015-01-15"
 h160 = "cd03c1e6268ce9b89e3c3eeab8d0f1b6e8cac281"
+solve_time = 1614
 
 [[puzzles]]
 bits = 86
@@ -1116,6 +1189,7 @@ pubkey_format = "compressed"
 solve_date = "2019-07-01"
 start_date = "2015-01-15"
 h160 = "d06b6e206691295ec345782d7ea0686969d8674b"
+solve_time = 1628
 
 [[puzzles]]
 bits = 91
@@ -1165,6 +1239,7 @@ pubkey_format = "compressed"
 solve_date = "2019-07-06"
 start_date = "2015-01-15"
 h160 = "5ed822125365274262191d2b77e88d436dd56d88"
+solve_time = 1633
 
 [[puzzles]]
 bits = 96
@@ -1214,6 +1289,7 @@ pubkey_format = "compressed"
 solve_date = "2019-07-08"
 start_date = "2015-01-15"
 h160 = "c7a7b23f6bd98b8aaf527beb724dda9460b1bc6e"
+solve_time = 1635
 
 [[puzzles]]
 bits = 101
@@ -1263,6 +1339,7 @@ pubkey_format = "compressed"
 solve_date = "2019-09-23"
 start_date = "2015-01-15"
 h160 = "7c957db6fdd0733bb83bc6d6d747711263ba50b0"
+solve_time = 1712
 
 [[puzzles]]
 bits = 106
@@ -1312,6 +1389,7 @@ pubkey_format = "compressed"
 solve_date = "2020-05-30"
 start_date = "2015-01-15"
 h160 = "0e5f3c406397442996825fd395543514fd06f207"
+solve_time = 1962
 
 [[puzzles]]
 bits = 111
@@ -1361,6 +1439,7 @@ pubkey_format = "compressed"
 solve_date = "2020-06-16"
 start_date = "2015-01-15"
 h160 = "ea0f2b7576bd098921fce9bfebe37f6383e639a4"
+solve_time = 1979
 
 [[puzzles]]
 bits = 116
@@ -1410,6 +1489,7 @@ pubkey_format = "compressed"
 solve_date = "2023-02-27"
 start_date = "2015-01-15"
 h160 = "4b46e10a541aeec6be3fac709c256fb7da69308e"
+solve_time = 2965
 
 [[puzzles]]
 bits = 121
@@ -1459,6 +1539,7 @@ pubkey_format = "compressed"
 solve_date = "2023-07-09"
 start_date = "2015-01-15"
 h160 = "f7079256aa027dc437cbb539f955472416725fc8"
+solve_time = 3097
 
 [[puzzles]]
 bits = 126
@@ -1508,6 +1589,7 @@ pubkey_format = "compressed"
 solve_date = "2024-09-23"
 start_date = "2015-01-15"
 h160 = "a24922852051a9002ebf4c864a55acb75bb4cf75"
+solve_time = 3539
 
 [[puzzles]]
 bits = 131

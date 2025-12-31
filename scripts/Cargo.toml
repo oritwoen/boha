@@ -26,3 +26,7 @@ path = "src/bin/generate_h160.rs"
 [[bin]]
 name = "generate-script-hash"
 path = "src/bin/generate_script_hash.rs"
+
+[[bin]]
+name = "generate-solve-time"
+path = "src/bin/generate_solve_time.rs"

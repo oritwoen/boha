@@ -505,3 +505,105 @@ fn script_hash_matches_redeem_script() {
         }
     }
 }
+
+#[test]
+fn solved_puzzles_with_dates_have_solve_time() {
+    for puzzle in boha::all() {
+        if matches!(puzzle.status, Status::Solved | Status::Claimed)
+            && puzzle.start_date.is_some()
+            && puzzle.solve_date.is_some()
+        {
+            assert!(
+                puzzle.solve_time.is_some(),
+                "Solved puzzle {} with both start_date and solve_date should have solve_time",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn unsolved_puzzles_no_solve_time() {
+    for puzzle in boha::all() {
+        if matches!(puzzle.status, Status::Unsolved | Status::Swept) {
+            assert!(
+                puzzle.solve_time.is_none(),
+                "Unsolved/swept puzzle {} should not have solve_time",
+                puzzle.id
+            );
+        }
+    }
+}
+
+fn parse_date(date_str: &str) -> Option<(i32, u32, u32)> {
+    let parts: Vec<&str> = date_str.split('-').collect();
+    if parts.len() != 3 {
+        return None;
+    }
+    let year: i32 = parts[0].parse().ok()?;
+    let month: u32 = parts[1].parse().ok()?;
+    let day: u32 = parts[2].parse().ok()?;
+    Some((year, month, day))
+}
+
+fn days_between(start: &str, end: &str) -> Option<u32> {
+    let (sy, sm, sd) = parse_date(start)?;
+    let (ey, em, ed) = parse_date(end)?;
+
+    fn days_from_civil(y: i32, m: u32, d: u32) -> i64 {
+        let y = y as i64 - if m <= 2 { 1 } else { 0 };
+        let era = if y >= 0 { y } else { y - 399 } / 400;
+        let yoe = (y - era * 400) as u64;
+        let m = m as i64;
+        let doy = (153 * (m + if m > 2 { -3 } else { 9 }) + 2) / 5 + d as i64 - 1;
+        let doe = yoe as i64 * 365 + yoe as i64 / 4 - yoe as i64 / 100 + doy;
+        era * 146097 + doe - 719468
+    }
+
+    let start_days = days_from_civil(sy, sm, sd);
+    let end_days = days_from_civil(ey, em, ed);
+
+    if end_days >= start_days {
+        Some((end_days - start_days) as u32)
+    } else {
+        None
+    }
+}
+
+#[test]
+fn solve_time_matches_dates() {
+    for puzzle in boha::all() {
+        if let (Some(start), Some(solve), Some(solve_time)) =
+            (puzzle.start_date, puzzle.solve_date, puzzle.solve_time)
+        {
+            let computed = days_between(start, solve)
+                .unwrap_or_else(|| panic!("Failed to compute days for {}", puzzle.id));
+            assert_eq!(
+                solve_time, computed,
+                "solve_time mismatch for {}: stored {} != computed {} (from {} to {})",
+                puzzle.id, solve_time, computed, start, solve
+            );
+        }
+    }
+}
+
+#[test]
+fn b1000_66_solve_time_correct() {
+    let p66 = b1000::get(66).unwrap();
+    assert_eq!(p66.start_date, Some("2015-01-15"));
+    assert_eq!(p66.solve_date, Some("2024-09-12"));
+    assert_eq!(p66.solve_time, Some(3528));
+    assert_eq!(p66.solve_time_formatted(), Some("9y 8m 3d".to_string()));
+}
+
+#[test]
+fn solve_time_formatted_works() {
+    let p1 = b1000::get(1).unwrap();
+    assert_eq!(p1.solve_time, Some(0));
+    assert_eq!(p1.solve_time_formatted(), Some("0d".to_string()));
+
+    let p66 = b1000::get(66).unwrap();
+    assert!(p66.solve_time_formatted().is_some());
+    let formatted = p66.solve_time_formatted().unwrap();
+    assert!(formatted.contains('y') || formatted.contains('m') || formatted.contains('d'));
+}
