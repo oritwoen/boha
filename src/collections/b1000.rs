@@ -3,7 +3,8 @@
 //! Each puzzle N has a private key k where: 2^(N-1) <= k < 2^N
 
 use crate::{
-    AddressType, Chain, Error, IntoPuzzleNum, Pubkey, PubkeyFormat, Puzzle, Result, Status,
+    AddressType, Chain, Error, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle, Result,
+    Status,
 };
 
 include!(concat!(env!("OUT_DIR"), "/b1000_data.rs"));
@@ -15,7 +16,7 @@ pub fn get(key: impl IntoPuzzleNum) -> Result<&'static Puzzle> {
     }
     PUZZLES
         .iter()
-        .find(|p| p.bits == Some(number as u16))
+        .find(|p| matches!(p.key_source, KeySource::Direct { bits } if bits == number as u16))
         .ok_or_else(|| Error::NotFound(format!("b1000/{}", number)))
 }
 

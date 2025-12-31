@@ -1,4 +1,4 @@
-use boha::{b1000, gsmg, hash_collision, Chain, PubkeyFormat, Puzzle, Stats, Status};
+use boha::{b1000, gsmg, hash_collision, Chain, KeySource, PubkeyFormat, Puzzle, Stats, Status};
 use clap::{Parser, Subcommand, ValueEnum};
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
@@ -304,17 +304,41 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         value: status_colored,
     });
 
-    if let Some(bits) = p.bits {
-        rows.push(KeyValueRow {
-            field: "Bits".to_string(),
-            value: bits.to_string(),
-        });
-        if let Some((start, end)) = p.key_range_big() {
+    match &p.key_source {
+        KeySource::Direct { bits } => {
             rows.push(KeyValueRow {
-                field: "Range".to_string(),
-                value: format!("0x{:x} - 0x{:x}", start, end),
+                field: "Bits".to_string(),
+                value: bits.to_string(),
+            });
+            if let Some((start, end)) = p.key_range_big() {
+                rows.push(KeyValueRow {
+                    field: "Range".to_string(),
+                    value: format!("0x{:x} - 0x{:x}", start, end),
+                });
+            }
+        }
+        KeySource::Script {
+            redeem_script,
+            script_hash,
+        } => {
+            rows.push(KeyValueRow {
+                field: "Redeem Script".to_string(),
+                value: redeem_script.to_string(),
+            });
+            if let Some(hash) = script_hash {
+                rows.push(KeyValueRow {
+                    field: "Script Hash".to_string(),
+                    value: hash.to_string(),
+                });
+            }
+        }
+        KeySource::Derived { path } => {
+            rows.push(KeyValueRow {
+                field: "Derivation Path".to_string(),
+                value: path.to_string(),
             });
         }
+        KeySource::Unknown => {}
     }
 
     if let Some(pubkey) = &p.pubkey {
@@ -336,20 +360,6 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         rows.push(KeyValueRow {
             field: "Private Key".to_string(),
             value: key.to_string().bright_red().to_string(),
-        });
-    }
-
-    if let Some(script) = p.redeem_script {
-        rows.push(KeyValueRow {
-            field: "Redeem Script".to_string(),
-            value: script.to_string(),
-        });
-    }
-
-    if let Some(script_hash) = p.script_hash {
-        rows.push(KeyValueRow {
-            field: "Script Hash".to_string(),
-            value: script_hash.to_string(),
         });
     }
 
