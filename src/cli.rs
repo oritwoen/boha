@@ -1,5 +1,6 @@
 use boha::{
     b1000, gsmg, hash_collision, Author, Chain, KeySource, PubkeyFormat, Puzzle, Stats, Status,
+    TransactionType,
 };
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
@@ -60,12 +61,20 @@ enum Commands {
         #[arg(long, name = "with-pubkey")]
         with_pubkey: bool,
 
+        #[arg(long, name = "with-transactions")]
+        with_transactions: bool,
+
         #[arg(long, value_parser = parse_chain)]
         chain: Option<Chain>,
     },
 
     /// Show puzzle details
-    Show { id: String },
+    Show {
+        id: String,
+
+        #[arg(long)]
+        transactions: bool,
+    },
 
     /// Show statistics
     Stats,
@@ -241,9 +250,9 @@ fn output_puzzles(puzzles: &[&Puzzle], format: OutputFormat, show_solve_time: bo
     }
 }
 
-fn output_puzzle(puzzle: &Puzzle, format: OutputFormat) {
+fn output_puzzle(puzzle: &Puzzle, show_transactions: bool, format: OutputFormat) {
     match format {
-        OutputFormat::Table => print_puzzle_detail_table(puzzle),
+        OutputFormat::Table => print_puzzle_detail_table(puzzle, show_transactions),
         OutputFormat::Json => {
             println!("{}", serde_json::to_string_pretty(puzzle).unwrap());
         }
@@ -322,7 +331,25 @@ fn output_balance(balance: &BalanceOutput, format: OutputFormat) {
     }
 }
 
-fn print_puzzle_detail_table(p: &Puzzle) {
+fn format_transaction_type(tx_type: TransactionType) -> String {
+    match tx_type {
+        TransactionType::Funding => "Funding".blue().to_string(),
+        TransactionType::Increase => "Increase".green().to_string(),
+        TransactionType::Decrease => "Decrease".yellow().to_string(),
+        TransactionType::Sweep => "Sweep".red().to_string(),
+        TransactionType::Claim => "Claim".cyan().to_string(),
+    }
+}
+
+fn truncate_txid(txid: &str) -> String {
+    if txid.len() > 16 {
+        format!("{}...{}", &txid[..8], &txid[txid.len() - 8..])
+    } else {
+        txid.to_string()
+    }
+}
+
+fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
     let status_colored = match p.status {
         Status::Solved => "Solved".green().to_string(),
         Status::Unsolved => "Unsolved".yellow().to_string(),
@@ -453,6 +480,25 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         });
     }
 
+    if show_transactions && !p.transactions.is_empty() {
+        rows.push(KeyValueRow {
+            field: "─── Transactions ───".dimmed().to_string(),
+            value: "".to_string(),
+        });
+
+        for tx in p.transactions {
+            let amount_str = tx
+                .amount
+                .map(|a| format!(" ({:.8} {})", a, p.chain.symbol()))
+                .unwrap_or_default();
+            let date_str = tx.date.unwrap_or("-");
+            rows.push(KeyValueRow {
+                field: format_transaction_type(tx.tx_type),
+                value: format!("{} {}{}", truncate_txid(tx.txid), date_str, amount_str),
+            });
+        }
+    }
+
     let table = Table::new(rows).with(Style::rounded()).to_string();
     println!("{}", table);
 }
@@ -581,6 +627,7 @@ fn cmd_list(
     unsolved: bool,
     solved: bool,
     with_pubkey: bool,
+    with_transactions: bool,
     chain_filter: Option<Chain>,
     format: OutputFormat,
 ) {
@@ -596,15 +643,16 @@ fn cmd_list(
         .filter(|p| !unsolved || p.status == Status::Unsolved)
         .filter(|p| !solved || p.status == Status::Solved)
         .filter(|p| !with_pubkey || p.pubkey.is_some())
+        .filter(|p| !with_transactions || p.has_transactions())
         .filter(|p| chain_filter.is_none_or(|c| p.chain == c))
         .collect();
 
     output_puzzles(&filtered, format, solved);
 }
 
-fn cmd_show(id: &str, format: OutputFormat) {
+fn cmd_show(id: &str, show_transactions: bool, format: OutputFormat) {
     match boha::get(id) {
-        Ok(puzzle) => output_puzzle(puzzle, format),
+        Ok(puzzle) => output_puzzle(puzzle, show_transactions, format),
         Err(e) => {
             eprintln!("{} {}", "Error:".red().bold(), e);
             std::process::exit(1);
@@ -758,16 +806,18 @@ fn run_sync(cli: Cli) {
             unsolved,
             solved,
             with_pubkey,
+            with_transactions,
             chain,
         } => cmd_list(
             &collection,
             unsolved,
             solved,
             with_pubkey,
+            with_transactions,
             chain,
             cli.output,
         ),
-        Commands::Show { id } => cmd_show(&id, cli.output),
+        Commands::Show { id, transactions } => cmd_show(&id, transactions, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
@@ -783,16 +833,18 @@ fn run(cli: Cli) {
             unsolved,
             solved,
             with_pubkey,
+            with_transactions,
             chain,
         } => cmd_list(
             &collection,
             unsolved,
             solved,
             with_pubkey,
+            with_transactions,
             chain,
             cli.output,
         ),
-        Commands::Show { id } => cmd_show(&id, cli.output),
+        Commands::Show { id, transactions } => cmd_show(&id, transactions, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),

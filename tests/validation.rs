@@ -1,4 +1,7 @@
-use boha::{b1000, gsmg, hash_collision, AddressType, Chain, KeySource, PubkeyFormat, Status};
+use boha::{
+    b1000, gsmg, hash_collision, AddressType, Chain, KeySource, PubkeyFormat, Status,
+    TransactionType,
+};
 use num_bigint::BigUint;
 
 #[test]
@@ -690,6 +693,140 @@ fn author_profile_valid_url() {
                 url.starts_with("http://") || url.starts_with("https://"),
                 "Invalid profile URL format: {}",
                 url
+            );
+        }
+    }
+}
+
+#[test]
+fn transaction_txid_format_valid() {
+    let hex_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
+    for puzzle in boha::all() {
+        for tx in puzzle.transactions {
+            assert!(
+                hex_regex.is_match(tx.txid),
+                "Invalid txid format for {:?} transaction in {}: {}",
+                tx.tx_type,
+                puzzle.id,
+                tx.txid
+            );
+        }
+    }
+}
+
+#[test]
+fn transaction_date_format_valid() {
+    let date_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$").unwrap();
+    for puzzle in boha::all() {
+        for tx in puzzle.transactions {
+            if let Some(date) = tx.date {
+                assert!(
+                    date_regex.is_match(date),
+                    "Invalid date format in {:?} transaction for {}: {}",
+                    tx.tx_type,
+                    puzzle.id,
+                    date
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn transaction_amount_positive() {
+    for puzzle in boha::all() {
+        for tx in puzzle.transactions {
+            if let Some(amount) = tx.amount {
+                assert!(
+                    amount > 0.0,
+                    "Transaction amount should be positive for {:?} in {}: {}",
+                    tx.tx_type,
+                    puzzle.id,
+                    amount
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn all_puzzles_have_funding_transaction() {
+    for puzzle in boha::all() {
+        let has_funding = puzzle
+            .transactions
+            .iter()
+            .any(|t| t.tx_type == TransactionType::Funding);
+        assert!(
+            has_funding,
+            "Puzzle {} missing funding transaction",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn solved_puzzles_have_claim_transaction() {
+    for puzzle in boha::all() {
+        if puzzle.status == Status::Solved {
+            let has_claim = puzzle
+                .transactions
+                .iter()
+                .any(|t| t.tx_type == TransactionType::Claim);
+            assert!(
+                has_claim,
+                "Solved puzzle {} missing claim transaction",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn claimed_puzzles_have_claim_transaction() {
+    for puzzle in boha::all() {
+        if puzzle.status == Status::Claimed {
+            let has_claim = puzzle
+                .transactions
+                .iter()
+                .any(|t| t.tx_type == TransactionType::Claim);
+            assert!(
+                has_claim,
+                "Claimed puzzle {} missing claim transaction",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn swept_puzzles_have_sweep_transaction() {
+    for puzzle in boha::all() {
+        if puzzle.status == Status::Swept {
+            let has_sweep = puzzle
+                .transactions
+                .iter()
+                .any(|t| t.tx_type == TransactionType::Sweep);
+            assert!(
+                has_sweep,
+                "Swept puzzle {} missing sweep transaction",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn transactions_chronologically_ordered() {
+    for puzzle in boha::all() {
+        let dates: Vec<&str> = puzzle.transactions.iter().filter_map(|t| t.date).collect();
+
+        for window in dates.windows(2) {
+            assert!(
+                window[0] <= window[1],
+                "Transactions not chronologically ordered in {}: {} > {}",
+                puzzle.id,
+                window[0],
+                window[1]
             );
         }
     }

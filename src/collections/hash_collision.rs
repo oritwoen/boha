@@ -1,6 +1,9 @@
 //! Peter Todd's hash collision bounties (P2SH).
 
-use crate::{AddressType, Author, Chain, Error, KeySource, Puzzle, Result, Status};
+use crate::{
+    AddressType, Author, Chain, Error, KeySource, Puzzle, Result, Status, Transaction,
+    TransactionType,
+};
 
 include!(concat!(env!("OUT_DIR"), "/hash_collision_data.rs"));
 

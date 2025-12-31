@@ -22,6 +22,15 @@ struct AuthorConfig {
 }
 
 #[derive(Debug, Deserialize)]
+struct TomlTransaction {
+    #[serde(rename = "type")]
+    tx_type: String,
+    txid: String,
+    date: Option<String>,
+    amount: Option<f64>,
+}
+
+#[derive(Debug, Deserialize)]
 struct Btc1000Metadata {
     source_url: Option<String>,
 }
@@ -49,6 +58,8 @@ struct Btc1000Puzzle {
     solve_date: Option<String>,
     solve_time: Option<u64>,
     source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -75,6 +86,8 @@ struct HashCollisionPuzzle {
     solve_date: Option<String>,
     solve_time: Option<u64>,
     source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -101,6 +114,42 @@ struct GsmgPuzzle {
     solve_date: Option<String>,
     solve_time: Option<u64>,
     source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+}
+
+fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
+    if transactions.is_empty() {
+        return "&[]".to_string();
+    }
+
+    let tx_list: Vec<String> = transactions
+        .iter()
+        .map(|t| {
+            let tx_type = match t.tx_type.as_str() {
+                "funding" => "TransactionType::Funding",
+                "increase" => "TransactionType::Increase",
+                "decrease" => "TransactionType::Decrease",
+                "sweep" => "TransactionType::Sweep",
+                "claim" => "TransactionType::Claim",
+                other => panic!("Unknown transaction type: {}", other),
+            };
+            let date = match &t.date {
+                Some(d) => format!("Some(\"{}\")", d),
+                None => "None".to_string(),
+            };
+            let amount = match t.amount {
+                Some(a) => format!("Some({:.8})", a),
+                None => "None".to_string(),
+            };
+            format!(
+                "Transaction {{ tx_type: {}, txid: \"{}\", date: {}, amount: {} }}",
+                tx_type, t.txid, date, amount
+            )
+        })
+        .collect();
+
+    format!("&[{}]", tx_list.join(", "))
 }
 
 fn generate_author_code(author: &Option<AuthorConfig>) -> String {
@@ -229,6 +278,8 @@ fn generate_b1000(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let transactions = generate_transactions_code(&puzzle.transactions);
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "b1000/{}",
@@ -245,6 +296,7 @@ fn generate_b1000(out_dir: &str) {
         solve_date: {},
         solve_time: {},
         source_url: {},
+        transactions: {},
     }},
 "#,
             puzzle.bits,
@@ -259,6 +311,7 @@ fn generate_b1000(out_dir: &str) {
             solve_date,
             solve_time,
             source_url,
+            transactions,
         ));
     }
 
@@ -323,6 +376,8 @@ fn generate_hash_collision(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let transactions = generate_transactions_code(&puzzle.transactions);
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "hash_collision/{}",
@@ -339,6 +394,7 @@ fn generate_hash_collision(out_dir: &str) {
         solve_date: {},
         solve_time: {},
         source_url: {},
+        transactions: {},
     }},
 "#,
             puzzle.name,
@@ -351,6 +407,7 @@ fn generate_hash_collision(out_dir: &str) {
             solve_date,
             solve_time,
             source_url,
+            transactions,
         ));
     }
 
@@ -422,6 +479,8 @@ fn generate_gsmg(out_dir: &str) {
         None => "None".to_string(),
     };
 
+    let transactions = generate_transactions_code(&puzzle.transactions);
+
     let mut output = String::new();
     output.push_str(&generate_author_code(&data.author));
     output.push('\n');
@@ -441,9 +500,19 @@ fn generate_gsmg(out_dir: &str) {
     solve_date: {},
     solve_time: {},
     source_url: {},
+    transactions: {},
 }};
 "#,
-        puzzle.address, h160, status, pubkey, prize, start_date, solve_date, solve_time, source_url,
+        puzzle.address,
+        h160,
+        status,
+        pubkey,
+        prize,
+        start_date,
+        solve_date,
+        solve_time,
+        source_url,
+        transactions,
     ));
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");

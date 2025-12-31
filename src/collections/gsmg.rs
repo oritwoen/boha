@@ -1,6 +1,9 @@
 //! GSMG.IO 5 BTC Puzzle - Multi-phase cryptographic challenge.
 
-use crate::{AddressType, Author, Chain, KeySource, Pubkey, PubkeyFormat, Puzzle, Status};
+use crate::{
+    AddressType, Author, Chain, KeySource, Pubkey, PubkeyFormat, Puzzle, Status, Transaction,
+    TransactionType,
+};
 
 include!(concat!(env!("OUT_DIR"), "/gsmg_data.rs"));
 

@@ -49,6 +49,24 @@ pub enum Status {
     Swept,
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum TransactionType {
+    Funding,
+    Increase,
+    Decrease,
+    Sweep,
+    Claim,
+}
+
+#[derive(Debug, Clone, Copy, Serialize)]
+pub struct Transaction {
+    pub tx_type: TransactionType,
+    pub txid: &'static str,
+    pub date: Option<&'static str>,
+    pub amount: Option<f64>,
+}
+
 impl Status {
     pub fn is_active(&self) -> bool {
         matches!(self, Status::Unsolved)
@@ -141,6 +159,7 @@ pub struct Puzzle {
     pub solve_date: Option<&'static str>,
     pub solve_time: Option<u64>,
     pub source_url: Option<&'static str>,
+    pub transactions: &'static [Transaction],
 }
 
 fn format_duration_human_readable(seconds: u64) -> String {
@@ -208,6 +227,26 @@ impl Puzzle {
 
     pub fn name(&self) -> &str {
         self.id.split('/').nth(1).unwrap_or("")
+    }
+
+    pub fn funding_tx(&self) -> Option<&Transaction> {
+        self.transactions
+            .iter()
+            .find(|t| t.tx_type == TransactionType::Funding)
+    }
+
+    pub fn claim_tx(&self) -> Option<&Transaction> {
+        self.transactions
+            .iter()
+            .find(|t| t.tx_type == TransactionType::Claim)
+    }
+
+    pub fn has_transactions(&self) -> bool {
+        !self.transactions.is_empty()
+    }
+
+    pub fn transaction_count(&self) -> usize {
+        self.transactions.len()
     }
 
     pub fn key_range(&self) -> Option<RangeInclusive<u128>> {
