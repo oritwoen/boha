@@ -1,9 +1,28 @@
+## [0.5.0] - 2025-12-31
+
+### Features
+
+- *(puzzle)* Add h160 field for P2PKH addresses (#17)
+- *(puzzle)* Add script_hash for P2SH (#22)
+- *(ci)* Integrate autofix.ci for automatic formatting (#23)
+
+### Refactor
+
+- *(data)* Rename btc field to prize in TOML files (#25)
+
+### Documentation
+
+- Add gsmg collection to AGENTS.md
 ## [0.4.0] - 2025-12-31
 
 ### Features
 
 - *(puzzle)* Add Chain enum (#15)
 - *(puzzle)* Add pubkey_format field (#16)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.4.0
 ## [0.3.0] - 2025-12-31
 
 ### Features
