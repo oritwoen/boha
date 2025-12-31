@@ -4,7 +4,7 @@ mod puzzle;
 #[cfg(feature = "balance")]
 pub mod balance;
 
-pub use collections::{b1000, hash_collision};
+pub use collections::{b1000, gsmg, hash_collision};
 pub use puzzle::{AddressType, IntoPuzzleNum, Puzzle, Status};
 
 use thiserror::Error;
@@ -22,6 +22,10 @@ pub enum Error {
 pub type Result<T> = std::result::Result<T, Error>;
 
 pub fn get(id: &str) -> Result<&'static Puzzle> {
+    if id == "gsmg" {
+        return Ok(gsmg::get());
+    }
+
     let parts: Vec<&str> = id.split('/').collect();
     if parts.len() < 2 {
         return Err(Error::NotFound(id.to_string()));
@@ -40,7 +44,7 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
 }
 
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
-    b1000::all().chain(hash_collision::all())
+    b1000::all().chain(gsmg::all()).chain(hash_collision::all())
 }
 
 #[derive(Debug, Default, Clone, serde::Serialize)]

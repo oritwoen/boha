@@ -52,14 +52,37 @@ struct HashCollisionPuzzle {
     source_url: Option<String>,
 }
 
+#[derive(Debug, Deserialize)]
+struct GsmgMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct GsmgFile {
+    metadata: Option<GsmgMetadata>,
+    puzzle: GsmgPuzzle,
+}
+
+#[derive(Debug, Deserialize)]
+struct GsmgPuzzle {
+    address: String,
+    status: String,
+    btc: Option<f64>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    source_url: Option<String>,
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
     println!("cargo:rerun-if-changed=data/hash_collision.toml");
+    println!("cargo:rerun-if-changed=data/gsmg.toml");
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
     generate_b1000(&out_dir);
     generate_hash_collision(&out_dir);
+    generate_gsmg(&out_dir);
 }
 
 fn generate_b1000(out_dir: &str) {
@@ -223,4 +246,65 @@ fn generate_hash_collision(out_dir: &str) {
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write hash_collision_data.rs");
+}
+
+fn generate_gsmg(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("gsmg_data.rs");
+
+    let toml_content = fs::read_to_string("data/gsmg.toml").expect("Failed to read data/gsmg.toml");
+
+    let data: GsmgFile = toml::from_str(&toml_content).expect("Failed to parse gsmg.toml");
+
+    let puzzle = &data.puzzle;
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let status = match puzzle.status.as_str() {
+        "solved" => "Status::Solved",
+        "claimed" => "Status::Claimed",
+        "swept" => "Status::Swept",
+        _ => "Status::Unsolved",
+    };
+
+    let prize = match puzzle.btc {
+        Some(btc) => format!("Some({:.8})", btc),
+        None => "None".to_string(),
+    };
+
+    let start_date = match &puzzle.start_date {
+        Some(d) => format!("Some(\"{}\")", d),
+        None => "None".to_string(),
+    };
+
+    let solve_date = match &puzzle.solve_date {
+        Some(d) => format!("Some(\"{}\")", d),
+        None => "None".to_string(),
+    };
+
+    let source_url = puzzle
+        .source_url
+        .as_ref()
+        .or(default_source_url)
+        .map(|url| format!("Some(\"{}\")", url))
+        .unwrap_or_else(|| "None".to_string());
+
+    let output = format!(
+        r#"static PUZZLE: Puzzle = Puzzle {{
+    id: "gsmg",
+    address: "{}",
+    address_type: AddressType::P2PKH,
+    status: {},
+    pubkey: None,
+    private_key: None,
+    redeem_script: None,
+    bits: None,
+    prize_btc: {},
+    start_date: {},
+    solve_date: {},
+    source_url: {},
+}};
+"#,
+        puzzle.address, status, prize, start_date, solve_date, source_url,
+    );
+
+    fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
 }

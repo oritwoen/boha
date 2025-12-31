@@ -1,0 +1,11 @@
+# GSMG.IO 5 BTC Puzzle
+# Multi-phase cryptographic challenge with single Bitcoin address
+
+[metadata]
+source_url = "https://gsmg.io/puzzle"
+
+[puzzle]
+address = "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe"
+status = "unsolved"
+btc = 1.25364181
+start_date = "2019-04-13"
