@@ -60,6 +60,12 @@ fn puzzle_key_range_valid() {
     assert_eq!(*range.start(), 1u128 << 65);
     assert_eq!(*range.end(), (1u128 << 66) - 1);
 
+    // bits == 128 edge case (max value for u128)
+    let p128 = b1000::get(128).unwrap();
+    let range = p128.key_range().unwrap();
+    assert_eq!(*range.start(), 1u128 << 127);
+    assert_eq!(*range.end(), u128::MAX);
+
     let p129 = b1000::get(129).unwrap();
     assert!(p129.key_range().is_none());
 }

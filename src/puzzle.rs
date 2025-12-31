@@ -140,7 +140,11 @@ impl Puzzle {
             return None;
         }
         let start = 1u128 << (bits - 1);
-        let end = (1u128 << bits) - 1;
+        let end = if bits == 128 {
+            u128::MAX
+        } else {
+            (1u128 << bits) - 1
+        };
         Some(start..=end)
     }
 
