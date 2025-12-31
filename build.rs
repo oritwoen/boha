@@ -88,9 +88,9 @@ struct ArweavePuzzle {
     id: String,
     address: String,
     status: String,
+    #[allow(dead_code)]
     prize_ar: Option<u64>,
 }
-
 
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
@@ -329,22 +329,20 @@ fn generate_gsmg(out_dir: &str) {
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
 }
 
-fn generate_arweave(out_dir:&str){
-    let dest_path =Path::new(out_dir).join("arweave_data.rs");
-    let toml_content =fs::read_to_string("data/arweave.toml").expect("Failed to read data/arweave.toml");
+fn generate_arweave(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("arweave_data.rs");
+    let toml_content =
+        fs::read_to_string("data/arweave.toml").expect("Failed to read data/arweave.toml");
     let data: ArweaveFile = toml::from_str(&toml_content).expect("Failed to parse arweave.toml");
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
-    let mut output =String::new();
+    let mut output = String::new();
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
-    for puzzle in &data.puzzles{
-        let status = match puzzle.status.as_str(){
-            "solved"=>"Status::Solved",
+    for puzzle in &data.puzzles {
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
             _ => "Status::Unsolved",
-        };
-        let prize = match puzzle.prize_ar{
-            Some(ar) => format!("Some({}.0)", ar),
-            None => "None".to_string(),
         };
         let source_url = default_source_url
             .map(|url| format!("Some(\"{}\")", url))
@@ -353,26 +351,21 @@ fn generate_arweave(out_dir:&str){
             r#"    Puzzle {{
         id: "arweave/{}",
         address: "{}",
-        address_type: AddressType::P2PKH,
+        address_type: AddressType::Arweave,
         status: {},
         pubkey: None,
         private_key: None,
         redeem_script: None,
         bits: None, 
-        prize_btc: {},
+        prize_btc: None,
         start_date: None,
         solve_date: None,
         source_url: {},
         }},
 "#,
-            puzzle.id,
-            puzzle.address,
-            status,
-            prize,
-            source_url,
+            puzzle.id, puzzle.address, status, source_url,
         ));
     }
     output.push_str("];\n");
     fs::write(&dest_path, output).expect("Failed to write arweave_data.rs");
-    
 }

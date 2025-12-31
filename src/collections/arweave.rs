@@ -1,4 +1,4 @@
-use crate::{AddressType, Puzzle,Status};
+use crate::{AddressType, Puzzle, Status};
 include!(concat!(env!("OUT_DIR"), "/arweave_data.rs"));
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
     PUZZLES.iter()
