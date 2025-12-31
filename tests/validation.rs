@@ -377,3 +377,75 @@ fn h160_matches_address() {
         }
     }
 }
+
+#[test]
+fn hash_collision_p2sh_has_script_hash() {
+    for puzzle in hash_collision::all() {
+        assert!(
+            puzzle.script_hash.is_some(),
+            "P2SH puzzle {} missing script_hash",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn b1000_no_script_hash() {
+    for puzzle in b1000::all() {
+        assert!(
+            puzzle.script_hash.is_none(),
+            "P2PKH puzzle {} should not have script_hash",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn gsmg_no_script_hash() {
+    let puzzle = gsmg::get();
+    assert!(
+        puzzle.script_hash.is_none(),
+        "P2PKH puzzle gsmg should not have script_hash"
+    );
+}
+
+#[test]
+fn script_hash_format_valid() {
+    let hex_regex = regex::Regex::new(r"^[0-9a-f]{40}$").unwrap();
+    for puzzle in boha::all() {
+        if let Some(script_hash) = puzzle.script_hash {
+            assert!(
+                hex_regex.is_match(script_hash),
+                "Invalid script_hash format for {}: {} (expected 40 lowercase hex chars)",
+                puzzle.id,
+                script_hash
+            );
+        }
+    }
+}
+
+fn redeem_script_to_script_hash(redeem_script_hex: &str) -> Option<String> {
+    use ripemd::Ripemd160;
+    use sha2::{Digest, Sha256};
+
+    let script_bytes = hex::decode(redeem_script_hex).ok()?;
+    let sha256_hash = Sha256::digest(&script_bytes);
+    let hash160 = Ripemd160::digest(&sha256_hash);
+    Some(hex::encode(hash160))
+}
+
+#[test]
+fn script_hash_matches_redeem_script() {
+    for puzzle in hash_collision::all() {
+        if let (Some(redeem_script), Some(script_hash)) = (puzzle.redeem_script, puzzle.script_hash)
+        {
+            let computed = redeem_script_to_script_hash(redeem_script)
+                .unwrap_or_else(|| panic!("Failed to compute script_hash for {}", puzzle.id));
+            assert_eq!(
+                script_hash, computed,
+                "script_hash mismatch for {}: stored {} != computed {}",
+                puzzle.id, script_hash, computed
+            );
+        }
+    }
+}
