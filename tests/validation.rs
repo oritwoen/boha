@@ -299,10 +299,14 @@ fn pubkey_format_matches_key_length() {
 }
 
 #[test]
-fn pubkey_struct_guarantees_format_presence() {
+fn pubkey_has_non_empty_key() {
     for puzzle in boha::all() {
         if let Some(pubkey) = &puzzle.pubkey {
-            assert!(!pubkey.key.is_empty());
+            assert!(
+                !pubkey.key.is_empty(),
+                "Puzzle {} has empty pubkey",
+                puzzle.id
+            );
         }
     }
 }

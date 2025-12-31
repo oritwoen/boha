@@ -1,4 +1,4 @@
-use boha::{b1000, gsmg, hash_collision, Chain, Puzzle, PubkeyFormat, Stats, Status};
+use boha::{b1000, gsmg, hash_collision, Chain, PubkeyFormat, Puzzle, Stats, Status};
 use clap::{Parser, Subcommand, ValueEnum};
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
