@@ -217,7 +217,7 @@ fn all_puzzles_have_start_date() {
 
 #[test]
 fn start_date_format_valid() {
-    let date_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2}$").unwrap();
+    let date_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$").unwrap();
     for puzzle in boha::all() {
         if let Some(date) = puzzle.start_date {
             assert!(
@@ -486,7 +486,7 @@ fn redeem_script_to_script_hash(redeem_script_hex: &str) -> Option<String> {
 
     let script_bytes = hex::decode(redeem_script_hex).ok()?;
     let sha256_hash = Sha256::digest(&script_bytes);
-    let hash160 = Ripemd160::digest(&sha256_hash);
+    let hash160 = Ripemd160::digest(sha256_hash);
     Some(hex::encode(hash160))
 }
 
@@ -504,4 +504,87 @@ fn script_hash_matches_redeem_script() {
             );
         }
     }
+}
+
+#[test]
+fn solved_puzzles_with_dates_have_solve_time() {
+    for puzzle in boha::all() {
+        if matches!(puzzle.status, Status::Solved | Status::Claimed)
+            && puzzle.start_date.is_some()
+            && puzzle.solve_date.is_some()
+        {
+            assert!(
+                puzzle.solve_time.is_some(),
+                "Solved puzzle {} with both start_date and solve_date should have solve_time",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn unsolved_puzzles_no_solve_time() {
+    for puzzle in boha::all() {
+        if matches!(puzzle.status, Status::Unsolved | Status::Swept) {
+            assert!(
+                puzzle.solve_time.is_none(),
+                "Unsolved/swept puzzle {} should not have solve_time",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn solve_time_is_reasonable() {
+    const SECONDS_PER_DAY: u64 = 86400;
+    const MAX_YEARS: u64 = 15;
+
+    for puzzle in boha::all() {
+        if let Some(solve_time) = puzzle.solve_time {
+            let max_seconds = MAX_YEARS * 365 * SECONDS_PER_DAY;
+            assert!(
+                solve_time <= max_seconds,
+                "Puzzle {} solve_time {} seconds seems too large (>{} years)",
+                puzzle.id,
+                solve_time,
+                MAX_YEARS
+            );
+        }
+    }
+}
+
+#[test]
+fn b1000_66_solve_time_correct() {
+    let p66 = b1000::get(66).unwrap();
+    assert_eq!(p66.start_date, Some("2015-01-15 18:07:14"));
+    assert_eq!(p66.solve_date, Some("2025-02-19 04:19:52"));
+    assert_eq!(p66.solve_time, Some(318593558));
+    let formatted = p66.solve_time_formatted().unwrap();
+    assert!(
+        formatted.contains('y'),
+        "Should contain years: {}",
+        formatted
+    );
+}
+
+#[test]
+fn solve_time_formatted_works() {
+    let p22 = b1000::get(22).unwrap();
+    assert_eq!(p22.solve_time, Some(14891));
+    let formatted = p22.solve_time_formatted().unwrap();
+    assert!(
+        formatted.contains('h'),
+        "Should contain hours: {}",
+        formatted
+    );
+
+    let p66 = b1000::get(66).unwrap();
+    assert!(p66.solve_time_formatted().is_some());
+    let formatted = p66.solve_time_formatted().unwrap();
+    assert!(
+        formatted.contains('y'),
+        "Should contain years: {}",
+        formatted
+    );
 }
