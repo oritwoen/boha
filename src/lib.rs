@@ -5,8 +5,9 @@ mod puzzle;
 pub mod balance;
 
 pub use collections::{b1000, gsmg, hash_collision};
-pub use puzzle::{AddressType, IntoPuzzleNum, Puzzle, Status};
+pub use puzzle::{AddressType, Chain, IntoPuzzleNum, Puzzle, Status};
 
+use std::collections::HashMap;
 use thiserror::Error;
 
 #[derive(Debug, Error)]
@@ -55,8 +56,8 @@ pub struct Stats {
     pub claimed: usize,
     pub swept: usize,
     pub with_pubkey: usize,
-    pub total_btc: f64,
-    pub unsolved_btc: f64,
+    pub total_prize: HashMap<Chain, f64>,
+    pub unsolved_prize: HashMap<Chain, f64>,
 }
 
 pub fn stats() -> Stats {
@@ -73,10 +74,10 @@ pub fn stats() -> Stats {
         if puzzle.has_pubkey() {
             stats.with_pubkey += 1;
         }
-        if let Some(btc) = puzzle.prize_btc {
-            stats.total_btc += btc;
+        if let Some(prize) = puzzle.prize {
+            *stats.total_prize.entry(puzzle.chain).or_insert(0.0) += prize;
             if puzzle.status == Status::Unsolved {
-                stats.unsolved_btc += btc;
+                *stats.unsolved_prize.entry(puzzle.chain).or_insert(0.0) += prize;
             }
         }
     }

@@ -2,6 +2,41 @@
 
 use serde::Serialize;
 
+/// Blockchain network for a puzzle.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum Chain {
+    Bitcoin,
+    Ethereum,
+    Litecoin,
+    Monero,
+    Decred,
+}
+
+impl Chain {
+    /// Currency symbol (e.g., "BTC", "ETH").
+    pub fn symbol(&self) -> &'static str {
+        match self {
+            Chain::Bitcoin => "BTC",
+            Chain::Ethereum => "ETH",
+            Chain::Litecoin => "LTC",
+            Chain::Monero => "XMR",
+            Chain::Decred => "DCR",
+        }
+    }
+
+    /// Full chain name.
+    pub fn name(&self) -> &'static str {
+        match self {
+            Chain::Bitcoin => "Bitcoin",
+            Chain::Ethereum => "Ethereum",
+            Chain::Litecoin => "Litecoin",
+            Chain::Monero => "Monero",
+            Chain::Decred => "Decred",
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Status {
@@ -44,51 +79,36 @@ impl AddressType {
     }
 }
 
-/// A crypto puzzle, bounty, or challenge.
 #[derive(Debug, Clone, Serialize)]
 pub struct Puzzle {
-    /// Unique identifier (e.g., "b1000/66", "peter_todd/sha256")
     pub id: &'static str,
-    /// Crypto address
+    pub chain: Chain,
     pub address: &'static str,
-    /// Address type
-    pub address_type: AddressType,
-    /// Current status
+    pub address_type: Option<AddressType>,
     pub status: Status,
-    /// Compressed public key (hex) if known
     pub pubkey: Option<&'static str>,
-    /// Private key (hex) if solved and public
     pub private_key: Option<&'static str>,
-    /// Redeem script (hex) for P2SH addresses
     pub redeem_script: Option<&'static str>,
     pub bits: Option<u16>,
-    /// Prize in BTC
-    pub prize_btc: Option<f64>,
-    /// Date when puzzle was funded (YYYY-MM-DD)
+    pub prize: Option<f64>,
     pub start_date: Option<&'static str>,
-    /// Date when solved (YYYY-MM-DD)
     pub solve_date: Option<&'static str>,
-    /// URL to the source/documentation of this puzzle
     pub source_url: Option<&'static str>,
 }
 
 impl Puzzle {
-    /// Returns true if this puzzle has a known public key.
     pub fn has_pubkey(&self) -> bool {
         self.pubkey.is_some()
     }
 
-    /// Returns true if this puzzle is solved and private key is known.
     pub fn has_private_key(&self) -> bool {
         self.private_key.is_some()
     }
 
-    /// Returns the collection name (first part of id).
     pub fn collection(&self) -> &str {
         self.id.split('/').next().unwrap_or(self.id)
     }
 
-    /// Returns the puzzle number/name within collection.
     pub fn name(&self) -> &str {
         self.id.split('/').nth(1).unwrap_or("")
     }
