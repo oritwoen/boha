@@ -703,13 +703,15 @@ fn transaction_txid_format_valid() {
     let hex_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
     for puzzle in boha::all() {
         for tx in puzzle.transactions {
-            assert!(
-                hex_regex.is_match(tx.txid),
-                "Invalid txid format for {:?} transaction in {}: {}",
-                tx.tx_type,
-                puzzle.id,
-                tx.txid
-            );
+            if let Some(txid) = tx.txid {
+                assert!(
+                    hex_regex.is_match(txid),
+                    "Invalid txid format for {:?} transaction in {}: {}",
+                    tx.tx_type,
+                    puzzle.id,
+                    txid
+                );
+            }
         }
     }
 }

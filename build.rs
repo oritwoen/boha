@@ -25,7 +25,7 @@ struct AuthorConfig {
 struct TomlTransaction {
     #[serde(rename = "type")]
     tx_type: String,
-    txid: String,
+    txid: Option<String>,
     date: Option<String>,
     amount: Option<f64>,
 }
@@ -134,6 +134,10 @@ fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
                 "claim" => "TransactionType::Claim",
                 other => panic!("Unknown transaction type: {}", other),
             };
+            let txid = match &t.txid {
+                Some(id) => format!("Some(\"{}\")", id),
+                None => "None".to_string(),
+            };
             let date = match &t.date {
                 Some(d) => format!("Some(\"{}\")", d),
                 None => "None".to_string(),
@@ -143,8 +147,8 @@ fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
                 None => "None".to_string(),
             };
             format!(
-                "Transaction {{ tx_type: {}, txid: \"{}\", date: {}, amount: {} }}",
-                tx_type, t.txid, date, amount
+                "Transaction {{ tx_type: {}, txid: {}, date: {}, amount: {} }}",
+                tx_type, txid, date, amount
             )
         })
         .collect();

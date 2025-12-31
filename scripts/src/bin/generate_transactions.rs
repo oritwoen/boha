@@ -78,7 +78,7 @@ fn categorize_transactions(
     let mut result = Vec::new();
 
     let mut sorted_txs = txs;
-    sorted_txs.sort_by_key(|tx| tx.status.block_time.unwrap_or(0));
+    sorted_txs.sort_by_key(|tx| tx.status.block_time.unwrap_or(i64::MAX));
 
     let mut is_first_incoming = true;
     let mut last_outgoing: Option<&MempoolTx> = None;

@@ -492,9 +492,10 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 .map(|a| format!(" ({:.8} {})", a, p.chain.symbol()))
                 .unwrap_or_default();
             let date_str = tx.date.unwrap_or("-");
+            let txid_str = tx.txid.map(truncate_txid).unwrap_or_else(|| "-".to_string());
             rows.push(KeyValueRow {
                 field: format_transaction_type(tx.tx_type),
-                value: format!("{} {}{}", truncate_txid(tx.txid), date_str, amount_str),
+                value: format!("{} {}{}", txid_str, date_str, amount_str),
             });
         }
     }

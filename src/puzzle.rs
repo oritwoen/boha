@@ -62,7 +62,7 @@ pub enum TransactionType {
 #[derive(Debug, Clone, Copy, Serialize)]
 pub struct Transaction {
     pub tx_type: TransactionType,
-    pub txid: &'static str,
+    pub txid: Option<&'static str>,
     pub date: Option<&'static str>,
     pub amount: Option<f64>,
 }
