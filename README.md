@@ -87,7 +87,7 @@ println!("Address: {}", p66.address);
 println!("H160: {}", p66.h160.unwrap());
 println!("Funded: {}", p66.start_date.unwrap_or("unknown"));
 
-let range = b1000::key_range(66).unwrap();
+let range = p66.key_range().unwrap();
 println!("Range: 0x{:x} - 0x{:x}", range.start(), range.end());
 
 let unsolved: Vec<_> = b1000::all()
