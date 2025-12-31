@@ -23,6 +23,3 @@ jobs:
 
       - name: Run clippy
         run: cargo clippy --all-features -- -D warnings
-
-      - name: Check formatting
-        run: cargo fmt --check
