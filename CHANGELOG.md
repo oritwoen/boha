@@ -1,3 +1,9 @@
+## [0.6.0] - 2025-12-31
+
+### Features
+
+- *(puzzle)* Generalize key_range (#30)
+- *(puzzle)* Add solve_time field (#32)
 ## [0.5.0] - 2025-12-31
 
 ### Features
@@ -13,6 +19,10 @@
 ### Documentation
 
 - Add gsmg collection to AGENTS.md
+
+### Miscellaneous Tasks
+
+- *(release)* V0.5.0
 ## [0.4.0] - 2025-12-31
 
 ### Features
