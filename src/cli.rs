@@ -275,11 +275,19 @@ fn print_puzzle_detail_table(p: &Puzzle) {
             field: "Address".to_string(),
             value: p.address.to_string(),
         },
-        KeyValueRow {
-            field: "Status".to_string(),
-            value: status_colored,
-        },
     ];
+
+    if let Some(h160) = p.h160 {
+        rows.push(KeyValueRow {
+            field: "H160".to_string(),
+            value: h160.to_string(),
+        });
+    }
+
+    rows.push(KeyValueRow {
+        field: "Status".to_string(),
+        value: status_colored,
+    });
 
     if let Some(bits) = p.bits {
         rows.push(KeyValueRow {

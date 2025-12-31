@@ -81,6 +81,7 @@ use boha::{b1000, gsmg, hash_collision, Status};
 
 let p66 = b1000::get(66).unwrap();
 println!("Address: {}", p66.address);
+println!("H160: {}", p66.h160.unwrap());
 println!("Funded: {}", p66.start_date.unwrap_or("unknown"));
 
 let range = b1000::key_range(66).unwrap();
@@ -161,7 +162,7 @@ Originally 5 BTC, prize halves with each Bitcoin halving.
 
 All puzzle data is embedded at compile time from TOML files in `data/`.
 
-Each puzzle includes: address, status, BTC amount, public key (if exposed), solve date (if solved), and start date (when funded).
+Each puzzle includes: address, h160 (Hash160 for P2PKH addresses), status, BTC amount, public key (if exposed), solve date (if solved), and start date (when funded).
 
 ## License
 
