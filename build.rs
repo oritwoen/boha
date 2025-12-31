@@ -24,6 +24,7 @@ struct Btc1000Puzzle {
     has_pubkey: Option<bool>,
     private_key: Option<String>,
     public_key: Option<String>,
+    pubkey_format: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
     source_url: Option<String>,
@@ -68,6 +69,8 @@ struct GsmgPuzzle {
     address: String,
     status: String,
     btc: Option<f64>,
+    public_key: Option<String>,
+    pubkey_format: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
     source_url: Option<String>,
@@ -106,9 +109,18 @@ fn generate_b1000(out_dir: &str) {
             _ => "Status::Unsolved",
         };
 
-        let pubkey = match &puzzle.public_key {
-            Some(pk) => format!("Some(\"{}\")", pk),
-            None => "None".to_string(),
+        let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
+            (Some(pk), Some(fmt)) => {
+                let format = match fmt.as_str() {
+                    "compressed" => "PubkeyFormat::Compressed",
+                    "uncompressed" => "PubkeyFormat::Uncompressed",
+                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, puzzle.bits),
+                };
+                format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
+            }
+            (None, None) => "None".to_string(),
+            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", puzzle.bits),
+            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", puzzle.bits),
         };
 
         let private_key = match &puzzle.private_key {
@@ -289,6 +301,20 @@ fn generate_gsmg(out_dir: &str) {
         .map(|url| format!("Some(\"{}\")", url))
         .unwrap_or_else(|| "None".to_string());
 
+    let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
+        (Some(pk), Some(fmt)) => {
+            let format = match fmt.as_str() {
+                "compressed" => "PubkeyFormat::Compressed",
+                "uncompressed" => "PubkeyFormat::Uncompressed",
+                _ => panic!("Invalid pubkey_format '{}' for gsmg", fmt),
+            };
+            format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
+        }
+        (None, None) => "None".to_string(),
+        (Some(_), None) => panic!("gsmg has public_key but no pubkey_format"),
+        (None, Some(_)) => panic!("gsmg has pubkey_format but no public_key"),
+    };
+
     let output = format!(
         r#"static PUZZLE: Puzzle = Puzzle {{
     id: "gsmg",
@@ -296,7 +322,7 @@ fn generate_gsmg(out_dir: &str) {
     address: "{}",
     address_type: Some(AddressType::P2PKH),
     status: {},
-    pubkey: None,
+    pubkey: {},
     private_key: None,
     redeem_script: None,
     bits: None,
@@ -306,7 +332,7 @@ fn generate_gsmg(out_dir: &str) {
     source_url: {},
 }};
 "#,
-        puzzle.address, status, prize, start_date, solve_date, source_url,
+        puzzle.address, status, pubkey, prize, start_date, solve_date, source_url,
     );
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");

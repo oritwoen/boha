@@ -1,4 +1,4 @@
-use crate::{AddressType, Chain, Puzzle, Status};
+use crate::{AddressType, Chain, Pubkey, PubkeyFormat, Puzzle, Status};
 
 include!(concat!(env!("OUT_DIR"), "/gsmg_data.rs"));
 

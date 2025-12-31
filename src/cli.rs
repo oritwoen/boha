@@ -1,4 +1,4 @@
-use boha::{b1000, gsmg, hash_collision, Chain, Puzzle, Stats, Status};
+use boha::{b1000, gsmg, hash_collision, Chain, Puzzle, PubkeyFormat, Stats, Status};
 use clap::{Parser, Subcommand, ValueEnum};
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
@@ -293,10 +293,18 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         });
     }
 
-    if let Some(pk) = p.pubkey {
+    if let Some(pubkey) = &p.pubkey {
         rows.push(KeyValueRow {
             field: "Pubkey".to_string(),
-            value: pk.to_string(),
+            value: pubkey.key.to_string(),
+        });
+        rows.push(KeyValueRow {
+            field: "Pubkey Format".to_string(),
+            value: match pubkey.format {
+                PubkeyFormat::Compressed => "compressed",
+                PubkeyFormat::Uncompressed => "uncompressed",
+            }
+            .to_string(),
         });
     }
 
@@ -514,7 +522,7 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
     let (address, pubkey) = if let Ok(p) = b1000::get(puzzle_number) {
         (
             Some(p.address.to_string()),
-            p.pubkey.map(|pk| pk.to_string()),
+            p.pubkey.map(|pk| pk.key.to_string()),
         )
     } else {
         (None, None)
