@@ -1,8 +1,18 @@
+## [0.4.0] - 2025-12-31
+
+### Features
+
+- *(puzzle)* Add Chain enum (#15)
+- *(puzzle)* Add pubkey_format field (#16)
 ## [0.3.0] - 2025-12-31
 
 ### Features
 
 - *(collections)* Add GSMG puzzle collection (#10)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.3.0
 ## [0.2.0] - 2025-12-30
 
 ### Features
