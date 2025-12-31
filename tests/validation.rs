@@ -1,4 +1,4 @@
-use boha::{b1000, gsmg, hash_collision, AddressType, Status};
+use boha::{b1000, gsmg, hash_collision, AddressType, Chain, Status};
 
 #[test]
 fn b1000_has_256_puzzles() {
@@ -105,7 +105,7 @@ fn hash_collision_get_by_name() {
 #[test]
 fn hash_collision_all_p2sh() {
     for puzzle in hash_collision::all() {
-        assert_eq!(puzzle.address_type, AddressType::P2SH);
+        assert_eq!(puzzle.address_type, Some(AddressType::P2SH));
         assert!(puzzle.redeem_script.is_some());
     }
 }
@@ -121,7 +121,8 @@ fn gsmg_get_returns_correct_puzzle() {
     assert_eq!(puzzle.id, "gsmg");
     assert_eq!(puzzle.address, "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe");
     assert_eq!(puzzle.status, Status::Unsolved);
-    assert_eq!(puzzle.address_type, AddressType::P2PKH);
+    assert_eq!(puzzle.address_type, Some(AddressType::P2PKH));
+    assert_eq!(puzzle.chain, Chain::Bitcoin);
 }
 
 #[test]
@@ -139,7 +140,12 @@ fn stats_are_reasonable() {
     assert!(stats.solved > 50);
     assert!(stats.unsolved > 50);
     assert!(stats.swept > 90);
-    assert!(stats.total_btc > 100.0);
+    let total_btc = stats
+        .total_prize
+        .get(&Chain::Bitcoin)
+        .copied()
+        .unwrap_or(0.0);
+    assert!(total_btc > 100.0);
 }
 
 #[test]
@@ -195,4 +201,48 @@ fn source_url_format_valid() {
             );
         }
     }
+}
+
+#[test]
+fn all_current_puzzles_are_bitcoin() {
+    for puzzle in boha::all() {
+        assert_eq!(
+            puzzle.chain,
+            Chain::Bitcoin,
+            "Puzzle {} should be Bitcoin",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn b1000_is_bitcoin() {
+    for puzzle in b1000::all() {
+        assert_eq!(puzzle.chain, Chain::Bitcoin);
+    }
+}
+
+#[test]
+fn hash_collision_is_bitcoin() {
+    for puzzle in hash_collision::all() {
+        assert_eq!(puzzle.chain, Chain::Bitcoin);
+    }
+}
+
+#[test]
+fn chain_symbol_correct() {
+    assert_eq!(Chain::Bitcoin.symbol(), "BTC");
+    assert_eq!(Chain::Ethereum.symbol(), "ETH");
+    assert_eq!(Chain::Litecoin.symbol(), "LTC");
+    assert_eq!(Chain::Monero.symbol(), "XMR");
+    assert_eq!(Chain::Decred.symbol(), "DCR");
+}
+
+#[test]
+fn chain_name_correct() {
+    assert_eq!(Chain::Bitcoin.name(), "Bitcoin");
+    assert_eq!(Chain::Ethereum.name(), "Ethereum");
+    assert_eq!(Chain::Litecoin.name(), "Litecoin");
+    assert_eq!(Chain::Monero.name(), "Monero");
+    assert_eq!(Chain::Decred.name(), "Decred");
 }

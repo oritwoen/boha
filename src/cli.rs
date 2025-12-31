@@ -1,5 +1,19 @@
-use boha::{b1000, gsmg, hash_collision, Puzzle, Stats, Status};
+use boha::{b1000, gsmg, hash_collision, Chain, Puzzle, Stats, Status};
 use clap::{Parser, Subcommand, ValueEnum};
+
+fn parse_chain(s: &str) -> Result<Chain, String> {
+    match s.to_lowercase().as_str() {
+        "bitcoin" | "btc" => Ok(Chain::Bitcoin),
+        "ethereum" | "eth" => Ok(Chain::Ethereum),
+        "litecoin" | "ltc" => Ok(Chain::Litecoin),
+        "monero" | "xmr" => Ok(Chain::Monero),
+        "decred" | "dcr" => Ok(Chain::Decred),
+        _ => Err(format!(
+            "Unknown chain: {}. Use: bitcoin, ethereum, litecoin, monero, decred",
+            s
+        )),
+    }
+}
 use owo_colors::OwoColorize;
 use serde::Serialize;
 use tabled::{settings::Style, Table, Tabled};
@@ -42,6 +56,9 @@ enum Commands {
 
         #[arg(long, name = "with-pubkey")]
         with_pubkey: bool,
+
+        #[arg(long, value_parser = parse_chain)]
+        chain: Option<Chain>,
     },
 
     /// Show puzzle details
@@ -62,12 +79,14 @@ enum Commands {
 struct PuzzleTableRow {
     #[tabled(rename = "ID")]
     id: String,
+    #[tabled(rename = "Chain")]
+    chain: String,
     #[tabled(rename = "Address")]
     address: String,
     #[tabled(rename = "Status")]
     status: String,
-    #[tabled(rename = "BTC")]
-    btc: String,
+    #[tabled(rename = "Prize")]
+    prize: String,
 }
 
 impl PuzzleTableRow {
@@ -78,15 +97,16 @@ impl PuzzleTableRow {
             Status::Claimed => "claimed".cyan().to_string(),
             Status::Swept => "swept".red().to_string(),
         };
-        let btc = p
-            .prize_btc
-            .map_or("-".dimmed().to_string(), |b| format!("{:.4}", b));
+        let prize = p.prize.map_or("-".dimmed().to_string(), |v| {
+            format!("{:.4} {}", v, p.chain.symbol())
+        });
 
         Self {
             id: p.id.to_string(),
+            chain: p.chain.symbol().to_string(),
             address: p.address.to_string(),
             status,
-            btc,
+            prize,
         }
     }
 }
@@ -248,6 +268,10 @@ fn print_puzzle_detail_table(p: &Puzzle) {
             value: p.id.to_string().bright_white().to_string(),
         },
         KeyValueRow {
+            field: "Chain".to_string(),
+            value: p.chain.name().to_string(),
+        },
+        KeyValueRow {
             field: "Address".to_string(),
             value: p.address.to_string(),
         },
@@ -290,10 +314,12 @@ fn print_puzzle_detail_table(p: &Puzzle) {
         });
     }
 
-    if let Some(btc) = p.prize_btc {
+    if let Some(prize) = p.prize {
         rows.push(KeyValueRow {
             field: "Prize".to_string(),
-            value: format!("{} BTC", btc).bright_green().to_string(),
+            value: format!("{} {}", prize, p.chain.symbol())
+                .bright_green()
+                .to_string(),
         });
     }
 
@@ -323,7 +349,7 @@ fn print_puzzle_detail_table(p: &Puzzle) {
 }
 
 fn print_stats_table(stats: &Stats) {
-    let rows = vec![
+    let mut rows = vec![
         KeyValueRow {
             field: "Total puzzles".to_string(),
             value: stats.total.to_string().bright_white().to_string(),
@@ -348,17 +374,25 @@ fn print_stats_table(stats: &Stats) {
             field: "With public key".to_string(),
             value: stats.with_pubkey.to_string(),
         },
-        KeyValueRow {
-            field: "Total BTC".to_string(),
-            value: format!("{:.2}", stats.total_btc),
-        },
-        KeyValueRow {
-            field: "Unsolved BTC".to_string(),
-            value: format!("{:.2}", stats.unsolved_btc)
-                .bright_yellow()
-                .to_string(),
-        },
     ];
+
+    let mut total_prizes: Vec<_> = stats.total_prize.iter().collect();
+    total_prizes.sort_by_key(|(chain, _)| chain.symbol());
+    for (chain, amount) in total_prizes {
+        rows.push(KeyValueRow {
+            field: format!("Total {}", chain.symbol()),
+            value: format!("{:.2}", amount),
+        });
+    }
+
+    let mut unsolved_prizes: Vec<_> = stats.unsolved_prize.iter().collect();
+    unsolved_prizes.sort_by_key(|(chain, _)| chain.symbol());
+    for (chain, amount) in unsolved_prizes {
+        rows.push(KeyValueRow {
+            field: format!("Unsolved {}", chain.symbol()),
+            value: format!("{:.2}", amount).bright_yellow().to_string(),
+        });
+    }
 
     let table = Table::new(rows).with(Style::rounded()).to_string();
     println!("{}", table);
@@ -438,6 +472,7 @@ fn cmd_list(
     unsolved: bool,
     solved: bool,
     with_pubkey: bool,
+    chain_filter: Option<Chain>,
     format: OutputFormat,
 ) {
     let puzzles: Vec<&Puzzle> = match collection {
@@ -452,6 +487,7 @@ fn cmd_list(
         .filter(|p| !unsolved || p.status == Status::Unsolved)
         .filter(|p| !solved || p.status == Status::Solved)
         .filter(|p| !with_pubkey || p.pubkey.is_some())
+        .filter(|p| chain_filter.is_none_or(|c| p.chain == c))
         .collect();
 
     output_puzzles(&filtered, format);
@@ -550,7 +586,15 @@ fn run_sync(cli: Cli) {
             unsolved,
             solved,
             with_pubkey,
-        } => cmd_list(&collection, unsolved, solved, with_pubkey, cli.output),
+            chain,
+        } => cmd_list(
+            &collection,
+            unsolved,
+            solved,
+            with_pubkey,
+            chain,
+            cli.output,
+        ),
         Commands::Show { id } => cmd_show(&id, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
@@ -566,7 +610,15 @@ fn run(cli: Cli) {
             unsolved,
             solved,
             with_pubkey,
-        } => cmd_list(&collection, unsolved, solved, with_pubkey, cli.output),
+            chain,
+        } => cmd_list(
+            &collection,
+            unsolved,
+            solved,
+            with_pubkey,
+            chain,
+            cli.output,
+        ),
         Commands::Show { id } => cmd_show(&id, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
