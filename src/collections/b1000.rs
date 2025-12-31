@@ -4,7 +4,9 @@
 
 use std::ops::RangeInclusive;
 
-use crate::{AddressType, Chain, Error, IntoPuzzleNum, Puzzle, Result, Status};
+use crate::{
+    AddressType, Chain, Error, IntoPuzzleNum, Pubkey, PubkeyFormat, Puzzle, Result, Status,
+};
 
 include!(concat!(env!("OUT_DIR"), "/b1000_data.rs"));
 

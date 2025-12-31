@@ -1,4 +1,4 @@
-use boha::{b1000, gsmg, hash_collision, AddressType, Chain, Status};
+use boha::{b1000, gsmg, hash_collision, AddressType, Chain, PubkeyFormat, Status};
 
 #[test]
 fn b1000_has_256_puzzles() {
@@ -245,4 +245,68 @@ fn chain_name_correct() {
     assert_eq!(Chain::Litecoin.name(), "Litecoin");
     assert_eq!(Chain::Monero.name(), "Monero");
     assert_eq!(Chain::Decred.name(), "Decred");
+}
+
+#[test]
+fn gsmg_has_uncompressed_pubkey() {
+    let puzzle = gsmg::get();
+    let pubkey = puzzle.pubkey.expect("GSMG should have pubkey");
+    assert_eq!(pubkey.format, PubkeyFormat::Uncompressed);
+    assert_eq!(
+        pubkey.key,
+        "04f4d1bbd91e65e2a019566a17574e97dae908b784b388891848007e4f55d5a4649c73d25fc5ed8fd7227cab0be4e576c0c6404db5aa546286563e4be12bf33559"
+    );
+}
+
+#[test]
+fn b1000_pubkeys_are_compressed() {
+    for puzzle in b1000::all() {
+        if let Some(pubkey) = &puzzle.pubkey {
+            assert_eq!(
+                pubkey.format,
+                PubkeyFormat::Compressed,
+                "b1000 puzzle {} should have compressed pubkey",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn pubkey_format_matches_key_length() {
+    for puzzle in boha::all() {
+        if let Some(pubkey) = &puzzle.pubkey {
+            match pubkey.format {
+                PubkeyFormat::Compressed => {
+                    assert_eq!(
+                        pubkey.key.len(),
+                        66,
+                        "Compressed pubkey should be 66 hex chars: {}",
+                        puzzle.id
+                    );
+                }
+                PubkeyFormat::Uncompressed => {
+                    assert_eq!(
+                        pubkey.key.len(),
+                        130,
+                        "Uncompressed pubkey should be 130 hex chars: {}",
+                        puzzle.id
+                    );
+                }
+            }
+        }
+    }
+}
+
+#[test]
+fn pubkey_has_non_empty_key() {
+    for puzzle in boha::all() {
+        if let Some(pubkey) = &puzzle.pubkey {
+            assert!(
+                !pubkey.key.is_empty(),
+                "Puzzle {} has empty pubkey",
+                puzzle.id
+            );
+        }
+    }
 }

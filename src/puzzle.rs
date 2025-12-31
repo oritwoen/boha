@@ -65,7 +65,6 @@ pub enum AddressType {
 }
 
 impl AddressType {
-    /// Detect address type from address string.
     pub fn from_address(address: &str) -> Option<Self> {
         if address.starts_with('1') {
             Some(AddressType::P2PKH)
@@ -79,6 +78,19 @@ impl AddressType {
     }
 }
 
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+#[serde(rename_all = "lowercase")]
+pub enum PubkeyFormat {
+    Compressed,
+    Uncompressed,
+}
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct Pubkey {
+    pub key: &'static str,
+    pub format: PubkeyFormat,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct Puzzle {
     pub id: &'static str,
@@ -86,7 +98,7 @@ pub struct Puzzle {
     pub address: &'static str,
     pub address_type: Option<AddressType>,
     pub status: Status,
-    pub pubkey: Option<&'static str>,
+    pub pubkey: Option<Pubkey>,
     pub private_key: Option<&'static str>,
     pub redeem_script: Option<&'static str>,
     pub bits: Option<u16>,
@@ -99,6 +111,10 @@ pub struct Puzzle {
 impl Puzzle {
     pub fn has_pubkey(&self) -> bool {
         self.pubkey.is_some()
+    }
+
+    pub fn pubkey_str(&self) -> Option<&'static str> {
+        self.pubkey.map(|p| p.key)
     }
 
     pub fn has_private_key(&self) -> bool {
