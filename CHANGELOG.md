@@ -1,9 +1,18 @@
+## [0.3.0] - 2025-12-31
+
+### Features
+
+- *(collections)* Add GSMG puzzle collection (#10)
 ## [0.2.0] - 2025-12-30
 
 ### Features
 
 - *(puzzle)* Add start_date field (#7)
 - *(puzzle)* Add source_url field (#8)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.2.0
 ## [0.1.0] - 2025-12-30
 
 ### Bug Fixes
