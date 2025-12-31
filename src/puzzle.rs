@@ -88,6 +88,26 @@ pub enum PubkeyFormat {
     Uncompressed,
 }
 
+/// Describes how a puzzle's private key is derived or constrained.
+#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize)]
+#[serde(tag = "type", rename_all = "snake_case")]
+pub enum KeySource {
+    /// Unknown key derivation method
+    Unknown,
+
+    /// Direct private key in bit range [2^(bits-1), 2^bits - 1]
+    Direct { bits: u16 },
+
+    /// HD wallet derivation from seed/mnemonic
+    Derived { path: &'static str },
+
+    /// P2SH script-based (collision bounties)
+    Script {
+        redeem_script: &'static str,
+        script_hash: Option<&'static str>,
+    },
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub struct Pubkey {
     pub key: &'static str,
@@ -104,9 +124,7 @@ pub struct Puzzle {
     pub status: Status,
     pub pubkey: Option<Pubkey>,
     pub private_key: Option<&'static str>,
-    pub redeem_script: Option<&'static str>,
-    pub script_hash: Option<&'static str>,
-    pub bits: Option<u16>,
+    pub key_source: KeySource,
     pub prize: Option<f64>,
     pub start_date: Option<&'static str>,
     pub solve_date: Option<&'static str>,
@@ -182,7 +200,10 @@ impl Puzzle {
     }
 
     pub fn key_range(&self) -> Option<RangeInclusive<u128>> {
-        let bits = self.bits?;
+        let bits = match self.key_source {
+            KeySource::Direct { bits } => bits,
+            _ => return None,
+        };
         if !(1..=128).contains(&bits) {
             return None;
         }
@@ -196,7 +217,10 @@ impl Puzzle {
     }
 
     pub fn key_range_big(&self) -> Option<(BigUint, BigUint)> {
-        let bits = self.bits?;
+        let bits = match self.key_source {
+            KeySource::Direct { bits } => bits,
+            _ => return None,
+        };
         if !(1..=256).contains(&bits) {
             return None;
         }
