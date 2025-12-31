@@ -1,12 +1,22 @@
 [package]
-name = "fetch-start-dates"
+name = "boha-scripts"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+bs58 = "0.5"
 chrono = "0.4"
+hex = "0.4"
 reqwest = { version = "0.12", features = ["json"] }
 serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["full"] }
 toml = "0.8"
 toml_edit = "0.22"
+
+[[bin]]
+name = "fetch-start-dates"
+path = "src/main.rs"
+
+[[bin]]
+name = "generate-h160"
+path = "src/bin/generate_h160.rs"

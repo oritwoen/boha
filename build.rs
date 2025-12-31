@@ -18,6 +18,7 @@ struct Btc1000File {
 struct Btc1000Puzzle {
     bits: u16,
     address: String,
+    h160: Option<String>,
     btc: Option<f64>,
     status: String,
     #[allow(dead_code)]
@@ -67,6 +68,7 @@ struct GsmgFile {
 #[derive(Debug, Deserialize)]
 struct GsmgPuzzle {
     address: String,
+    h160: Option<String>,
     status: String,
     btc: Option<f64>,
     public_key: Option<String>,
@@ -150,12 +152,18 @@ fn generate_b1000(out_dir: &str) {
             .map(|url| format!("Some(\"{}\")", url))
             .unwrap_or_else(|| "None".to_string());
 
+        let h160 = match &puzzle.h160 {
+            Some(h) => format!("Some(\"{}\")", h),
+            None => "None".to_string(),
+        };
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "b1000/{}",
         chain: Chain::Bitcoin,
         address: "{}",
         address_type: Some(AddressType::P2PKH),
+        h160: {},
         status: {},
         pubkey: {},
         private_key: {},
@@ -169,6 +177,7 @@ fn generate_b1000(out_dir: &str) {
 "#,
             puzzle.bits,
             puzzle.address,
+            h160,
             status,
             pubkey,
             private_key,
@@ -235,6 +244,7 @@ fn generate_hash_collision(out_dir: &str) {
         chain: Chain::Bitcoin,
         address: "{}",
         address_type: Some(AddressType::P2SH),
+        h160: None,
         status: {},
         pubkey: None,
         private_key: None,
@@ -315,12 +325,18 @@ fn generate_gsmg(out_dir: &str) {
         (None, Some(_)) => panic!("gsmg has pubkey_format but no public_key"),
     };
 
+    let h160 = match &puzzle.h160 {
+        Some(h) => format!("Some(\"{}\")", h),
+        None => "None".to_string(),
+    };
+
     let output = format!(
         r#"static PUZZLE: Puzzle = Puzzle {{
     id: "gsmg",
     chain: Chain::Bitcoin,
     address: "{}",
     address_type: Some(AddressType::P2PKH),
+    h160: {},
     status: {},
     pubkey: {},
     private_key: None,
@@ -332,7 +348,7 @@ fn generate_gsmg(out_dir: &str) {
     source_url: {},
 }};
 "#,
-        puzzle.address, status, pubkey, prize, start_date, solve_date, source_url,
+        puzzle.address, h160, status, pubkey, prize, start_date, solve_date, source_url,
     );
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");

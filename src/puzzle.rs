@@ -97,6 +97,7 @@ pub struct Puzzle {
     pub chain: Chain,
     pub address: &'static str,
     pub address_type: Option<AddressType>,
+    pub h160: Option<&'static str>,
     pub status: Status,
     pub pubkey: Option<Pubkey>,
     pub private_key: Option<&'static str>,

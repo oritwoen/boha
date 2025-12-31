@@ -310,3 +310,70 @@ fn pubkey_has_non_empty_key() {
         }
     }
 }
+
+#[test]
+fn b1000_p2pkh_has_h160() {
+    for puzzle in b1000::all() {
+        assert!(
+            puzzle.h160.is_some(),
+            "b1000 puzzle {} missing h160",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn gsmg_has_h160() {
+    let puzzle = gsmg::get();
+    assert!(puzzle.h160.is_some(), "gsmg puzzle missing h160");
+}
+
+#[test]
+fn hash_collision_no_h160() {
+    for puzzle in hash_collision::all() {
+        assert!(
+            puzzle.h160.is_none(),
+            "hash_collision puzzle {} should not have h160 (P2SH)",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn h160_format_valid() {
+    let hex_regex = regex::Regex::new(r"^[0-9a-f]{40}$").unwrap();
+    for puzzle in boha::all() {
+        if let Some(h160) = puzzle.h160 {
+            assert!(
+                hex_regex.is_match(h160),
+                "Invalid h160 format for {}: {} (expected 40 lowercase hex chars)",
+                puzzle.id,
+                h160
+            );
+        }
+    }
+}
+
+fn address_to_h160(address: &str) -> Option<String> {
+    let decoded = bs58::decode(address).into_vec().ok()?;
+    if decoded.len() != 25 {
+        return None;
+    }
+    let h160 = &decoded[1..21];
+    Some(hex::encode(h160))
+}
+
+#[test]
+fn h160_matches_address() {
+    for puzzle in boha::all() {
+        if let Some(h160) = puzzle.h160 {
+            let computed = address_to_h160(puzzle.address)
+                .unwrap_or_else(|| panic!("Failed to compute h160 for {}", puzzle.id));
+            assert_eq!(
+                h160, computed,
+                "h160 mismatch for {}: stored {} != computed {}",
+                puzzle.id, h160, computed
+            );
+        }
+    }
+}
