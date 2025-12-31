@@ -376,14 +376,18 @@ fn print_stats_table(stats: &Stats) {
         },
     ];
 
-    for (chain, amount) in &stats.total_prize {
+    let mut total_prizes: Vec<_> = stats.total_prize.iter().collect();
+    total_prizes.sort_by_key(|(chain, _)| chain.symbol());
+    for (chain, amount) in total_prizes {
         rows.push(KeyValueRow {
             field: format!("Total {}", chain.symbol()),
             value: format!("{:.2}", amount),
         });
     }
 
-    for (chain, amount) in &stats.unsolved_prize {
+    let mut unsolved_prizes: Vec<_> = stats.unsolved_prize.iter().collect();
+    unsolved_prizes.sort_by_key(|(chain, _)| chain.symbol());
+    for (chain, amount) in unsolved_prizes {
         rows.push(KeyValueRow {
             field: format!("Unsolved {}", chain.symbol()),
             value: format!("{:.2}", amount).bright_yellow().to_string(),
