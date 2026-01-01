@@ -1,8 +1,8 @@
 use boha::{
     b1000, gsmg, hash_collision, Author, Chain, KeySource, PubkeyFormat, Puzzle, Stats, Status,
 };
-use std::collections::HashMap;
 use clap::{Parser, Subcommand, ValueEnum};
+use std::collections::HashMap;
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
     match s.to_lowercase().as_str() {
