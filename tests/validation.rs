@@ -640,19 +640,39 @@ fn hash_collision_has_author() {
 }
 
 #[test]
-fn author_addresses_valid_base58() {
+fn author_addresses_valid_format() {
+    fn is_valid_address(addr: &str) -> bool {
+        // Base58 (P2PKH: 1..., P2SH: 3...)
+        if addr.starts_with('1') || addr.starts_with('3') {
+            return bs58::decode(addr).into_vec().is_ok();
+        }
+        // Bech32 (P2WPKH/P2WSH: bc1...)
+        if addr.starts_with("bc1") {
+            return addr.len() >= 42 && addr.chars().all(|c| c.is_ascii_alphanumeric());
+        }
+        false
+    }
+
     for addr in b1000::author().addresses {
         assert!(
-            bs58::decode(addr).into_vec().is_ok(),
-            "Invalid base58 address in b1000 author: {}",
+            is_valid_address(addr),
+            "Invalid address in b1000 author: {}",
+            addr
+        );
+    }
+
+    for addr in gsmg::author().addresses {
+        assert!(
+            is_valid_address(addr),
+            "Invalid address in gsmg author: {}",
             addr
         );
     }
 
     for addr in hash_collision::author().addresses {
         assert!(
-            bs58::decode(addr).into_vec().is_ok(),
-            "Invalid base58 address in hash_collision author: {}",
+            is_valid_address(addr),
+            "Invalid address in hash_collision author: {}",
             addr
         );
     }
