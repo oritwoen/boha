@@ -1,6 +1,13 @@
-use crate::{AddressType, Chain, KeySource, Pubkey, PubkeyFormat, Puzzle, Status};
+//! GSMG.IO 5 BTC Puzzle - Multi-phase cryptographic challenge.
+
+use crate::{AddressType, Author, Chain, KeySource, Pubkey, PubkeyFormat, Puzzle, Status};
 
 include!(concat!(env!("OUT_DIR"), "/gsmg_data.rs"));
+
+/// Returns the author/creator of the GSMG puzzle.
+pub fn author() -> &'static Author {
+    &AUTHOR
+}
 
 pub fn get() -> &'static Puzzle {
     &PUZZLE

@@ -615,3 +615,82 @@ fn solve_time_formatted_works() {
         formatted
     );
 }
+
+#[test]
+fn b1000_has_author() {
+    let author = b1000::author();
+    assert_eq!(author.name, Some("saatoshi_rising"));
+    assert!(!author.addresses.is_empty());
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn gsmg_has_author() {
+    let author = gsmg::author();
+    assert_eq!(author.name, Some("GSMG.io"));
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn hash_collision_has_author() {
+    let author = hash_collision::author();
+    assert_eq!(author.name, Some("Peter Todd"));
+    assert!(!author.addresses.is_empty());
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn author_addresses_valid_format() {
+    fn is_valid_address(addr: &str) -> bool {
+        // Base58 (P2PKH: 1..., P2SH: 3...)
+        if addr.starts_with('1') || addr.starts_with('3') {
+            return bs58::decode(addr).into_vec().is_ok();
+        }
+        // Bech32 (P2WPKH/P2WSH: bc1...)
+        if addr.starts_with("bc1") {
+            const BECH32_CHARSET: &str = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+            let data_part = &addr[3..];
+            return addr.len() >= 42 && data_part.chars().all(|c| BECH32_CHARSET.contains(c));
+        }
+        false
+    }
+
+    for addr in b1000::author().addresses {
+        assert!(
+            is_valid_address(addr),
+            "Invalid address in b1000 author: {}",
+            addr
+        );
+    }
+
+    for addr in gsmg::author().addresses {
+        assert!(
+            is_valid_address(addr),
+            "Invalid address in gsmg author: {}",
+            addr
+        );
+    }
+
+    for addr in hash_collision::author().addresses {
+        assert!(
+            is_valid_address(addr),
+            "Invalid address in hash_collision author: {}",
+            addr
+        );
+    }
+}
+
+#[test]
+fn author_profile_valid_url() {
+    let authors = [b1000::author(), gsmg::author(), hash_collision::author()];
+
+    for author in authors {
+        if let Some(url) = author.profile {
+            assert!(
+                url.starts_with("http://") || url.starts_with("https://"),
+                "Invalid profile URL format: {}",
+                url
+            );
+        }
+    }
+}

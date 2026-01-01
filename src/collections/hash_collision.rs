@@ -1,8 +1,13 @@
 //! Peter Todd's hash collision bounties (P2SH).
 
-use crate::{AddressType, Chain, Error, KeySource, Puzzle, Result, Status};
+use crate::{AddressType, Author, Chain, Error, KeySource, Puzzle, Result, Status};
 
 include!(concat!(env!("OUT_DIR"), "/hash_collision_data.rs"));
+
+/// Returns the author/creator of the hash collision bounties.
+pub fn author() -> &'static Author {
+    &AUTHOR
+}
 
 pub fn get(name: &str) -> Result<&'static Puzzle> {
     let search_id = if name.contains('/') {

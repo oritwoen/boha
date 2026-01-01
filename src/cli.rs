@@ -1,5 +1,8 @@
-use boha::{b1000, gsmg, hash_collision, Chain, KeySource, PubkeyFormat, Puzzle, Stats, Status};
+use boha::{
+    b1000, gsmg, hash_collision, Author, Chain, KeySource, PubkeyFormat, Puzzle, Stats, Status,
+};
 use clap::{Parser, Subcommand, ValueEnum};
+use std::collections::HashMap;
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
     match s.to_lowercase().as_str() {
@@ -69,6 +72,9 @@ enum Commands {
 
     /// Show key range for puzzle
     Range { puzzle_number: u32 },
+
+    /// Show collection author
+    Author { collection: String },
 
     /// Check balance (requires balance feature)
     #[cfg(feature = "balance")]
@@ -144,6 +150,53 @@ struct BalanceOutput {
     confirmed_btc: f64,
     unconfirmed: i64,
     total_btc: f64,
+}
+
+#[derive(Serialize)]
+struct StatsCsvRow {
+    total: usize,
+    solved: usize,
+    unsolved: usize,
+    claimed: usize,
+    swept: usize,
+    with_pubkey: usize,
+    total_prize_btc: f64,
+    total_prize_eth: f64,
+    total_prize_ltc: f64,
+    total_prize_xmr: f64,
+    total_prize_dcr: f64,
+    unsolved_prize_btc: f64,
+    unsolved_prize_eth: f64,
+    unsolved_prize_ltc: f64,
+    unsolved_prize_xmr: f64,
+    unsolved_prize_dcr: f64,
+}
+
+impl StatsCsvRow {
+    fn from_stats(stats: &Stats) -> Self {
+        fn get_prize(map: &HashMap<Chain, f64>, chain: Chain) -> f64 {
+            *map.get(&chain).unwrap_or(&0.0)
+        }
+
+        Self {
+            total: stats.total,
+            solved: stats.solved,
+            unsolved: stats.unsolved,
+            claimed: stats.claimed,
+            swept: stats.swept,
+            with_pubkey: stats.with_pubkey,
+            total_prize_btc: get_prize(&stats.total_prize, Chain::Bitcoin),
+            total_prize_eth: get_prize(&stats.total_prize, Chain::Ethereum),
+            total_prize_ltc: get_prize(&stats.total_prize, Chain::Litecoin),
+            total_prize_xmr: get_prize(&stats.total_prize, Chain::Monero),
+            total_prize_dcr: get_prize(&stats.total_prize, Chain::Decred),
+            unsolved_prize_btc: get_prize(&stats.unsolved_prize, Chain::Bitcoin),
+            unsolved_prize_eth: get_prize(&stats.unsolved_prize, Chain::Ethereum),
+            unsolved_prize_ltc: get_prize(&stats.unsolved_prize, Chain::Litecoin),
+            unsolved_prize_xmr: get_prize(&stats.unsolved_prize, Chain::Monero),
+            unsolved_prize_dcr: get_prize(&stats.unsolved_prize, Chain::Decred),
+        }
+    }
 }
 
 fn output_puzzles(puzzles: &[&Puzzle], format: OutputFormat, show_solve_time: bool) {
@@ -222,7 +275,7 @@ fn output_stats(stats: &Stats, format: OutputFormat) {
         }
         OutputFormat::Csv => {
             let mut wtr = csv::Writer::from_writer(std::io::stdout());
-            wtr.serialize(stats).unwrap();
+            wtr.serialize(StatsCsvRow::from_stats(stats)).unwrap();
             wtr.flush().unwrap();
         }
     }
@@ -584,6 +637,72 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
     }
 }
 
+fn cmd_author(collection: &str, format: OutputFormat) {
+    let author = match collection {
+        "b1000" => b1000::author(),
+        "gsmg" => gsmg::author(),
+        "hash_collision" | "peter_todd" => hash_collision::author(),
+        _ => {
+            eprintln!(
+                "{} Unknown collection: {}. Use: b1000, gsmg, hash_collision",
+                "Error:".red().bold(),
+                collection
+            );
+            std::process::exit(1);
+        }
+    };
+    output_author(author, format);
+}
+
+fn output_author(author: &Author, format: OutputFormat) {
+    match format {
+        OutputFormat::Table => print_author_table(author),
+        OutputFormat::Json => {
+            println!("{}", serde_json::to_string_pretty(author).unwrap());
+        }
+        OutputFormat::Jsonl => {
+            println!("{}", serde_json::to_string(author).unwrap());
+        }
+        OutputFormat::Yaml => {
+            println!("{}", serde_yaml::to_string(author).unwrap());
+        }
+        OutputFormat::Csv => {
+            let mut wtr = csv::Writer::from_writer(std::io::stdout());
+            wtr.serialize(author).unwrap();
+            wtr.flush().unwrap();
+        }
+    }
+}
+
+fn print_author_table(author: &Author) {
+    let mut rows = vec![];
+
+    rows.push(KeyValueRow {
+        field: "Name".to_string(),
+        value: author
+            .name
+            .map(|n| n.bright_white().to_string())
+            .unwrap_or_else(|| "Anonymous".dimmed().to_string()),
+    });
+
+    if !author.addresses.is_empty() {
+        rows.push(KeyValueRow {
+            field: "Addresses".to_string(),
+            value: author.addresses.join(", "),
+        });
+    }
+
+    if let Some(profile) = author.profile {
+        rows.push(KeyValueRow {
+            field: "Profile".to_string(),
+            value: profile.to_string(),
+        });
+    }
+
+    let table = Table::new(rows).with(Style::rounded()).to_string();
+    println!("{}", table);
+}
+
 #[cfg(feature = "balance")]
 async fn cmd_balance(id: &str, format: OutputFormat) {
     match boha::get(id) {
@@ -651,6 +770,7 @@ fn run_sync(cli: Cli) {
         Commands::Show { id } => cmd_show(&id, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
+        Commands::Author { collection } => cmd_author(&collection, cli.output),
         Commands::Balance { .. } => unreachable!(),
     }
 }
@@ -675,5 +795,6 @@ fn run(cli: Cli) {
         Commands::Show { id } => cmd_show(&id, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
+        Commands::Author { collection } => cmd_author(&collection, cli.output),
     }
 }

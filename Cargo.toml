@@ -77,3 +77,5 @@ required-features = ["cli"]
 
 [dev-dependencies]
 regex = "1"
+assert_cmd = "2"
+predicates = "3"
