@@ -6,7 +6,7 @@ pub mod balance;
 
 pub use collections::{b1000, gsmg, hash_collision};
 pub use puzzle::{
-    AddressType, Chain, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle, Status,
+    AddressType, Author, Chain, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle, Status,
 };
 
 use std::collections::HashMap;

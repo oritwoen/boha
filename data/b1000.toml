@@ -3,8 +3,12 @@
 #
 # Pattern: Puzzle #N has private key k where 2^(N-1) <= k < 2^N
 
+[author]
+name = "saatoshi_rising"
+addresses = ["1Czoy8xtddvcGrEhUUCZDQ9QqdRfKh697F"]
+profile = "https://bitcointalk.org/index.php?action=profile;u=991321"
+
 [metadata]
-author = "saatoshi_rising"
 source_url = "https://bitcointalk.org/index.php?topic=5218972"
 total_puzzles = 256
 

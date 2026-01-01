@@ -615,3 +615,60 @@ fn solve_time_formatted_works() {
         formatted
     );
 }
+
+#[test]
+fn b1000_has_author() {
+    let author = b1000::author();
+    assert_eq!(author.name, Some("saatoshi_rising"));
+    assert!(!author.addresses.is_empty());
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn gsmg_has_author() {
+    let author = gsmg::author();
+    assert_eq!(author.name, Some("GSMG.io"));
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn hash_collision_has_author() {
+    let author = hash_collision::author();
+    assert_eq!(author.name, Some("Peter Todd"));
+    assert!(!author.addresses.is_empty());
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn author_addresses_valid_base58() {
+    for addr in b1000::author().addresses {
+        assert!(
+            bs58::decode(addr).into_vec().is_ok(),
+            "Invalid base58 address in b1000 author: {}",
+            addr
+        );
+    }
+
+    for addr in hash_collision::author().addresses {
+        assert!(
+            bs58::decode(addr).into_vec().is_ok(),
+            "Invalid base58 address in hash_collision author: {}",
+            addr
+        );
+    }
+}
+
+#[test]
+fn author_profile_valid_url() {
+    let authors = [b1000::author(), gsmg::author(), hash_collision::author()];
+
+    for author in authors {
+        if let Some(url) = author.profile {
+            assert!(
+                url.starts_with("http://") || url.starts_with("https://"),
+                "Invalid profile URL format: {}",
+                url
+            );
+        }
+    }
+}

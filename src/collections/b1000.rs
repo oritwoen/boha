@@ -3,11 +3,16 @@
 //! Each puzzle N has a private key k where: 2^(N-1) <= k < 2^N
 
 use crate::{
-    AddressType, Chain, Error, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle, Result,
-    Status,
+    AddressType, Author, Chain, Error, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle,
+    Result, Status,
 };
 
 include!(concat!(env!("OUT_DIR"), "/b1000_data.rs"));
+
+/// Returns the author/creator of the b1000 puzzle collection.
+pub fn author() -> &'static Author {
+    &AUTHOR
+}
 
 pub fn get(key: impl IntoPuzzleNum) -> Result<&'static Puzzle> {
     let number = key.into_puzzle_num().ok_or(Error::InvalidNumber(0))?;

@@ -1,6 +1,11 @@
 # GSMG.IO 5 BTC Puzzle
 # Multi-phase cryptographic challenge with single Bitcoin address
 
+[author]
+name = "GSMG.io"
+addresses = []
+profile = "https://gsmg.io/puzzle"
+
 [metadata]
 source_url = "https://gsmg.io/puzzle"
 

@@ -14,12 +14,21 @@ fn bits_from_private_key(private_key: &str) -> Option<u16> {
 }
 
 #[derive(Debug, Deserialize)]
+struct AuthorConfig {
+    name: Option<String>,
+    #[serde(default)]
+    addresses: Vec<String>,
+    profile: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct Btc1000Metadata {
     source_url: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
 struct Btc1000File {
+    author: Option<AuthorConfig>,
     metadata: Option<Btc1000Metadata>,
     puzzles: Vec<Btc1000Puzzle>,
 }
@@ -49,6 +58,7 @@ struct HashCollisionMetadata {
 
 #[derive(Debug, Deserialize)]
 struct HashCollisionFile {
+    author: Option<AuthorConfig>,
     metadata: Option<HashCollisionMetadata>,
     puzzles: Vec<HashCollisionPuzzle>,
 }
@@ -74,6 +84,7 @@ struct GsmgMetadata {
 
 #[derive(Debug, Deserialize)]
 struct GsmgFile {
+    author: Option<AuthorConfig>,
     metadata: Option<GsmgMetadata>,
     puzzle: GsmgPuzzle,
 }
@@ -90,6 +101,34 @@ struct GsmgPuzzle {
     solve_date: Option<String>,
     solve_time: Option<u64>,
     source_url: Option<String>,
+}
+
+fn generate_author_code(author: &Option<AuthorConfig>) -> String {
+    match author {
+        Some(a) => {
+            let name = match &a.name {
+                Some(n) => format!("Some(\"{}\")", n),
+                None => "None".to_string(),
+            };
+            let addresses = if a.addresses.is_empty() {
+                "&[]".to_string()
+            } else {
+                let addrs: Vec<String> = a.addresses.iter().map(|addr| format!("\"{}\"", addr)).collect();
+                format!("&[{}]", addrs.join(", "))
+            };
+            let profile = match &a.profile {
+                Some(p) => format!("Some(\"{}\")", p),
+                None => "None".to_string(),
+            };
+            format!(
+                "static AUTHOR: Author = Author {{\n    name: {},\n    addresses: {},\n    profile: {},\n}};\n",
+                name, addresses, profile
+            )
+        }
+        None => {
+            "static AUTHOR: Author = Author {\n    name: None,\n    addresses: &[],\n    profile: None,\n};\n".to_string()
+        }
+    }
 }
 
 fn main() {
@@ -127,6 +166,8 @@ fn generate_b1000(out_dir: &str) {
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
     let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
 
     for puzzle in &data.puzzles {
@@ -238,6 +279,8 @@ fn generate_hash_collision(out_dir: &str) {
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
     let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
 
     for puzzle in &data.puzzles {
@@ -379,7 +422,10 @@ fn generate_gsmg(out_dir: &str) {
         None => "None".to_string(),
     };
 
-    let output = format!(
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str(&format!(
         r#"static PUZZLE: Puzzle = Puzzle {{
     id: "gsmg",
     chain: Chain::Bitcoin,
@@ -398,7 +444,7 @@ fn generate_gsmg(out_dir: &str) {
 }};
 "#,
         puzzle.address, h160, status, pubkey, prize, start_date, solve_date, solve_time, source_url,
-    );
+    ));
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
 }

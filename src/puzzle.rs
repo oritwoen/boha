@@ -108,6 +108,17 @@ pub enum KeySource {
     },
 }
 
+/// Author/creator of a puzzle collection.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct Author {
+    /// Author's name or pseudonym (None for anonymous).
+    pub name: Option<&'static str>,
+    /// Addresses that initially funded the puzzle(s).
+    pub addresses: &'static [&'static str],
+    /// URL to author's profile or relevant page.
+    pub profile: Option<&'static str>,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub struct Pubkey {
     pub key: &'static str,
