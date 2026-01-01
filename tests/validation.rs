@@ -648,7 +648,9 @@ fn author_addresses_valid_format() {
         }
         // Bech32 (P2WPKH/P2WSH: bc1...)
         if addr.starts_with("bc1") {
-            return addr.len() >= 42 && addr.chars().all(|c| c.is_ascii_alphanumeric());
+            const BECH32_CHARSET: &str = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+            let data_part = &addr[3..];
+            return addr.len() >= 42 && data_part.chars().all(|c| BECH32_CHARSET.contains(c));
         }
         false
     }
