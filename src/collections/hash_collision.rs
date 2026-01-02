@@ -1,7 +1,8 @@
 //! Peter Todd's hash collision bounties (P2SH).
 
+#[allow(unused_imports)]
 use crate::{
-    AddressType, Author, Chain, Error, KeySource, Puzzle, Result, Status, Transaction,
+    AddressType, Author, Chain, Error, KeySource, Puzzle, Result, Solver, Status, Transaction,
     TransactionType,
 };
 
