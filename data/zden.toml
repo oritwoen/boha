@@ -212,14 +212,19 @@ chain = "litecoin"
 address = "LartGjF6UjmvmF1JXBhFf5wtM9uZX7LzeS"
 h160 = "ab85f21bf9ca1126f3776f4686cf02737be7a2b7"
 status = "solved"
-prize = 210.0
+prize = 230.8255
 start_date = "2017-05-10"
 solve_date = "2017-05-24"
 solve_time = 1209600
 source_url = "https://crypto.haluska.sk/LitecoinSegWit.png"
 transactions = [
     { type = "funding", txid = "bc640bc1ab3756bf5163918e5ee4c7496fcdb2e17617515d17e1f134dabbd318", date = "2017-05-10 05:46:11", amount = 100.0 },
-    { type = "claim", txid = "fb5260a9225cdbe0733874ac51e9391acbdec3a8e031fd9851e84d55ac57034c", date = "2017-05-24 01:38:16", amount = 230.82 }
+    { type = "funding", txid = "593b72fc6cbe178c239fc6ce4f156c3063eff00e02c023acba4c09ea6be59cc9", date = "2017-05-10 05:54:31", amount = 10.0 },
+    { type = "funding", txid = "abb7074c2758e41e9a28ebdd096baae0c25c9453fbddb93d29edaf1ff2541c19", date = "2017-05-10 16:58:49", amount = 100.0 },
+    { type = "funding", txid = "e260a3f11de536f9bb618e16b00f584e59b8695fa4bed4bdb6eded739375bcb5", date = "2017-05-10 17:36:16", amount = 1.337 },
+    { type = "funding", txid = "9c9ee2b1ca0fb8517ab6328f2bd3016e717b36264afdc84f1cf22afecb270943", date = "2017-05-11 10:36:26", amount = 18.4985 },
+    { type = "funding", txid = "17ee706bed97ffe9ac3762aa4d93b6d20bda3b04e334e6c1165a17bc2972a327", date = "2017-05-13 05:56:37", amount = 0.99 },
+    { type = "claim", txid = "fb5260a9225cdbe0733874ac51e9391acbdec3a8e031fd9851e84d55ac57034c", date = "2017-05-24 01:38:16", amount = 230.8255 }
 ]
 
 # Decred puzzles
