@@ -85,7 +85,7 @@ impl Status {
 }
 
 /// Crypto address with chain-specific type information.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 pub struct Address {
     /// The address string (e.g., "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH")
     pub value: &'static str,
