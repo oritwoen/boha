@@ -132,6 +132,35 @@ struct GsmgPuzzle {
     solver: Option<SolverConfig>,
 }
 
+#[derive(Debug, Deserialize)]
+struct ZdenMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ZdenFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<ZdenMetadata>,
+    puzzles: Vec<ZdenPuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ZdenPuzzle {
+    name: String,
+    chain: String,
+    address: String,
+    h160: Option<String>,
+    status: String,
+    prize: Option<f64>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<SolverConfig>,
+}
+
 fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
     if transactions.is_empty() {
         return "&[]".to_string();
@@ -227,12 +256,14 @@ fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
     println!("cargo:rerun-if-changed=data/hash_collision.toml");
     println!("cargo:rerun-if-changed=data/gsmg.toml");
+    println!("cargo:rerun-if-changed=data/zden.toml");
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
     generate_b1000(&out_dir);
     generate_hash_collision(&out_dir);
     generate_gsmg(&out_dir);
+    generate_zden(&out_dir);
 }
 
 fn generate_b1000(out_dir: &str) {
@@ -572,4 +603,111 @@ fn generate_gsmg(out_dir: &str) {
     ));
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
+}
+
+fn generate_zden(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("zden_data.rs");
+
+    let toml_content = fs::read_to_string("data/zden.toml").expect("Failed to read data/zden.toml");
+
+    let data: ZdenFile = toml::from_str(&toml_content).expect("Failed to parse zden.toml");
+
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        let chain = match puzzle.chain.as_str() {
+            "bitcoin" => "Chain::Bitcoin",
+            "ethereum" => "Chain::Ethereum",
+            "litecoin" => "Chain::Litecoin",
+            "monero" => "Chain::Monero",
+            "decred" => "Chain::Decred",
+            other => panic!("Unknown chain '{}' for puzzle {}", other, puzzle.name),
+        };
+
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.8})", p),
+            None => "None".to_string(),
+        };
+
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
+        let h160 = match &puzzle.h160 {
+            Some(h) => format!("Some(\"{}\")", h),
+            None => "None".to_string(),
+        };
+
+        let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver);
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "zden/{}",
+        chain: {},
+        address: "{}",
+        address_type: None,
+        h160: {},
+        status: {},
+        pubkey: None,
+        private_key: None,
+        key_source: KeySource::Unknown,
+        prize: {},
+        start_date: {},
+        solve_date: {},
+        solve_time: {},
+        pre_genesis: false,
+        source_url: {},
+        transactions: {},
+        solver: {},
+    }},
+"#,
+            puzzle.name,
+            chain,
+            puzzle.address,
+            h160,
+            status,
+            prize,
+            start_date,
+            solve_date,
+            solve_time,
+            source_url,
+            transactions,
+            solver,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write zden_data.rs");
 }

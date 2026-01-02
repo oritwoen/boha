@@ -1,6 +1,6 @@
 use boha::{
-    b1000, gsmg, hash_collision, Author, Chain, KeySource, PubkeyFormat, Puzzle, Stats, Status,
-    TransactionType,
+    b1000, gsmg, hash_collision, zden, Author, Chain, KeySource, PubkeyFormat, Puzzle, Stats,
+    Status, TransactionType,
 };
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
@@ -683,6 +683,7 @@ fn cmd_list(
         "b1000" => b1000::all().collect(),
         "gsmg" => gsmg::all().collect(),
         "hash_collision" | "peter_todd" => hash_collision::all().collect(),
+        "zden" => zden::all().collect(),
         _ => boha::all().collect(),
     };
 
@@ -738,9 +739,10 @@ fn cmd_author(collection: &str, format: OutputFormat) {
         "b1000" => b1000::author(),
         "gsmg" => gsmg::author(),
         "hash_collision" | "peter_todd" => hash_collision::author(),
+        "zden" => zden::author(),
         _ => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, gsmg, hash_collision",
+                "{} Unknown collection: {}. Use: b1000, gsmg, hash_collision, zden",
                 "Error:".red().bold(),
                 collection
             );

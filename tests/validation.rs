@@ -1,5 +1,5 @@
 use boha::{
-    b1000, gsmg, hash_collision, AddressType, Chain, KeySource, PubkeyFormat, Solver, Status,
+    b1000, gsmg, hash_collision, zden, AddressType, Chain, KeySource, PubkeyFormat, Status,
     TransactionType,
 };
 use num_bigint::BigUint;
@@ -206,8 +206,8 @@ fn universal_get_works() {
 #[test]
 fn stats_are_reasonable() {
     let stats = boha::stats();
-    assert!(stats.total > 250);
-    assert!(stats.solved > 50);
+    assert!(stats.total > 270);
+    assert!(stats.solved > 60);
     assert!(stats.unsolved > 50);
     assert!(stats.swept > 90);
     let total_btc = stats
@@ -260,6 +260,74 @@ fn start_date_before_solve_date() {
 }
 
 #[test]
+fn zden_solve_time_matches_dates() {
+    fn parse_datetime(s: &str) -> Option<i64> {
+        let parts: Vec<&str> = s.split(&['-', ' ', ':'][..]).collect();
+        if parts.len() != 6 {
+            return None;
+        }
+        let year: i64 = parts[0].parse().ok()?;
+        let month: i64 = parts[1].parse().ok()?;
+        let day: i64 = parts[2].parse().ok()?;
+        let hour: i64 = parts[3].parse().ok()?;
+        let min: i64 = parts[4].parse().ok()?;
+        let sec: i64 = parts[5].parse().ok()?;
+
+        fn days_in_month(year: i64, month: i64) -> i64 {
+            match month {
+                1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
+                4 | 6 | 9 | 11 => 30,
+                2 => {
+                    if year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) {
+                        29
+                    } else {
+                        28
+                    }
+                }
+                _ => 0,
+            }
+        }
+
+        let mut days: i64 = 0;
+        for y in 1970..year {
+            days += if y % 4 == 0 && (y % 100 != 0 || y % 400 == 0) {
+                366
+            } else {
+                365
+            };
+        }
+        for m in 1..month {
+            days += days_in_month(year, m);
+        }
+        days += day - 1;
+
+        Some(days * 86400 + hour * 3600 + min * 60 + sec)
+    }
+
+    for puzzle in zden::all() {
+        if let (Some(start), Some(solve), Some(solve_time)) =
+            (puzzle.start_date, puzzle.solve_date, puzzle.solve_time)
+        {
+            if let (Some(start_ts), Some(solve_ts)) = (parse_datetime(start), parse_datetime(solve))
+            {
+                let calculated = (solve_ts - start_ts) as u64;
+                let diff = calculated.abs_diff(solve_time);
+                assert!(
+                    diff < 2,
+                    "Puzzle {} solve_time mismatch: declared {} but calculated {} (diff: {}s)\n  start: {}\n  solve: {}",
+                    puzzle.id,
+                    solve_time,
+                    calculated,
+                    diff,
+                    start,
+                    solve
+                );
+            }
+        }
+    }
+}
+
+#[test]
 fn source_url_format_valid() {
     for puzzle in boha::all() {
         if let Some(url) = puzzle.source_url {
@@ -274,12 +342,18 @@ fn source_url_format_valid() {
 }
 
 #[test]
-fn all_current_puzzles_are_bitcoin() {
+fn all_puzzles_have_valid_chain() {
     for puzzle in boha::all() {
-        assert_eq!(
-            puzzle.chain,
+        let valid_chains = [
             Chain::Bitcoin,
-            "Puzzle {} should be Bitcoin",
+            Chain::Ethereum,
+            Chain::Litecoin,
+            Chain::Monero,
+            Chain::Decred,
+        ];
+        assert!(
+            valid_chains.contains(&puzzle.chain),
+            "Puzzle {} has invalid chain",
             puzzle.id
         );
     }
@@ -1032,4 +1106,96 @@ fn tx_explorer_url_format() {
         Chain::Decred.tx_explorer_url("dcr123"),
         "https://dcrdata.decred.org/tx/dcr123"
     );
+}
+
+#[test]
+fn zden_count() {
+    assert_eq!(zden::all().count(), 15);
+}
+
+#[test]
+fn zden_get_by_name() {
+    let level1 = zden::get("Level 1").unwrap();
+    assert_eq!(level1.address, "1cryptommoqPHVNHuxVQG3bzujnRJYB1D");
+    assert_eq!(level1.status, Status::Solved);
+    assert_eq!(level1.chain, Chain::Bitcoin);
+
+    let xixoio = zden::get("XIXOIO").unwrap();
+    assert_eq!(xixoio.chain, Chain::Ethereum);
+
+    let ltc = zden::get("Litecoin SegWit").unwrap();
+    assert_eq!(ltc.chain, Chain::Litecoin);
+}
+
+#[test]
+fn zden_has_author() {
+    let author = zden::author();
+    assert_eq!(author.name, Some("Zden"));
+    assert!(!author.addresses.is_empty());
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn zden_multi_chain() {
+    let chains: Vec<Chain> = zden::all().map(|p| p.chain).collect();
+    assert!(chains.contains(&Chain::Bitcoin));
+    assert!(chains.contains(&Chain::Ethereum));
+    assert!(chains.contains(&Chain::Litecoin));
+    assert!(chains.contains(&Chain::Decred));
+}
+
+#[test]
+fn zden_btc_ltc_have_h160() {
+    for puzzle in zden::all() {
+        if puzzle.chain == Chain::Bitcoin || puzzle.chain == Chain::Litecoin {
+            assert!(
+                puzzle.h160.is_some(),
+                "Zden BTC/LTC puzzle {} should have h160",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn zden_eth_dcr_no_h160() {
+    for puzzle in zden::all() {
+        if puzzle.chain == Chain::Ethereum || puzzle.chain == Chain::Decred {
+            assert!(
+                puzzle.h160.is_none(),
+                "Zden ETH/DCR puzzle {} should not have h160",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn zden_dates_have_time() {
+    let datetime_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$").unwrap();
+    for puzzle in zden::all() {
+        if let Some(date) = puzzle.start_date {
+            assert!(
+                datetime_regex.is_match(date),
+                "Zden puzzle {} start_date must include time: {}",
+                puzzle.id,
+                date
+            );
+        }
+        if let Some(date) = puzzle.solve_date {
+            assert!(
+                datetime_regex.is_match(date),
+                "Zden puzzle {} solve_date must include time: {}",
+                puzzle.id,
+                date
+            );
+        }
+    }
+}
+
+#[test]
+fn universal_get_works_with_zden() {
+    assert!(boha::get("zden/Level 1").is_ok());
+    assert!(boha::get("zden/XIXOIO").is_ok());
+    assert!(boha::get("zden/Litecoin SegWit").is_ok());
 }

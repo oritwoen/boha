@@ -4,7 +4,7 @@ mod puzzle;
 #[cfg(feature = "balance")]
 pub mod balance;
 
-pub use collections::{b1000, gsmg, hash_collision};
+pub use collections::{b1000, gsmg, hash_collision, zden};
 pub use puzzle::{
     AddressType, Author, Chain, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle, Solver,
     Status, Transaction, TransactionType,
@@ -43,12 +43,16 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
             b1000::get(num)
         }
         "hash_collision" | "peter_todd" => hash_collision::get(parts[1]),
+        "zden" => zden::get(parts[1]),
         _ => Err(Error::NotFound(id.to_string())),
     }
 }
 
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
-    b1000::all().chain(gsmg::all()).chain(hash_collision::all())
+    b1000::all()
+        .chain(gsmg::all())
+        .chain(hash_collision::all())
+        .chain(zden::all())
 }
 
 #[derive(Debug, Default, Clone, serde::Serialize)]
