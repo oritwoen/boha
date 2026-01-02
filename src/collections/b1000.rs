@@ -2,9 +2,10 @@
 //!
 //! Each puzzle N has a private key k where: 2^(N-1) <= k < 2^N
 
+#[allow(unused_imports)]
 use crate::{
     AddressType, Author, Chain, Error, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle,
-    Result, Status, Transaction, TransactionType,
+    Result, Solver, Status, Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/b1000_data.rs"));

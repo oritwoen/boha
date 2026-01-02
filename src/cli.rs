@@ -492,6 +492,38 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         });
     }
 
+    if let Some(solver) = &p.solver {
+        if solver.name.is_some() || solver.address.is_some() {
+            rows.push(KeyValueRow {
+                field: "─── Solver ───".dimmed().to_string(),
+                value: "".to_string(),
+            });
+        }
+        if let Some(name) = solver.name {
+            let verified_badge = if solver.verified {
+                " ✓".green().to_string()
+            } else {
+                "".to_string()
+            };
+            rows.push(KeyValueRow {
+                field: "Solver".to_string(),
+                value: format!("{}{}", name.bright_white(), verified_badge),
+            });
+        }
+        if let Some(addr) = solver.address {
+            rows.push(KeyValueRow {
+                field: "Solver Address".to_string(),
+                value: addr.to_string(),
+            });
+        }
+        if let Some(source) = solver.source {
+            rows.push(KeyValueRow {
+                field: "Solver Source".to_string(),
+                value: source.to_string(),
+            });
+        }
+    }
+
     if show_transactions && !p.transactions.is_empty() {
         rows.push(KeyValueRow {
             field: "─── Transactions ───".dimmed().to_string(),

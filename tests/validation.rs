@@ -1,5 +1,5 @@
 use boha::{
-    b1000, gsmg, hash_collision, AddressType, Chain, KeySource, PubkeyFormat, Status,
+    b1000, gsmg, hash_collision, AddressType, Chain, KeySource, PubkeyFormat, Solver, Status,
     TransactionType,
 };
 use num_bigint::BigUint;
@@ -909,6 +909,93 @@ fn funding_txid_matches_funding_tx() {
         let txid = puzzle.funding_txid();
         let from_tx = puzzle.funding_tx().and_then(|t| t.txid);
         assert_eq!(txid, from_tx, "funding_txid() mismatch for {}", puzzle.id);
+    }
+}
+
+#[test]
+fn unsolved_puzzles_no_solver() {
+    for puzzle in boha::all() {
+        if matches!(puzzle.status, Status::Unsolved | Status::Swept) {
+            assert!(
+                puzzle.solver.is_none(),
+                "Unsolved/swept puzzle {} should not have solver",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn solver_name_non_empty() {
+    for puzzle in boha::all() {
+        if let Some(solver) = &puzzle.solver {
+            if let Some(name) = solver.name {
+                assert!(
+                    !name.is_empty(),
+                    "Solver name for {} should not be empty string",
+                    puzzle.id
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn solver_address_format_valid() {
+    fn is_valid_btc_address(addr: &str) -> bool {
+        if addr.starts_with('1') || addr.starts_with('3') {
+            return bs58::decode(addr).into_vec().is_ok();
+        }
+        if addr.starts_with("bc1") {
+            const BECH32_CHARSET: &str = "qpzry9x8gf2tvdw0s3jn54khce6mua7l";
+            let data_part = &addr[3..];
+            return addr.len() >= 42 && data_part.chars().all(|c| BECH32_CHARSET.contains(c));
+        }
+        false
+    }
+
+    for puzzle in boha::all() {
+        if let Some(solver) = &puzzle.solver {
+            if let Some(addr) = solver.address {
+                assert!(
+                    is_valid_btc_address(addr),
+                    "Invalid solver address for {}: {}",
+                    puzzle.id,
+                    addr
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn solver_source_valid_url() {
+    for puzzle in boha::all() {
+        if let Some(solver) = &puzzle.solver {
+            if let Some(source) = solver.source {
+                assert!(
+                    source.starts_with("http://") || source.starts_with("https://"),
+                    "Invalid solver source URL for {}: {}",
+                    puzzle.id,
+                    source
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn verified_solver_has_source() {
+    for puzzle in boha::all() {
+        if let Some(solver) = &puzzle.solver {
+            if solver.verified {
+                assert!(
+                    solver.source.is_some(),
+                    "Verified solver for {} should have source",
+                    puzzle.id
+                );
+            }
+        }
     }
 }
 

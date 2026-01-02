@@ -148,6 +148,19 @@ pub struct Author {
     pub profile: Option<&'static str>,
 }
 
+/// Information about who solved a puzzle.
+#[derive(Debug, Clone, PartialEq, Eq, Serialize)]
+pub struct Solver {
+    /// Solver's name or pseudonym (if known).
+    pub name: Option<&'static str>,
+    /// Address that claimed the funds.
+    pub address: Option<&'static str>,
+    /// Whether the solver identity has been verified.
+    pub verified: bool,
+    /// Source URL confirming the solver (e.g., bitcointalk post, twitter).
+    pub source: Option<&'static str>,
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub struct Pubkey {
     pub key: &'static str,
@@ -172,6 +185,7 @@ pub struct Puzzle {
     pub pre_genesis: bool,
     pub source_url: Option<&'static str>,
     pub transactions: &'static [Transaction],
+    pub solver: Option<Solver>,
 }
 
 fn format_duration_human_readable(seconds: u64) -> String {

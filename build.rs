@@ -22,6 +22,15 @@ struct AuthorConfig {
 }
 
 #[derive(Debug, Deserialize)]
+struct SolverConfig {
+    name: Option<String>,
+    address: Option<String>,
+    #[serde(default)]
+    verified: bool,
+    source: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct TomlTransaction {
     #[serde(rename = "type")]
     tx_type: String,
@@ -62,6 +71,7 @@ struct Btc1000Puzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
+    solver: Option<SolverConfig>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -90,6 +100,7 @@ struct HashCollisionPuzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
+    solver: Option<SolverConfig>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -118,6 +129,7 @@ struct GsmgPuzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
+    solver: Option<SolverConfig>,
 }
 
 fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
@@ -184,6 +196,30 @@ fn generate_author_code(author: &Option<AuthorConfig>) -> String {
         None => {
             "static AUTHOR: Author = Author {\n    name: None,\n    addresses: &[],\n    profile: None,\n};\n".to_string()
         }
+    }
+}
+
+fn generate_solver_code(solver: &Option<SolverConfig>) -> String {
+    match solver {
+        Some(s) => {
+            let name = match &s.name {
+                Some(n) => format!("Some(\"{}\")", n),
+                None => "None".to_string(),
+            };
+            let address = match &s.address {
+                Some(a) => format!("Some(\"{}\")", a),
+                None => "None".to_string(),
+            };
+            let source = match &s.source {
+                Some(src) => format!("Some(\"{}\")", src),
+                None => "None".to_string(),
+            };
+            format!(
+                "Some(Solver {{ name: {}, address: {}, verified: {}, source: {} }})",
+                name, address, s.verified, source
+            )
+        }
+        None => "None".to_string(),
     }
 }
 
@@ -286,6 +322,7 @@ fn generate_b1000(out_dir: &str) {
         };
 
         let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver);
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -305,6 +342,7 @@ fn generate_b1000(out_dir: &str) {
         pre_genesis: {},
         source_url: {},
         transactions: {},
+        solver: {},
     }},
 "#,
             puzzle.bits,
@@ -321,6 +359,7 @@ fn generate_b1000(out_dir: &str) {
             puzzle.pre_genesis,
             source_url,
             transactions,
+            solver,
         ));
     }
 
@@ -386,6 +425,7 @@ fn generate_hash_collision(out_dir: &str) {
         };
 
         let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver);
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -405,6 +445,7 @@ fn generate_hash_collision(out_dir: &str) {
         pre_genesis: false,
         source_url: {},
         transactions: {},
+        solver: {},
     }},
 "#,
             puzzle.name,
@@ -418,6 +459,7 @@ fn generate_hash_collision(out_dir: &str) {
             solve_time,
             source_url,
             transactions,
+            solver,
         ));
     }
 
@@ -490,6 +532,7 @@ fn generate_gsmg(out_dir: &str) {
     };
 
     let transactions = generate_transactions_code(&puzzle.transactions);
+    let solver = generate_solver_code(&puzzle.solver);
 
     let mut output = String::new();
     output.push_str(&generate_author_code(&data.author));
@@ -512,6 +555,7 @@ fn generate_gsmg(out_dir: &str) {
     pre_genesis: false,
     source_url: {},
     transactions: {},
+    solver: {},
 }};
 "#,
         puzzle.address,
@@ -524,6 +568,7 @@ fn generate_gsmg(out_dir: &str) {
         solve_time,
         source_url,
         transactions,
+        solver,
     ));
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
