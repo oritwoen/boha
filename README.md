@@ -80,7 +80,7 @@ boha -o jsonl list b1000 --unsolved | jq .
 ### Library
 
 ```rust
-use boha::{b1000, gsmg, hash_collision, Status};
+use boha::{b1000, gsmg, hash_collision, zden, Status};
 
 let p66 = b1000::get(66).unwrap();
 println!("Address: {}", p66.address);
@@ -102,9 +102,11 @@ let unsolved: Vec<_> = b1000::all()
 
 let gsmg_puzzle = gsmg::get();
 let sha256 = hash_collision::get("sha256").unwrap();
+let level1 = zden::get("Level 1").unwrap();
 
 let puzzle = boha::get("b1000/66").unwrap();
 let puzzle = boha::get("gsmg").unwrap();
+let puzzle = boha::get("zden/Level 1").unwrap();
 ```
 
 ### Balance fetching (async)
@@ -165,6 +167,19 @@ Originally 5 BTC, prize halves with each Bitcoin halving.
 | hash160 | HASH160 | ⏳ Unsolved | 0.100 BTC |
 | hash256 | HASH256 | ⏳ Unsolved | 0.100 BTC |
 | op_abs | OP_ABS | ✅ Claimed (2013-09-13) | - |
+
+### zden
+
+[Zden's Visual Crypto Puzzles](https://crypto.haluska.sk/) - Artistic puzzles where private keys are encoded in images, animations, and visual patterns.
+
+| Chain | Solved | Unsolved | Total |
+|-------|--------|----------|-------|
+| Bitcoin | 9 | 2 | 11 |
+| Ethereum | 2 | 0 | 2 |
+| Litecoin | 1 | 0 | 1 |
+| Decred | 1 | 0 | 1 |
+
+**Unsolved:** Level 5, Level HALV
 
 ## Data
 
