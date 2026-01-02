@@ -1,9 +1,28 @@
+## [0.7.0] - 2026-01-02
+
+### Features
+
+- *(puzzle)* Add KeySource enum for key derivation semantics (#33)
+- *(author)* Add Author struct for collections (#36)
+
+### Documentation
+
+- Update AGENTS.md with code map and testing info
+
+### Miscellaneous Tasks
+
+- Add `deepwiki` badge
+- Ad `deepwiki` badge
 ## [0.6.0] - 2025-12-31
 
 ### Features
 
 - *(puzzle)* Generalize key_range (#30)
 - *(puzzle)* Add solve_time field (#32)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.6.0
 ## [0.5.0] - 2025-12-31
 
 ### Features
