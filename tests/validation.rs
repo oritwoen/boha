@@ -260,6 +260,74 @@ fn start_date_before_solve_date() {
 }
 
 #[test]
+fn zden_solve_time_matches_dates() {
+    fn parse_datetime(s: &str) -> Option<i64> {
+        let parts: Vec<&str> = s.split(&['-', ' ', ':'][..]).collect();
+        if parts.len() != 6 {
+            return None;
+        }
+        let year: i64 = parts[0].parse().ok()?;
+        let month: i64 = parts[1].parse().ok()?;
+        let day: i64 = parts[2].parse().ok()?;
+        let hour: i64 = parts[3].parse().ok()?;
+        let min: i64 = parts[4].parse().ok()?;
+        let sec: i64 = parts[5].parse().ok()?;
+
+        fn days_in_month(year: i64, month: i64) -> i64 {
+            match month {
+                1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
+                4 | 6 | 9 | 11 => 30,
+                2 => {
+                    if year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) {
+                        29
+                    } else {
+                        28
+                    }
+                }
+                _ => 0,
+            }
+        }
+
+        let mut days: i64 = 0;
+        for y in 1970..year {
+            days += if y % 4 == 0 && (y % 100 != 0 || y % 400 == 0) {
+                366
+            } else {
+                365
+            };
+        }
+        for m in 1..month {
+            days += days_in_month(year, m);
+        }
+        days += day - 1;
+
+        Some(days * 86400 + hour * 3600 + min * 60 + sec)
+    }
+
+    for puzzle in zden::all() {
+        if let (Some(start), Some(solve), Some(solve_time)) =
+            (puzzle.start_date, puzzle.solve_date, puzzle.solve_time)
+        {
+            if let (Some(start_ts), Some(solve_ts)) = (parse_datetime(start), parse_datetime(solve))
+            {
+                let calculated = (solve_ts - start_ts) as u64;
+                let diff = calculated.abs_diff(solve_time);
+                assert!(
+                    diff < 2,
+                    "Puzzle {} solve_time mismatch: declared {} but calculated {} (diff: {}s)\n  start: {}\n  solve: {}",
+                    puzzle.id,
+                    solve_time,
+                    calculated,
+                    diff,
+                    start,
+                    solve
+                );
+            }
+        }
+    }
+}
+
+#[test]
 fn source_url_format_valid() {
     for puzzle in boha::all() {
         if let Some(url) = puzzle.source_url {
@@ -820,10 +888,6 @@ fn all_puzzles_have_funding_transaction() {
         if puzzle.pre_genesis {
             continue;
         }
-        // Skip ETH chain - no reliable API for transaction data
-        if matches!(puzzle.chain, Chain::Ethereum) {
-            continue;
-        }
         let has_funding = puzzle
             .transactions
             .iter()
@@ -840,10 +904,6 @@ fn all_puzzles_have_funding_transaction() {
 fn solved_puzzles_have_claim_transaction() {
     for puzzle in boha::all() {
         if puzzle.status == Status::Solved {
-            // Skip ETH chain - no reliable API for transaction data
-            if matches!(puzzle.chain, Chain::Ethereum) {
-                continue;
-            }
             let has_claim = puzzle
                 .transactions
                 .iter()

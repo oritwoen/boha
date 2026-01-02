@@ -51,7 +51,7 @@ status = "solved"
 prize = 0.0260414
 start_date = "2016-06-23 18:37:33"
 solve_date = "2016-06-26 08:35:29"
-solve_time = 222476
+solve_time = 223076
 transactions = [
     { type = "funding", txid = "ee4c9fc25759c5fbb1550f46bdbd93116c877a5651a4c50486fbe4c4454e3c6d", date = "2016-06-23 18:37:33", amount = 0.0260414 },
     { type = "claim", txid = "7d3ea8963136ef9a97cf37d42f7eb95aab14d92b0d075369d0cd0329bb51afe4", date = "2016-06-26 08:35:29", amount = 0.0260414 }
@@ -109,7 +109,7 @@ status = "solved"
 prize = 0.00140426
 start_date = "2021-02-07 22:51:18"
 solve_date = "2021-02-21 23:09:26"
-solve_time = 1210088
+solve_time = 1210688
 source_url = "https://crypto.haluska.sk/cryptoSFX.png"
 transactions = [
     { type = "funding", txid = "570c201d362534d8a21908bee29cd385d618805819401b1084b76f37ce5ceb4e", date = "2021-02-07 22:51:18", amount = 0.00140426 },
@@ -141,7 +141,7 @@ status = "solved"
 prize = 0.00117578
 start_date = "2021-04-11 01:59:51"
 solve_date = "2021-05-19 20:49:13"
-solve_time = 3346162
+solve_time = 3350962
 source_url = "https://ipfs.io/ipfs/Qmdm7SxhVGDVt9krbNpwAxkQGwH5a74FVW1sKNXxCjzmBq"
 transactions = [
     { type = "funding", txid = "063a1913256940e72237419cada939694f4f361d6a1bd2461c5b8387d1b77cb3", date = "2021-04-11 01:59:51", amount = 0.00117578 },
@@ -173,7 +173,7 @@ status = "solved"
 prize = 0.192018
 start_date = "2016-08-06 12:45:26"
 solve_date = "2016-08-11 16:50:46"
-solve_time = 446120
+solve_time = 446720
 source_url = "https://crypto.haluska.sk/crypto_nethemba.png"
 transactions = [
     { type = "funding", txid = "72670ce7a71e6a0cf456dcdc7734df6064283ffdd548c574b2a80254c3c9406c", date = "2016-08-06 12:45:26", amount = 0.192018 },
@@ -188,21 +188,29 @@ chain = "ethereum"
 address = "0x5d663791e869ca70c71e0a5f4cfd707f596265aa"
 status = "solved"
 prize = 6.0
-start_date = "2017-06-01 00:00:00"
-solve_date = "2018-06-01 00:00:00"
-solve_time = 31536000
+start_date = "2018-10-24 20:00:18"
+solve_date = "2019-11-05 17:08:08"
+solve_time = 32562470
 source_url = "https://crypto.haluska.sk/xixoio_puzzle.png"
+transactions = [
+    { type = "funding", txid = "b9658922bcc5b3d35dc4b054c40607090c755dd86d8891e6351a25c43cc653ac", date = "2018-10-24 20:00:18", amount = 6.0 },
+    { type = "claim", txid = "ac638a7ac6388b7af2178a52f0463a6dda8761292d261fa415c6446c8d4539f0", date = "2019-11-05 17:08:08", amount = 5.997858 }
+]
 
 [[puzzles]]
 name = "Codex Protocol"
 chain = "ethereum"
 address = "0x6b2560b34c7469c561a8fce581c88bfb8cce73b2"
 status = "solved"
-prize = 0.5
-start_date = "2018-05-22 00:00:00"
-solve_date = "2018-06-11 00:00:00"
-solve_time = 1728000
+prize = 3.1337
+start_date = "2018-04-16 22:39:45"
+solve_date = "2018-06-13 13:02:18"
+solve_time = 4976553
 source_url = "https://crypto.haluska.sk/CodexPuzzle.png"
+transactions = [
+    { type = "funding", txid = "e09300e94625ec03a8680d6270200196a12c63327fc7cad03508542090283374", date = "2018-04-16 22:39:45", amount = 3.1337 },
+    { type = "claim", txid = "eb9f6a7d1cb226c84344b38f9eb5bd26586b58c0080262d80fdcb501c0b51a7b", date = "2018-06-13 13:02:18", amount = 3.132839 }
+]
 
 # Litecoin puzzles
 
@@ -215,7 +223,7 @@ status = "solved"
 prize = 230.8255
 start_date = "2017-05-10 05:46:11"
 solve_date = "2017-05-24 01:38:16"
-solve_time = 1173125
+solve_time = 1194725
 source_url = "https://crypto.haluska.sk/LitecoinSegWit.png"
 transactions = [
     { type = "funding", txid = "bc640bc1ab3756bf5163918e5ee4c7496fcdb2e17617515d17e1f134dabbd318", date = "2017-05-10 05:46:11", amount = 100.0 },
@@ -237,7 +245,7 @@ status = "solved"
 prize = 460.0
 start_date = "2017-03-07 05:20:56"
 solve_date = "2017-03-18 13:11:29"
-solve_time = 984633
+solve_time = 978633
 source_url = "https://crypto.haluska.sk/decred_tree.svg"
 transactions = [
     { type = "funding", txid = "900ed10e661c642f30ec39e09574fcccbb72f4b2ae0733994ffdc945ed4105f2", date = "2017-03-07 05:20:56", amount = 100.0 },
