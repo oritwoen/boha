@@ -115,3 +115,6 @@ Data-driven validation (49 tests in `tests/validation.rs`):
 - `key_range()` for ≤128 bits, `key_range_big()` for any size
 - hash_collision: Peter Todd's P2SH bounties
 - Balances via mempool.space API
+- b1000 puzzles 1 and 2 have `pre_genesis = true`: transactions predate puzzle creation (2015-01-15)
+  - Puzzle 1: trivial key (1) was claimed in 2013 before the puzzle existed
+  - Puzzle 2: author's test transaction from 2014

@@ -17,3 +17,4 @@ public_key = "04f4d1bbd91e65e2a019566a17574e97dae908b784b388891848007e4f55d5a464
 pubkey_format = "uncompressed"
 start_date = "2019-04-13"
 h160 = "a9553269572a317e39f0f518cb87c1a0ee1dbae4"
+transactions = [{ type = "funding", txid = "73e48ff571a7e9a4387574a50cf2fcb7b21b6ea5702c777a035664df57cbce02", date = "2019-04-13 16:32:40", amount = 5.0 }, { type = "decrease", txid = "2aa9a4a90be819d5122d70c993280785a0508f163521e7b38cebb4db0b071b13", date = "2020-05-11 20:02:50", amount = 2.5 }, { type = "decrease", txid = "88cdb3cdca12b471551b1b26188508a14ca5fd8a415223ffb7c190381c9b9df3", date = "2024-04-24 21:47:27", amount = 1.25 }]
