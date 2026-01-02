@@ -125,7 +125,7 @@ mod tests {
     }
 
     #[test]
-    fn test_balance_negative_total_when_unconfirmed_exceeds_confirmed() {
+    fn test_balance_negative_total_from_large_pending_outgoing() {
         let balance = Balance {
             confirmed: 100_000_000,
             unconfirmed: -150_000_000,
