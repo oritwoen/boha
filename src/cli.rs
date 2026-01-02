@@ -1,6 +1,6 @@
 use boha::{
-    b1000, gsmg, hash_collision, zden, Author, Chain, KeySource, PubkeyFormat, Puzzle, Stats,
-    Status, TransactionType,
+    b1000, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat, Puzzle, Stats, Status,
+    TransactionType,
 };
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
@@ -385,8 +385,8 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         value: status_colored,
     });
 
-    match &p.key_source {
-        KeySource::Direct { bits } => {
+    if let Some(key) = &p.key {
+        if let Some(bits) = key.bits {
             rows.push(KeyValueRow {
                 field: "Bits".to_string(),
                 value: bits.to_string(),
@@ -398,28 +398,29 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 });
             }
         }
-        KeySource::Script {
-            redeem_script,
-            script_hash,
-        } => {
+        if let Some(seed) = &key.seed {
             rows.push(KeyValueRow {
-                field: "Redeem Script".to_string(),
-                value: redeem_script.to_string(),
+                field: "Seed".to_string(),
+                value: seed.phrase.to_string(),
             });
-            if let Some(hash) = script_hash {
+            if let Some(path) = seed.path {
                 rows.push(KeyValueRow {
-                    field: "Script Hash".to_string(),
-                    value: hash.to_string(),
+                    field: "Derivation Path".to_string(),
+                    value: path.to_string(),
                 });
             }
         }
-        KeySource::Derived { path } => {
-            rows.push(KeyValueRow {
-                field: "Derivation Path".to_string(),
-                value: path.to_string(),
-            });
-        }
-        KeySource::Unknown => {}
+    }
+
+    if let Some(rs) = &p.address.redeem_script {
+        rows.push(KeyValueRow {
+            field: "Redeem Script".to_string(),
+            value: rs.script.to_string(),
+        });
+        rows.push(KeyValueRow {
+            field: "Script Hash".to_string(),
+            value: rs.hash.to_string(),
+        });
     }
 
     if let Some(pubkey) = &p.pubkey {
@@ -437,10 +438,10 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         });
     }
 
-    if let Some(key) = p.private_key {
+    if let Some(hex) = p.key.and_then(|k| k.hex) {
         rows.push(KeyValueRow {
             field: "Private Key".to_string(),
-            value: key.to_string().bright_red().to_string(),
+            value: hex.to_string().bright_red().to_string(),
         });
     }
 

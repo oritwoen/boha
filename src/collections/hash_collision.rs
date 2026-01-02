@@ -2,13 +2,12 @@
 
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, Error, KeySource, Puzzle, Result, Solver, Status, Transaction,
-    TransactionType,
+    Address, Author, Chain, Error, Key, Puzzle, RedeemScript, Result, Seed, Solver, Status,
+    Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/hash_collision_data.rs"));
 
-/// Returns the author/creator of the hash collision bounties.
 pub fn author() -> &'static Author {
     &AUTHOR
 }

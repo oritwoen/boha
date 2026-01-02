@@ -1,6 +1,4 @@
-use boha::{
-    b1000, gsmg, hash_collision, zden, Chain, KeySource, PubkeyFormat, Status, TransactionType,
-};
+use boha::{b1000, gsmg, hash_collision, zden, Chain, PubkeyFormat, Status, TransactionType};
 use num_bigint::BigUint;
 
 #[test]
@@ -11,10 +9,7 @@ fn b1000_has_256_puzzles() {
 #[test]
 fn b1000_puzzles_have_sequential_bits() {
     let bits: Vec<u16> = b1000::all()
-        .filter_map(|p| match p.key_source {
-            KeySource::Direct { bits } => Some(bits),
-            _ => None,
-        })
+        .filter_map(|p| p.key.and_then(|k| k.bits))
         .collect();
 
     for i in 1u16..=256 {
@@ -25,16 +20,16 @@ fn b1000_puzzles_have_sequential_bits() {
 #[test]
 fn b1000_get_returns_correct_puzzle() {
     let p1 = b1000::get(1).unwrap();
-    assert_eq!(p1.key_source, KeySource::Direct { bits: 1 });
+    assert_eq!(p1.key.and_then(|k| k.bits), Some(1));
     assert_eq!(p1.address.value, "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH");
     assert_eq!(p1.status, Status::Solved);
 
     let p66 = b1000::get(66).unwrap();
-    assert_eq!(p66.key_source, KeySource::Direct { bits: 66 });
+    assert_eq!(p66.key.and_then(|k| k.bits), Some(66));
     assert_eq!(p66.address.value, "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so");
 
     let p256 = b1000::get(256).unwrap();
-    assert_eq!(p256.key_source, KeySource::Direct { bits: 256 });
+    assert_eq!(p256.key.and_then(|k| k.bits), Some(256));
 }
 
 #[test]
@@ -96,11 +91,11 @@ fn puzzle_key_range_big_valid() {
 }
 
 #[test]
-fn puzzle_key_range_none_for_script_source() {
+fn puzzle_key_range_none_for_p2sh() {
     for puzzle in hash_collision::all() {
         assert!(
-            matches!(puzzle.key_source, KeySource::Script { .. }),
-            "hash_collision should have Script key_source"
+            puzzle.address.redeem_script.is_some(),
+            "hash_collision should have redeem_script"
         );
         assert!(puzzle.key_range().is_none());
         assert!(puzzle.key_range_big().is_none());
@@ -110,7 +105,7 @@ fn puzzle_key_range_none_for_script_source() {
 #[test]
 fn solved_puzzles_private_key_in_range() {
     for puzzle in b1000::solved() {
-        let pk_hex = puzzle.private_key.unwrap();
+        let pk_hex = puzzle.key.and_then(|k| k.hex).unwrap();
         let pk_bytes = hex::decode(pk_hex).unwrap();
         let key = BigUint::from_bytes_be(&pk_bytes);
 
@@ -146,7 +141,7 @@ fn b1000_all_addresses_start_with_1() {
 fn b1000_solved_have_private_keys() {
     for puzzle in b1000::solved() {
         assert!(
-            puzzle.private_key.is_some(),
+            puzzle.key.and_then(|k| k.hex).is_some(),
             "Solved puzzle {} missing private key",
             puzzle.id
         );
@@ -173,8 +168,8 @@ fn hash_collision_all_p2sh() {
     for puzzle in hash_collision::all() {
         assert_eq!(puzzle.address.kind, "p2sh");
         assert!(
-            matches!(puzzle.key_source, KeySource::Script { .. }),
-            "hash_collision should have Script key_source"
+            puzzle.address.redeem_script.is_some(),
+            "hash_collision should have redeem_script"
         );
     }
 }
@@ -483,11 +478,11 @@ fn gsmg_has_hash160() {
 }
 
 #[test]
-fn hash_collision_no_hash160() {
+fn hash_collision_has_hash160() {
     for puzzle in hash_collision::all() {
         assert!(
-            puzzle.address.hash160.is_none(),
-            "hash_collision puzzle {} should not have hash160 (P2SH)",
+            puzzle.address.hash160.is_some(),
+            "hash_collision puzzle {} should have hash160",
             puzzle.id
         );
     }
@@ -533,59 +528,43 @@ fn hash160_matches_address() {
 }
 
 #[test]
-fn hash_collision_p2sh_has_script_hash() {
+fn hash_collision_p2sh_has_redeem_script() {
     for puzzle in hash_collision::all() {
-        match &puzzle.key_source {
-            KeySource::Script { script_hash, .. } => {
-                assert!(
-                    script_hash.is_some(),
-                    "P2SH puzzle {} missing script_hash",
-                    puzzle.id
-                );
-            }
-            _ => panic!(
-                "hash_collision puzzle {} should have Script key_source",
-                puzzle.id
-            ),
-        }
-    }
-}
-
-#[test]
-fn b1000_has_direct_key_source() {
-    for puzzle in b1000::all() {
         assert!(
-            matches!(puzzle.key_source, KeySource::Direct { .. }),
-            "b1000 puzzle {} should have Direct key_source",
+            puzzle.address.redeem_script.is_some(),
+            "P2SH puzzle {} missing redeem_script",
             puzzle.id
         );
     }
 }
 
 #[test]
-fn gsmg_has_unknown_key_source() {
-    let puzzle = gsmg::get();
-    assert_eq!(
-        puzzle.key_source,
-        KeySource::Unknown,
-        "gsmg puzzle should have Unknown key_source"
-    );
+fn b1000_has_key_with_bits() {
+    for puzzle in b1000::all() {
+        assert!(
+            puzzle.key.and_then(|k| k.bits).is_some(),
+            "b1000 puzzle {} should have key with bits",
+            puzzle.id
+        );
+    }
 }
 
 #[test]
-fn script_hash_format_valid() {
+fn gsmg_has_no_key() {
+    let puzzle = gsmg::get();
+    assert!(puzzle.key.is_none(), "gsmg puzzle should have no key");
+}
+
+#[test]
+fn redeem_script_hash_format_valid() {
     let hex_regex = regex::Regex::new(r"^[0-9a-f]{40}$").unwrap();
     for puzzle in boha::all() {
-        if let KeySource::Script {
-            script_hash: Some(script_hash),
-            ..
-        } = &puzzle.key_source
-        {
+        if let Some(rs) = &puzzle.address.redeem_script {
             assert!(
-                hex_regex.is_match(script_hash),
-                "Invalid script_hash format for {}: {} (expected 40 lowercase hex chars)",
+                hex_regex.is_match(rs.hash),
+                "Invalid redeem_script.hash format for {}: {} (expected 40 lowercase hex chars)",
                 puzzle.id,
-                script_hash
+                rs.hash
             );
         }
     }
@@ -603,19 +582,15 @@ fn hash160(hex_data: &str) -> Option<String> {
 }
 
 #[test]
-fn script_hash_matches_redeem_script() {
+fn redeem_script_hash_matches_script() {
     for puzzle in hash_collision::all() {
-        if let KeySource::Script {
-            redeem_script,
-            script_hash: Some(script_hash),
-        } = &puzzle.key_source
-        {
-            let computed = hash160(redeem_script)
+        if let Some(rs) = &puzzle.address.redeem_script {
+            let computed = hash160(rs.script)
                 .unwrap_or_else(|| panic!("Failed to compute script_hash for {}", puzzle.id));
             assert_eq!(
-                *script_hash, computed,
-                "script_hash mismatch for {}: stored {} != computed {}",
-                puzzle.id, script_hash, computed
+                rs.hash, computed,
+                "redeem_script.hash mismatch for {}: stored {} != computed {}",
+                puzzle.id, rs.hash, computed
             );
         }
     }
@@ -644,7 +619,7 @@ fn private_key_derives_correct_address() {
     use sha2::{Digest, Sha256};
 
     for puzzle in boha::all() {
-        let Some(pk_hex) = puzzle.private_key else {
+        let Some(pk_hex) = puzzle.key.and_then(|k| k.hex) else {
             continue;
         };
         let Some(expected_hash160) = puzzle.address.hash160 else {

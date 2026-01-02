@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, Error, KeySource, Puzzle, Result, Solver, Status, Transaction,
-    TransactionType,
+    Address, Author, Chain, Error, Key, Puzzle, RedeemScript, Result, Seed, Solver, Status,
+    Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/zden_data.rs"));

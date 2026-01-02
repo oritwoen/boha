@@ -40,10 +40,33 @@ struct TomlTransaction {
 }
 
 #[derive(Debug, Deserialize)]
+struct TomlRedeemScript {
+    script: String,
+    hash: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct TomlSeed {
+    phrase: String,
+    path: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct TomlKey {
+    hex: Option<String>,
+    wif: Option<String>,
+    seed: Option<TomlSeed>,
+    mini: Option<String>,
+    passphrase: Option<String>,
+    bits: Option<u16>,
+}
+
+#[derive(Debug, Deserialize)]
 struct Address {
     value: String,
     kind: String,
     hash160: Option<String>,
+    redeem_script: Option<TomlRedeemScript>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -60,13 +83,12 @@ struct Btc1000File {
 
 #[derive(Debug, Deserialize)]
 struct Btc1000Puzzle {
-    bits: u16,
     address: Address,
     prize: Option<f64>,
     status: String,
     #[allow(dead_code)]
     has_pubkey: Option<bool>,
-    private_key: Option<String>,
+    key: TomlKey,
     public_key: Option<String>,
     pubkey_format: Option<String>,
     start_date: Option<String>,
@@ -97,8 +119,6 @@ struct HashCollisionPuzzle {
     name: String,
     address: Address,
     status: String,
-    redeem_script: String,
-    script_hash: Option<String>,
     prize: Option<f64>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -156,6 +176,7 @@ struct ZdenPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
     solve_time: Option<u64>,
@@ -270,6 +291,95 @@ fn generate_solver_code(solver: &Option<SolverConfig>) -> String {
     }
 }
 
+fn generate_key_code(key: &Option<TomlKey>) -> String {
+    match key {
+        Some(k) => {
+            let hex = match &k.hex {
+                Some(h) => format!("Some(\"{}\")", h),
+                None => "None".to_string(),
+            };
+            let wif = match &k.wif {
+                Some(w) => format!("Some(\"{}\")", w),
+                None => "None".to_string(),
+            };
+            let seed = match &k.seed {
+                Some(s) => {
+                    let path = match &s.path {
+                        Some(p) => format!("Some(\"{}\")", p),
+                        None => "None".to_string(),
+                    };
+                    format!("Some(Seed {{ phrase: \"{}\", path: {} }})", s.phrase, path)
+                }
+                None => "None".to_string(),
+            };
+            let mini = match &k.mini {
+                Some(m) => format!("Some(\"{}\")", m),
+                None => "None".to_string(),
+            };
+            let passphrase = match &k.passphrase {
+                Some(p) => format!("Some(\"{}\")", p),
+                None => "None".to_string(),
+            };
+            let bits = match k.bits {
+                Some(b) => format!("Some({})", b),
+                None => "None".to_string(),
+            };
+            format!(
+                "Some(Key {{ hex: {}, wif: {}, seed: {}, mini: {}, passphrase: {}, bits: {} }})",
+                hex, wif, seed, mini, passphrase, bits
+            )
+        }
+        None => "None".to_string(),
+    }
+}
+
+fn generate_key_code_required(key: &TomlKey) -> String {
+    let hex = match &key.hex {
+        Some(h) => format!("Some(\"{}\")", h),
+        None => "None".to_string(),
+    };
+    let wif = match &key.wif {
+        Some(w) => format!("Some(\"{}\")", w),
+        None => "None".to_string(),
+    };
+    let seed = match &key.seed {
+        Some(s) => {
+            let path = match &s.path {
+                Some(p) => format!("Some(\"{}\")", p),
+                None => "None".to_string(),
+            };
+            format!("Some(Seed {{ phrase: \"{}\", path: {} }})", s.phrase, path)
+        }
+        None => "None".to_string(),
+    };
+    let mini = match &key.mini {
+        Some(m) => format!("Some(\"{}\")", m),
+        None => "None".to_string(),
+    };
+    let passphrase = match &key.passphrase {
+        Some(p) => format!("Some(\"{}\")", p),
+        None => "None".to_string(),
+    };
+    let bits = match key.bits {
+        Some(b) => format!("Some({})", b),
+        None => "None".to_string(),
+    };
+    format!(
+        "Some(Key {{ hex: {}, wif: {}, seed: {}, mini: {}, passphrase: {}, bits: {} }})",
+        hex, wif, seed, mini, passphrase, bits
+    )
+}
+
+fn generate_redeem_script_code(rs: &Option<TomlRedeemScript>) -> String {
+    match rs {
+        Some(r) => format!(
+            "Some(RedeemScript {{ script: \"{}\", hash: \"{}\" }})",
+            r.script, r.hash
+        ),
+        None => "None".to_string(),
+    }
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
     println!("cargo:rerun-if-changed=data/hash_collision.toml");
@@ -293,12 +403,13 @@ fn generate_b1000(out_dir: &str) {
     let data: Btc1000File = toml::from_str(&toml_content).expect("Failed to parse b1000.toml");
 
     for puzzle in &data.puzzles {
-        if let Some(pk) = &puzzle.private_key {
+        if let Some(pk) = &puzzle.key.hex {
             if let Some(derived_bits) = bits_from_private_key(pk) {
+                let declared_bits = puzzle.key.bits.expect("key.bits required for b1000");
                 assert_eq!(
-                    puzzle.bits, derived_bits,
-                    "Puzzle {} has bits={} but private_key implies bits={}",
-                    puzzle.bits, puzzle.bits, derived_bits
+                    declared_bits, derived_bits,
+                    "Puzzle {} has bits={} but key.hex implies bits={}",
+                    declared_bits, declared_bits, derived_bits
                 );
             }
         }
@@ -312,6 +423,8 @@ fn generate_b1000(out_dir: &str) {
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
 
     for puzzle in &data.puzzles {
+        let bits = puzzle.key.bits.expect("key.bits required for b1000");
+
         let status = match puzzle.status.as_str() {
             "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
@@ -324,19 +437,16 @@ fn generate_b1000(out_dir: &str) {
                 let format = match fmt.as_str() {
                     "compressed" => "PubkeyFormat::Compressed",
                     "uncompressed" => "PubkeyFormat::Uncompressed",
-                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, puzzle.bits),
+                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, bits),
                 };
                 format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
             }
             (None, None) => "None".to_string(),
-            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", puzzle.bits),
-            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", puzzle.bits),
+            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", bits),
+            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", bits),
         };
 
-        let private_key = match &puzzle.private_key {
-            Some(pk) => format!("Some(\"{}\")", pk),
-            None => "None".to_string(),
-        };
+        let key = generate_key_code_required(&puzzle.key);
 
         let prize = match puzzle.prize {
             Some(p) => format!("Some({:.6})", p),
@@ -365,11 +475,8 @@ fn generate_b1000(out_dir: &str) {
             .map(|url| format!("Some(\"{}\")", url))
             .unwrap_or_else(|| "None".to_string());
 
-        let hash160 = format_hash160(
-            &puzzle.address,
-            "bitcoin",
-            &format!("b1000/{}", puzzle.bits),
-        );
+        let hash160 = format_hash160(&puzzle.address, "bitcoin", &format!("b1000/{}", bits));
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver);
@@ -383,11 +490,11 @@ fn generate_b1000(out_dir: &str) {
             chain: Chain::Bitcoin,
             kind: "{}",
             hash160: {},
+            redeem_script: {},
         }},
         status: {},
         pubkey: {},
-        private_key: {},
-        key_source: KeySource::Direct {{ bits: {} }},
+        key: {},
         prize: {},
         start_date: {},
         solve_date: {},
@@ -398,14 +505,14 @@ fn generate_b1000(out_dir: &str) {
         solver: {},
     }},
 "#,
-            puzzle.bits,
+            bits,
             puzzle.address.value,
             puzzle.address.kind,
             hash160,
+            redeem_script,
             status,
             pubkey,
-            private_key,
-            puzzle.bits,
+            key,
             prize,
             start_date,
             solve_date,
@@ -473,16 +580,12 @@ fn generate_hash_collision(out_dir: &str) {
             .map(|url| format!("Some(\"{}\")", url))
             .unwrap_or_else(|| "None".to_string());
 
-        let script_hash = match &puzzle.script_hash {
-            Some(h) => format!("Some(\"{}\")", h),
-            None => "None".to_string(),
-        };
-
         let hash160 = format_hash160(
             &puzzle.address,
             "bitcoin",
             &format!("hash_collision/{}", puzzle.name),
         );
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver);
@@ -496,11 +599,11 @@ fn generate_hash_collision(out_dir: &str) {
             chain: Chain::Bitcoin,
             kind: "{}",
             hash160: {},
+            redeem_script: {},
         }},
         status: {},
         pubkey: None,
-        private_key: None,
-        key_source: KeySource::Script {{ redeem_script: "{}", script_hash: {} }},
+        key: None,
         prize: {},
         start_date: {},
         solve_date: {},
@@ -515,9 +618,8 @@ fn generate_hash_collision(out_dir: &str) {
             puzzle.address.value,
             puzzle.address.kind,
             hash160,
+            redeem_script,
             status,
-            puzzle.redeem_script,
-            script_hash,
             prize,
             start_date,
             solve_date,
@@ -592,6 +694,7 @@ fn generate_gsmg(out_dir: &str) {
     };
 
     let hash160 = format_hash160(&puzzle.address, "bitcoin", "gsmg");
+    let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
     let transactions = generate_transactions_code(&puzzle.transactions);
     let solver = generate_solver_code(&puzzle.solver);
@@ -608,11 +711,11 @@ fn generate_gsmg(out_dir: &str) {
         chain: Chain::Bitcoin,
         kind: "{}",
         hash160: {},
+        redeem_script: {},
     }},
     status: {},
     pubkey: {},
-    private_key: None,
-    key_source: KeySource::Unknown,
+    key: None,
     prize: {},
     start_date: {},
     solve_date: {},
@@ -626,6 +729,7 @@ fn generate_gsmg(out_dir: &str) {
         puzzle.address.value,
         puzzle.address.kind,
         hash160,
+        redeem_script,
         status,
         pubkey,
         prize,
@@ -703,6 +807,8 @@ fn generate_zden(out_dir: &str) {
             &puzzle.chain,
             &format!("zden/{}", puzzle.name),
         );
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+        let key = generate_key_code(&puzzle.key);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver);
@@ -716,11 +822,11 @@ fn generate_zden(out_dir: &str) {
             chain: {},
             kind: "{}",
             hash160: {},
+            redeem_script: {},
         }},
         status: {},
         pubkey: None,
-        private_key: None,
-        key_source: KeySource::Unknown,
+        key: {},
         prize: {},
         start_date: {},
         solve_date: {},
@@ -737,7 +843,9 @@ fn generate_zden(out_dir: &str) {
             chain,
             puzzle.address.kind,
             hash160,
+            redeem_script,
             status,
+            key,
             prize,
             start_date,
             solve_date,
