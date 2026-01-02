@@ -165,6 +165,20 @@ struct ZdenPuzzle {
     solver: Option<SolverConfig>,
 }
 
+fn format_hash160(address: &Address, chain: &str, puzzle_id: &str) -> String {
+    let requires_hash160 = address.kind == "p2pkh" && matches!(chain, "bitcoin" | "litecoin");
+    if requires_hash160 && address.hash160.is_none() {
+        panic!(
+            "Puzzle '{}' (p2pkh) requires hash160 but none provided",
+            puzzle_id
+        );
+    }
+    match &address.hash160 {
+        Some(h) => format!("Some(\"{}\")", h),
+        None => "None".to_string(),
+    }
+}
+
 fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
     if transactions.is_empty() {
         return "&[]".to_string();
@@ -351,10 +365,11 @@ fn generate_b1000(out_dir: &str) {
             .map(|url| format!("Some(\"{}\")", url))
             .unwrap_or_else(|| "None".to_string());
 
-        let hash160 = match &puzzle.address.hash160 {
-            Some(h) => format!("Some(\"{}\")", h),
-            None => "None".to_string(),
-        };
+        let hash160 = format_hash160(
+            &puzzle.address,
+            "bitcoin",
+            &format!("b1000/{}", puzzle.bits),
+        );
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver);
@@ -463,13 +478,14 @@ fn generate_hash_collision(out_dir: &str) {
             None => "None".to_string(),
         };
 
+        let hash160 = format_hash160(
+            &puzzle.address,
+            "bitcoin",
+            &format!("hash_collision/{}", puzzle.name),
+        );
+
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver);
-
-        let hash160 = match &puzzle.address.hash160 {
-            Some(h) => format!("Some(\"{}\")", h),
-            None => "None".to_string(),
-        };
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -575,10 +591,7 @@ fn generate_gsmg(out_dir: &str) {
         (None, Some(_)) => panic!("gsmg has pubkey_format but no public_key"),
     };
 
-    let hash160 = match &puzzle.address.hash160 {
-        Some(h) => format!("Some(\"{}\")", h),
-        None => "None".to_string(),
-    };
+    let hash160 = format_hash160(&puzzle.address, "bitcoin", "gsmg");
 
     let transactions = generate_transactions_code(&puzzle.transactions);
     let solver = generate_solver_code(&puzzle.solver);
@@ -685,18 +698,11 @@ fn generate_zden(out_dir: &str) {
             .map(|url| format!("Some(\"{}\")", url))
             .unwrap_or_else(|| "None".to_string());
 
-        let requires_hash160 = matches!(puzzle.chain.as_str(), "bitcoin" | "litecoin");
-        if requires_hash160 && puzzle.address.hash160.is_none() {
-            panic!(
-                "Puzzle '{}' on chain '{}' requires hash160 but none provided",
-                puzzle.name, puzzle.chain
-            );
-        }
-
-        let hash160 = match &puzzle.address.hash160 {
-            Some(h) => format!("Some(\"{}\")", h),
-            None => "None".to_string(),
-        };
+        let hash160 = format_hash160(
+            &puzzle.address,
+            &puzzle.chain,
+            &format!("zden/{}", puzzle.name),
+        );
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver);
