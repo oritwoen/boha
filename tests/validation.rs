@@ -553,6 +553,45 @@ fn pubkey_matches_h160() {
 }
 
 #[test]
+fn private_key_derives_correct_address() {
+    use k256::{elliptic_curve::sec1::ToEncodedPoint, SecretKey};
+    use ripemd::Ripemd160;
+    use sha2::{Digest, Sha256};
+
+    for puzzle in boha::all() {
+        let Some(pk_hex) = puzzle.private_key else {
+            continue;
+        };
+        let Some(expected_h160) = puzzle.h160 else {
+            continue;
+        };
+
+        let pk_bytes = hex::decode(pk_hex).unwrap();
+        let mut padded = [0u8; 32];
+        padded[32 - pk_bytes.len()..].copy_from_slice(&pk_bytes);
+
+        let secret_key = SecretKey::from_bytes((&padded).into())
+            .unwrap_or_else(|_| panic!("Invalid private key for {}", puzzle.id));
+        let public_key = secret_key.public_key();
+
+        let compress = match &puzzle.pubkey {
+            Some(pk) => pk.format == PubkeyFormat::Compressed,
+            None => true,
+        };
+
+        let pubkey_point = public_key.to_encoded_point(compress);
+        let sha256_hash = Sha256::digest(pubkey_point.as_bytes());
+        let computed_h160 = hex::encode(Ripemd160::digest(sha256_hash));
+
+        assert_eq!(
+            expected_h160, computed_h160,
+            "Private key doesn't derive correct address for {}: expected {} != computed {}",
+            puzzle.id, expected_h160, computed_h160
+        );
+    }
+}
+
+#[test]
 fn solved_puzzles_with_dates_have_solve_time() {
     for puzzle in boha::all() {
         if matches!(puzzle.status, Status::Solved | Status::Claimed)
