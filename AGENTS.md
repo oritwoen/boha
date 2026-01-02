@@ -1,12 +1,12 @@
 # BOHA - Project Knowledge Base
 
-**Generated:** 2025-12-31
-**Commit:** 08a8987
+**Generated:** 2026-01-02
+**Commit:** 859469a
 **Branch:** main
 
 ## OVERVIEW
 
-Rust library + CLI for crypto puzzle/bounty data. Build-time TOML→Rust codegen. Three collections: b1000 (256 puzzles), gsmg (1 puzzle), hash_collision (6 bounties).
+Rust library + CLI for crypto puzzle/bounty data. Build-time TOML→Rust codegen. Four collections: b1000 (256 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), zden (15 visual puzzles).
 
 ## STRUCTURE
 
@@ -20,15 +20,17 @@ boha/
 │   └── collections/
 │       ├── b1000.rs        # 256 puzzles, includes generated code
 │       ├── gsmg.rs         # Single puzzle
-│       └── hash_collision.rs # 6 bounties
+│       ├── hash_collision.rs # 6 bounties
+│       └── zden.rs         # 15 visual puzzles
 ├── data/
 │   ├── b1000.toml          # Source of truth for b1000
 │   ├── gsmg.toml           # Source of truth for gsmg
-│   └── hash_collision.toml # Source of truth for hash_collision
+│   ├── hash_collision.toml # Source of truth for hash_collision
+│   └── zden.toml           # Source of truth for zden
 ├── scripts/                # Separate Cargo project for utilities
 │   └── src/bin/            # generate_h160, generate_script_hash, generate_solve_time
 ├── build.rs                # TOML→Rust codegen at compile time
-└── tests/validation.rs     # 49 data validation tests
+└── tests/validation.rs     # 77 data validation tests
 ```
 
 ## WHERE TO LOOK
@@ -46,12 +48,12 @@ boha/
 
 | Symbol | Type | Location | Role |
 |--------|------|----------|------|
-| `get(id)` | fn | lib.rs:27 | Universal puzzle lookup by ID |
-| `all()` | fn | lib.rs:49 | Iterator over all puzzles |
-| `stats()` | fn | lib.rs:65 | Aggregate statistics |
-| `Puzzle` | struct | puzzle.rs:117 | Core data type (13 fields) |
-| `Status` | enum | puzzle.rs:43 | Solved/Unsolved/Claimed/Swept |
-| `KeySource` | enum | puzzle.rs:91 | Unknown/Direct/Derived/Script |
+| `get(id)` | fn | lib.rs:28 | Universal puzzle lookup by ID |
+| `all()` | fn | lib.rs:51 | Iterator over all puzzles |
+| `stats()` | fn | lib.rs:70 | Aggregate statistics |
+| `Puzzle` | struct | puzzle.rs:170 | Core data type (19 fields) |
+| `Status` | enum | puzzle.rs:53 | Solved/Unsolved/Claimed/Swept |
+| `KeySource` | enum | puzzle.rs:120 | Unknown/Direct/Derived/Script |
 | `Chain` | enum | puzzle.rs:8 | Bitcoin/Ethereum/Litecoin/Monero/Decred |
 | `b1000::get(n)` | fn | collections/b1000.rs | Get by puzzle number |
 | `b1000::solved()` | fn | collections/b1000.rs | Iterator over solved |
@@ -103,7 +105,7 @@ cargo run --features cli -- show b1000/66
 
 ## TESTING
 
-Data-driven validation (49 tests in `tests/validation.rs`):
+Data-driven validation (77 tests in `tests/validation.rs`):
 - Cryptographic: h160 matches address, script_hash matches redeem_script
 - Range: private keys within declared bit ranges
 - Format: dates, hex strings, URLs
@@ -114,6 +116,7 @@ Data-driven validation (49 tests in `tests/validation.rs`):
 - b1000 puzzle #N: private key in `[2^(N-1), 2^N - 1]`
 - `key_range()` for ≤128 bits, `key_range_big()` for any size
 - hash_collision: Peter Todd's P2SH bounties
+- zden: Visual puzzles by Zden (crypto.haluska.sk) - keys encoded in images/animations
 - Balances via mempool.space API
 - b1000 puzzles 1 and 2 have `pre_genesis = true`: transactions predate puzzle creation (2015-01-15)
   - Puzzle 1: trivial key (1) was claimed in 2013 before the puzzle existed
