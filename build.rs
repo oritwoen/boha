@@ -57,6 +57,8 @@ struct Btc1000Puzzle {
     start_date: Option<String>,
     solve_date: Option<String>,
     solve_time: Option<u64>,
+    #[serde(default)]
+    pre_genesis: bool,
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
@@ -132,6 +134,7 @@ fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
                 "decrease" => "TransactionType::Decrease",
                 "sweep" => "TransactionType::Sweep",
                 "claim" => "TransactionType::Claim",
+                "pubkey_reveal" => "TransactionType::PubkeyReveal",
                 other => panic!("Unknown transaction type: {}", other),
             };
             let txid = match &t.txid {
@@ -299,6 +302,7 @@ fn generate_b1000(out_dir: &str) {
         start_date: {},
         solve_date: {},
         solve_time: {},
+        pre_genesis: {},
         source_url: {},
         transactions: {},
     }},
@@ -314,6 +318,7 @@ fn generate_b1000(out_dir: &str) {
             start_date,
             solve_date,
             solve_time,
+            puzzle.pre_genesis,
             source_url,
             transactions,
         ));
@@ -397,6 +402,7 @@ fn generate_hash_collision(out_dir: &str) {
         start_date: {},
         solve_date: {},
         solve_time: {},
+        pre_genesis: false,
         source_url: {},
         transactions: {},
     }},
@@ -503,6 +509,7 @@ fn generate_gsmg(out_dir: &str) {
     start_date: {},
     solve_date: {},
     solve_time: {},
+    pre_genesis: false,
     source_url: {},
     transactions: {},
 }};

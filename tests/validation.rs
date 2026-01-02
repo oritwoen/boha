@@ -754,6 +754,11 @@ fn transaction_amount_positive() {
 #[test]
 fn all_puzzles_have_funding_transaction() {
     for puzzle in boha::all() {
+        // Pre-genesis puzzles (like b1000/1) were claimed before the puzzle officially existed
+        // and may not have a funding transaction
+        if puzzle.pre_genesis {
+            continue;
+        }
         let has_funding = puzzle
             .transactions
             .iter()

@@ -50,13 +50,14 @@ pub enum Status {
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
-#[serde(rename_all = "lowercase")]
+#[serde(rename_all = "snake_case")]
 pub enum TransactionType {
     Funding,
     Increase,
     Decrease,
     Sweep,
     Claim,
+    PubkeyReveal,
 }
 
 #[derive(Debug, Clone, Copy, Serialize)]
@@ -158,6 +159,7 @@ pub struct Puzzle {
     pub start_date: Option<&'static str>,
     pub solve_date: Option<&'static str>,
     pub solve_time: Option<u64>,
+    pub pre_genesis: bool,
     pub source_url: Option<&'static str>,
     pub transactions: &'static [Transaction],
 }

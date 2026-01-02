@@ -338,6 +338,7 @@ fn format_transaction_type(tx_type: TransactionType) -> String {
         TransactionType::Decrease => "Decrease".yellow().to_string(),
         TransactionType::Sweep => "Sweep".red().to_string(),
         TransactionType::Claim => "Claim".cyan().to_string(),
+        TransactionType::PubkeyReveal => "PubkeyReveal".magenta().to_string(),
     }
 }
 
