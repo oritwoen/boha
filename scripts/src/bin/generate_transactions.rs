@@ -220,17 +220,6 @@ fn categorize_transactions(
             .map(|o| o.value)
             .sum();
 
-        let amount_to_solver: u64 = tx
-            .vout
-            .iter()
-            .filter(|o| {
-                o.scriptpubkey_address.as_ref().is_some_and(|addr| {
-                    addr != puzzle_address && !author_addresses.contains(addr)
-                })
-            })
-            .map(|o| o.value)
-            .sum();
-
         let block_time = tx.status.block_time.unwrap_or(0);
 
         if amount_to_puzzle > 0 {
@@ -264,13 +253,13 @@ fn categorize_transactions(
                 date: Some(timestamp_to_date(block_time)),
                 amount: Some(sats_to_btc(amount_from_puzzle)),
             });
-        } else if puzzle_is_sender && amount_to_solver > 0 && amount_to_author == 0 {
+        } else if puzzle_is_sender && amount_from_puzzle > DUST_THRESHOLD && amount_to_author == 0 {
             let tx_type = if puzzle_status == "swept" { "sweep" } else { "claim" };
             result.push(Transaction {
                 tx_type: tx_type.to_string(),
                 txid: tx.txid.clone(),
                 date: Some(timestamp_to_date(block_time)),
-                amount: Some(sats_to_btc(amount_to_solver)),
+                amount: Some(sats_to_btc(amount_from_puzzle)),
             });
         }
     }
