@@ -355,3 +355,134 @@ mod help {
             .stdout(predicate::str::contains("boha"));
     }
 }
+
+#[cfg(feature = "balance")]
+mod balance {
+    use super::*;
+
+    #[test]
+    fn help_shows_balance_command() {
+        boha()
+            .arg("--help")
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("balance"));
+    }
+
+    #[test]
+    fn unknown_puzzle_error() {
+        boha()
+            .args(["balance", "b1000/999"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("Error:"));
+    }
+
+    #[test]
+    fn invalid_collection_error() {
+        boha()
+            .args(["balance", "nonexistent/puzzle"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("Error:"));
+    }
+
+    #[test]
+    fn missing_id_error() {
+        boha().arg("balance").assert().failure();
+    }
+
+    // Run ignored tests with: cargo test --features cli,balance -- --ignored
+
+    #[test]
+    #[ignore]
+    fn fetch_solved_puzzle_table_format() {
+        boha()
+            .args(["balance", "b1000/1"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("Address"))
+            .stdout(predicate::str::contains("Confirmed"))
+            .stdout(predicate::str::contains("Total"));
+    }
+
+    #[test]
+    #[ignore]
+    fn fetch_unsolved_puzzle() {
+        boha()
+            .args(["balance", "b1000/71"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("Address"));
+    }
+
+    #[test]
+    #[ignore]
+    fn json_format() {
+        boha()
+            .args(["--output", "json", "balance", "b1000/66"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("\"address\":"))
+            .stdout(predicate::str::contains("\"confirmed\":"))
+            .stdout(predicate::str::contains("\"confirmed_btc\":"))
+            .stdout(predicate::str::contains("\"unconfirmed\":"))
+            .stdout(predicate::str::contains("\"total_btc\":"));
+    }
+
+    #[test]
+    #[ignore]
+    fn jsonl_format() {
+        boha()
+            .args(["--output", "jsonl", "balance", "b1000/66"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("\"address\":"))
+            .stdout(predicate::str::contains("\"confirmed\":"));
+    }
+
+    #[test]
+    #[ignore]
+    fn yaml_format() {
+        boha()
+            .args(["--output", "yaml", "balance", "b1000/66"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("address:"))
+            .stdout(predicate::str::contains("confirmed:"))
+            .stdout(predicate::str::contains("total_btc:"));
+    }
+
+    #[test]
+    #[ignore]
+    fn csv_format() {
+        boha()
+            .args(["--output", "csv", "balance", "b1000/66"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("address,"))
+            .stdout(predicate::str::contains("confirmed,"));
+    }
+
+    #[test]
+    #[ignore]
+    fn gsmg_puzzle() {
+        boha()
+            .args(["balance", "gsmg"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains(
+                "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe",
+            ));
+    }
+
+    #[test]
+    #[ignore]
+    fn hash_collision_puzzle() {
+        boha()
+            .args(["balance", "hash_collision/sha256"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("Address"));
+    }
+}
