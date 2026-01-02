@@ -854,3 +854,56 @@ fn transactions_chronologically_ordered() {
         }
     }
 }
+
+#[test]
+fn claim_txid_matches_claim_tx() {
+    for puzzle in b1000::solved() {
+        let txid = puzzle.claim_txid();
+        let from_tx = puzzle.claim_tx().and_then(|t| t.txid);
+        assert_eq!(txid, from_tx, "claim_txid() mismatch for {}", puzzle.id);
+    }
+}
+
+#[test]
+fn funding_txid_matches_funding_tx() {
+    for puzzle in boha::all() {
+        let txid = puzzle.funding_txid();
+        let from_tx = puzzle.funding_tx().and_then(|t| t.txid);
+        assert_eq!(txid, from_tx, "funding_txid() mismatch for {}", puzzle.id);
+    }
+}
+
+#[test]
+fn unsolved_puzzles_no_claim_txid() {
+    for puzzle in b1000::unsolved() {
+        assert!(
+            puzzle.claim_txid().is_none(),
+            "Unsolved puzzle {} should not have claim_txid",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn tx_explorer_url_format() {
+    assert_eq!(
+        Chain::Bitcoin.tx_explorer_url("abc123"),
+        "https://mempool.space/tx/abc123"
+    );
+    assert_eq!(
+        Chain::Ethereum.tx_explorer_url("0xdef456"),
+        "https://etherscan.io/tx/0xdef456"
+    );
+    assert_eq!(
+        Chain::Litecoin.tx_explorer_url("abc"),
+        "https://blockchair.com/litecoin/transaction/abc"
+    );
+    assert_eq!(
+        Chain::Monero.tx_explorer_url("xyz"),
+        "https://xmrchain.net/tx/xyz"
+    );
+    assert_eq!(
+        Chain::Decred.tx_explorer_url("dcr123"),
+        "https://dcrdata.decred.org/tx/dcr123"
+    );
+}

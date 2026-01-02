@@ -90,6 +90,11 @@ println!("Funded: {}", p66.start_date.unwrap_or("unknown"));
 let range = p66.key_range().unwrap();
 println!("Range: 0x{:x} - 0x{:x}", range.start(), range.end());
 
+if let Some(txid) = p66.claim_txid() {
+    println!("Claimed in: {}", txid);
+    println!("Explorer: {}", p66.chain.tx_explorer_url(txid));
+}
+
 let unsolved: Vec<_> = b1000::all()
     .filter(|p| p.status == Status::Unsolved)
     .filter(|p| p.pubkey.is_some())
