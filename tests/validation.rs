@@ -230,13 +230,21 @@ fn all_puzzles_have_start_date() {
 }
 
 #[test]
-fn start_date_format_valid() {
-    let date_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2}( \d{2}:\d{2}:\d{2})?$").unwrap();
+fn all_dates_have_time() {
+    let datetime_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$").unwrap();
     for puzzle in boha::all() {
         if let Some(date) = puzzle.start_date {
             assert!(
-                date_regex.is_match(date),
-                "Invalid start_date format for {}: {}",
+                datetime_regex.is_match(date),
+                "Puzzle {} start_date must include time: {}",
+                puzzle.id,
+                date
+            );
+        }
+        if let Some(date) = puzzle.solve_date {
+            assert!(
+                datetime_regex.is_match(date),
+                "Puzzle {} solve_date must include time: {}",
                 puzzle.id,
                 date
             );
@@ -260,7 +268,7 @@ fn start_date_before_solve_date() {
 }
 
 #[test]
-fn zden_solve_time_matches_dates() {
+fn solve_time_matches_dates() {
     fn parse_datetime(s: &str) -> Option<i64> {
         let parts: Vec<&str> = s.split(&['-', ' ', ':'][..]).collect();
         if parts.len() != 6 {
@@ -304,7 +312,7 @@ fn zden_solve_time_matches_dates() {
         Some(days * 86400 + hour * 3600 + min * 60 + sec)
     }
 
-    for puzzle in zden::all() {
+    for puzzle in boha::all() {
         if let (Some(start), Some(solve), Some(solve_time)) =
             (puzzle.start_date, puzzle.solve_date, puzzle.solve_time)
         {
@@ -1165,29 +1173,6 @@ fn zden_eth_dcr_no_h160() {
                 puzzle.h160.is_none(),
                 "Zden ETH/DCR puzzle {} should not have h160",
                 puzzle.id
-            );
-        }
-    }
-}
-
-#[test]
-fn zden_dates_have_time() {
-    let datetime_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$").unwrap();
-    for puzzle in zden::all() {
-        if let Some(date) = puzzle.start_date {
-            assert!(
-                datetime_regex.is_match(date),
-                "Zden puzzle {} start_date must include time: {}",
-                puzzle.id,
-                date
-            );
-        }
-        if let Some(date) = puzzle.solve_date {
-            assert!(
-                datetime_regex.is_match(date),
-                "Zden puzzle {} solve_date must include time: {}",
-                puzzle.id,
-                date
             );
         }
     }

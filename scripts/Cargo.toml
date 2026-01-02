@@ -35,3 +35,7 @@ path = "src/bin/generate_solve_time.rs"
 [[bin]]
 name = "generate-transactions"
 path = "src/bin/generate_transactions.rs"
+
+[[bin]]
+name = "add-timestamps"
+path = "src/bin/add_timestamps.rs"

@@ -24,7 +24,7 @@ address = "35Snmmy3uhaer2gTboc81ayCip4m9DT4ko"
 status = "unsolved"
 redeem_script = "6e879169a87ca887"
 prize = 0.27734251
-start_date = "2013-09-13"
+start_date = "2013-09-13 05:59:09"
 script_hash = "292fb39df7cd619a396069383928e6bfb74ebec5"
 transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0", date = "2013-09-13 05:59:09", amount = 0.1 }]
 
@@ -34,7 +34,7 @@ address = "3KyiQEGqqdb4nqfhUzGKN6KPhXmQsLNpay"
 status = "unsolved"
 redeem_script = "6e879169a67ca687"
 prize = 0.11576888
-start_date = "2013-09-13"
+start_date = "2013-09-13 05:59:09"
 script_hash = "c89ab551eab767697bc4d9caca650c41b39497c6"
 transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0", date = "2013-09-13 05:59:09", amount = 0.1 }]
 
@@ -44,7 +44,7 @@ address = "39VXyuoc6SXYKp9TcAhoiN1mb4ns6z3Yu6"
 status = "unsolved"
 redeem_script = "6e879169a97ca987"
 prize = 0.10026873
-start_date = "2013-09-13"
+start_date = "2013-09-13 05:59:09"
 script_hash = "55951b1e750beb68712edae7042ffeb7491c388d"
 transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0", date = "2013-09-13 05:59:09", amount = 0.1 }]
 
@@ -54,7 +54,7 @@ address = "3DUQQvz4t57Jy7jxE86kyFcNpKtURNf1VW"
 status = "unsolved"
 redeem_script = "6e879169aa7caa87"
 prize = 0.10026873
-start_date = "2013-09-13"
+start_date = "2013-09-13 05:59:09"
 script_hash = "813ee00988dc0188450da05b77bd2d3e887f2ca4"
 transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0", date = "2013-09-13 05:59:09", amount = 0.1 }]
 
