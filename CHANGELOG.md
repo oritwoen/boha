@@ -1,8 +1,24 @@
+## [0.9.0] - 2026-01-02
+
+### Features
+
+- *(puzzle)* Add claim_txid accessors and explorer URLs (#43)
+- *(puzzle)* Add solver information for solved puzzles (#51)
+
+### Testing
+
+- Add pubkey to h160 validation (#41)
+- *(balance)* Add coverage for balance feature (#42)
+- Add private key to address derivation verification (#45)
 ## [0.8.0] - 2026-01-02
 
 ### Features
 
 - *(puzzle)* Add transaction history (#34)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.8.0
 ## [0.7.0] - 2026-01-02
 
 ### Features
