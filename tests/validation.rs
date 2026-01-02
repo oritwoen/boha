@@ -820,8 +820,8 @@ fn all_puzzles_have_funding_transaction() {
         if puzzle.pre_genesis {
             continue;
         }
-        // Skip ETH/DCR chains - no reliable API for transaction data
-        if matches!(puzzle.chain, Chain::Ethereum | Chain::Decred) {
+        // Skip ETH chain - no reliable API for transaction data
+        if matches!(puzzle.chain, Chain::Ethereum) {
             continue;
         }
         let has_funding = puzzle
@@ -840,8 +840,8 @@ fn all_puzzles_have_funding_transaction() {
 fn solved_puzzles_have_claim_transaction() {
     for puzzle in boha::all() {
         if puzzle.status == Status::Solved {
-            // Skip ETH/DCR chains - no reliable API for transaction data
-            if matches!(puzzle.chain, Chain::Ethereum | Chain::Decred) {
+            // Skip ETH chain - no reliable API for transaction data
+            if matches!(puzzle.chain, Chain::Ethereum) {
                 continue;
             }
             let has_claim = puzzle
@@ -1105,6 +1105,29 @@ fn zden_eth_dcr_no_h160() {
                 puzzle.h160.is_none(),
                 "Zden ETH/DCR puzzle {} should not have h160",
                 puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn zden_dates_have_time() {
+    let datetime_regex = regex::Regex::new(r"^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$").unwrap();
+    for puzzle in zden::all() {
+        if let Some(date) = puzzle.start_date {
+            assert!(
+                datetime_regex.is_match(date),
+                "Zden puzzle {} start_date must include time: {}",
+                puzzle.id,
+                date
+            );
+        }
+        if let Some(date) = puzzle.solve_date {
+            assert!(
+                datetime_regex.is_match(date),
+                "Zden puzzle {} solve_date must include time: {}",
+                puzzle.id,
+                date
             );
         }
     }

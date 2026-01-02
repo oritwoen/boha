@@ -188,8 +188,8 @@ chain = "ethereum"
 address = "0x5d663791e869ca70c71e0a5f4cfd707f596265aa"
 status = "solved"
 prize = 6.0
-start_date = "2017-06-01"
-solve_date = "2018-06-01"
+start_date = "2017-06-01 00:00:00"
+solve_date = "2018-06-01 00:00:00"
 solve_time = 31536000
 source_url = "https://crypto.haluska.sk/xixoio_puzzle.png"
 
@@ -199,8 +199,8 @@ chain = "ethereum"
 address = "0x6b2560b34c7469c561a8fce581c88bfb8cce73b2"
 status = "solved"
 prize = 0.5
-start_date = "2018-05-22"
-solve_date = "2018-06-11"
+start_date = "2018-05-22 00:00:00"
+solve_date = "2018-06-11 00:00:00"
 solve_time = 1728000
 source_url = "https://crypto.haluska.sk/CodexPuzzle.png"
 
@@ -213,9 +213,9 @@ address = "LartGjF6UjmvmF1JXBhFf5wtM9uZX7LzeS"
 h160 = "ab85f21bf9ca1126f3776f4686cf02737be7a2b7"
 status = "solved"
 prize = 230.8255
-start_date = "2017-05-10"
-solve_date = "2017-05-24"
-solve_time = 1209600
+start_date = "2017-05-10 05:46:11"
+solve_date = "2017-05-24 01:38:16"
+solve_time = 1173125
 source_url = "https://crypto.haluska.sk/LitecoinSegWit.png"
 transactions = [
     { type = "funding", txid = "bc640bc1ab3756bf5163918e5ee4c7496fcdb2e17617515d17e1f134dabbd318", date = "2017-05-10 05:46:11", amount = 100.0 },
@@ -234,7 +234,17 @@ name = "Decred Janus"
 chain = "decred"
 address = "DsRaAja82UvgnqYaBHYFuyCKURFX2rCyEJ8"
 status = "solved"
-start_date = "2018-01-01"
-solve_date = "2018-01-11"
-solve_time = 864000
+prize = 460.0
+start_date = "2017-03-07 05:20:56"
+solve_date = "2017-03-18 13:11:29"
+solve_time = 984633
 source_url = "https://crypto.haluska.sk/decred_tree.svg"
+transactions = [
+    { type = "funding", txid = "900ed10e661c642f30ec39e09574fcccbb72f4b2ae0733994ffdc945ed4105f2", date = "2017-03-07 05:20:56", amount = 100.0 },
+    { type = "funding", txid = "47c3529f1bf28c40e7eb01de47a42b398071a4299dffb5f658b3d5366cba60c2", date = "2017-03-07 05:31:20", amount = 100.0 },
+    { type = "funding", txid = "f968a3d99702553bb5cd4243201359abf83e47a88bae318fce4fbd32ed986581", date = "2017-03-07 05:48:32", amount = 100.0 },
+    { type = "funding", txid = "2a06e23488d2f62ad117956f9d380dea3ef1402d4708ab11391668d0d1efe90e", date = "2017-03-07 21:38:42", amount = 150.0 },
+    { type = "funding", txid = "327a674df974e0a2cb0fc98489e513a34187f1bb1c35811cd5de7e89c58a4b13", date = "2017-03-07 21:55:54", amount = 5.0 },
+    { type = "funding", txid = "77f5c42e7bc1627bcc22099dc4a0d7a11d3e97144a9f87f62c324d272a7b4719", date = "2017-03-07 22:00:08", amount = 5.0 },
+    { type = "claim", txid = "2af40f17e32a42c18cdfa7ccb552da9201c50ef60db7c60e1ae87f19a74f5467", date = "2017-03-18 13:11:29", amount = 459.9895 }
+]
