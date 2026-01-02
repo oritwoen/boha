@@ -293,42 +293,7 @@ fn generate_solver_code(solver: &Option<SolverConfig>) -> String {
 
 fn generate_key_code(key: &Option<TomlKey>) -> String {
     match key {
-        Some(k) => {
-            let hex = match &k.hex {
-                Some(h) => format!("Some(\"{}\")", h),
-                None => "None".to_string(),
-            };
-            let wif = match &k.wif {
-                Some(w) => format!("Some(\"{}\")", w),
-                None => "None".to_string(),
-            };
-            let seed = match &k.seed {
-                Some(s) => {
-                    let path = match &s.path {
-                        Some(p) => format!("Some(\"{}\")", p),
-                        None => "None".to_string(),
-                    };
-                    format!("Some(Seed {{ phrase: \"{}\", path: {} }})", s.phrase, path)
-                }
-                None => "None".to_string(),
-            };
-            let mini = match &k.mini {
-                Some(m) => format!("Some(\"{}\")", m),
-                None => "None".to_string(),
-            };
-            let passphrase = match &k.passphrase {
-                Some(p) => format!("Some(\"{}\")", p),
-                None => "None".to_string(),
-            };
-            let bits = match k.bits {
-                Some(b) => format!("Some({})", b),
-                None => "None".to_string(),
-            };
-            format!(
-                "Some(Key {{ hex: {}, wif: {}, seed: {}, mini: {}, passphrase: {}, bits: {} }})",
-                hex, wif, seed, mini, passphrase, bits
-            )
-        }
+        Some(k) => generate_key_code_required(k),
         None => "None".to_string(),
     }
 }
@@ -408,7 +373,7 @@ fn generate_b1000(out_dir: &str) {
                 let declared_bits = puzzle.key.bits.expect("key.bits required for b1000");
                 assert_eq!(
                     declared_bits, derived_bits,
-                    "Puzzle {} has bits={} but key.hex implies bits={}",
+                    "b1000/{} declares bits={} but key.hex implies bits={}",
                     declared_bits, declared_bits, derived_bits
                 );
             }
