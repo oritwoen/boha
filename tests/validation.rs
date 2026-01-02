@@ -268,7 +268,7 @@ fn start_date_before_solve_date() {
 }
 
 #[test]
-fn zden_solve_time_matches_dates() {
+fn solve_time_matches_dates() {
     fn parse_datetime(s: &str) -> Option<i64> {
         let parts: Vec<&str> = s.split(&['-', ' ', ':'][..]).collect();
         if parts.len() != 6 {
@@ -312,7 +312,7 @@ fn zden_solve_time_matches_dates() {
         Some(days * 86400 + hour * 3600 + min * 60 + sec)
     }
 
-    for puzzle in zden::all() {
+    for puzzle in boha::all() {
         if let (Some(start), Some(solve), Some(solve_time)) =
             (puzzle.start_date, puzzle.solve_date, puzzle.solve_time)
         {

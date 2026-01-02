@@ -55,6 +55,55 @@ fn has_time(date_str: &str) -> bool {
     date_str.len() > 10 && date_str.contains(' ')
 }
 
+fn parse_datetime_to_timestamp(s: &str) -> Option<i64> {
+    let parts: Vec<&str> = s.split(&['-', ' ', ':'][..]).collect();
+    if parts.len() != 6 {
+        return None;
+    }
+    let year: i64 = parts[0].parse().ok()?;
+    let month: i64 = parts[1].parse().ok()?;
+    let day: i64 = parts[2].parse().ok()?;
+    let hour: i64 = parts[3].parse().ok()?;
+    let min: i64 = parts[4].parse().ok()?;
+    let sec: i64 = parts[5].parse().ok()?;
+
+    fn days_in_month(year: i64, month: i64) -> i64 {
+        match month {
+            1 | 3 | 5 | 7 | 8 | 10 | 12 => 31,
+            4 | 6 | 9 | 11 => 30,
+            2 => {
+                if year % 4 == 0 && (year % 100 != 0 || year % 400 == 0) {
+                    29
+                } else {
+                    28
+                }
+            }
+            _ => 0,
+        }
+    }
+
+    let mut days: i64 = 0;
+    for y in 1970..year {
+        days += if y % 4 == 0 && (y % 100 != 0 || y % 400 == 0) {
+            366
+        } else {
+            365
+        };
+    }
+    for m in 1..month {
+        days += days_in_month(year, m);
+    }
+    days += day - 1;
+
+    Some(days * 86400 + hour * 3600 + min * 60 + sec)
+}
+
+fn calculate_solve_time(start_date: &str, solve_date: &str) -> Option<u64> {
+    let start_ts = parse_datetime_to_timestamp(start_date)?;
+    let solve_ts = parse_datetime_to_timestamp(solve_date)?;
+    Some((solve_ts - start_ts) as u64)
+}
+
 fn get_timestamp_from_transactions(table: &toml_edit::Table, tx_type: &str) -> Option<String> {
     let transactions = table.get("transactions")?.as_array()?;
 
@@ -168,6 +217,26 @@ fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
                 }
             }
         }
+
+        if let (Some(start_date), Some(solve_date)) = (
+            table.get("start_date").and_then(|d| d.as_str()),
+            table.get("solve_date").and_then(|d| d.as_str()),
+        ) {
+            if has_time(start_date) && has_time(solve_date) {
+                if let Some(calculated) = calculate_solve_time(start_date, solve_date) {
+                    let current = table
+                        .get("solve_time")
+                        .and_then(|v| v.as_integer())
+                        .map(|v| v as u64);
+
+                    if current != Some(calculated) {
+                        println!("  {} solve_time: {:?} -> {}", id, current, calculated);
+                        table.insert("solve_time", Item::Value(Value::from(calculated as i64)));
+                        count += 1;
+                    }
+                }
+            }
+        }
     }
 
     count
@@ -225,6 +294,29 @@ fn process_single_puzzle(doc: &mut DocumentMut, collection: &str) -> usize {
                     "  {} solve_date: {} - no timestamp found!",
                     collection, solve_date
                 );
+            }
+        }
+    }
+
+    if let (Some(start_date), Some(solve_date)) = (
+        table.get("start_date").and_then(|d| d.as_str()),
+        table.get("solve_date").and_then(|d| d.as_str()),
+    ) {
+        if has_time(start_date) && has_time(solve_date) {
+            if let Some(calculated) = calculate_solve_time(start_date, solve_date) {
+                let current = table
+                    .get("solve_time")
+                    .and_then(|v| v.as_integer())
+                    .map(|v| v as u64);
+
+                if current != Some(calculated) {
+                    println!(
+                        "  {} solve_time: {:?} -> {}",
+                        collection, current, calculated
+                    );
+                    table.insert("solve_time", Item::Value(Value::from(calculated as i64)));
+                    count += 1;
+                }
             }
         }
     }
