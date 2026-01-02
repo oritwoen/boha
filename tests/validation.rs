@@ -507,12 +507,13 @@ fn script_hash_format_valid() {
     }
 }
 
-fn redeem_script_to_script_hash(redeem_script_hex: &str) -> Option<String> {
+/// Compute HASH160 (SHA256 → RIPEMD160) of hex-encoded data.
+fn hash160(hex_data: &str) -> Option<String> {
     use ripemd::Ripemd160;
     use sha2::{Digest, Sha256};
 
-    let script_bytes = hex::decode(redeem_script_hex).ok()?;
-    let sha256_hash = Sha256::digest(&script_bytes);
+    let bytes = hex::decode(hex_data).ok()?;
+    let sha256_hash = Sha256::digest(&bytes);
     let hash160 = Ripemd160::digest(sha256_hash);
     Some(hex::encode(hash160))
 }
@@ -525,12 +526,27 @@ fn script_hash_matches_redeem_script() {
             script_hash: Some(script_hash),
         } = &puzzle.key_source
         {
-            let computed = redeem_script_to_script_hash(redeem_script)
+            let computed = hash160(redeem_script)
                 .unwrap_or_else(|| panic!("Failed to compute script_hash for {}", puzzle.id));
             assert_eq!(
                 *script_hash, computed,
                 "script_hash mismatch for {}: stored {} != computed {}",
                 puzzle.id, script_hash, computed
+            );
+        }
+    }
+}
+
+#[test]
+fn pubkey_matches_h160() {
+    for puzzle in boha::all() {
+        if let (Some(pubkey), Some(h160)) = (&puzzle.pubkey, puzzle.h160) {
+            let computed = hash160(pubkey.key)
+                .unwrap_or_else(|| panic!("Failed to compute h160 from pubkey for {}", puzzle.id));
+            assert_eq!(
+                h160, computed,
+                "pubkey doesn't match h160 for {}: stored {} != computed {}",
+                puzzle.id, h160, computed
             );
         }
     }
