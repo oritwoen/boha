@@ -127,7 +127,7 @@ impl PuzzleTableRow {
         Self {
             id: p.id.to_string(),
             chain: p.chain.symbol().to_string(),
-            address: p.address.to_string(),
+            address: p.address.value.to_string(),
             status,
             prize,
             solve_time,
@@ -369,14 +369,14 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         },
         KeyValueRow {
             field: "Address".to_string(),
-            value: p.address.to_string(),
+            value: p.address.value.to_string(),
         },
     ];
 
-    if let Some(h160) = p.h160 {
+    if let Some(hash160) = p.address.hash160 {
         rows.push(KeyValueRow {
-            field: "H160".to_string(),
-            value: h160.to_string(),
+            field: "HASH160".to_string(),
+            value: hash160.to_string(),
         });
     }
 
@@ -722,7 +722,7 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
                 puzzle: puzzle_number,
                 start: format!("0x{:x}", start),
                 end: format!("0x{:x}", end),
-                address: Some(p.address.to_string()),
+                address: Some(p.address.value.to_string()),
                 pubkey: p.pubkey.map(|pk| pk.key.to_string()),
             };
             output_range(&range, format);
@@ -804,10 +804,10 @@ fn print_author_table(author: &Author) {
 #[cfg(feature = "balance")]
 async fn cmd_balance(id: &str, format: OutputFormat) {
     match boha::get(id) {
-        Ok(puzzle) => match boha::balance::fetch(puzzle.address).await {
+        Ok(puzzle) => match boha::balance::fetch(puzzle.address.value).await {
             Ok(bal) => {
                 let output = BalanceOutput {
-                    address: puzzle.address.to_string(),
+                    address: puzzle.address.value.to_string(),
                     confirmed: bal.confirmed,
                     confirmed_btc: bal.confirmed_btc(),
                     unconfirmed: bal.unconfirmed,

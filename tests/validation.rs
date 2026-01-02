@@ -1,6 +1,5 @@
 use boha::{
-    b1000, gsmg, hash_collision, zden, AddressType, Chain, KeySource, PubkeyFormat, Status,
-    TransactionType,
+    b1000, gsmg, hash_collision, zden, Chain, KeySource, PubkeyFormat, Status, TransactionType,
 };
 use num_bigint::BigUint;
 
@@ -27,12 +26,12 @@ fn b1000_puzzles_have_sequential_bits() {
 fn b1000_get_returns_correct_puzzle() {
     let p1 = b1000::get(1).unwrap();
     assert_eq!(p1.key_source, KeySource::Direct { bits: 1 });
-    assert_eq!(p1.address, "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH");
+    assert_eq!(p1.address.value, "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH");
     assert_eq!(p1.status, Status::Solved);
 
     let p66 = b1000::get(66).unwrap();
     assert_eq!(p66.key_source, KeySource::Direct { bits: 66 });
-    assert_eq!(p66.address, "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so");
+    assert_eq!(p66.address.value, "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so");
 
     let p256 = b1000::get(256).unwrap();
     assert_eq!(p256.key_source, KeySource::Direct { bits: 256 });
@@ -131,14 +130,14 @@ fn solved_puzzles_private_key_in_range() {
 fn b1000_all_addresses_start_with_1() {
     for puzzle in b1000::all() {
         assert!(
-            puzzle.address.starts_with('1'),
+            puzzle.address.value.starts_with('1'),
             "BTC1000 address should start with 1: {}",
-            puzzle.address
+            puzzle.address.value
         );
         assert!(
-            bs58::decode(puzzle.address).into_vec().is_ok(),
+            bs58::decode(puzzle.address.value).into_vec().is_ok(),
             "Invalid base58: {}",
-            puzzle.address
+            puzzle.address.value
         );
     }
 }
@@ -162,7 +161,7 @@ fn hash_collision_count() {
 #[test]
 fn hash_collision_get_by_name() {
     let sha1 = hash_collision::get("sha1").unwrap();
-    assert_eq!(sha1.address, "37k7toV1Nv4DfmQbmZ8KuZDQCYK9x5KpzP");
+    assert_eq!(sha1.address.value, "37k7toV1Nv4DfmQbmZ8KuZDQCYK9x5KpzP");
     assert_eq!(sha1.status, Status::Claimed);
 
     let sha256 = hash_collision::get("sha256").unwrap();
@@ -172,7 +171,7 @@ fn hash_collision_get_by_name() {
 #[test]
 fn hash_collision_all_p2sh() {
     for puzzle in hash_collision::all() {
-        assert_eq!(puzzle.address_type, Some(AddressType::P2SH));
+        assert_eq!(puzzle.address.kind, "p2sh");
         assert!(
             matches!(puzzle.key_source, KeySource::Script { .. }),
             "hash_collision should have Script key_source"
@@ -189,9 +188,9 @@ fn gsmg_count() {
 fn gsmg_get_returns_correct_puzzle() {
     let puzzle = gsmg::get();
     assert_eq!(puzzle.id, "gsmg");
-    assert_eq!(puzzle.address, "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe");
+    assert_eq!(puzzle.address.value, "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe");
     assert_eq!(puzzle.status, Status::Unsolved);
-    assert_eq!(puzzle.address_type, Some(AddressType::P2PKH));
+    assert_eq!(puzzle.address.kind, "p2pkh");
     assert_eq!(puzzle.chain, Chain::Bitcoin);
 }
 
@@ -464,67 +463,70 @@ fn pubkey_has_non_empty_key() {
 }
 
 #[test]
-fn b1000_p2pkh_has_h160() {
+fn b1000_p2pkh_has_hash160() {
     for puzzle in b1000::all() {
         assert!(
-            puzzle.h160.is_some(),
-            "b1000 puzzle {} missing h160",
+            puzzle.address.hash160.is_some(),
+            "b1000 puzzle {} missing hash160",
             puzzle.id
         );
     }
 }
 
 #[test]
-fn gsmg_has_h160() {
+fn gsmg_has_hash160() {
     let puzzle = gsmg::get();
-    assert!(puzzle.h160.is_some(), "gsmg puzzle missing h160");
+    assert!(
+        puzzle.address.hash160.is_some(),
+        "gsmg puzzle missing hash160"
+    );
 }
 
 #[test]
-fn hash_collision_no_h160() {
+fn hash_collision_no_hash160() {
     for puzzle in hash_collision::all() {
         assert!(
-            puzzle.h160.is_none(),
-            "hash_collision puzzle {} should not have h160 (P2SH)",
+            puzzle.address.hash160.is_none(),
+            "hash_collision puzzle {} should not have hash160 (P2SH)",
             puzzle.id
         );
     }
 }
 
 #[test]
-fn h160_format_valid() {
+fn hash160_format_valid() {
     let hex_regex = regex::Regex::new(r"^[0-9a-f]{40}$").unwrap();
     for puzzle in boha::all() {
-        if let Some(h160) = puzzle.h160 {
+        if let Some(hash160) = puzzle.address.hash160 {
             assert!(
-                hex_regex.is_match(h160),
-                "Invalid h160 format for {}: {} (expected 40 lowercase hex chars)",
+                hex_regex.is_match(hash160),
+                "Invalid hash160 format for {}: {} (expected 40 lowercase hex chars)",
                 puzzle.id,
-                h160
+                hash160
             );
         }
     }
 }
 
-fn address_to_h160(address: &str) -> Option<String> {
+fn address_to_hash160(address: &str) -> Option<String> {
     let decoded = bs58::decode(address).into_vec().ok()?;
     if decoded.len() != 25 {
         return None;
     }
-    let h160 = &decoded[1..21];
-    Some(hex::encode(h160))
+    let hash160 = &decoded[1..21];
+    Some(hex::encode(hash160))
 }
 
 #[test]
-fn h160_matches_address() {
+fn hash160_matches_address() {
     for puzzle in boha::all() {
-        if let Some(h160) = puzzle.h160 {
-            let computed = address_to_h160(puzzle.address)
-                .unwrap_or_else(|| panic!("Failed to compute h160 for {}", puzzle.id));
+        if let Some(hash160) = puzzle.address.hash160 {
+            let computed = address_to_hash160(puzzle.address.value)
+                .unwrap_or_else(|| panic!("Failed to compute hash160 for {}", puzzle.id));
             assert_eq!(
-                h160, computed,
-                "h160 mismatch for {}: stored {} != computed {}",
-                puzzle.id, h160, computed
+                hash160, computed,
+                "hash160 mismatch for {}: stored {} != computed {}",
+                puzzle.id, hash160, computed
             );
         }
     }
@@ -620,15 +622,16 @@ fn script_hash_matches_redeem_script() {
 }
 
 #[test]
-fn pubkey_matches_h160() {
+fn pubkey_matches_hash160() {
     for puzzle in boha::all() {
-        if let (Some(pubkey), Some(h160)) = (&puzzle.pubkey, puzzle.h160) {
-            let computed = hash160(pubkey.key)
-                .unwrap_or_else(|| panic!("Failed to compute h160 from pubkey for {}", puzzle.id));
+        if let (Some(pubkey), Some(expected)) = (&puzzle.pubkey, puzzle.address.hash160) {
+            let computed = hash160(pubkey.key).unwrap_or_else(|| {
+                panic!("Failed to compute hash160 from pubkey for {}", puzzle.id)
+            });
             assert_eq!(
-                h160, computed,
-                "pubkey doesn't match h160 for {}: stored {} != computed {}",
-                puzzle.id, h160, computed
+                expected, computed,
+                "pubkey doesn't match hash160 for {}: stored {} != computed {}",
+                puzzle.id, expected, computed
             );
         }
     }
@@ -644,7 +647,7 @@ fn private_key_derives_correct_address() {
         let Some(pk_hex) = puzzle.private_key else {
             continue;
         };
-        let Some(expected_h160) = puzzle.h160 else {
+        let Some(expected_hash160) = puzzle.address.hash160 else {
             continue;
         };
 
@@ -663,12 +666,12 @@ fn private_key_derives_correct_address() {
 
         let pubkey_point = public_key.to_encoded_point(compress);
         let sha256_hash = Sha256::digest(pubkey_point.as_bytes());
-        let computed_h160 = hex::encode(Ripemd160::digest(sha256_hash));
+        let computed_hash160 = hex::encode(Ripemd160::digest(sha256_hash));
 
         assert_eq!(
-            expected_h160, computed_h160,
+            expected_hash160, computed_hash160,
             "Private key doesn't derive correct address for {}: expected {} != computed {}",
-            puzzle.id, expected_h160, computed_h160
+            puzzle.id, expected_hash160, computed_hash160
         );
     }
 }
@@ -1124,7 +1127,7 @@ fn zden_count() {
 #[test]
 fn zden_get_by_name() {
     let level1 = zden::get("Level 1").unwrap();
-    assert_eq!(level1.address, "1cryptommoqPHVNHuxVQG3bzujnRJYB1D");
+    assert_eq!(level1.address.value, "1cryptommoqPHVNHuxVQG3bzujnRJYB1D");
     assert_eq!(level1.status, Status::Solved);
     assert_eq!(level1.chain, Chain::Bitcoin);
 
@@ -1153,12 +1156,12 @@ fn zden_multi_chain() {
 }
 
 #[test]
-fn zden_btc_ltc_have_h160() {
+fn zden_btc_ltc_have_hash160() {
     for puzzle in zden::all() {
         if puzzle.chain == Chain::Bitcoin || puzzle.chain == Chain::Litecoin {
             assert!(
-                puzzle.h160.is_some(),
-                "Zden BTC/LTC puzzle {} should have h160",
+                puzzle.address.hash160.is_some(),
+                "Zden BTC/LTC puzzle {} should have hash160",
                 puzzle.id
             );
         }
@@ -1166,12 +1169,12 @@ fn zden_btc_ltc_have_h160() {
 }
 
 #[test]
-fn zden_eth_dcr_no_h160() {
+fn zden_eth_dcr_no_hash160() {
     for puzzle in zden::all() {
         if puzzle.chain == Chain::Ethereum || puzzle.chain == Chain::Decred {
             assert!(
-                puzzle.h160.is_none(),
-                "Zden ETH/DCR puzzle {} should not have h160",
+                puzzle.address.hash160.is_none(),
+                "Zden ETH/DCR puzzle {} should not have hash160",
                 puzzle.id
             );
         }
