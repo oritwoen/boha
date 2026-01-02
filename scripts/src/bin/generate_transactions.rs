@@ -175,6 +175,7 @@ fn categorize_transactions(
     puzzle_address: &str,
     txs: Vec<EsploraTx>,
     author_addresses: &HashSet<String>,
+    puzzle_status: &str,
 ) -> Vec<Transaction> {
     let mut result = Vec::new();
 
@@ -182,19 +183,8 @@ fn categorize_transactions(
     sorted_txs.sort_by_key(|tx| tx.status.block_time.unwrap_or(i64::MAX));
 
     let mut has_funding = false;
-    let mut has_claim = false;
 
     for tx in &sorted_txs {
-        if has_claim {
-            break;
-        }
-        let author_is_sender = tx.vin.iter().any(|i| {
-            i.prevout
-                .as_ref()
-                .and_then(|p| p.scriptpubkey_address.as_ref())
-                .is_some_and(|addr| author_addresses.contains(addr))
-        });
-
         let amount_to_puzzle: u64 = tx
             .vout
             .iter()
@@ -243,9 +233,11 @@ fn categorize_transactions(
 
         let block_time = tx.status.block_time.unwrap_or(0);
 
-        if author_is_sender && amount_to_puzzle > 0 {
-            let tx_type = if !has_funding { "funding" } else { "increase" };
-            has_funding = true;
+        if amount_to_puzzle > 0 {
+            let tx_type = match has_funding {
+                false => "funding",
+                true => "increase",
+            };
 
             result.push(Transaction {
                 tx_type: tx_type.to_string(),
@@ -253,6 +245,7 @@ fn categorize_transactions(
                 date: Some(timestamp_to_date(block_time)),
                 amount: Some(sats_to_btc(amount_to_puzzle)),
             });
+            has_funding = true;
         }
 
         if puzzle_is_sender && amount_to_author > 0 {
@@ -272,13 +265,13 @@ fn categorize_transactions(
                 amount: Some(sats_to_btc(amount_from_puzzle)),
             });
         } else if puzzle_is_sender && amount_to_solver > 0 && amount_to_author == 0 {
+            let tx_type = if puzzle_status == "swept" { "sweep" } else { "claim" };
             result.push(Transaction {
-                tx_type: "claim".to_string(),
+                tx_type: tx_type.to_string(),
                 txid: tx.txid.clone(),
                 date: Some(timestamp_to_date(block_time)),
                 amount: Some(sats_to_btc(amount_to_solver)),
             });
-            has_claim = true;
         }
     }
 
@@ -321,21 +314,45 @@ fn extract_existing_transactions(table: &toml_edit::Table) -> Vec<Transaction> {
     result
 }
 
-fn merge_transactions(existing: Vec<Transaction>, new: Vec<Transaction>) -> Vec<Transaction> {
-    let existing_txids: HashSet<String> = existing.iter().map(|t| t.txid.clone()).collect();
+fn tx_type_sort_priority(tx_type: &str) -> u8 {
+    match tx_type {
+        "funding" => 0,
+        "increase" => 1,
+        "decrease" => 2,
+        "pubkey_reveal" => 3,
+        "claim" | "sweep" => 4,
+        _ => 5,
+    }
+}
 
-    let mut merged = existing;
-    for tx in new {
-        if !existing_txids.contains(&tx.txid) {
-            merged.push(tx);
-        }
+fn is_terminal_tx_type(tx_type: &str) -> bool {
+    matches!(tx_type, "claim" | "sweep")
+}
+
+fn merge_transactions(existing: Vec<Transaction>, fresh_from_api: Vec<Transaction>) -> Vec<Transaction> {
+    use std::collections::HashMap;
+
+    let mut transactions_by_txid: HashMap<String, Transaction> = HashMap::new();
+
+    for tx in existing {
+        transactions_by_txid.insert(tx.txid.clone(), tx);
     }
 
-    merged.sort_by(|a, b| a.date.cmp(&b.date));
+    for tx in fresh_from_api {
+        transactions_by_txid.insert(tx.txid.clone(), tx);
+    }
 
-    let claim_idx = merged.iter().position(|t| t.tx_type == "claim");
-    if let Some(idx) = claim_idx {
-        merged.truncate(idx + 1);
+    let mut merged: Vec<Transaction> = transactions_by_txid.into_values().collect();
+    
+    merged.sort_by(|a, b| {
+        match a.date.cmp(&b.date) {
+            std::cmp::Ordering::Equal => tx_type_sort_priority(&a.tx_type).cmp(&tx_type_sort_priority(&b.tx_type)),
+            other => other,
+        }
+    });
+
+    if let Some(terminal_idx) = merged.iter().position(|t| is_terminal_tx_type(&t.tx_type)) {
+        merged.truncate(terminal_idx + 1);
     }
 
     merged
@@ -465,8 +482,9 @@ fn process_cached_b1000(
                     address
                 );
 
+                let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
                 let existing = extract_existing_transactions(table);
-                let new_transactions = categorize_transactions(&address, txs, author_addresses);
+                let new_transactions = categorize_transactions(&address, txs, author_addresses, status);
                 let merged = merge_transactions(existing, new_transactions);
 
                 if !merged.is_empty() {
@@ -541,15 +559,16 @@ fn process_cached_gsmg(
 
             println!("  Processing gsmg ({})", address);
 
-            let existing = extract_existing_transactions(table);
-            let new_transactions = categorize_transactions(&address, txs, author_addresses);
-            let merged = merge_transactions(existing, new_transactions);
+                let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
+                let existing = extract_existing_transactions(table);
+                let new_transactions = categorize_transactions(&address, txs, author_addresses, status);
+                let merged = merge_transactions(existing, new_transactions);
 
-            if !merged.is_empty() {
-                table.insert(
-                    "transactions",
-                    Item::Value(Value::Array(transactions_to_array(&merged))),
-                );
+                if !merged.is_empty() {
+                    table.insert(
+                        "transactions",
+                        Item::Value(Value::Array(transactions_to_array(&merged))),
+                    );
                 return Ok(1);
             }
         }
@@ -655,8 +674,9 @@ fn process_cached_collection(
                     address
                 );
 
+                let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
                 let existing = extract_existing_transactions(table);
-                let new_transactions = categorize_transactions(&address, txs, author_addresses);
+                let new_transactions = categorize_transactions(&address, txs, author_addresses, status);
                 let merged = merge_transactions(existing, new_transactions);
 
                 if !merged.is_empty() {
