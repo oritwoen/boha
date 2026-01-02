@@ -50,19 +50,19 @@ boha list b1000 --unsolved
 boha list b1000 --with-pubkey
 
 # Show puzzle details
-boha show b1000/66
+boha show b1000/90
 boha show gsmg
 boha show hash_collision/sha256
 
 # Get key range
-boha range 66
+boha range 90
 
 # Check balance (requires --features balance)
 boha balance b1000/71
 
 # Output formats (default: table)
 boha -o json stats
-boha -o yaml show b1000/66
+boha -o yaml show b1000/90
 boha -o csv list b1000 > puzzles.csv
 boha -o jsonl list b1000 --unsolved | jq .
 ```
@@ -82,17 +82,17 @@ boha -o jsonl list b1000 --unsolved | jq .
 ```rust
 use boha::{b1000, gsmg, hash_collision, zden, Status};
 
-let p66 = b1000::get(66).unwrap();
-println!("Address: {}", p66.address);
-println!("H160: {}", p66.h160.unwrap());
-println!("Funded: {}", p66.start_date.unwrap_or("unknown"));
+let p90 = b1000::get(90).unwrap();
+println!("Address: {}", p90.address.value);
+println!("HASH160: {}", p90.address.hash160.unwrap());
+println!("Funded: {}", p90.start_date.unwrap_or("unknown"));
 
-let range = p66.key_range().unwrap();
+let range = p90.key_range().unwrap();
 println!("Range: 0x{:x} - 0x{:x}", range.start(), range.end());
 
-if let Some(txid) = p66.claim_txid() {
+if let Some(txid) = p90.claim_txid() {
     println!("Claimed in: {}", txid);
-    println!("Explorer: {}", p66.chain.tx_explorer_url(txid));
+    println!("Explorer: {}", p90.chain.tx_explorer_url(txid));
 }
 
 let unsolved: Vec<_> = b1000::all()
@@ -104,7 +104,7 @@ let gsmg_puzzle = gsmg::get();
 let sha256 = hash_collision::get("sha256").unwrap();
 let level1 = zden::get("Level 1").unwrap();
 
-let puzzle = boha::get("b1000/66").unwrap();
+let puzzle = boha::get("b1000/90").unwrap();
 let puzzle = boha::get("gsmg").unwrap();
 let puzzle = boha::get("zden/Level 1").unwrap();
 ```
@@ -117,7 +117,7 @@ use boha::{b1000, balance};
 #[tokio::main]
 async fn main() {
     let puzzle = b1000::get(71).unwrap();
-    let bal = balance::fetch(puzzle.address).await.unwrap();
+    let bal = balance::fetch(puzzle.address.value).await.unwrap();
     
     println!("Confirmed: {} sats", bal.confirmed);
     println!("Total: {:.8} BTC", bal.total_btc());
@@ -185,7 +185,7 @@ Originally 5 BTC, prize halves with each Bitcoin halving.
 
 All puzzle data is embedded at compile time from TOML files in `data/`.
 
-Each puzzle includes: address, h160 (Hash160 for P2PKH addresses), status, BTC amount, public key (if exposed), solve date (if solved), and start date (when funded).
+Each puzzle includes: address (with HASH160 and type), chain, status, prize, public key (if exposed), private key (if solved), key source, solve date (if solved), solve time, start date (when funded), transactions history, and solver information.
 
 ## License
 

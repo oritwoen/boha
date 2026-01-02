@@ -1,7 +1,7 @@
 # BOHA - Project Knowledge Base
 
 **Generated:** 2026-01-02
-**Commit:** 859469a
+**Commit:** 4ae56c0
 **Branch:** main
 
 ## OVERVIEW
@@ -15,7 +15,7 @@ boha/
 ├── src/
 │   ├── lib.rs              # Library entry: get(), all(), stats()
 │   ├── cli.rs              # CLI binary (--features cli) - NOT main.rs
-│   ├── puzzle.rs           # Puzzle, Status, Chain, KeySource, AddressType
+│   ├── puzzle.rs           # Puzzle, Address, Status, Chain, KeySource
 │   ├── balance.rs          # Async balance fetch (--features balance)
 │   └── collections/
 │       ├── b1000.rs        # 256 puzzles, includes generated code
@@ -51,12 +51,14 @@ boha/
 | `get(id)` | fn | lib.rs:28 | Universal puzzle lookup by ID |
 | `all()` | fn | lib.rs:51 | Iterator over all puzzles |
 | `stats()` | fn | lib.rs:70 | Aggregate statistics |
-| `Puzzle` | struct | puzzle.rs:170 | Core data type (19 fields) |
+| `Puzzle` | struct | puzzle.rs:157 | Core data type (14 fields) |
+| `Address` | struct | puzzle.rs:87 | Address with value, chain, kind, hash160 |
 | `Status` | enum | puzzle.rs:53 | Solved/Unsolved/Claimed/Swept |
-| `KeySource` | enum | puzzle.rs:120 | Unknown/Direct/Derived/Script |
+| `KeySource` | enum | puzzle.rs:107 | Unknown/Direct/Derived/Script |
 | `Chain` | enum | puzzle.rs:8 | Bitcoin/Ethereum/Litecoin/Monero/Decred |
-| `b1000::get(n)` | fn | collections/b1000.rs | Get by puzzle number |
-| `b1000::solved()` | fn | collections/b1000.rs | Iterator over solved |
+| `Transaction` | struct | puzzle.rs:73 | tx_type, txid, date, amount |
+| `b1000::get(n)` | fn | collections/b1000.rs:18 | Get by puzzle number |
+| `b1000::solved()` | fn | collections/b1000.rs:33 | Iterator over solved |
 
 ## BUILD-TIME CODEGEN
 
@@ -100,7 +102,7 @@ just release X.Y.Z # Full release workflow
 # CLI
 cargo run --features cli -- stats
 cargo run --features cli -- list b1000 --unsolved
-cargo run --features cli -- show b1000/66
+cargo run --features cli -- show b1000/90
 ```
 
 ## TESTING
