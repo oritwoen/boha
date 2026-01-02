@@ -38,6 +38,16 @@ impl Chain {
             Chain::Decred => "Decred",
         }
     }
+
+    pub fn tx_explorer_url(&self, txid: &str) -> String {
+        match self {
+            Chain::Bitcoin => format!("https://mempool.space/tx/{}", txid),
+            Chain::Ethereum => format!("https://etherscan.io/tx/{}", txid),
+            Chain::Litecoin => format!("https://blockchair.com/litecoin/transaction/{}", txid),
+            Chain::Monero => format!("https://xmrchain.net/tx/{}", txid),
+            Chain::Decred => format!("https://dcrdata.decred.org/tx/{}", txid),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -241,6 +251,14 @@ impl Puzzle {
         self.transactions
             .iter()
             .find(|t| t.tx_type == TransactionType::Claim)
+    }
+
+    pub fn claim_txid(&self) -> Option<&'static str> {
+        self.claim_tx().and_then(|tx| tx.txid)
+    }
+
+    pub fn funding_txid(&self) -> Option<&'static str> {
+        self.funding_tx().and_then(|tx| tx.txid)
     }
 
     pub fn has_transactions(&self) -> bool {

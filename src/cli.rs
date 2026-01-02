@@ -474,6 +474,17 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         });
     }
 
+    if let Some(txid) = p.claim_txid() {
+        rows.push(KeyValueRow {
+            field: "Claim TX".to_string(),
+            value: txid.to_string(),
+        });
+        rows.push(KeyValueRow {
+            field: "Claim TX URL".to_string(),
+            value: p.chain.tx_explorer_url(txid),
+        });
+    }
+
     if let Some(url) = p.source_url {
         rows.push(KeyValueRow {
             field: "Source".to_string(),
