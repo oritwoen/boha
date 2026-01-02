@@ -1,3 +1,8 @@
+## [0.8.0] - 2026-01-02
+
+### Features
+
+- *(puzzle)* Add transaction history (#34)
 ## [0.7.0] - 2026-01-02
 
 ### Features
@@ -13,6 +18,7 @@
 
 - Add `deepwiki` badge
 - Ad `deepwiki` badge
+- *(release)* V0.7.0
 ## [0.6.0] - 2025-12-31
 
 ### Features
