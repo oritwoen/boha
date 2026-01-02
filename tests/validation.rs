@@ -1,5 +1,5 @@
 use boha::{
-    b1000, gsmg, hash_collision, AddressType, Chain, KeySource, PubkeyFormat, Solver, Status,
+    b1000, gsmg, hash_collision, zden, AddressType, Chain, KeySource, PubkeyFormat, Status,
     TransactionType,
 };
 use num_bigint::BigUint;
@@ -206,8 +206,8 @@ fn universal_get_works() {
 #[test]
 fn stats_are_reasonable() {
     let stats = boha::stats();
-    assert!(stats.total > 250);
-    assert!(stats.solved > 50);
+    assert!(stats.total > 270);
+    assert!(stats.solved > 60);
     assert!(stats.unsolved > 50);
     assert!(stats.swept > 90);
     let total_btc = stats
@@ -274,12 +274,18 @@ fn source_url_format_valid() {
 }
 
 #[test]
-fn all_current_puzzles_are_bitcoin() {
+fn all_puzzles_have_valid_chain() {
     for puzzle in boha::all() {
-        assert_eq!(
-            puzzle.chain,
+        let valid_chains = [
             Chain::Bitcoin,
-            "Puzzle {} should be Bitcoin",
+            Chain::Ethereum,
+            Chain::Litecoin,
+            Chain::Monero,
+            Chain::Decred,
+        ];
+        assert!(
+            valid_chains.contains(&puzzle.chain),
+            "Puzzle {} has invalid chain",
             puzzle.id
         );
     }
@@ -814,6 +820,10 @@ fn all_puzzles_have_funding_transaction() {
         if puzzle.pre_genesis {
             continue;
         }
+        // Skip ETH/DCR chains - no reliable API for transaction data
+        if matches!(puzzle.chain, Chain::Ethereum | Chain::Decred) {
+            continue;
+        }
         let has_funding = puzzle
             .transactions
             .iter()
@@ -830,6 +840,10 @@ fn all_puzzles_have_funding_transaction() {
 fn solved_puzzles_have_claim_transaction() {
     for puzzle in boha::all() {
         if puzzle.status == Status::Solved {
+            // Skip ETH/DCR chains - no reliable API for transaction data
+            if matches!(puzzle.chain, Chain::Ethereum | Chain::Decred) {
+                continue;
+            }
             let has_claim = puzzle
                 .transactions
                 .iter()
@@ -1032,4 +1046,73 @@ fn tx_explorer_url_format() {
         Chain::Decred.tx_explorer_url("dcr123"),
         "https://dcrdata.decred.org/tx/dcr123"
     );
+}
+
+#[test]
+fn zden_count() {
+    assert_eq!(zden::all().count(), 15);
+}
+
+#[test]
+fn zden_get_by_name() {
+    let level1 = zden::get("Level 1").unwrap();
+    assert_eq!(level1.address, "1cryptommoqPHVNHuxVQG3bzujnRJYB1D");
+    assert_eq!(level1.status, Status::Solved);
+    assert_eq!(level1.chain, Chain::Bitcoin);
+
+    let xixoio = zden::get("XIXOIO").unwrap();
+    assert_eq!(xixoio.chain, Chain::Ethereum);
+
+    let ltc = zden::get("Litecoin SegWit").unwrap();
+    assert_eq!(ltc.chain, Chain::Litecoin);
+}
+
+#[test]
+fn zden_has_author() {
+    let author = zden::author();
+    assert_eq!(author.name, Some("Zden"));
+    assert!(!author.addresses.is_empty());
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn zden_multi_chain() {
+    let chains: Vec<Chain> = zden::all().map(|p| p.chain).collect();
+    assert!(chains.contains(&Chain::Bitcoin));
+    assert!(chains.contains(&Chain::Ethereum));
+    assert!(chains.contains(&Chain::Litecoin));
+    assert!(chains.contains(&Chain::Decred));
+}
+
+#[test]
+fn zden_btc_ltc_have_h160() {
+    for puzzle in zden::all() {
+        if puzzle.chain == Chain::Bitcoin || puzzle.chain == Chain::Litecoin {
+            assert!(
+                puzzle.h160.is_some(),
+                "Zden BTC/LTC puzzle {} should have h160",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn zden_eth_dcr_no_h160() {
+    for puzzle in zden::all() {
+        if puzzle.chain == Chain::Ethereum || puzzle.chain == Chain::Decred {
+            assert!(
+                puzzle.h160.is_none(),
+                "Zden ETH/DCR puzzle {} should not have h160",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn universal_get_works_with_zden() {
+    assert!(boha::get("zden/Level 1").is_ok());
+    assert!(boha::get("zden/XIXOIO").is_ok());
+    assert!(boha::get("zden/Litecoin SegWit").is_ok());
 }
