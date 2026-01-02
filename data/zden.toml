@@ -15,8 +15,7 @@ source_url = "https://crypto.haluska.sk/"
 [[puzzles]]
 name = "Level 1"
 chain = "bitcoin"
-address = "1cryptommoqPHVNHuxVQG3bzujnRJYB1D"
-h160 = "06c84797d2e333a2e692bb1c248f2cb20be50852"
+address = { value = "1cryptommoqPHVNHuxVQG3bzujnRJYB1D", kind = "p2pkh", hash160 = "06c84797d2e333a2e692bb1c248f2cb20be50852" }
 status = "solved"
 prize = 0.0260414
 start_date = "2016-06-07 23:05:42"
@@ -30,8 +29,7 @@ transactions = [
 [[puzzles]]
 name = "Level 2"
 chain = "bitcoin"
-address = "1cryptoTuax4qeedzVC35eYf4c16v4reJ"
-h160 = "06c84797d2819c984eb9045c1510b0e4fe8d7bf0"
+address = { value = "1cryptoTuax4qeedzVC35eYf4c16v4reJ", kind = "p2pkh", hash160 = "06c84797d2819c984eb9045c1510b0e4fe8d7bf0" }
 status = "solved"
 prize = 0.0260414
 start_date = "2016-06-16 17:14:33"
@@ -45,8 +43,7 @@ transactions = [
 [[puzzles]]
 name = "Level 3"
 chain = "bitcoin"
-address = "1cryptoJzomVVJUSys8Qv1gKPCXFoZy1U"
-h160 = "06c84797d250f130abafce9eafefea3f425e162e"
+address = { value = "1cryptoJzomVVJUSys8Qv1gKPCXFoZy1U", kind = "p2pkh", hash160 = "06c84797d250f130abafce9eafefea3f425e162e" }
 status = "solved"
 prize = 0.0260414
 start_date = "2016-06-23 18:37:33"
@@ -60,8 +57,7 @@ transactions = [
 [[puzzles]]
 name = "Level 4"
 chain = "bitcoin"
-address = "1cryptoRMRnj7Q9fgToxTRvejLnx3QRPq"
-h160 = "06c84797d273a88bcbcf0a98fd675aeae0447b56"
+address = { value = "1cryptoRMRnj7Q9fgToxTRvejLnx3QRPq", kind = "p2pkh", hash160 = "06c84797d273a88bcbcf0a98fd675aeae0447b56" }
 status = "solved"
 prize = 0.0260414
 start_date = "2017-06-07 14:39:28"
@@ -75,8 +71,7 @@ transactions = [
 [[puzzles]]
 name = "Level 5"
 chain = "bitcoin"
-address = "1cryptoGeCRiTzVgxBQcKFFjSVydN1GW7"
-h160 = "06c84797d2441393513e2169338e00cf2e755c8c"
+address = { value = "1cryptoGeCRiTzVgxBQcKFFjSVydN1GW7", kind = "p2pkh", hash160 = "06c84797d2441393513e2169338e00cf2e755c8c" }
 status = "unsolved"
 prize = 0.00620688
 start_date = "2018-10-20 20:40:17"
@@ -90,8 +85,7 @@ transactions = [
 [[puzzles]]
 name = "Level HALV"
 chain = "bitcoin"
-address = "1crypto24HCr178iMcKd5iUi5D4rsg1nK"
-h160 = "06c84797d1f468b9d5773a61c80073b344df7470"
+address = { value = "1crypto24HCr178iMcKd5iUi5D4rsg1nK", kind = "p2pkh", hash160 = "06c84797d1f468b9d5773a61c80073b344df7470" }
 status = "unsolved"
 prize = 0.003125
 start_date = "2024-04-18 11:19:41"
@@ -103,8 +97,7 @@ transactions = [
 [[puzzles]]
 name = "Level SFX"
 chain = "bitcoin"
-address = "1crypto92aYKxdzD6VSAKwpEJnXcA2s9t"
-h160 = "06c84797d21a7c43dce76bf6f510114560d6a135"
+address = { value = "1crypto92aYKxdzD6VSAKwpEJnXcA2s9t", kind = "p2pkh", hash160 = "06c84797d21a7c43dce76bf6f510114560d6a135" }
 status = "solved"
 prize = 0.00140426
 start_date = "2021-02-07 22:51:18"
@@ -119,8 +112,7 @@ transactions = [
 [[puzzles]]
 name = "Level XM17"
 chain = "bitcoin"
-address = "1cryptozWJAE7UzDZF1eSgsT7mVjUsu7g"
-h160 = "06c84797d328c065190a6768e20a84b7a17916c0"
+address = { value = "1cryptozWJAE7UzDZF1eSgsT7mVjUsu7g", kind = "p2pkh", hash160 = "06c84797d328c065190a6768e20a84b7a17916c0" }
 status = "solved"
 prize = 0.0260414
 start_date = "2017-12-24 09:50:13"
@@ -135,8 +127,7 @@ transactions = [
 [[puzzles]]
 name = "1BiTCoiN WHiTe PaPeR"
 chain = "bitcoin"
-address = "1BiTCoiNsuFnkCFGkv6AGgwWxN31GUwY6W"
-h160 = "75882f9639449778bb4cc2d242ed35dd2cca6f3e"
+address = { value = "1BiTCoiNsuFnkCFGkv6AGgwWxN31GUwY6W", kind = "p2pkh", hash160 = "75882f9639449778bb4cc2d242ed35dd2cca6f3e" }
 status = "solved"
 prize = 0.00117578
 start_date = "2021-04-11 01:59:51"
@@ -151,8 +142,7 @@ transactions = [
 [[puzzles]]
 name = "Demobit 2018"
 chain = "bitcoin"
-address = "1cryptotnptVK1ZbpZFyEqcR5EVp5hjfk"
-h160 = "06c84797d30988bc82a337117d02d7c4347fd35b"
+address = { value = "1cryptotnptVK1ZbpZFyEqcR5EVp5hjfk", kind = "p2pkh", hash160 = "06c84797d30988bc82a337117d02d7c4347fd35b" }
 status = "solved"
 prize = 0.01500245
 start_date = "2018-03-22 09:34:29"
@@ -167,8 +157,7 @@ transactions = [
 [[puzzles]]
 name = "Nethemba"
 chain = "bitcoin"
-address = "1cryptoP5yMdKcz1bjzUqnbs3LsasVRX6"
-h160 = "06c84797d267472edfe262ab43b2d6844e8bac9b"
+address = { value = "1cryptoP5yMdKcz1bjzUqnbs3LsasVRX6", kind = "p2pkh", hash160 = "06c84797d267472edfe262ab43b2d6844e8bac9b" }
 status = "solved"
 prize = 0.192018
 start_date = "2016-08-06 12:45:26"
@@ -185,7 +174,7 @@ transactions = [
 [[puzzles]]
 name = "XIXOIO"
 chain = "ethereum"
-address = "0x5d663791e869ca70c71e0a5f4cfd707f596265aa"
+address = { value = "0x5d663791e869ca70c71e0a5f4cfd707f596265aa", kind = "standard" }
 status = "solved"
 prize = 6.0
 start_date = "2018-10-24 20:00:18"
@@ -200,7 +189,7 @@ transactions = [
 [[puzzles]]
 name = "Codex Protocol"
 chain = "ethereum"
-address = "0x6b2560b34c7469c561a8fce581c88bfb8cce73b2"
+address = { value = "0x6b2560b34c7469c561a8fce581c88bfb8cce73b2", kind = "standard" }
 status = "solved"
 prize = 3.1337
 start_date = "2018-04-16 22:39:45"
@@ -217,8 +206,7 @@ transactions = [
 [[puzzles]]
 name = "Litecoin SegWit"
 chain = "litecoin"
-address = "LartGjF6UjmvmF1JXBhFf5wtM9uZX7LzeS"
-h160 = "ab85f21bf9ca1126f3776f4686cf02737be7a2b7"
+address = { value = "LartGjF6UjmvmF1JXBhFf5wtM9uZX7LzeS", kind = "p2pkh", hash160 = "ab85f21bf9ca1126f3776f4686cf02737be7a2b7" }
 status = "solved"
 prize = 230.8255
 start_date = "2017-05-10 05:46:11"
@@ -240,7 +228,7 @@ transactions = [
 [[puzzles]]
 name = "Decred Janus"
 chain = "decred"
-address = "DsRaAja82UvgnqYaBHYFuyCKURFX2rCyEJ8"
+address = { value = "DsRaAja82UvgnqYaBHYFuyCKURFX2rCyEJ8", kind = "p2pkh" }
 status = "solved"
 prize = 460.0
 start_date = "2017-03-07 05:20:56"

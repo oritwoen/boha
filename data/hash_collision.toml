@@ -8,7 +8,7 @@ source_url = "https://bitcointalk.org/index.php?topic=293382.0"
 
 [[puzzles]]
 name = "sha1"
-address = "37k7toV1Nv4DfmQbmZ8KuZDQCYK9x5KpzP"
+address = { value = "37k7toV1Nv4DfmQbmZ8KuZDQCYK9x5KpzP", kind = "p2sh" }
 status = "claimed"
 redeem_script = "6e879169a77ca787"
 prize = 2.48
@@ -20,7 +20,7 @@ transactions = [{ type = "funding", txid = "09de8e2de5f6261af40c522c8fcc008c6a83
 
 [[puzzles]]
 name = "sha256"
-address = "35Snmmy3uhaer2gTboc81ayCip4m9DT4ko"
+address = { value = "35Snmmy3uhaer2gTboc81ayCip4m9DT4ko", kind = "p2sh" }
 status = "unsolved"
 redeem_script = "6e879169a87ca887"
 prize = 0.27734251
@@ -30,7 +30,7 @@ transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d203
 
 [[puzzles]]
 name = "ripemd160"
-address = "3KyiQEGqqdb4nqfhUzGKN6KPhXmQsLNpay"
+address = { value = "3KyiQEGqqdb4nqfhUzGKN6KPhXmQsLNpay", kind = "p2sh" }
 status = "unsolved"
 redeem_script = "6e879169a67ca687"
 prize = 0.11576888
@@ -40,7 +40,7 @@ transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d203
 
 [[puzzles]]
 name = "hash160"
-address = "39VXyuoc6SXYKp9TcAhoiN1mb4ns6z3Yu6"
+address = { value = "39VXyuoc6SXYKp9TcAhoiN1mb4ns6z3Yu6", kind = "p2sh" }
 status = "unsolved"
 redeem_script = "6e879169a97ca987"
 prize = 0.10026873
@@ -50,7 +50,7 @@ transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d203
 
 [[puzzles]]
 name = "hash256"
-address = "3DUQQvz4t57Jy7jxE86kyFcNpKtURNf1VW"
+address = { value = "3DUQQvz4t57Jy7jxE86kyFcNpKtURNf1VW", kind = "p2sh" }
 status = "unsolved"
 redeem_script = "6e879169aa7caa87"
 prize = 0.10026873
@@ -60,7 +60,7 @@ transactions = [{ type = "funding", txid = "397f12ee15f8a3d2ab25c0f6bb7d3c64d203
 
 [[puzzles]]
 name = "op_abs"
-address = "3QsT6Sast6ghfsjZ9VJj9u8jkM2qTfDgHV"
+address = { value = "3QsT6Sast6ghfsjZ9VJj9u8jkM2qTfDgHV", kind = "p2sh" }
 status = "claimed"
 redeem_script = "6e879169907c9087"
 solve_date = "2018-05-15 00:40:36"

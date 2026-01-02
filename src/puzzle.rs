@@ -84,30 +84,17 @@ impl Status {
     }
 }
 
-/// Crypto address type.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
-#[serde(rename_all = "lowercase")]
-pub enum AddressType {
-    /// Pay to Public Key Hash (1...)
-    P2PKH,
-    /// Pay to Script Hash (3...)
-    P2SH,
-    /// Pay to Witness Public Key Hash (bc1q...)
-    P2WPKH,
-}
-
-impl AddressType {
-    pub fn from_address(address: &str) -> Option<Self> {
-        if address.starts_with('1') {
-            Some(AddressType::P2PKH)
-        } else if address.starts_with('3') {
-            Some(AddressType::P2SH)
-        } else if address.starts_with("bc1q") {
-            Some(AddressType::P2WPKH)
-        } else {
-            None
-        }
-    }
+/// Crypto address with chain-specific type information.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
+pub struct Address {
+    /// The address string (e.g., "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH")
+    pub value: &'static str,
+    /// Blockchain network
+    pub chain: Chain,
+    /// Address type/kind (e.g., "p2pkh", "p2sh", "standard")
+    pub kind: &'static str,
+    /// HASH160 of the public key (SHA256 + RIPEMD160, for P2PKH addresses)
+    pub hash160: Option<&'static str>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -171,9 +158,7 @@ pub struct Pubkey {
 pub struct Puzzle {
     pub id: &'static str,
     pub chain: Chain,
-    pub address: &'static str,
-    pub address_type: Option<AddressType>,
-    pub h160: Option<&'static str>,
+    pub address: Address,
     pub status: Status,
     pub pubkey: Option<Pubkey>,
     pub private_key: Option<&'static str>,
@@ -355,22 +340,6 @@ impl IntoPuzzleNum for String {
 #[cfg(test)]
 mod tests {
     use super::*;
-
-    #[test]
-    fn test_address_type_detection() {
-        assert_eq!(
-            AddressType::from_address("1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH"),
-            Some(AddressType::P2PKH)
-        );
-        assert_eq!(
-            AddressType::from_address("3J98t1WpEZ73CNmQviecrnyiWrnqRhWNLy"),
-            Some(AddressType::P2SH)
-        );
-        assert_eq!(
-            AddressType::from_address("bc1qar0srrr7xfkvy5l643lydnw9re59gtzzwf5mdq"),
-            Some(AddressType::P2WPKH)
-        );
-    }
 
     #[test]
     fn test_status_is_active() {

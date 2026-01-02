@@ -2,7 +2,7 @@
 
 #[allow(unused_imports)]
 use crate::{
-    AddressType, Author, Chain, Error, KeySource, Puzzle, Result, Solver, Status, Transaction,
+    Address, Author, Chain, Error, KeySource, Puzzle, Result, Solver, Status, Transaction,
     TransactionType,
 };
 

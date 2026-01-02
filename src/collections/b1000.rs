@@ -4,8 +4,8 @@
 
 #[allow(unused_imports)]
 use crate::{
-    AddressType, Author, Chain, Error, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle,
-    Result, Solver, Status, Transaction, TransactionType,
+    Address, Author, Chain, Error, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle, Result,
+    Solver, Status, Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/b1000_data.rs"));
