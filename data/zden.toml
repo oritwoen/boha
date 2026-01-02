@@ -236,5 +236,5 @@ address = "DsRaAja82UvgnqYaBHYFuyCKURFX2rCyEJ8"
 status = "solved"
 start_date = "2018-01-01"
 solve_date = "2018-01-11"
-solve_time = 885960
+solve_time = 864000
 source_url = "https://crypto.haluska.sk/decred_tree.svg"
