@@ -1,5 +1,6 @@
 use num_bigint::BigUint;
 use serde::Deserialize;
+use sha2::{Digest, Sha256};
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -11,6 +12,54 @@ fn bits_from_private_key(private_key: &str) -> Option<u16> {
         return None;
     }
     Some(key.bits() as u16)
+}
+
+fn sha256(data: &[u8]) -> [u8; 32] {
+    let mut hasher = Sha256::new();
+    hasher.update(data);
+    hasher.finalize().into()
+}
+
+fn hex_to_wif(hex_key: &str, compressed: bool) -> Option<String> {
+    const MAINNET_VERSION: u8 = 0x80;
+    const COMPRESSION_FLAG: u8 = 0x01;
+
+    let key_bytes = hex::decode(hex_key).ok()?;
+    if key_bytes.len() != 32 {
+        return None;
+    }
+
+    let mut data = vec![MAINNET_VERSION];
+    data.extend_from_slice(&key_bytes);
+    if compressed {
+        data.push(COMPRESSION_FLAG);
+    }
+
+    let checksum = &sha256(&sha256(&data))[..4];
+    data.extend_from_slice(checksum);
+
+    Some(bs58::encode(data).into_string())
+}
+
+fn wif_to_hex(wif: &str) -> Option<String> {
+    const COMPRESSED_PAYLOAD_LEN: usize = 33;
+    const UNCOMPRESSED_PAYLOAD_LEN: usize = 32;
+    const COMPRESSION_FLAG: u8 = 0x01;
+
+    let decoded = bs58::decode(wif).into_vec().ok()?;
+    if decoded.len() < 37 {
+        return None;
+    }
+
+    let payload = &decoded[1..decoded.len() - 4];
+
+    let key_bytes = match payload.len() {
+        COMPRESSED_PAYLOAD_LEN if payload[32] == COMPRESSION_FLAG => &payload[..32],
+        UNCOMPRESSED_PAYLOAD_LEN => payload,
+        _ => return None,
+    };
+
+    Some(hex::encode(key_bytes))
 }
 
 #[derive(Debug, Deserialize)]
@@ -299,11 +348,24 @@ fn generate_key_code(key: &Option<TomlKey>) -> String {
 }
 
 fn generate_key_code_required(key: &TomlKey) -> String {
-    let hex = match &key.hex {
+    let (hex_val, wif_val) = match (&key.hex, &key.wif) {
+        (Some(h), Some(w)) => (Some(h.clone()), Some(w.clone())),
+        (Some(h), None) => {
+            let derived_wif = hex_to_wif(h, true);
+            (Some(h.clone()), derived_wif)
+        }
+        (None, Some(w)) => {
+            let derived_hex = wif_to_hex(w);
+            (derived_hex, Some(w.clone()))
+        }
+        (None, None) => (None, None),
+    };
+
+    let hex = match &hex_val {
         Some(h) => format!("Some(\"{}\")", h),
         None => "None".to_string(),
     };
-    let wif = match &key.wif {
+    let wif = match &wif_val {
         Some(w) => format!("Some(\"{}\")", w),
         None => "None".to_string(),
     };
