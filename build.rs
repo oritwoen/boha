@@ -103,8 +103,23 @@ struct TomlRedeemScript {
 
 #[derive(Debug, Deserialize)]
 struct TomlSeed {
-    phrase: String,
+    phrase: Option<String>,
     path: Option<String>,
+    xpub: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct TomlShare {
+    index: u8,
+    data: String,
+}
+
+#[derive(Debug, Deserialize)]
+struct TomlShares {
+    threshold: u8,
+    total: u8,
+    #[serde(default)]
+    shares: Vec<TomlShare>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -115,6 +130,7 @@ struct TomlKey {
     mini: Option<String>,
     passphrase: Option<String>,
     bits: Option<u16>,
+    shares: Option<TomlShares>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -233,6 +249,35 @@ struct ZdenPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    key: Option<TomlKey>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<SolverConfig>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BitapsMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BitapsFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<BitapsMetadata>,
+    puzzle: BitapsPuzzle,
+}
+
+#[derive(Debug, Deserialize)]
+struct BitapsPuzzle {
+    address: Address,
+    status: String,
+    prize: Option<f64>,
+    public_key: Option<String>,
+    pubkey_format: Option<String>,
     key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -402,11 +447,22 @@ fn generate_key_code_required(key: &TomlKey) -> String {
     };
     let seed = match &key.seed {
         Some(s) => {
+            let phrase = match &s.phrase {
+                Some(p) => format!("Some(\"{}\")", p),
+                None => "None".to_string(),
+            };
             let path = match &s.path {
                 Some(p) => format!("Some(\"{}\")", p),
                 None => "None".to_string(),
             };
-            format!("Some(Seed {{ phrase: \"{}\", path: {} }})", s.phrase, path)
+            let xpub = match &s.xpub {
+                Some(x) => format!("Some(\"{}\")", x),
+                None => "None".to_string(),
+            };
+            format!(
+                "Some(Seed {{ phrase: {}, path: {}, xpub: {} }})",
+                phrase, path, xpub
+            )
         }
         None => "None".to_string(),
     };
@@ -422,9 +478,10 @@ fn generate_key_code_required(key: &TomlKey) -> String {
         Some(b) => format!("Some({})", b),
         None => "None".to_string(),
     };
+    let shares = generate_shares_code(&key.shares);
     format!(
-        "Some(Key {{ hex: {}, wif: {}, seed: {}, mini: {}, passphrase: {}, bits: {} }})",
-        hex, wif, seed, mini, passphrase, bits
+        "Some(Key {{ hex: {}, wif: {}, seed: {}, mini: {}, passphrase: {}, bits: {}, shares: {} }})",
+        hex, wif, seed, mini, passphrase, bits, shares
     )
 }
 
@@ -438,11 +495,39 @@ fn generate_redeem_script_code(rs: &Option<TomlRedeemScript>) -> String {
     }
 }
 
+fn generate_shares_code(shares: &Option<TomlShares>) -> String {
+    match shares {
+        Some(s) => {
+            let shares_list: Vec<String> = s
+                .shares
+                .iter()
+                .map(|share| {
+                    format!(
+                        "Share {{ index: {}, data: \"{}\" }}",
+                        share.index, share.data
+                    )
+                })
+                .collect();
+            let shares_arr = if shares_list.is_empty() {
+                "&[]".to_string()
+            } else {
+                format!("&[{}]", shares_list.join(", "))
+            };
+            format!(
+                "Some(Shares {{ threshold: {}, total: {}, shares: {} }})",
+                s.threshold, s.total, shares_arr
+            )
+        }
+        None => "None".to_string(),
+    }
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
     println!("cargo:rerun-if-changed=data/hash_collision.toml");
     println!("cargo:rerun-if-changed=data/gsmg.toml");
     println!("cargo:rerun-if-changed=data/zden.toml");
+    println!("cargo:rerun-if-changed=data/bitaps.toml");
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
@@ -450,6 +535,7 @@ fn main() {
     generate_hash_collision(&out_dir);
     generate_gsmg(&out_dir);
     generate_zden(&out_dir);
+    generate_bitaps(&out_dir);
 }
 
 fn generate_b1000(out_dir: &str) {
@@ -931,4 +1017,119 @@ fn generate_zden(out_dir: &str) {
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write zden_data.rs");
+}
+
+fn generate_bitaps(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("bitaps_data.rs");
+
+    let toml_content =
+        fs::read_to_string("data/bitaps.toml").expect("Failed to read data/bitaps.toml");
+
+    let data: BitapsFile = toml::from_str(&toml_content).expect("Failed to parse bitaps.toml");
+
+    let puzzle = &data.puzzle;
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let status = match puzzle.status.as_str() {
+        "solved" => "Status::Solved",
+        "claimed" => "Status::Claimed",
+        "swept" => "Status::Swept",
+        _ => "Status::Unsolved",
+    };
+
+    let prize = match puzzle.prize {
+        Some(p) => format!("Some({:.8})", p),
+        None => "None".to_string(),
+    };
+
+    let start_date = match &puzzle.start_date {
+        Some(d) => format!("Some(\"{}\")", d),
+        None => "None".to_string(),
+    };
+
+    let solve_date = match &puzzle.solve_date {
+        Some(d) => format!("Some(\"{}\")", d),
+        None => "None".to_string(),
+    };
+
+    let solve_time = match puzzle.solve_time {
+        Some(t) => format!("Some({})", t),
+        None => "None".to_string(),
+    };
+
+    let source_url = puzzle
+        .source_url
+        .as_ref()
+        .or(default_source_url)
+        .map(|url| format!("Some(\"{}\")", url))
+        .unwrap_or_else(|| "None".to_string());
+
+    let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
+        (Some(pk), Some(fmt)) => {
+            let format = match fmt.as_str() {
+                "compressed" => "PubkeyFormat::Compressed",
+                "uncompressed" => "PubkeyFormat::Uncompressed",
+                _ => panic!("Invalid pubkey_format '{}' for bitaps", fmt),
+            };
+            format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
+        }
+        (None, None) => "None".to_string(),
+        (Some(_), None) => panic!("bitaps has public_key but no pubkey_format"),
+        (None, Some(_)) => panic!("bitaps has pubkey_format but no public_key"),
+    };
+
+    let hash160 = format_hash160(&puzzle.address, "bitcoin", "bitaps");
+    let witness_program = format_witness_program(&puzzle.address, "bitaps");
+    let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+    let key = generate_key_code(&puzzle.key);
+
+    let transactions = generate_transactions_code(&puzzle.transactions);
+    let solver = generate_solver_code(&puzzle.solver);
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str(&format!(
+        r#"static PUZZLE: Puzzle = Puzzle {{
+    id: "bitaps",
+    chain: Chain::Bitcoin,
+    address: Address {{
+        value: "{}",
+        chain: Chain::Bitcoin,
+        kind: "{}",
+        hash160: {},
+        witness_program: {},
+        redeem_script: {},
+    }},
+    status: {},
+    pubkey: {},
+    key: {},
+    prize: {},
+    start_date: {},
+    solve_date: {},
+    solve_time: {},
+    pre_genesis: false,
+    source_url: {},
+    transactions: {},
+    solver: {},
+}};
+"#,
+        puzzle.address.value,
+        puzzle.address.kind,
+        hash160,
+        witness_program,
+        redeem_script,
+        status,
+        pubkey,
+        key,
+        prize,
+        start_date,
+        solve_date,
+        solve_time,
+        source_url,
+        transactions,
+        solver,
+    ));
+
+    fs::write(&dest_path, output).expect("Failed to write bitaps_data.rs");
 }

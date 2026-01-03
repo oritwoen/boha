@@ -1,0 +1,55 @@
+# Bitaps Mnemonic Challenge
+# Shamir Secret Sharing Scheme (3-of-5) puzzle
+# Source: https://bitaps.com/mnemonic/challenge
+
+[author]
+name = "Bitaps"
+profile = "https://bitaps.com"
+
+[metadata]
+source_url = "https://bitaps.com/mnemonic/challenge"
+
+[puzzle]
+address = { value = "bc1qyjwa0tf0en4x09magpuwmt2smpsrlaxwn85lh6", kind = "p2wpkh", hash160 = "249dd7ad2fccea67977d4078edad50d8603ff4ce" }
+status = "unsolved"
+prize = 1.00016404
+start_date = "2020-06-19 13:24:41"
+source_url = "https://bitaps.com/mnemonic/challenge"
+public_key = "0385a3a591451ed7ed6c90dae882db918107d6f906d270cf4728d168126e0e89aa"
+pubkey_format = "compressed"
+
+[puzzle.key.seed]
+path = "m/84'/0'/0'/0/0"
+xpub = "zpub6qdEDkv51FpxX6g1rpFGckmiL46vV8ccmtEgPAkj3qj8N4ZZHyXDRA9RwpTiFK2Kb8vRaDmSmwgX6rfB4t2K8Ktdq8ExQ6fumKpn2ndJCqL"
+
+[puzzle.key.shares]
+threshold = 3
+total = 5
+shares = [
+    { index = 1, data = "session cigar grape merry useful churn fatal thought very any arm unaware" },
+    { index = 2, data = "clock fresh security field caution effort gorilla speed plastic common tomato echo" },
+]
+
+[[puzzle.transactions]]
+type = "funding"
+txid = "a24e37411d1860c51a71a2f0c2bb1561ed40c7d8bb724f5faa3dfcb0a99925e6"
+date = "2020-06-19 13:24:41"
+amount = 1.0
+
+[[puzzle.transactions]]
+type = "increase"
+txid = "bb0b6c3198c7274469b68fd5e2a5031dd31ce4c82a0aa2688f76c53d7cc8f167"
+date = "2021-11-29 12:20:03"
+amount = 0.00008781
+
+[[puzzle.transactions]]
+type = "increase"
+txid = "fe3f6d1f4536bbea7a84c8b5947caf407d69e0740c789277272a185c402ec14d"
+date = "2022-02-05 20:43:56"
+amount = 0.00002403
+
+[[puzzle.transactions]]
+type = "increase"
+txid = "910c4c6af9bd8790645de7827ef33aa9a750b89b0353c749d1edbd5925a1b272"
+date = "2022-10-13 00:48:34"
+amount = 0.00005220

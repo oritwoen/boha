@@ -111,10 +111,32 @@ pub enum PubkeyFormat {
 /// BIP39 seed phrase with optional derivation path.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 pub struct Seed {
-    /// Mnemonic phrase (12/15/18/21/24 words)
-    pub phrase: &'static str,
+    /// Mnemonic phrase (12/15/18/21/24 words), None if unknown
+    pub phrase: Option<&'static str>,
     /// HD derivation path (e.g., "m/44'/0'/0'/0/0")
     pub path: Option<&'static str>,
+    /// Extended public key (xpub/ypub/zpub)
+    pub xpub: Option<&'static str>,
+}
+
+/// A single share from a secret sharing scheme.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Share {
+    /// Share index (1-based)
+    pub index: u8,
+    /// Share data (words, hex, or other format depending on scheme)
+    pub data: &'static str,
+}
+
+/// Secret sharing scheme configuration (e.g., Shamir, SLIP-39).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Shares {
+    /// Number of shares required to reconstruct the secret
+    pub threshold: u8,
+    /// Total number of shares generated
+    pub total: u8,
+    /// Published shares
+    pub shares: &'static [Share],
 }
 
 /// Private key in various representations.
@@ -132,6 +154,8 @@ pub struct Key {
     pub passphrase: Option<&'static str>,
     /// Bit range constraint: key is in [2^(bits-1), 2^bits - 1]
     pub bits: Option<u16>,
+    /// Secret sharing scheme (e.g., Shamir, SLIP-39)
+    pub shares: Option<Shares>,
 }
 
 /// P2SH redeem script with its hash.
@@ -240,6 +264,10 @@ impl Key {
 
     pub fn has_seed(&self) -> bool {
         self.seed.is_some()
+    }
+
+    pub fn has_shares(&self) -> bool {
+        self.shares.is_some()
     }
 
     pub fn is_known(&self) -> bool {

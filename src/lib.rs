@@ -4,10 +4,10 @@ mod puzzle;
 #[cfg(feature = "balance")]
 pub mod balance;
 
-pub use collections::{b1000, gsmg, hash_collision, zden};
+pub use collections::{b1000, bitaps, gsmg, hash_collision, zden};
 pub use puzzle::{
     Address, Author, Chain, IntoPuzzleNum, Key, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed,
-    Solver, Status, Transaction, TransactionType,
+    Share, Shares, Solver, Status, Transaction, TransactionType,
 };
 
 use std::collections::HashMap;
@@ -28,6 +28,9 @@ pub type Result<T> = std::result::Result<T, Error>;
 pub fn get(id: &str) -> Result<&'static Puzzle> {
     if id == "gsmg" {
         return Ok(gsmg::get());
+    }
+    if id == "bitaps" {
+        return Ok(bitaps::get());
     }
 
     let parts: Vec<&str> = id.split('/').collect();
@@ -50,6 +53,7 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
 
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
     b1000::all()
+        .chain(bitaps::all())
         .chain(gsmg::all())
         .chain(hash_collision::all())
         .chain(zden::all())
