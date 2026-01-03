@@ -51,7 +51,14 @@ fn wif_to_hex(wif: &str) -> Option<String> {
         return None;
     }
 
-    let payload = &decoded[1..decoded.len() - 4];
+    let data = &decoded[..decoded.len() - 4];
+    let checksum = &decoded[decoded.len() - 4..];
+    let expected_checksum = &sha256(&sha256(data))[..4];
+    if checksum != expected_checksum {
+        return None;
+    }
+
+    let payload = &data[1..];
 
     let key_bytes = match payload.len() {
         COMPRESSED_PAYLOAD_LEN if payload[32] == COMPRESSION_FLAG => &payload[..32],
