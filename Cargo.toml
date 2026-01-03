@@ -59,6 +59,10 @@ optional = true
 version = "0.3"
 optional = true
 
+[dependencies.dotenvy]
+version = "0.15"
+optional = true
+
 [dependencies.human-panic]
 version = "2"
 optional = true
@@ -74,7 +78,7 @@ sha2 = "0.10"
 [features]
 default = []
 cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv", "human-panic"]
-balance = ["reqwest", "tokio", "futures"]
+balance = ["reqwest", "tokio", "futures", "dotenvy"]
 
 [[bin]]
 name = "boha"

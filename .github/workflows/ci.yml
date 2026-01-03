@@ -20,6 +20,8 @@ jobs:
 
       - name: Run tests
         run: cargo test --all-features
+        env:
+          ETHERSCAN_API_KEY: ${{ secrets.ETHERSCAN_API_KEY }}
 
       - name: Run clippy
         run: cargo clippy --all-features -- -D warnings

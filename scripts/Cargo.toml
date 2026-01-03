@@ -15,6 +15,7 @@ serde_json = "1"
 tokio = { version = "1", features = ["full"] }
 toml = "0.8"
 toml_edit = "0.22"
+dotenvy = "0.15"
 
 [[bin]]
 name = "fetch-start-dates"
