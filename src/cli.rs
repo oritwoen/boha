@@ -155,10 +155,12 @@ struct RangeOutput {
 #[derive(Serialize)]
 struct BalanceOutput {
     address: String,
-    confirmed: u64,
-    confirmed_btc: f64,
-    unconfirmed: i64,
-    total_btc: f64,
+    chain: String,
+    confirmed: u128,
+    confirmed_display: f64,
+    unconfirmed: i128,
+    total_display: f64,
+    symbol: String,
 }
 
 #[derive(Serialize)]
@@ -670,30 +672,41 @@ fn print_range_table(range: &RangeOutput) {
 
 #[cfg(feature = "balance")]
 fn print_balance_table(balance: &BalanceOutput) {
+    let unit = if balance.symbol == "ETH" {
+        "wei"
+    } else {
+        "sats"
+    };
     let rows = vec![
         KeyValueRow {
             field: "Address".to_string(),
             value: balance.address.clone(),
         },
         KeyValueRow {
+            field: "Chain".to_string(),
+            value: balance.chain.clone(),
+        },
+        KeyValueRow {
             field: "Confirmed".to_string(),
             value: format!(
-                "{} sats ({:.8} BTC)",
+                "{} {} ({:.8} {})",
                 balance.confirmed.to_string().green(),
-                balance.confirmed_btc
+                unit,
+                balance.confirmed_display,
+                balance.symbol
             ),
         },
         KeyValueRow {
             field: "Unconfirmed".to_string(),
             value: if balance.unconfirmed != 0 {
-                format!("{} sats", balance.unconfirmed)
+                format!("{} {}", balance.unconfirmed, unit)
             } else {
                 "-".dimmed().to_string()
             },
         },
         KeyValueRow {
             field: "Total".to_string(),
-            value: format!("{:.8} BTC", balance.total_btc)
+            value: format!("{:.8} {}", balance.total_display, balance.symbol)
                 .bright_green()
                 .to_string(),
         },
@@ -837,14 +850,20 @@ fn print_author_table(author: &Author) {
 #[cfg(feature = "balance")]
 async fn cmd_balance(id: &str, format: OutputFormat) {
     match boha::get(id) {
-        Ok(puzzle) => match boha::balance::fetch(puzzle.address.value).await {
+        Ok(puzzle) => match boha::balance::fetch(puzzle.address.value, puzzle.chain).await {
             Ok(bal) => {
+                let (confirmed_display, total_display) = match puzzle.chain {
+                    Chain::Ethereum => (bal.confirmed_eth(), bal.total_eth()),
+                    _ => (bal.confirmed_btc(), bal.total_btc()),
+                };
                 let output = BalanceOutput {
                     address: puzzle.address.value.to_string(),
+                    chain: puzzle.chain.name().to_string(),
                     confirmed: bal.confirmed,
-                    confirmed_btc: bal.confirmed_btc(),
+                    confirmed_display,
                     unconfirmed: bal.unconfirmed,
-                    total_btc: bal.total_btc(),
+                    total_display,
+                    symbol: puzzle.chain.symbol().to_string(),
                 };
                 output_balance(&output, format);
             }

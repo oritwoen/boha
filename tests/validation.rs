@@ -815,16 +815,19 @@ fn author_profile_valid_url() {
 
 #[test]
 fn transaction_txid_format_valid() {
-    let hex_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
+    let btc_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
+    let eth_regex = regex::Regex::new(r"^0x[0-9a-f]{64}$").unwrap();
     for puzzle in boha::all() {
         for tx in puzzle.transactions {
             if let Some(txid) = tx.txid {
+                let valid = match puzzle.chain {
+                    Chain::Ethereum => eth_regex.is_match(txid),
+                    _ => btc_regex.is_match(txid),
+                };
                 assert!(
-                    hex_regex.is_match(txid),
+                    valid,
                     "Invalid txid format for {:?} transaction in {}: {}",
-                    tx.tx_type,
-                    puzzle.id,
-                    txid
+                    tx.tx_type, puzzle.id, txid
                 );
             }
         }

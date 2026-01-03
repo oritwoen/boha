@@ -2,3 +2,4 @@
 scripts/target/
 .private-journal/
 data/cache/
+scripts/.env
