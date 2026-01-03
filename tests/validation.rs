@@ -1242,22 +1242,8 @@ fn p2wpkh_has_hash160() {
 }
 
 fn decode_bech32_witness_program(address: &str) -> Option<(u8, Vec<u8>)> {
-    use bech32::primitives::decode::CheckedHrpstring;
-    use bech32::{Bech32, Bech32m};
-
-    if let Ok(checked) = CheckedHrpstring::new::<Bech32>(address) {
-        let mut data_iter = checked.byte_iter();
-        let witness_version = data_iter.next()?;
-        let witness_program: Vec<u8> = data_iter.collect();
-        return Some((witness_version, witness_program));
-    }
-    if let Ok(checked) = CheckedHrpstring::new::<Bech32m>(address) {
-        let mut data_iter = checked.byte_iter();
-        let witness_version = data_iter.next()?;
-        let witness_program: Vec<u8> = data_iter.collect();
-        return Some((witness_version, witness_program));
-    }
-    None
+    let (_hrp, version, program) = bech32::segwit::decode(address).ok()?;
+    Some((version.to_u8(), program))
 }
 
 #[test]
@@ -1353,4 +1339,94 @@ fn p2wsh_witness_program_matches_address() {
             );
         }
     }
+}
+
+#[test]
+fn bech32m_address_has_taproot_kind() {
+    for puzzle in boha::all() {
+        if puzzle.address.value.starts_with("bc1p") {
+            assert_eq!(
+                puzzle.address.kind, "p2tr",
+                "bc1p address {} should have kind p2tr, got {}",
+                puzzle.id, puzzle.address.kind
+            );
+        }
+    }
+}
+
+#[test]
+fn p2tr_has_witness_program() {
+    for puzzle in boha::all() {
+        if puzzle.address.kind == "p2tr" {
+            assert!(
+                puzzle.address.witness_program.is_some(),
+                "P2TR puzzle {} missing witness_program (x-only pubkey)",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn p2tr_no_hash160() {
+    for puzzle in boha::all() {
+        if puzzle.address.kind == "p2tr" {
+            assert!(
+                puzzle.address.hash160.is_none(),
+                "P2TR puzzle {} should not have hash160 (uses x-only pubkey instead)",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn p2tr_witness_program_matches_address() {
+    for puzzle in boha::all() {
+        if puzzle.address.kind == "p2tr" {
+            let Some(witness_program) = puzzle.address.witness_program else {
+                continue;
+            };
+            let Some((version, decoded_wp)) = decode_bech32_witness_program(puzzle.address.value)
+            else {
+                panic!("Failed to decode bech32m address for {}", puzzle.id);
+            };
+            assert_eq!(
+                version, 1,
+                "P2TR {} should have witness version 1, got {}",
+                puzzle.id, version
+            );
+            assert_eq!(
+                decoded_wp.len(),
+                32,
+                "P2TR {} witness program (x-only pubkey) should be 32 bytes, got {}",
+                puzzle.id,
+                decoded_wp.len()
+            );
+            let computed_wp = hex::encode(&decoded_wp);
+            assert_eq!(
+                witness_program, computed_wp,
+                "P2TR {} witness_program mismatch: stored {} != computed {}",
+                puzzle.id, witness_program, computed_wp
+            );
+        }
+    }
+}
+
+#[test]
+fn decode_bech32m_taproot_address() {
+    let taproot_address = "bc1p5d7rjq7g6rdk2yhzks9smlaqtedr4dekq08ge8ztwac72sfr9rusxg3297";
+    let (version, witness_program) = decode_bech32_witness_program(taproot_address)
+        .expect("Should decode valid Taproot address");
+
+    assert_eq!(version, 1, "Taproot should have witness version 1");
+    assert_eq!(
+        witness_program.len(),
+        32,
+        "Taproot witness program should be 32 bytes"
+    );
+    assert_eq!(
+        hex::encode(&witness_program),
+        "a37c3903c8d0db6512e2b40b0dffa05e5a3ab73603ce8c9c4b7771e5412328f9"
+    );
 }
