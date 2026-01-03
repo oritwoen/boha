@@ -66,11 +66,19 @@ pub fn merge_transactions(
 
     let mut merged: Vec<Transaction> = transactions_by_txid.into_values().collect();
 
-    merged.sort_by(|a, b| match a.date.cmp(&b.date) {
-        std::cmp::Ordering::Equal => {
-            tx_type_sort_priority(&a.tx_type).cmp(&tx_type_sort_priority(&b.tx_type))
+    merged.sort_by(|a, b| {
+        let date_cmp = match (&a.date, &b.date) {
+            (Some(da), Some(db)) => da.cmp(db),
+            (Some(_), None) => std::cmp::Ordering::Less,
+            (None, Some(_)) => std::cmp::Ordering::Greater,
+            (None, None) => std::cmp::Ordering::Equal,
+        };
+        match date_cmp {
+            std::cmp::Ordering::Equal => {
+                tx_type_sort_priority(&a.tx_type).cmp(&tx_type_sort_priority(&b.tx_type))
+            }
+            other => other,
         }
-        other => other,
     });
 
     if let Some(terminal_idx) = merged.iter().position(|t| is_terminal_tx_type(&t.tx_type)) {
@@ -119,7 +127,9 @@ pub fn extract_existing_transactions(table: &toml_edit::Table) -> Vec<Transactio
                         .unwrap_or("")
                         .to_string();
                     let date = inline.get("date").and_then(|v| v.as_str()).map(String::from);
-                    let amount = inline.get("amount").and_then(|v| v.as_float());
+                    let amount = inline
+                        .get("amount")
+                        .and_then(|v| v.as_float().or_else(|| v.as_integer().map(|i| i as f64)));
 
                     if !txid.is_empty() {
                         result.push(Transaction {

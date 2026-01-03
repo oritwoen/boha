@@ -156,9 +156,9 @@ struct RangeOutput {
 struct BalanceOutput {
     address: String,
     chain: String,
-    confirmed: u64,
+    confirmed: u128,
     confirmed_display: f64,
-    unconfirmed: i64,
+    unconfirmed: i128,
     total_display: f64,
     symbol: String,
 }

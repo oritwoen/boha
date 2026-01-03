@@ -21,7 +21,10 @@ prize = 0.0260414
 start_date = "2016-06-07 23:05:42"
 solve_date = "2016-06-10 20:40:40"
 solve_time = 250498
-transactions = [{ type = "funding", txid = "9405a925ae4a1a64949ea60a72d1b74ad4e3fcb3c1378fc91c7991cc09a584e7", date = "2016-06-07 21:05:42", amount = 0.0260414 }, { type = "increase", txid = "f3d1387c7fc6f20b197900bdbfdaf4f260b480500029ab9680695832111bc1b9", date = "2016-06-10 18:23:19", amount = 0.00195488 }, { type = "claim", txid = "1d3f290a9f43721c2b235a4f72aeab35a78607abb440f02cce9c62a78f271e2d", date = "2016-06-10 21:20:40", amount = 0.02799628 }]
+transactions = [
+    { type = "funding", txid = "9405a925ae4a1a64949ea60a72d1b74ad4e3fcb3c1378fc91c7991cc09a584e7", date = "2016-06-07 23:05:42", amount = 0.0260414 },
+    { type = "claim", txid = "1d3f290a9f43721c2b235a4f72aeab35a78607abb440f02cce9c62a78f271e2d", date = "2016-06-10 20:40:40", amount = 0.0260414 }
+]
 
 [[puzzles]]
 name = "Level 2"
@@ -32,7 +35,10 @@ prize = 0.0260414
 start_date = "2016-06-16 17:14:33"
 solve_date = "2016-06-18 22:28:47"
 solve_time = 191654
-transactions = [{ type = "funding", txid = "8521d9eceed6657f121d439a4f4b8125850286b4d776eeee5bed10470f537e05", date = "2016-06-16 22:14:33", amount = 0.0260414 }, { type = "claim", txid = "182975827270745a939511f2b0e30e55f50ce4797cd987d887beb88dea7c9772", date = "2016-06-18 23:28:47", amount = 0.0260414 }]
+transactions = [
+    { type = "funding", txid = "8521d9eceed6657f121d439a4f4b8125850286b4d776eeee5bed10470f537e05", date = "2016-06-16 17:14:33", amount = 0.0260414 },
+    { type = "claim", txid = "182975827270745a939511f2b0e30e55f50ce4797cd987d887beb88dea7c9772", date = "2016-06-18 22:28:47", amount = 0.0260414 }
+]
 
 [[puzzles]]
 name = "Level 3"
@@ -43,7 +49,10 @@ prize = 0.0260414
 start_date = "2016-06-23 18:37:33"
 solve_date = "2016-06-26 08:35:29"
 solve_time = 223076
-transactions = [{ type = "funding", txid = "ee4c9fc25759c5fbb1550f46bdbd93116c877a5651a4c50486fbe4c4454e3c6d", date = "2016-06-23 17:10:53", amount = 0.0260414 }, { type = "claim", txid = "7d3ea8963136ef9a97cf37d42f7eb95aab14d92b0d075369d0cd0329bb51afe4", date = "2016-06-26 02:02:09", amount = 0.0260414 }]
+transactions = [
+    { type = "funding", txid = "ee4c9fc25759c5fbb1550f46bdbd93116c877a5651a4c50486fbe4c4454e3c6d", date = "2016-06-23 18:37:33", amount = 0.0260414 },
+    { type = "claim", txid = "7d3ea8963136ef9a97cf37d42f7eb95aab14d92b0d075369d0cd0329bb51afe4", date = "2016-06-26 08:35:29", amount = 0.0260414 }
+]
 
 [[puzzles]]
 name = "Level 4"
@@ -54,7 +63,10 @@ prize = 0.0260414
 start_date = "2017-06-07 14:39:28"
 solve_date = "2017-06-11 22:46:45"
 solve_time = 374837
-transactions = [{ type = "funding", txid = "5388f28ec0c07cdb8a670c45947f803f6484dd46d1060eb47bf9ff10fa06f04e", date = "2017-06-07 12:19:28", amount = 0.0260414 }, { type = "claim", txid = "67c3341bad6f1087b248b361ba14336d2ffdbd7b2272e24ea9d684d131ec823a", date = "2017-06-11 22:26:45", amount = 0.0260414 }]
+transactions = [
+    { type = "funding", txid = "5388f28ec0c07cdb8a670c45947f803f6484dd46d1060eb47bf9ff10fa06f04e", date = "2017-06-07 14:39:28", amount = 0.0260414 },
+    { type = "claim", txid = "67c3341bad6f1087b248b361ba14336d2ffdbd7b2272e24ea9d684d131ec823a", date = "2017-06-11 22:46:45", amount = 0.0260414 }
+]
 
 [[puzzles]]
 name = "Level 5"
@@ -64,7 +76,11 @@ status = "unsolved"
 prize = 0.00620688
 start_date = "2018-10-20 20:40:17"
 source_url = "https://crypto.haluska.sk/crypto5fix.png"
-transactions = [{ type = "funding", txid = "3dde5372e50d314df6e0f46477b99e34a20fbe38721fa9519a2cdf6c51518c38", date = "2018-10-20 18:46:57", amount = 0.00260414 }, { type = "increase", txid = "2a3e02a4a07e87f3e216a7d25d12f60222625a81c10882e27c9c3ea238a27df4", date = "2018-11-08 17:20:10", amount = 0.00088248 }, { type = "increase", txid = "9b4c2a2aac20af67acf349d7b55ff94ccccdcbf9681f730da185fe1da564f884", date = "2021-02-14 04:14:05", amount = 0.00001338 }, { type = "increase", txid = "33d0a16e4f4c9e9e0e0d6fe450d108a90629f199e14835bb94d4376388a944a1", date = "2021-12-03 08:35:29", amount = 0.0020555 }, { type = "increase", txid = "33d0b16e4f4c9e9e0e0d6fe450d108a90629f199e14835bb94d4376388a944a1", date = "2021-12-03 08:55:29", amount = 0.0020555 }]
+transactions = [
+    { type = "funding", txid = "3dde5372e50d314df6e0f46477b99e34a20fbe38721fa9519a2cdf6c51518c38", date = "2018-10-20 20:40:17", amount = 0.00260414 },
+    { type = "increase", txid = "9b4c2a2aac20af67acf349d7b55ff94ccccdcbf9681f730da185fe1da564f884", date = "2021-02-13 21:54:05", amount = 0.00001338 },
+    { type = "increase", txid = "33d0b16e4f4c9e9e0e0d6fe450d108a90629f199e14835bb94d4376388a944a1", date = "2021-12-03 08:35:29", amount = 0.0020555 }
+]
 
 [[puzzles]]
 name = "Level HALV"
@@ -74,7 +90,9 @@ status = "unsolved"
 prize = 0.003125
 start_date = "2024-04-18 11:19:41"
 source_url = "https://crypto.haluska.sk/cryptoHALV.png"
-transactions = [{ type = "funding", txid = "30946152b5f24ed975a26b28a46cb19d1ef2728159c5806544ffd0c2fb535205", date = "2024-04-18 10:59:41", amount = 0.003125 }]
+transactions = [
+    { type = "funding", txid = "30946152b5f24ed975a26b28a46cb19d1ef2728159c5806544ffd0c2fb535205", date = "2024-04-18 11:19:41", amount = 0.003125 }
+]
 
 [[puzzles]]
 name = "Level SFX"
@@ -86,7 +104,10 @@ start_date = "2021-02-07 22:51:18"
 solve_date = "2021-02-21 23:09:26"
 solve_time = 1210688
 source_url = "https://crypto.haluska.sk/cryptoSFX.png"
-transactions = [{ type = "funding", txid = "570c201d362534d8a21908bee29cd385d618805819401b1084b76f37ce5ceb4e", date = "2021-02-07 23:57:58", amount = 0.00140426 }, { type = "increase", txid = "9b4c2a2aac20af67acf349d7b55ff94ccccdcbf9681f730da185fe1da564f884", date = "2021-02-14 04:14:05", amount = 0.00004574 }, { type = "increase", txid = "75abad484d2cb32ad37bdc321e100f8d21111cb1f6e11729279c3689e47ea274", date = "2021-02-15 08:47:12", amount = 0.001337 }, { type = "claim", txid = "cf34cd09943b49bbcd2d5c58c09b43ed054c911f2d526db3a59c015d9f6d8360", date = "2021-02-21 22:49:26", amount = 0.00274126 }]
+transactions = [
+    { type = "funding", txid = "570c201d362534d8a21908bee29cd385d618805819401b1084b76f37ce5ceb4e", date = "2021-02-07 22:51:18", amount = 0.00140426 },
+    { type = "claim", txid = "cf34cd09943b49bbcd2d5c58c09b43ed054c911f2d526db3a59c015d9f6d8360", date = "2021-02-21 23:09:26", amount = 0.00140426 }
+]
 
 [[puzzles]]
 name = "Level XM17"
@@ -98,7 +119,10 @@ start_date = "2017-12-24 09:50:13"
 solve_date = "2017-12-26 20:48:42"
 solve_time = 212309
 source_url = "https://crypto.haluska.sk/cryptoxm17.gif"
-transactions = [{ type = "funding", txid = "b640f0671cb59f47a197584d7a9cf67bdd2f7e6227a74bd4bdae89067e1b34a2", date = "2017-12-24 18:10:13", amount = 0.0260414 }, { type = "claim", txid = "2706880fbfe65638c1ce6229538a1c51f6d7c693d7405fd586d69752535b4302", date = "2017-12-26 19:28:42", amount = 0.0260414 }]
+transactions = [
+    { type = "funding", txid = "b640f0671cb59f47a197584d7a9cf67bdd2f7e6227a74bd4bdae89067e1b34a2", date = "2017-12-24 09:50:13", amount = 0.0260414 },
+    { type = "claim", txid = "2706880fbfe65638c1ce6229538a1c51f6d7c693d7405fd586d69752535b4302", date = "2017-12-26 20:48:42", amount = 0.0260414 }
+]
 
 [[puzzles]]
 name = "1BiTCoiN WHiTe PaPeR"
@@ -110,7 +134,10 @@ start_date = "2021-04-11 01:59:51"
 solve_date = "2021-05-19 20:49:13"
 solve_time = 3350962
 source_url = "https://ipfs.io/ipfs/Qmdm7SxhVGDVt9krbNpwAxkQGwH5a74FVW1sKNXxCjzmBq"
-transactions = [{ type = "funding", txid = "063a1913256940e72237419cada939694f4f361d6a1bd2461c5b8387d1b77cb3", date = "2021-04-11 01:46:31", amount = 0.00117578 }, { type = "claim", txid = "252f49ac38fd858d74baea65e98e44b882d98e794e91426dcc91e62f80d33b56", date = "2021-05-15 05:35:18", amount = 0.00117578 }]
+transactions = [
+    { type = "funding", txid = "063a1913256940e72237419cada939694f4f361d6a1bd2461c5b8387d1b77cb3", date = "2021-04-11 01:59:51", amount = 0.00117578 },
+    { type = "claim", txid = "40b500597aa1d6904db01d36945871a55c5b3a400c4218992d3fbe901cd414b3", date = "2021-05-19 20:49:13", amount = 0.00117578 }
+]
 
 [[puzzles]]
 name = "Demobit 2018"
@@ -122,7 +149,10 @@ start_date = "2018-03-22 09:34:29"
 solve_date = "2018-03-25 05:23:21"
 solve_time = 244132
 source_url = "https://crypto.haluska.sk/crypto_db18.png"
-transactions = [{ type = "funding", txid = "5ca022fa2425eeb32f0ea7eb78e20501ea7907dae62e8467cd9a24a41e45c6bc", date = "2018-01-23 14:51:43", amount = 0.03499755 }, { type = "increase", txid = "66271b073584588d92cd12fdb2b86f52f603daf64670e1cd6aa94e91e32e467e", date = "2018-03-22 10:54:29", amount = 0.01500245 }, { type = "claim", txid = "4f2c8aca892e54810a3febfb39d48ce610aca1bc23b6611e46292566b84b202a", date = "2018-03-25 16:56:41", amount = 0.05 }]
+transactions = [
+    { type = "funding", txid = "66271b073584588d92cd12fdb2b86f52f603daf64670e1cd6aa94e91e32e467e", date = "2018-03-22 09:34:29", amount = 0.01500245 },
+    { type = "claim", txid = "4f2c8aca892e54810a3febfb39d48ce610aca1bc23b6611e46292566b84b202a", date = "2018-03-25 05:23:21", amount = 0.01500245 }
+]
 
 [[puzzles]]
 name = "Nethemba"
@@ -134,7 +164,10 @@ start_date = "2016-08-06 12:45:26"
 solve_date = "2016-08-11 16:50:46"
 solve_time = 446720
 source_url = "https://crypto.haluska.sk/crypto_nethemba.png"
-transactions = [{ type = "funding", txid = "72670ce7a71e6a0cf456dcdc7734df6064283ffdd548c574b2a80254c3c9406c", date = "2016-08-06 12:05:26", amount = 0.192018 }, { type = "claim", txid = "be452ac0b3ed8b4e81bfad38831a89ccdb54a18f7d21b002e0d4c0537bc9541b", date = "2016-08-11 17:30:46", amount = 0.192018 }]
+transactions = [
+    { type = "funding", txid = "72670ce7a71e6a0cf456dcdc7734df6064283ffdd548c574b2a80254c3c9406c", date = "2016-08-06 12:45:26", amount = 0.192018 },
+    { type = "claim", txid = "be452ac0b3ed8b4e81bfad38831a89ccdb54a18f7d21b002e0d4c0537bc9541b", date = "2016-08-11 16:50:46", amount = 0.192018 }
+]
 
 # Ethereum puzzles
 
@@ -148,7 +181,10 @@ start_date = "2018-10-24 20:00:18"
 solve_date = "2019-11-05 17:08:08"
 solve_time = 32562470
 source_url = "https://crypto.haluska.sk/xixoio_puzzle.png"
-transactions = [{ type = "funding", txid = "0xb9658922bcc5b3d35dc4b054c40607090c755dd86d8891e6351a25c43cc653ac", date = "2018-10-24 20:00:18", amount = 6.0 }, { type = "claim", txid = "0xac638a7ac6388b7af2178a52f0463a6dda8761292d261fa415c6446c8d4539f0", date = "2019-11-05 17:08:08", amount = 5.997858 }]
+transactions = [
+    { type = "funding", txid = "0xb9658922bcc5b3d35dc4b054c40607090c755dd86d8891e6351a25c43cc653ac", date = "2018-10-24 20:00:18", amount = 6.0 },
+    { type = "claim", txid = "0xac638a7ac6388b7af2178a52f0463a6dda8761292d261fa415c6446c8d4539f0", date = "2019-11-05 17:08:08", amount = 5.997858 }
+]
 
 [[puzzles]]
 name = "Codex Protocol"
@@ -160,7 +196,10 @@ start_date = "2018-04-16 22:39:45"
 solve_date = "2018-06-13 13:02:18"
 solve_time = 4976553
 source_url = "https://crypto.haluska.sk/CodexPuzzle.png"
-transactions = [{ type = "funding", txid = "0xe09300e94625ec03a8680d6270200196a12c63327fc7cad03508542090283374", date = "2018-04-16 22:39:45", amount = 3.1337 }, { type = "claim", txid = "0xeb9f6a7d1cb226c84344b38f9eb5bd26586b58c0080262d80fdcb501c0b51a7b", date = "2018-06-13 13:02:18", amount = 3.132839 }]
+transactions = [
+    { type = "funding", txid = "0xe09300e94625ec03a8680d6270200196a12c63327fc7cad03508542090283374", date = "2018-04-16 22:39:45", amount = 3.1337 },
+    { type = "claim", txid = "0xeb9f6a7d1cb226c84344b38f9eb5bd26586b58c0080262d80fdcb501c0b51a7b", date = "2018-06-13 13:02:18", amount = 3.132839 }
+]
 
 # Litecoin puzzles
 

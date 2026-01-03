@@ -16,13 +16,13 @@ pub enum BalanceError {
 
 #[derive(Debug, Clone, Copy, Default)]
 pub struct Balance {
-    pub confirmed: u64,
-    pub unconfirmed: i64,
+    pub confirmed: u128,
+    pub unconfirmed: i128,
 }
 
 impl Balance {
-    pub fn total(&self) -> i64 {
-        self.confirmed as i64 + self.unconfirmed
+    pub fn total(&self) -> i128 {
+        self.confirmed as i128 + self.unconfirmed
     }
 
     pub fn confirmed_btc(&self) -> f64 {
@@ -77,9 +77,10 @@ async fn fetch_btc(address: &str) -> Result<Balance, BalanceError> {
         .json()
         .await?;
 
-    let confirmed = response.chain_stats.funded_txo_sum - response.chain_stats.spent_txo_sum;
-    let unconfirmed =
-        response.mempool_stats.funded_txo_sum as i64 - response.mempool_stats.spent_txo_sum as i64;
+    let confirmed =
+        response.chain_stats.funded_txo_sum as u128 - response.chain_stats.spent_txo_sum as u128;
+    let unconfirmed = response.mempool_stats.funded_txo_sum as i128
+        - response.mempool_stats.spent_txo_sum as i128;
 
     Ok(Balance {
         confirmed,
@@ -118,7 +119,7 @@ async fn fetch_eth(address: &str) -> Result<Balance, BalanceError> {
         .map_err(|_| BalanceError::Api("Failed to parse balance".into()))?;
 
     Ok(Balance {
-        confirmed: wei as u64,
+        confirmed: wei,
         unconfirmed: 0,
     })
 }
