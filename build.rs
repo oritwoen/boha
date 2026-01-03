@@ -122,6 +122,7 @@ struct Address {
     value: String,
     kind: String,
     hash160: Option<String>,
+    witness_program: Option<String>,
     redeem_script: Option<TomlRedeemScript>,
 }
 
@@ -243,16 +244,40 @@ struct ZdenPuzzle {
 }
 
 fn format_hash160(address: &Address, chain: &str, puzzle_id: &str) -> String {
-    let requires_hash160 = address.kind == "p2pkh" && matches!(chain, "bitcoin" | "litecoin");
+    let requires_hash160 = matches!(address.kind.as_str(), "p2pkh" | "p2wpkh")
+        && matches!(chain, "bitcoin" | "litecoin");
     if requires_hash160 && address.hash160.is_none() {
         panic!(
-            "Puzzle '{}' (p2pkh) requires hash160 but none provided",
-            puzzle_id
+            "Puzzle '{}' ({}) requires hash160 but none provided",
+            puzzle_id, address.kind
         );
     }
     match &address.hash160 {
         Some(h) => format!("Some(\"{}\")", h),
         None => "None".to_string(),
+    }
+}
+
+fn format_witness_program(address: &Address, puzzle_id: &str) -> String {
+    if address.kind == "p2wsh" {
+        match &address.witness_program {
+            Some(wp) => {
+                if wp.len() != 64 {
+                    panic!(
+                        "Puzzle '{}' (p2wsh) witness_program must be 64 hex chars (32 bytes), got {}",
+                        puzzle_id,
+                        wp.len()
+                    );
+                }
+                format!("Some(\"{}\")", wp)
+            }
+            None => panic!(
+                "Puzzle '{}' (p2wsh) requires witness_program but none provided",
+                puzzle_id
+            ),
+        }
+    } else {
+        "None".to_string()
     }
 }
 
@@ -510,6 +535,7 @@ fn generate_b1000(out_dir: &str) {
             .unwrap_or_else(|| "None".to_string());
 
         let hash160 = format_hash160(&puzzle.address, "bitcoin", &format!("b1000/{}", bits));
+        let witness_program = format_witness_program(&puzzle.address, &format!("b1000/{}", bits));
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
@@ -524,6 +550,7 @@ fn generate_b1000(out_dir: &str) {
             chain: Chain::Bitcoin,
             kind: "{}",
             hash160: {},
+            witness_program: {},
             redeem_script: {},
         }},
         status: {},
@@ -543,6 +570,7 @@ fn generate_b1000(out_dir: &str) {
             puzzle.address.value,
             puzzle.address.kind,
             hash160,
+            witness_program,
             redeem_script,
             status,
             pubkey,
@@ -619,6 +647,8 @@ fn generate_hash_collision(out_dir: &str) {
             "bitcoin",
             &format!("hash_collision/{}", puzzle.name),
         );
+        let witness_program =
+            format_witness_program(&puzzle.address, &format!("hash_collision/{}", puzzle.name));
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
@@ -633,6 +663,7 @@ fn generate_hash_collision(out_dir: &str) {
             chain: Chain::Bitcoin,
             kind: "{}",
             hash160: {},
+            witness_program: {},
             redeem_script: {},
         }},
         status: {},
@@ -652,6 +683,7 @@ fn generate_hash_collision(out_dir: &str) {
             puzzle.address.value,
             puzzle.address.kind,
             hash160,
+            witness_program,
             redeem_script,
             status,
             prize,
@@ -728,6 +760,7 @@ fn generate_gsmg(out_dir: &str) {
     };
 
     let hash160 = format_hash160(&puzzle.address, "bitcoin", "gsmg");
+    let witness_program = format_witness_program(&puzzle.address, "gsmg");
     let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
     let transactions = generate_transactions_code(&puzzle.transactions);
@@ -745,6 +778,7 @@ fn generate_gsmg(out_dir: &str) {
         chain: Chain::Bitcoin,
         kind: "{}",
         hash160: {},
+        witness_program: {},
         redeem_script: {},
     }},
     status: {},
@@ -763,6 +797,7 @@ fn generate_gsmg(out_dir: &str) {
         puzzle.address.value,
         puzzle.address.kind,
         hash160,
+        witness_program,
         redeem_script,
         status,
         pubkey,
@@ -841,6 +876,8 @@ fn generate_zden(out_dir: &str) {
             &puzzle.chain,
             &format!("zden/{}", puzzle.name),
         );
+        let witness_program =
+            format_witness_program(&puzzle.address, &format!("zden/{}", puzzle.name));
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
         let key = generate_key_code(&puzzle.key);
 
@@ -856,6 +893,7 @@ fn generate_zden(out_dir: &str) {
             chain: {},
             kind: "{}",
             hash160: {},
+            witness_program: {},
             redeem_script: {},
         }},
         status: {},
@@ -877,6 +915,7 @@ fn generate_zden(out_dir: &str) {
             chain,
             puzzle.address.kind,
             hash160,
+            witness_program,
             redeem_script,
             status,
             key,

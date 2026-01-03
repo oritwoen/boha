@@ -515,6 +515,9 @@ fn address_to_hash160(address: &str) -> Option<String> {
 #[test]
 fn hash160_matches_address() {
     for puzzle in boha::all() {
+        if matches!(puzzle.address.kind, "p2wpkh" | "p2wsh") {
+            continue;
+        }
         if let Some(hash160) = puzzle.address.hash160 {
             let computed = address_to_hash160(puzzle.address.value)
                 .unwrap_or_else(|| panic!("Failed to compute hash160 for {}", puzzle.id));
@@ -1209,4 +1212,145 @@ fn universal_get_works_with_zden() {
     assert!(boha::get("zden/Level 1").is_ok());
     assert!(boha::get("zden/XIXOIO").is_ok());
     assert!(boha::get("zden/Litecoin SegWit").is_ok());
+}
+
+#[test]
+fn bech32_address_has_segwit_kind() {
+    for puzzle in boha::all() {
+        if puzzle.address.value.starts_with("bc1q") || puzzle.address.value.starts_with("ltc1q") {
+            assert!(
+                matches!(puzzle.address.kind, "p2wpkh" | "p2wsh"),
+                "bc1q/ltc1q address {} should have kind p2wpkh or p2wsh, got {}",
+                puzzle.id,
+                puzzle.address.kind
+            );
+        }
+    }
+}
+
+#[test]
+fn p2wpkh_has_hash160() {
+    for puzzle in boha::all() {
+        if puzzle.address.kind == "p2wpkh" {
+            assert!(
+                puzzle.address.hash160.is_some(),
+                "P2WPKH puzzle {} missing hash160",
+                puzzle.id
+            );
+        }
+    }
+}
+
+fn decode_bech32_witness_program(address: &str) -> Option<(u8, Vec<u8>)> {
+    use bech32::primitives::decode::CheckedHrpstring;
+    use bech32::{Bech32, Bech32m};
+
+    if let Ok(checked) = CheckedHrpstring::new::<Bech32>(address) {
+        let mut data_iter = checked.byte_iter();
+        let witness_version = data_iter.next()?;
+        let witness_program: Vec<u8> = data_iter.collect();
+        return Some((witness_version, witness_program));
+    }
+    if let Ok(checked) = CheckedHrpstring::new::<Bech32m>(address) {
+        let mut data_iter = checked.byte_iter();
+        let witness_version = data_iter.next()?;
+        let witness_program: Vec<u8> = data_iter.collect();
+        return Some((witness_version, witness_program));
+    }
+    None
+}
+
+#[test]
+fn p2wpkh_hash160_matches_witness_program() {
+    for puzzle in boha::all() {
+        if puzzle.address.kind == "p2wpkh" {
+            let Some(hash160) = puzzle.address.hash160 else {
+                continue;
+            };
+            let Some((version, witness_program)) =
+                decode_bech32_witness_program(puzzle.address.value)
+            else {
+                panic!("Failed to decode bech32 address for {}", puzzle.id);
+            };
+            assert_eq!(
+                version, 0,
+                "P2WPKH {} should have witness version 0, got {}",
+                puzzle.id, version
+            );
+            assert_eq!(
+                witness_program.len(),
+                20,
+                "P2WPKH {} witness program should be 20 bytes, got {}",
+                puzzle.id,
+                witness_program.len()
+            );
+            let computed_hash160 = hex::encode(&witness_program);
+            assert_eq!(
+                hash160, computed_hash160,
+                "P2WPKH {} hash160 mismatch: stored {} != computed {}",
+                puzzle.id, hash160, computed_hash160
+            );
+        }
+    }
+}
+
+#[test]
+fn p2wsh_has_witness_program() {
+    for puzzle in boha::all() {
+        if puzzle.address.kind == "p2wsh" {
+            assert!(
+                puzzle.address.witness_program.is_some(),
+                "P2WSH puzzle {} missing witness_program",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn witness_program_format_valid() {
+    let hex_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
+    for puzzle in boha::all() {
+        if let Some(wp) = puzzle.address.witness_program {
+            assert!(
+                hex_regex.is_match(wp),
+                "Invalid witness_program format for {}: {} (expected 64 lowercase hex chars)",
+                puzzle.id,
+                wp
+            );
+        }
+    }
+}
+
+#[test]
+fn p2wsh_witness_program_matches_address() {
+    for puzzle in boha::all() {
+        if puzzle.address.kind == "p2wsh" {
+            let Some(witness_program) = puzzle.address.witness_program else {
+                continue;
+            };
+            let Some((version, decoded_wp)) = decode_bech32_witness_program(puzzle.address.value)
+            else {
+                panic!("Failed to decode bech32 address for {}", puzzle.id);
+            };
+            assert_eq!(
+                version, 0,
+                "P2WSH {} should have witness version 0, got {}",
+                puzzle.id, version
+            );
+            assert_eq!(
+                decoded_wp.len(),
+                32,
+                "P2WSH {} witness program should be 32 bytes, got {}",
+                puzzle.id,
+                decoded_wp.len()
+            );
+            let computed_wp = hex::encode(&decoded_wp);
+            assert_eq!(
+                witness_program, computed_wp,
+                "P2WSH {} witness_program mismatch: stored {} != computed {}",
+                puzzle.id, witness_program, computed_wp
+            );
+        }
+    }
 }
