@@ -59,6 +59,10 @@ optional = true
 version = "0.3"
 optional = true
 
+[dependencies.human-panic]
+version = "2"
+optional = true
+
 [build-dependencies]
 toml = "0.8"
 serde = { version = "1", features = ["derive"] }
@@ -69,7 +73,7 @@ sha2 = "0.10"
 
 [features]
 default = []
-cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv"]
+cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv", "human-panic"]
 balance = ["reqwest", "tokio", "futures"]
 
 [[bin]]

@@ -863,12 +863,14 @@ async fn cmd_balance(id: &str, format: OutputFormat) {
 #[cfg(feature = "balance")]
 #[tokio::main]
 async fn main() {
+    human_panic::setup_panic!();
     let cli = Cli::parse();
     run(cli).await;
 }
 
 #[cfg(not(feature = "balance"))]
 fn main() {
+    human_panic::setup_panic!();
     let cli = Cli::parse();
     run(cli);
 }
