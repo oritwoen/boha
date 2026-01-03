@@ -262,11 +262,10 @@ fn format_witness_program(address: &Address, puzzle_id: &str) -> String {
     if address.kind == "p2wsh" {
         match &address.witness_program {
             Some(wp) => {
-                if wp.len() != 64 {
+                if hex::decode(wp).map(|b| b.len()).unwrap_or(0) != 32 {
                     panic!(
-                        "Puzzle '{}' (p2wsh) witness_program must be 64 hex chars (32 bytes), got {}",
-                        puzzle_id,
-                        wp.len()
+                        "Puzzle '{}' (p2wsh) witness_program must be 64 hex chars (32 bytes), got '{}'",
+                        puzzle_id, wp
                     );
                 }
                 format!("Some(\"{}\")", wp)
