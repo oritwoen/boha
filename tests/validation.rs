@@ -703,8 +703,8 @@ fn solve_time_is_reasonable() {
 fn b1000_66_solve_time_correct() {
     let p66 = b1000::get(66).unwrap();
     assert_eq!(p66.start_date, Some("2015-01-15 18:07:14"));
-    assert_eq!(p66.solve_date, Some("2025-02-19 04:19:52"));
-    assert_eq!(p66.solve_time, Some(318593558));
+    assert_eq!(p66.solve_date, Some("2024-09-12 22:59:39"));
+    assert_eq!(p66.solve_time, Some(304836745));
     let formatted = p66.solve_time_formatted().unwrap();
     assert!(
         formatted.contains('y'),
@@ -972,6 +972,51 @@ fn funding_txid_matches_funding_tx() {
         let txid = puzzle.funding_txid();
         let from_tx = puzzle.funding_tx().and_then(|t| t.txid);
         assert_eq!(txid, from_tx, "funding_txid() mismatch for {}", puzzle.id);
+    }
+}
+
+#[test]
+fn start_date_matches_first_funding() {
+    for puzzle in boha::all() {
+        if puzzle.pre_genesis {
+            continue;
+        }
+        let funding_date = puzzle.funding_tx().and_then(|t| t.date);
+        if let (Some(start_date), Some(funding_date)) = (puzzle.start_date, funding_date) {
+            assert_eq!(
+                start_date, funding_date,
+                "Puzzle {} start_date ({}) does not match first funding transaction date ({})",
+                puzzle.id, start_date, funding_date
+            );
+        }
+    }
+}
+
+#[test]
+fn solve_date_matches_claim_transaction() {
+    for puzzle in boha::all() {
+        if puzzle.pre_genesis {
+            continue;
+        }
+        if !matches!(
+            puzzle.status,
+            Status::Solved | Status::Claimed | Status::Swept
+        ) {
+            continue;
+        }
+        let terminal_tx = puzzle
+            .transactions
+            .iter()
+            .find(|t| matches!(t.tx_type, TransactionType::Claim | TransactionType::Sweep));
+        if let (Some(solve_date), Some(tx)) = (puzzle.solve_date, terminal_tx) {
+            if let Some(tx_date) = tx.date {
+                assert_eq!(
+                    solve_date, tx_date,
+                    "Puzzle {} solve_date ({}) does not match claim/sweep transaction date ({})",
+                    puzzle.id, solve_date, tx_date
+                );
+            }
+        }
     }
 }
 

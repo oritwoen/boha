@@ -51,9 +51,9 @@ prize = 0.003
 status = "solved"
 public_key = "025cbdf0646e5db4eaa398f365f2ea7a0e3d419b7e0330e39ce92bddedcac4f9bc"
 pubkey_format = "compressed"
-solve_date = "2020-05-30 08:28:13"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 169482059
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.003 }, { type = "claim", txid = "fa1b9a669a7c16f1d0b15cfb57e9830ccee36db984bd074de450e47088c8d078", date = "2015-01-15 18:07:14", amount = 0.003 }]
 
 [[puzzles]]
@@ -63,9 +63,9 @@ prize = 0.004
 status = "solved"
 public_key = "022f01e5e15cca351daff3843fb70f3c2f0a1bdd05e5af888a67784ef3e10a2a01"
 pubkey_format = "compressed"
-solve_date = "2021-03-29 06:42:00"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 195654886
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.004 }, { type = "claim", txid = "7c4f3c3022a956e7ad80bd0d3642f7e2e0a3dd4b275b7241cf1963610250d65b", date = "2015-01-15 18:07:14", amount = 0.004 }]
 
 [[puzzles]]
@@ -87,9 +87,9 @@ prize = 0.006
 status = "solved"
 public_key = "03f2dac991cc4ce4b9ea44887e5c7c0bce58c80074ab9d4dbaeb28531b7739f530"
 pubkey_format = "compressed"
-solve_date = "2020-10-14 16:26:44"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 181347570
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.006 }, { type = "claim", txid = "aa75e831a27d71dae09a5feeb7fec041ba0a55d1e9c3ac1d32ce88852dcedaa3", date = "2015-01-15 18:07:14", amount = 0.006 }]
 
 [[puzzles]]
@@ -123,9 +123,9 @@ prize = 0.009
 status = "solved"
 public_key = "0243601d61c836387485e9514ab5c8924dd2cfd466af34ac95002727e1659d60f7"
 pubkey_format = "compressed"
-solve_date = "2020-09-23 16:46:17"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 179534343
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.009 }, { type = "claim", txid = "49647889152f4f444e6007e94d59f24003e9f012687efbd7bc273c26371c3aba", date = "2015-01-15 18:07:14", amount = 0.009 }]
 
 [[puzzles]]
@@ -135,9 +135,9 @@ prize = 0.01
 status = "solved"
 public_key = "03a7a4c30291ac1db24b4ab00c442aa832f7794b5a0959bec6e8d7fee802289dcd"
 pubkey_format = "compressed"
-solve_date = "2020-07-08 15:43:11"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 172877757
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.01 }, { type = "claim", txid = "b70f19f2581acf4320cf069379982f2df6f9c8b8ef91ed59279e32453a81ad62", date = "2015-01-15 18:07:14", amount = 0.01 }]
 
 [[puzzles]]
@@ -159,9 +159,9 @@ prize = 0.012
 status = "solved"
 public_key = "038b00fcbfc1a203f44bf123fc7f4c91c10a85c8eae9187f9d22242b4600ce781c"
 pubkey_format = "compressed"
-solve_date = "2019-09-07 10:42:47"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 146507733
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.012 }, { type = "claim", txid = "5bf0a6d4af73ac148a5b1d26c82d4c7567f45f868f427b48efad7cae08fb22df", date = "2015-01-15 18:07:14", amount = 0.012 }]
 
 [[puzzles]]
@@ -171,9 +171,9 @@ prize = 0.013
 status = "solved"
 public_key = "03aadaaab1db8d5d450b511789c37e7cfeb0eb8b3e61a57a34166c5edc9a4b869d"
 pubkey_format = "compressed"
-solve_date = "2025-09-23 03:31:11"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 337253037
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.013 }, { type = "claim", txid = "2686aca4a211031b75396dbb9baecadfc01a1534d8682c8eacd307ab2c8f47e0", date = "2015-01-15 18:07:14", amount = 0.013 }]
 
 [[puzzles]]
@@ -207,9 +207,9 @@ prize = 0.016
 status = "solved"
 public_key = "029d8c5d35231d75eb87fd2c5f05f65281ed9573dc41853288c62ee94eb2590b7a"
 pubkey_format = "compressed"
-solve_date = "2019-09-07 17:20:13"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 146531579
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.016 }, { type = "claim", txid = "4d102a549127e6fcdc4f6b4820a2c99eeba71af9fc0d6e79f43571f192bd09c8", date = "2015-01-15 18:07:14", amount = 0.016 }]
 
 [[puzzles]]
@@ -255,9 +255,9 @@ prize = 0.02
 status = "solved"
 public_key = "033c4a45cbd643ff97d77f41ea37e843648d50fd894b864b0d52febc62f6454f7c"
 pubkey_format = "compressed"
-solve_date = "2025-08-14 01:32:30"
+solve_date = "2015-01-15 18:07:14"
 start_date = "2015-01-15 18:07:14"
-solve_time = 333789916
+solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.02 }, { type = "claim", txid = "3121aba5b7cc4d766a1e1b937c456d299bd75c6f3059c82353a4918b714d66c4", date = "2015-01-15 18:07:14", amount = 0.02 }]
 
 [[puzzles]]
@@ -267,9 +267,9 @@ prize = 0.021
 status = "solved"
 public_key = "031a746c78f72754e0be046186df8a20cdce5c79b2eda76013c647af08d306e49e"
 pubkey_format = "compressed"
-solve_date = "2019-09-03 21:59:53"
+solve_date = "2015-01-15 19:11:31"
 start_date = "2015-01-15 18:07:14"
-solve_time = 146202759
+solve_time = 3857
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.021 }, { type = "claim", txid = "cfbfafab6e04041ad36fb2395c2dd384f943ebdf61910c799f8f4a87276b2914", date = "2015-01-15 19:11:31", amount = 0.021 }]
 
 [[puzzles]]
@@ -375,9 +375,9 @@ prize = 0.03
 status = "solved"
 public_key = "030d282cf2ff536d2c42f105d0b8588821a915dc3f9a05bd98bb23af67a2e92a5b"
 pubkey_format = "compressed"
-solve_date = "2018-08-07 20:59:56"
+solve_date = "2015-01-16 13:31:58"
 start_date = "2015-01-15 18:07:14"
-solve_time = 112330362
+solve_time = 69884
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.03 }, { type = "claim", txid = "7c08f94495f5773e65c50d7a0a03e366802de9ac4063ed79316d9eba332d0e9d", date = "2015-01-16 13:31:58", amount = 0.03 }]
 
 [[puzzles]]
@@ -483,9 +483,9 @@ prize = 0.039
 status = "solved"
 public_key = "022d77cd1467019a6bf28f7375d0949ce30e6b5815c2758b98a74c2700bc006543"
 pubkey_format = "compressed"
-solve_date = "2019-09-07 18:35:38"
+solve_date = "2015-01-21 06:35:26"
 start_date = "2015-01-15 18:07:14"
-solve_time = 146536104
+solve_time = 476892
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.039 }, { type = "claim", txid = "41abfd3419ec99b62c571c05a8183214c1ee21bc35acd0a2f24c4097c62b291f", date = "2015-01-21 06:35:26", amount = 0.039 }]
 
 [[puzzles]]
@@ -579,9 +579,9 @@ prize = 0.047
 status = "solved"
 public_key = "023a12bd3caf0b0f77bf4eea8e7a40dbe27932bf80b19ac72f5f5a64925a594196"
 pubkey_format = "compressed"
-solve_date = "2023-08-23 09:42:42"
+solve_date = "2015-09-01 20:20:24"
 start_date = "2015-01-15 18:07:14"
-solve_time = 271438528
+solve_time = 19793590
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.047 }, { type = "claim", txid = "39553513f731ae20f98f3307e863f0aecee9842f22273bb2ddfc0fb6ba481c5e", date = "2015-09-01 20:20:24", amount = 0.047 }]
 
 [[puzzles]]
@@ -627,9 +627,9 @@ prize = 0.051
 status = "solved"
 public_key = "028c6c67bef9e9eebe6a513272e50c230f0f91ed560c37bc9b033241ff6c3be78f"
 pubkey_format = "compressed"
-solve_date = "2017-04-05 10:45:32"
+solve_date = "2017-04-05 10:11:20"
 start_date = "2015-01-15 18:07:14"
-solve_time = 70043898
+solve_time = 70041846
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.051 }, { type = "claim", txid = "70ee9ab241829a6f49ebf9f109e97f6e466d938e558bade1c5fe341310bc356e", date = "2017-04-05 10:11:20", amount = 0.051 }]
 
 [[puzzles]]
@@ -663,9 +663,9 @@ prize = 0.54
 status = "solved"
 public_key = "034af4b81f8c450c2c870ce1df184aff1297e5fcd54944d98d81e1a545ffb22596"
 pubkey_format = "compressed"
-solve_date = "2018-07-11 06:20:58"
+solve_date = "2017-11-16 11:04:22"
 start_date = "2015-01-15 18:07:14"
-solve_time = 109944824
+solve_time = 89485028
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.054 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.486 }, { type = "claim", txid = "02e9c6ccae985a6485e633b56a084dae2a32736e5b866c3b9622db9d3c57078f", date = "2017-11-16 11:04:22", amount = 0.54 }]
 
 [[puzzles]]
@@ -675,9 +675,9 @@ prize = 0.55
 status = "solved"
 public_key = "0385a30d8413af4f8f9e6312400f2d194fe14f02e719b24c3f83bf1fd233a8f963"
 pubkey_format = "compressed"
-solve_date = "2018-05-30 08:43:35"
+solve_date = "2018-05-29 08:13:52"
 start_date = "2015-01-15 18:07:14"
-solve_time = 106324581
+solve_time = 106236398
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.055 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.495 }, { type = "increase", txid = "0cec4460b09db31a00ff1475c32b6a02a89fde2ff89d8ff8fd79535a21474d90", date = "2018-03-11 04:50:13", amount = 0.00011515 }, { type = "claim", txid = "ecc8c09284a6f9e6d52cccf7f8f4aef1d0c4a33984375dea4cea70923066078d", date = "2018-05-29 08:13:52", amount = 0.55011515 }]
 
 [[puzzles]]
@@ -687,9 +687,9 @@ prize = 0.56
 status = "solved"
 public_key = "033f2db2074e3217b3e5ee305301eeebb1160c4fa1e993ee280112f6348637999a"
 pubkey_format = "compressed"
-solve_date = "2018-09-08 08:01:09"
+solve_date = "2018-09-08 05:45:09"
 start_date = "2015-01-15 18:07:14"
-solve_time = 115048435
+solve_time = 115040275
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.056 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.504 }, { type = "claim", txid = "5317fdbea32034f8f983bd2324e99e5da593aaf3c4aed6425d8104dc3b8c77d2", date = "2018-09-08 05:45:09", amount = 0.504 }]
 
 [[puzzles]]
@@ -711,9 +711,9 @@ prize = 0.58
 status = "solved"
 public_key = "0311569442e870326ceec0de24eb5478c19e146ecd9d15e4666440f2f638875f42"
 pubkey_format = "compressed"
-solve_date = "2025-02-17 06:19:03"
+solve_date = "2018-12-03 06:03:22"
 start_date = "2015-01-15 18:07:14"
-solve_time = 318427909
+solve_time = 122471768
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.058 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.522 }, { type = "claim", txid = "17d31de2bd300bc1bad430ec0db77ca27466bbb97bf03df6a3ff386d60e58996", date = "2018-12-03 06:03:22", amount = 0.58 }]
 
 [[puzzles]]
@@ -723,9 +723,9 @@ prize = 0.59
 status = "solved"
 public_key = "0241267d2d7ee1a8e76f8d1546d0d30aefb2892d231cee0dde7776daf9f8021485"
 pubkey_format = "compressed"
-solve_date = "2024-07-20 23:43:09"
+solve_date = "2019-02-11 22:39:32"
 start_date = "2015-01-15 18:07:14"
-solve_time = 300173755
+solve_time = 128579538
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.059 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.531 }, { type = "claim", txid = "66cd4fd4b240df28c5f61c4c86865f57e5f4e203dc8ea36d520e553e61d96e04", date = "2019-02-11 22:39:32", amount = 0.59 }]
 
 [[puzzles]]
@@ -747,9 +747,9 @@ prize = 0.61
 status = "solved"
 public_key = "0249a43860d115143c35c09454863d6f82a95e47c1162fb9b2ebe0186eb26f453f"
 pubkey_format = "compressed"
-solve_date = "2019-05-12 18:32:07"
+solve_date = "2019-05-11 12:53:18"
 start_date = "2015-01-15 18:07:14"
-solve_time = 136340693
+solve_time = 136233964
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.061 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.549 }, { type = "increase", txid = "cdae2da8fe4b18dc264e568a29e804f2b32529b8018a9d28e271ac7e9077c718", date = "2019-02-24 21:48:34", amount = 0.00000793 }, { type = "claim", txid = "481d2b7ceb253520336fbbe681126ae58d14ecd552320d88203b2e806e76358d", date = "2019-05-11 12:53:18", amount = 0.61 }]
 
 [[puzzles]]
@@ -771,9 +771,9 @@ prize = 0.63
 status = "solved"
 public_key = "0365ec2994b8cc0a20d40dd69edfe55ca32a54bcbbaa6b0ddcff36049301a54579"
 pubkey_format = "compressed"
-solve_date = "2020-04-27 01:47:22"
+solve_date = "2019-07-12 12:26:39"
 start_date = "2015-01-15 18:07:14"
-solve_time = 166606808
+solve_time = 141589165
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.063 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.567 }, { type = "increase", txid = "5738c12f1c607609b6a33b870981c79d67bbbe4e43bfdf0799f7efd5d866aac2", date = "2019-06-20 19:31:16", amount = 0.00001 }, { type = "increase", txid = "c725a765997cf82ca4a40cb2166f9ed2c2677e9ad9446112dd94920db7034a07", date = "2019-06-20 20:49:30", amount = 0.00001 }, { type = "increase", txid = "9623ca8da4f10db5ca90a0673674571a3150e568cb82c2e2ad6ca55af77a67f9", date = "2019-06-20 21:20:44", amount = 0.00001 }, { type = "claim", txid = "195876f004cb9cfa4ff22f4d3df94feda86c5a481fde6979889ea568ac2ca4ac", date = "2019-07-12 12:26:39", amount = 0.63003 }]
 
 [[puzzles]]
@@ -795,9 +795,9 @@ prize = 0.65
 status = "solved"
 public_key = "0230210c23b1a047bc9bdbb13448e67deddc108946de6de639bcc75d47c0216b1b"
 pubkey_format = "compressed"
-solve_date = "2024-11-06 17:12:30"
+solve_date = "2019-06-07 16:39:02"
 start_date = "2015-01-15 18:07:14"
-solve_time = 309567916
+solve_time = 138580308
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.065 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.585 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "claim", txid = "43bb89f7d16fb47fee3eaeee0fa26aa2d0d6874c8907b2eca4ec2420bf4a9dc3", date = "2019-06-07 16:39:02", amount = 0.65 }]
 
 [[puzzles]]
@@ -807,9 +807,9 @@ prize = 6.6
 status = "solved"
 public_key = "024ee2be2d4e9f92d2f5a4a03058617dc45befe22938feed5b7a6b7282dd74cbdd"
 pubkey_format = "compressed"
-solve_date = "2025-02-19 04:19:52"
+solve_date = "2024-09-12 22:59:39"
 start_date = "2015-01-15 18:07:14"
-solve_time = 318593558
+solve_time = 304836745
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.066 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.594 }, { type = "increase", txid = "c725a765997cf82ca4a40cb2166f9ed2c2677e9ad9446112dd94920db7034a07", date = "2019-06-20 20:49:30", amount = 0.00001 }, { type = "increase", txid = "9623ca8da4f10db5ca90a0673674571a3150e568cb82c2e2ad6ca55af77a67f9", date = "2019-06-20 21:20:44", amount = 0.00001 }, { type = "increase", txid = "ab571acb61ec96a4759da551ae37a1fe5accbd353dfca3e1a57cb254e5e0e790", date = "2019-10-31 20:18:31", amount = 0.00000666 }, { type = "increase", txid = "33ea377a3c0aa2e10f498a41f746d7489e06bf9b6e45b406b817ee96e4cec96b", date = "2021-01-18 01:01:38", amount = 0.0000195 }, { type = "increase", txid = "4461b388764735edf0b8b35456846c251dc7e281a8837df42f684b4bfce91f72", date = "2022-09-25 04:13:35", amount = 0.00001 }, { type = "increase", txid = "c1a490e56f7faea9c064fd30023647780d5b3fa330cd7ec10c60c513c3f36813", date = "2022-10-18 11:43:20", amount = 0.00001533 }, { type = "increase", txid = "1602e46f048a7466db2f630f74e6f83a6e72fb2726067ac719c7de3ab784689c", date = "2022-10-31 14:29:20", amount = 0.000006 }, { type = "increase", txid = "3615aa6fc46e190a9d542844172a105191c902402ff753c96f6bd591ea2aecad", date = "2022-11-19 16:31:43", amount = 0.00001 }, { type = "increase", txid = "acdf413e69ab69a2628e50225096f14fab57483b1d908387e00d593d56abe425", date = "2023-02-23 03:23:43", amount = 0.00000908 }, { type = "increase", txid = "7cce2dde07daaa77a0c2159ae079cf56a1b9ca8196c0b122666d3d40d5314e22", date = "2023-03-01 22:38:23", amount = 0.00001 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 5.94 }, { type = "increase", txid = "a453faa9ef528a3b7918f79f01c07c3fe93f2b8f3d193c89e29a69f40f53b577", date = "2023-04-27 04:47:38", amount = 0.00003526 }, { type = "increase", txid = "b33947a7c57fc75ecf94bf4b8809ed0d8cc2c8c0ac0008cfe44c91ebd6854605", date = "2023-04-30 05:02:59", amount = 0.00001279 }, { type = "increase", txid = "085fd326dc36377342bbe915533c3c94453875a4408ae9f9f60025e2793b98e1", date = "2023-05-03 14:39:54", amount = 0.00013364 }, { type = "increase", txid = "236806fad5606e2a496b6671868f3d4efd77f3b4da7942322b62ebff3a00028b", date = "2023-07-27 19:04:45", amount = 0.00002869 }, { type = "increase", txid = "cf7ad170e2f58aea83686095607b12a04cbef15679383a11c124d953bd2c5a6d", date = "2023-08-25 08:22:59", amount = 0.00000749 }, { type = "increase", txid = "f3db7c0088b6d2f357008854441cfab93583d4cc0d4dc026de0f158f7ce5ac9b", date = "2023-09-25 15:00:17", amount = 0.00003769 }, { type = "increase", txid = "6a76cd295c5fe4037511c2e5c2945b99aa52e2fd41d014943c0a975e08a5ce17", date = "2024-02-19 11:23:46", amount = 0.000067 }, { type = "increase", txid = "8da7b3599f9fec422ace5d290443c17f685d6e45ce89ca1ee0a334b711f10745", date = "2024-03-12 21:29:44", amount = 0.0000066 }, { type = "increase", txid = "8cc982de6db7539fa665840ff774d69807a9d85c01e17620205da67de995ea29", date = "2024-03-14 03:22:22", amount = 0.00001277 }, { type = "increase", txid = "cff6de5c21176e8cb9d60fcf1e2a2d9a44b9267860126cfddee5d7fa39ab27e1", date = "2024-03-21 10:13:55", amount = 0.00006018 }, { type = "increase", txid = "55571ca5e1f86c11a5ec5837aa1edf4262042b4b18379373585047ce8f8938cf", date = "2024-05-12 00:07:46", amount = 0.00000546 }, { type = "increase", txid = "acdeeb926e2eacd19024867cd7df0b4339c4940687c8562853ef499683f0a064", date = "2024-05-18 14:37:26", amount = 0.0000812 }, { type = "increase", txid = "b6064fe616abb0221da96652bbdce82b545e4069084cdcdb5cad717b2f301bd2", date = "2024-06-27 20:23:46", amount = 0.00001629 }, { type = "increase", txid = "7e8c361a44646e7016d316ce777f838f15cd1cf7440684e884bf37c28f97a642", date = "2024-07-14 01:09:57", amount = 0.00008382 }, { type = "increase", txid = "4bac263083823b95b8cac1ece40e5c288bb084eb94efba1b2d73b6dcb6ac30e3", date = "2024-07-14 05:10:53", amount = 0.000006 }, { type = "increase", txid = "95dd4f8609851cd7477a5b2e8744a18b7e24e9c8adcb964a4dcaa6e360f17690", date = "2024-07-25 13:54:46", amount = 0.0000066 }, { type = "increase", txid = "25f02f5997e30cacce3efda3036803fec56c41e96634551ea814a93075a675b4", date = "2024-07-25 15:11:25", amount = 0.0000066 }, { type = "increase", txid = "0c10efa88389fd8d3ec14930270a1a5bfaab55488e0014cbec092e42a01ab416", date = "2024-08-03 20:47:01", amount = 0.000016 }, { type = "increase", txid = "1e298e15cc35a3b195e79acc602cd3e1c503c616ba1bf3a19e1cd0feb1e8db71", date = "2024-08-19 06:46:05", amount = 0.0005 }, { type = "increase", txid = "1384102b7955d1c56a2501641d619fccc253a2270003ac6a1d42ad0fde3bb8d7", date = "2024-08-19 10:45:37", amount = 0.000015 }, { type = "increase", txid = "619e8eca7bf5ce834f5cee2f49c6cbf4e32a8ec697f49230172691ef1686c024", date = "2024-09-08 12:46:11", amount = 0.00001448 }, { type = "claim", txid = "57a88f47e4c047740b782a5562fca143ce85de0373cbff3a7d406e9ae7fc2f5f", date = "2024-09-12 22:59:39", amount = 5.94 }]
 solver = { address = "bc1qpkp47q5cucrvnyepsdnjcv2kzyav5ze0ta7n67" }
 
@@ -846,9 +846,9 @@ prize = 6.9
 status = "solved"
 public_key = "024babadccc6cfd5f0e5e7fd2a50aa7d677ce0aa16fdce26a0d0882eed03e7ba53"
 pubkey_format = "compressed"
-solve_date = "2025-06-25 05:04:52"
+solve_date = "2025-04-30 14:45:54"
 start_date = "2015-01-15 18:07:14"
-solve_time = 329482658
+solve_time = 324679120
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.069 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.621 }, { type = "increase", txid = "0401d3fd3016076ac5a81dc51b3b6198375ae70c3e7b63be2f33ae9469b7527e", date = "2022-04-01 06:05:22", amount = 0.00000547 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 6.21 }, { type = "increase", txid = "a9334d335e59aa30832d57641085d0ff4c61a26fc16c4bed22368b0659539463", date = "2023-09-25 15:00:17", amount = 0.00003768 }, { type = "increase", txid = "55571ca5e1f86c11a5ec5837aa1edf4262042b4b18379373585047ce8f8938cf", date = "2024-05-12 00:07:46", amount = 0.00000546 }, { type = "increase", txid = "e4d9ea3521786bc65afaa9150935146d4068c8638bde45e76c9d09462f19da9b", date = "2024-07-21 16:43:01", amount = 0.000082 }, { type = "increase", txid = "598d68ece8df8ca9baf6de361ce8c40bb7956342348d569f219d65e5725b627c", date = "2025-01-28 07:27:07", amount = 0.000006 }, { type = "claim", txid = "a52c5046f3097a8c2bd3b9889df2fb47b104d47a16cc679d3357feec003db753", date = "2025-04-30 14:45:54", amount = 6.9 }]
 solver = { address = "15g7XHM6u921DvvPrgguxYkxDL8ruPGHXZ" }
 
@@ -859,9 +859,9 @@ prize = 0.7
 status = "solved"
 public_key = "0290e6900a58d33393bc1097b5aed31f2e4e7cbd3e5466af958665bc0121248483"
 pubkey_format = "compressed"
-solve_date = "2021-06-24 13:22:12"
+solve_date = "2019-06-09 17:08:45"
 start_date = "2015-01-15 18:07:14"
-solve_time = 203195698
+solve_time = 138754891
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.07 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.63 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "claim", txid = "482232a3d21b7062d1aaf88a63466fd00eabcb248ae8b92aae82e4bb833afcd7", date = "2019-06-09 17:08:45", amount = 0.7 }]
 solver = { address = "3MpeFYTuwfrxSnUXNmTnY3XTgvhPp5k7vF" }
 
@@ -1036,9 +1036,9 @@ prize = 0.9
 status = "solved"
 public_key = "035c38bd9ae4b10e8a250857006f3cfd98ab15a6196d9f4dfd25bc7ecc77d788d5"
 pubkey_format = "compressed"
-solve_date = "2019-10-05 20:58:50"
+solve_date = "2019-07-01 18:09:22"
 start_date = "2015-01-15 18:07:14"
-solve_time = 148963896
+solve_time = 140659328
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.09 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.81 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "claim", txid = "93037990e3739041347cb63563731c0a302d856e21c2c46b7ff491a2ff1ba9fe", date = "2019-07-01 18:09:22", amount = 0.9 }]
 
 [[puzzles]]
@@ -1080,9 +1080,9 @@ prize = 0.95
 status = "solved"
 public_key = "02967a5905d6f3b420959a02789f96ab4c3223a2c4d2762f817b7895c5bc88a045"
 pubkey_format = "compressed"
-solve_date = "2025-08-25 14:12:55"
+solve_date = "2019-07-06 06:53:41"
 start_date = "2015-01-15 18:07:14"
-solve_time = 334785941
+solve_time = 141050787
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.095 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.855 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "claim", txid = "2b46d8d754b712c0c481185f07fa7b11100fe48f807069fc2e0779735d81c99e", date = "2019-07-06 06:53:41", amount = 0.95 }]
 
 [[puzzles]]
@@ -1124,9 +1124,9 @@ prize = 1.0
 status = "solved"
 public_key = "03d2063d40402f030d4cc71331468827aa41a8a09bd6fd801ba77fb64f8e67e617"
 pubkey_format = "compressed"
-solve_date = "2025-07-04 18:44:54"
+solve_date = "2019-07-08 04:57:04"
 start_date = "2015-01-15 18:07:14"
-solve_time = 330309460
+solve_time = 141216590
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.1 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.9 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "claim", txid = "d4087636f7c54d382164e4cd9548a1bad6c603664268f74537b6aed8a6371704", date = "2019-07-08 04:57:04", amount = 1.0 }]
 
 [[puzzles]]
@@ -1212,9 +1212,9 @@ prize = 1.1
 status = "solved"
 public_key = "0309976ba5570966bf889196b7fdf5a0f9a1e9ab340556ec29f8bb60599616167d"
 pubkey_format = "compressed"
-solve_date = "2020-05-30 20:30:37"
+solve_date = "2020-05-30 20:04:06"
 start_date = "2015-01-15 18:07:14"
-solve_time = 169525403
+solve_time = 169523812
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.11 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.99 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "increase", txid = "ed53ace1d284e1b9c5b2058fd296ee7d5be43efd6ce87d0a03adfe039c171e28", date = "2019-10-31 00:45:03", amount = 0.000007 }, { type = "increase", txid = "03217c5fa3ab110901d53c998d8ea67e6d9b57f957815a9bd973c7d7fb7ed0f0", date = "2019-11-11 19:37:03", amount = 0.00000997 }, { type = "increase", txid = "b0a92ea5ae2a58bdf7c6252edc10e6a5a0f1cc4a05455792e4984ca84d2607f4", date = "2019-11-11 20:54:30", amount = 0.00001636 }, { type = "claim", txid = "8978a26d73ed11fec60d88f5cdb5f6d762c8e4fdb1dcae924ba5b06eb7fda456", date = "2020-05-30 20:04:06", amount = 1.10003333 }]
 
 [[puzzles]]
@@ -1345,9 +1345,9 @@ prize = 12.5
 status = "solved"
 public_key = "0233709eb11e0d4439a729f21c2c443dedb727528229713f0065721ba8fa46f00e"
 pubkey_format = "compressed"
-solve_date = "2024-11-15 05:52:34"
+solve_date = "2023-07-09 10:24:07"
 start_date = "2015-01-15 18:07:14"
-solve_time = 310304720
+solve_time = 267553013
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.125 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 1.125 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 11.25 }, { type = "claim", txid = "25427dc1fa67f259601750d5fbb98427a51d8b319d179557030ff3c4cb66af7e", date = "2023-07-09 10:24:07", amount = 12.5 }]
 solver = { address = "1Prestige1zSYorBdz94KA2UbJW3hYLTn4" }
 
