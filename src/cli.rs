@@ -672,7 +672,11 @@ fn print_range_table(range: &RangeOutput) {
 
 #[cfg(feature = "balance")]
 fn print_balance_table(balance: &BalanceOutput) {
-    let unit = if balance.symbol == "ETH" { "wei" } else { "sats" };
+    let unit = if balance.symbol == "ETH" {
+        "wei"
+    } else {
+        "sats"
+    };
     let rows = vec![
         KeyValueRow {
             field: "Address".to_string(),
@@ -846,30 +850,28 @@ fn print_author_table(author: &Author) {
 #[cfg(feature = "balance")]
 async fn cmd_balance(id: &str, format: OutputFormat) {
     match boha::get(id) {
-        Ok(puzzle) => {
-            match boha::balance::fetch(puzzle.address.value, puzzle.chain).await {
-                Ok(bal) => {
-                    let (confirmed_display, total_display) = match puzzle.chain {
-                        Chain::Ethereum => (bal.confirmed_eth(), bal.total_eth()),
-                        _ => (bal.confirmed_btc(), bal.total_btc()),
-                    };
-                    let output = BalanceOutput {
-                        address: puzzle.address.value.to_string(),
-                        chain: puzzle.chain.name().to_string(),
-                        confirmed: bal.confirmed,
-                        confirmed_display,
-                        unconfirmed: bal.unconfirmed,
-                        total_display,
-                        symbol: puzzle.chain.symbol().to_string(),
-                    };
-                    output_balance(&output, format);
-                }
-                Err(e) => {
-                    eprintln!("{} {}", "Error:".red().bold(), e);
-                    std::process::exit(1);
-                }
+        Ok(puzzle) => match boha::balance::fetch(puzzle.address.value, puzzle.chain).await {
+            Ok(bal) => {
+                let (confirmed_display, total_display) = match puzzle.chain {
+                    Chain::Ethereum => (bal.confirmed_eth(), bal.total_eth()),
+                    _ => (bal.confirmed_btc(), bal.total_btc()),
+                };
+                let output = BalanceOutput {
+                    address: puzzle.address.value.to_string(),
+                    chain: puzzle.chain.name().to_string(),
+                    confirmed: bal.confirmed,
+                    confirmed_display,
+                    unconfirmed: bal.unconfirmed,
+                    total_display,
+                    symbol: puzzle.chain.symbol().to_string(),
+                };
+                output_balance(&output, format);
             }
-        }
+            Err(e) => {
+                eprintln!("{} {}", "Error:".red().bold(), e);
+                std::process::exit(1);
+            }
+        },
         Err(e) => {
             eprintln!("{} {}", "Error:".red().bold(), e);
             std::process::exit(1);

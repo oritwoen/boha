@@ -131,9 +131,7 @@ pub async fn fetch(address: &str, chain: Chain) -> Result<Balance, BalanceError>
     }
 }
 
-pub async fn fetch_many(
-    addresses: &[(&str, Chain)],
-) -> Vec<Result<Balance, BalanceError>> {
+pub async fn fetch_many(addresses: &[(&str, Chain)]) -> Vec<Result<Balance, BalanceError>> {
     let futures: Vec<_> = addresses
         .iter()
         .map(|(addr, chain)| fetch(addr, *chain))
@@ -240,7 +238,8 @@ mod tests {
     async fn test_fetch_many_btc_known_addresses() {
         let genesis = "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa";
         let satoshi_dice = "1dice8EMZmqKvrGE4Qc9bUFf9PX3xaYDp";
-        let results = fetch_many(&[(genesis, Chain::Bitcoin), (satoshi_dice, Chain::Bitcoin)]).await;
+        let results =
+            fetch_many(&[(genesis, Chain::Bitcoin), (satoshi_dice, Chain::Bitcoin)]).await;
 
         assert_eq!(results.len(), 2);
         assert!(results[0].is_ok());
