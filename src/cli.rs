@@ -350,13 +350,11 @@ fn truncate_txid(txid: &str) -> String {
     }
 }
 
-fn print_section(title: &str, rows: Vec<KeyValueRow>) {
-    if rows.is_empty() {
-        return;
+fn section(title: &str) -> KeyValueRow {
+    KeyValueRow {
+        field: format!("▸ {}", title).cyan().bold().to_string(),
+        value: "".to_string(),
     }
-    println!("\n{}", title.bright_white().bold());
-    let table = Table::new(rows).with(Style::rounded()).to_string();
-    println!("{}", table);
 }
 
 fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
@@ -367,7 +365,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         Status::Swept => "Swept".red().to_string(),
     };
 
-    let mut basic = vec![
+    let mut rows = vec![
         KeyValueRow {
             field: "ID".to_string(),
             value: p.id.to_string().bright_white().to_string(),
@@ -381,170 +379,162 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
             value: status_colored,
         },
     ];
+
     if let Some(prize) = p.prize {
-        basic.push(KeyValueRow {
+        rows.push(KeyValueRow {
             field: "Prize".to_string(),
             value: format!("{} {}", prize, p.chain.symbol())
                 .bright_green()
                 .to_string(),
         });
     }
+
     if let Some(url) = p.source_url {
-        basic.push(KeyValueRow {
+        rows.push(KeyValueRow {
             field: "Source".to_string(),
             value: url.to_string(),
         });
     }
-    let table = Table::new(basic).with(Style::rounded()).to_string();
-    println!("{}", table);
 
-    let mut address = vec![
-        KeyValueRow {
-            field: "Value".to_string(),
-            value: p.address.value.to_string(),
-        },
-        KeyValueRow {
-            field: "Type".to_string(),
-            value: p.address.kind.to_uppercase(),
-        },
-    ];
+    rows.push(section("Address"));
+    rows.push(KeyValueRow {
+        field: "  Value".to_string(),
+        value: p.address.value.to_string(),
+    });
+    rows.push(KeyValueRow {
+        field: "  Type".to_string(),
+        value: p.address.kind.to_uppercase(),
+    });
     if let Some(hash160) = p.address.hash160 {
-        address.push(KeyValueRow {
-            field: "HASH160".to_string(),
+        rows.push(KeyValueRow {
+            field: "  HASH160".to_string(),
             value: hash160.to_string(),
         });
     }
     if let Some(rs) = &p.address.redeem_script {
-        address.push(KeyValueRow {
-            field: "Redeem Script".to_string(),
+        rows.push(KeyValueRow {
+            field: "  Redeem Script".to_string(),
             value: rs.script.to_string(),
         });
-        address.push(KeyValueRow {
-            field: "Script Hash".to_string(),
+        rows.push(KeyValueRow {
+            field: "  Script Hash".to_string(),
             value: rs.hash.to_string(),
         });
     }
-    print_section("Address", address);
 
     if let Some(pubkey) = &p.pubkey {
-        let rows = vec![
-            KeyValueRow {
-                field: "Key".to_string(),
-                value: pubkey.key.to_string(),
-            },
-            KeyValueRow {
-                field: "Format".to_string(),
-                value: match pubkey.format {
-                    PubkeyFormat::Compressed => "compressed",
-                    PubkeyFormat::Uncompressed => "uncompressed",
-                }
-                .to_string(),
-            },
-        ];
-        print_section("Public Key", rows);
+        rows.push(section("Public Key"));
+        rows.push(KeyValueRow {
+            field: "  Key".to_string(),
+            value: pubkey.key.to_string(),
+        });
+        rows.push(KeyValueRow {
+            field: "  Format".to_string(),
+            value: match pubkey.format {
+                PubkeyFormat::Compressed => "compressed",
+                PubkeyFormat::Uncompressed => "uncompressed",
+            }
+            .to_string(),
+        });
     }
 
     if let Some(key) = &p.key {
         if key.is_known() {
-            let mut rows = vec![];
+            rows.push(section("Private Key"));
             if let Some(hex) = key.hex {
                 rows.push(KeyValueRow {
-                    field: "Hex".to_string(),
+                    field: "  Hex".to_string(),
                     value: hex.to_string().bright_red().to_string(),
                 });
             }
             if let Some(wif) = key.wif {
                 rows.push(KeyValueRow {
-                    field: "WIF".to_string(),
+                    field: "  WIF".to_string(),
                     value: wif.to_string().bright_red().to_string(),
                 });
             }
             if let Some(seed) = &key.seed {
                 rows.push(KeyValueRow {
-                    field: "Seed".to_string(),
+                    field: "  Seed".to_string(),
                     value: seed.phrase.to_string().bright_red().to_string(),
                 });
                 if let Some(path) = seed.path {
                     rows.push(KeyValueRow {
-                        field: "Path".to_string(),
+                        field: "  Path".to_string(),
                         value: path.to_string(),
                     });
                 }
             }
             if let Some(mini) = key.mini {
                 rows.push(KeyValueRow {
-                    field: "Mini".to_string(),
+                    field: "  Mini".to_string(),
                     value: mini.to_string().bright_red().to_string(),
                 });
             }
             if let Some(passphrase) = key.passphrase {
                 rows.push(KeyValueRow {
-                    field: "Passphrase".to_string(),
+                    field: "  Passphrase".to_string(),
                     value: passphrase.to_string().bright_red().to_string(),
                 });
             }
-            print_section("Private Key", rows);
         }
 
         if let Some(bits) = key.bits {
-            let mut rows = vec![KeyValueRow {
-                field: "Bits".to_string(),
+            rows.push(section("Key Range"));
+            rows.push(KeyValueRow {
+                field: "  Bits".to_string(),
                 value: bits.to_string(),
-            }];
+            });
             if let Some((start, end)) = p.key_range_big() {
                 rows.push(KeyValueRow {
-                    field: "Min".to_string(),
+                    field: "  Min".to_string(),
                     value: format!("0x{:x}", start),
                 });
                 rows.push(KeyValueRow {
-                    field: "Max".to_string(),
+                    field: "  Max".to_string(),
                     value: format!("0x{:x}", end),
                 });
             }
-            print_section("Key Range", rows);
         }
     }
 
     if p.start_date.is_some() || p.solve_date.is_some() || p.solve_time.is_some() {
-        let mut rows = vec![];
+        rows.push(section("Timeline"));
         if let Some(date) = p.start_date {
             rows.push(KeyValueRow {
-                field: "Funded".to_string(),
+                field: "  Funded".to_string(),
                 value: date.to_string(),
             });
         }
         if let Some(date) = p.solve_date {
             rows.push(KeyValueRow {
-                field: "Solved".to_string(),
+                field: "  Solved".to_string(),
                 value: date.to_string(),
             });
         }
         if let Some(formatted) = p.solve_time_formatted() {
             rows.push(KeyValueRow {
-                field: "Duration".to_string(),
+                field: "  Duration".to_string(),
                 value: formatted,
             });
         }
-        print_section("Timeline", rows);
     }
 
     if let Some(txid) = p.claim_txid() {
-        let rows = vec![
-            KeyValueRow {
-                field: "TX".to_string(),
-                value: txid.to_string(),
-            },
-            KeyValueRow {
-                field: "Explorer".to_string(),
-                value: p.chain.tx_explorer_url(txid),
-            },
-        ];
-        print_section("Claim", rows);
+        rows.push(section("Claim"));
+        rows.push(KeyValueRow {
+            field: "  TX".to_string(),
+            value: txid.to_string(),
+        });
+        rows.push(KeyValueRow {
+            field: "  Explorer".to_string(),
+            value: p.chain.tx_explorer_url(txid),
+        });
     }
 
     if let Some(solver) = &p.solver {
         if solver.name.is_some() || solver.address.is_some() {
-            let mut rows = vec![];
+            rows.push(section("Solver"));
             if let Some(name) = solver.name {
                 let verified_badge = if solver.verified {
                     " ✓".green().to_string()
@@ -552,28 +542,27 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                     "".to_string()
                 };
                 rows.push(KeyValueRow {
-                    field: "Name".to_string(),
+                    field: "  Name".to_string(),
                     value: format!("{}{}", name.bright_white(), verified_badge),
                 });
             }
             if let Some(addr) = solver.address {
                 rows.push(KeyValueRow {
-                    field: "Address".to_string(),
+                    field: "  Address".to_string(),
                     value: addr.to_string(),
                 });
             }
             if let Some(source) = solver.source {
                 rows.push(KeyValueRow {
-                    field: "Source".to_string(),
+                    field: "  Source".to_string(),
                     value: source.to_string(),
                 });
             }
-            print_section("Solver", rows);
         }
     }
 
     if show_transactions && !p.transactions.is_empty() {
-        let mut rows = vec![];
+        rows.push(section("Transactions"));
         for tx in p.transactions {
             let amount_str = tx
                 .amount
@@ -585,12 +574,14 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 .map(truncate_txid)
                 .unwrap_or_else(|| "-".to_string());
             rows.push(KeyValueRow {
-                field: format_transaction_type(tx.tx_type),
+                field: format!("  {}", format_transaction_type(tx.tx_type)),
                 value: format!("{} {}{}", txid_str, date_str, amount_str),
             });
         }
-        print_section("Transactions", rows);
     }
+
+    let table = Table::new(rows).with(Style::rounded()).to_string();
+    println!("{}", table);
 }
 
 fn print_stats_table(stats: &Stats) {
