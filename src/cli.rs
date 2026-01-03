@@ -468,6 +468,12 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                         value: path.to_string(),
                     });
                 }
+                if let Some(xpub) = seed.xpub {
+                    rows.push(KeyValueRow {
+                        field: "  Xpub".to_string(),
+                        value: xpub.to_string(),
+                    });
+                }
             }
             if let Some(mini) = key.mini {
                 rows.push(KeyValueRow {

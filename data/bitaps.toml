@@ -18,6 +18,7 @@ source_url = "https://bitaps.com/mnemonic/challenge"
 
 [puzzle.key.seed]
 path = "m/84'/0'/0'/0/0"
+xpub = "zpub6qdEDkv51FpxX6g1rpFGckmiL46vV8ccmtEgPAkj3qj8N4ZZHyXDRA9RwpTiFK2Kb8vRaDmSmwgX6rfB4t2K8Ktdq8ExQ6fumKpn2ndJCqL"
 
 [puzzle.key.shares]
 threshold = 3

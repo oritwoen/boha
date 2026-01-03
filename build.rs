@@ -105,6 +105,7 @@ struct TomlRedeemScript {
 struct TomlSeed {
     phrase: Option<String>,
     path: Option<String>,
+    xpub: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -452,7 +453,14 @@ fn generate_key_code_required(key: &TomlKey) -> String {
                 Some(p) => format!("Some(\"{}\")", p),
                 None => "None".to_string(),
             };
-            format!("Some(Seed {{ phrase: {}, path: {} }})", phrase, path)
+            let xpub = match &s.xpub {
+                Some(x) => format!("Some(\"{}\")", x),
+                None => "None".to_string(),
+            };
+            format!(
+                "Some(Seed {{ phrase: {}, path: {}, xpub: {} }})",
+                phrase, path, xpub
+            )
         }
         None => "None".to_string(),
     };

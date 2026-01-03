@@ -115,6 +115,8 @@ pub struct Seed {
     pub phrase: Option<&'static str>,
     /// HD derivation path (e.g., "m/44'/0'/0'/0/0")
     pub path: Option<&'static str>,
+    /// Extended public key (xpub/ypub/zpub)
+    pub xpub: Option<&'static str>,
 }
 
 /// A single share from a secret sharing scheme.

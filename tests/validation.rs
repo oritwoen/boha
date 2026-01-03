@@ -1475,6 +1475,7 @@ fn bitaps_has_seed_path() {
     let seed = key.seed.expect("bitaps key should have seed");
     assert_eq!(seed.phrase, None);
     assert_eq!(seed.path, Some("m/84'/0'/0'/0/0"));
+    assert!(seed.xpub.unwrap().starts_with("zpub"));
 }
 
 #[test]
