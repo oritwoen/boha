@@ -91,11 +91,11 @@ pub struct Address {
     pub value: &'static str,
     /// Blockchain network
     pub chain: Chain,
-    /// Address type/kind (e.g., "p2pkh", "p2sh", "p2wpkh", "p2wsh", "standard")
+    /// Address type/kind (e.g., "p2pkh", "p2sh", "p2wpkh", "p2wsh", "p2tr", "standard")
     pub kind: &'static str,
     /// HASH160 of the public key or script (P2PKH, P2SH, P2WPKH)
     pub hash160: Option<&'static str>,
-    /// Witness program for SegWit addresses (P2WSH: 32-byte SHA256)
+    /// Witness program for SegWit/Taproot addresses (P2WSH: 32-byte SHA256, P2TR: 32-byte x-only pubkey)
     pub witness_program: Option<&'static str>,
     /// P2SH redeem script (only for p2sh addresses)
     pub redeem_script: Option<RedeemScript>,

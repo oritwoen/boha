@@ -259,20 +259,20 @@ fn format_hash160(address: &Address, chain: &str, puzzle_id: &str) -> String {
 }
 
 fn format_witness_program(address: &Address, puzzle_id: &str) -> String {
-    if address.kind == "p2wsh" {
+    if address.kind == "p2wsh" || address.kind == "p2tr" {
         match &address.witness_program {
             Some(wp) => {
                 if hex::decode(wp).map(|b| b.len()).unwrap_or(0) != 32 {
                     panic!(
-                        "Puzzle '{}' (p2wsh) witness_program must be 64 hex chars (32 bytes), got '{}'",
-                        puzzle_id, wp
+                        "Puzzle '{}' ({}) witness_program must be 64 hex chars (32 bytes), got '{}'",
+                        puzzle_id, address.kind, wp
                     );
                 }
                 format!("Some(\"{}\")", wp)
             }
             None => panic!(
-                "Puzzle '{}' (p2wsh) requires witness_program but none provided",
-                puzzle_id
+                "Puzzle '{}' ({}) requires witness_program but none provided",
+                puzzle_id, address.kind
             ),
         }
     } else {
