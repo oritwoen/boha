@@ -136,13 +136,9 @@ pub fn categorize_transactions(
     puzzle_status: &str,
 ) -> Vec<Transaction> {
     let mut result = Vec::new();
-
-    let mut sorted_txs = txs;
-    sorted_txs.sort_by_key(|tx| tx.time.unwrap_or(i64::MAX));
-
     let mut has_funding = false;
 
-    for tx in &sorted_txs {
+    for tx in &txs {
         let amount_to_puzzle: f64 = tx
             .vout
             .iter()
@@ -156,7 +152,7 @@ pub fn categorize_transactions(
             .sum();
 
         let puzzle_is_sender = tx.vin.iter().any(|input| {
-            sorted_txs.iter().any(|prev_tx| {
+            txs.iter().any(|prev_tx| {
                 prev_tx.txid == input.txid
                     && prev_tx.vout.get(input.vout as usize).is_some_and(|out| {
                         out.script_pub_key
@@ -171,7 +167,7 @@ pub fn categorize_transactions(
             .vin
             .iter()
             .filter(|input| {
-                sorted_txs.iter().any(|prev_tx| {
+                txs.iter().any(|prev_tx| {
                     prev_tx.txid == input.txid
                         && prev_tx.vout.get(input.vout as usize).is_some_and(|out| {
                             out.script_pub_key
