@@ -1466,7 +1466,15 @@ fn bitaps_has_shares() {
     assert_eq!(shares.threshold, 3);
     assert_eq!(shares.total, 5);
     assert_eq!(shares.shares.len(), 2);
-    assert_eq!(shares.derivation_path, Some("m/84'/0'/0'/0/0"));
+}
+
+#[test]
+fn bitaps_has_seed_path() {
+    let puzzle = bitaps::get();
+    let key = puzzle.key.expect("bitaps should have key");
+    let seed = key.seed.expect("bitaps key should have seed");
+    assert_eq!(seed.phrase, None);
+    assert_eq!(seed.path, Some("m/84'/0'/0'/0/0"));
 }
 
 #[test]

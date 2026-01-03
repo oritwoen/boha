@@ -16,10 +16,12 @@ prize = 1.00016404
 start_date = "2020-06-19 13:24:41"
 source_url = "https://bitaps.com/mnemonic/challenge"
 
+[puzzle.key.seed]
+path = "m/84'/0'/0'/0/0"
+
 [puzzle.key.shares]
 threshold = 3
 total = 5
-derivation_path = "m/84'/0'/0'/0/0"
 shares = [
     { index = 1, data = "session cigar grape merry useful churn fatal thought very any arm unaware" },
     { index = 2, data = "clock fresh security field caution effort gorilla speed plastic common tomato echo" },

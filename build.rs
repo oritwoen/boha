@@ -103,7 +103,7 @@ struct TomlRedeemScript {
 
 #[derive(Debug, Deserialize)]
 struct TomlSeed {
-    phrase: String,
+    phrase: Option<String>,
     path: Option<String>,
 }
 
@@ -119,7 +119,6 @@ struct TomlShares {
     total: u8,
     #[serde(default)]
     shares: Vec<TomlShare>,
-    derivation_path: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -445,11 +444,15 @@ fn generate_key_code_required(key: &TomlKey) -> String {
     };
     let seed = match &key.seed {
         Some(s) => {
+            let phrase = match &s.phrase {
+                Some(p) => format!("Some(\"{}\")", p),
+                None => "None".to_string(),
+            };
             let path = match &s.path {
                 Some(p) => format!("Some(\"{}\")", p),
                 None => "None".to_string(),
             };
-            format!("Some(Seed {{ phrase: \"{}\", path: {} }})", s.phrase, path)
+            format!("Some(Seed {{ phrase: {}, path: {} }})", phrase, path)
         }
         None => "None".to_string(),
     };
@@ -500,13 +503,9 @@ fn generate_shares_code(shares: &Option<TomlShares>) -> String {
             } else {
                 format!("&[{}]", shares_list.join(", "))
             };
-            let derivation_path = match &s.derivation_path {
-                Some(p) => format!("Some(\"{}\")", p),
-                None => "None".to_string(),
-            };
             format!(
-                "Some(Shares {{ threshold: {}, total: {}, shares: {}, derivation_path: {} }})",
-                s.threshold, s.total, shares_arr, derivation_path
+                "Some(Shares {{ threshold: {}, total: {}, shares: {} }})",
+                s.threshold, s.total, shares_arr
             )
         }
         None => "None".to_string(),

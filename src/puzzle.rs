@@ -111,8 +111,8 @@ pub enum PubkeyFormat {
 /// BIP39 seed phrase with optional derivation path.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 pub struct Seed {
-    /// Mnemonic phrase (12/15/18/21/24 words)
-    pub phrase: &'static str,
+    /// Mnemonic phrase (12/15/18/21/24 words), None if unknown
+    pub phrase: Option<&'static str>,
     /// HD derivation path (e.g., "m/44'/0'/0'/0/0")
     pub path: Option<&'static str>,
 }
@@ -135,8 +135,6 @@ pub struct Shares {
     pub total: u8,
     /// Published shares
     pub shares: &'static [Share],
-    /// HD derivation path for the target key
-    pub derivation_path: Option<&'static str>,
 }
 
 /// Private key in various representations.

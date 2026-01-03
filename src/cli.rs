@@ -456,13 +456,15 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 });
             }
             if let Some(seed) = &key.seed {
-                rows.push(KeyValueRow {
-                    field: "  Seed".to_string(),
-                    value: seed.phrase.to_string().bright_red().to_string(),
-                });
+                if let Some(phrase) = seed.phrase {
+                    rows.push(KeyValueRow {
+                        field: "  Seed".to_string(),
+                        value: phrase.to_string().bright_red().to_string(),
+                    });
+                }
                 if let Some(path) = seed.path {
                     rows.push(KeyValueRow {
-                        field: "  Path".to_string(),
+                        field: "  Seed Path".to_string(),
                         value: path.to_string(),
                     });
                 }
