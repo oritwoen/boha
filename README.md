@@ -107,6 +107,7 @@ let level1 = zden::get("Level 1").unwrap();
 let puzzle = boha::get("b1000/90").unwrap();
 let puzzle = boha::get("gsmg").unwrap();
 let puzzle = boha::get("bitaps").unwrap();
+let puzzle = boha::get("bitimage/kitten").unwrap();
 let puzzle = boha::get("zden/Level 1").unwrap();
 ```
 
@@ -191,6 +192,17 @@ Originally 5 BTC, prize halves with each Bitcoin halving.
 | bc1qyjwa0tf0en4x09magpuwmt2smpsrlaxwn85lh6 | Unsolved | ~1.0 BTC |
 
 Two of three required shares are published. Goal: break the SSSS scheme or find implementation bugs.
+
+### bitimage
+
+[Bitimage](https://github.com/coreyphillips/bitimage) puzzles - Bitcoin addresses derived from arbitrary files using SHA256(Base64(file)) as BIP39 entropy.
+
+| Puzzle | Passphrase | Status | Prize |
+|--------|------------|--------|-------|
+| kitten | No | ✅ Solved (2019-07-09) | 0.00095 BTC |
+| kitten-passphrase | Yes | ⏳ Unsolved | ~0.01 BTC |
+
+Both puzzles use the same source file (Antonopoulos kitten tweet). The passphrase puzzle requires an unknown BIP39 passphrase.
 
 ## Data
 

@@ -1,5 +1,6 @@
 use boha::{
-    b1000, bitaps, gsmg, hash_collision, zden, Chain, PubkeyFormat, Status, TransactionType,
+    b1000, bitaps, bitimage, gsmg, hash_collision, zden, Chain, Passphrase, PubkeyFormat, Status,
+    TransactionType,
 };
 use num_bigint::BigUint;
 
@@ -1493,4 +1494,80 @@ fn bitaps_shares_valid() {
 #[test]
 fn universal_get_works_with_bitaps() {
     assert!(boha::get("bitaps").is_ok());
+}
+
+#[test]
+fn bitimage_count() {
+    assert_eq!(bitimage::all().count(), 2);
+}
+
+#[test]
+fn bitimage_get_by_name() {
+    let kitten = bitimage::get("kitten").unwrap();
+    assert_eq!(
+        kitten.address.value,
+        "bc1q57euh23y3qs2f9d5mtwpax5lqecfvrdkqce82a"
+    );
+    assert_eq!(kitten.status, Status::Solved);
+    assert_eq!(kitten.chain, Chain::Bitcoin);
+
+    let passphrase = bitimage::get("kitten-passphrase").unwrap();
+    assert_eq!(
+        passphrase.address.value,
+        "bc1qcyrndzgy036f6ax370g8zyvlw86ulawgt0246r"
+    );
+    assert_eq!(passphrase.status, Status::Unsolved);
+}
+
+#[test]
+fn bitimage_has_author() {
+    let author = bitimage::author();
+    assert_eq!(author.name, Some("Corey Phillips"));
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn bitimage_has_entropy() {
+    for puzzle in bitimage::all() {
+        let key = puzzle.key.expect("bitimage should have key");
+        let seed = key.seed.expect("bitimage key should have seed");
+        let entropy = seed.entropy.expect("bitimage seed should have entropy");
+        assert_eq!(
+            entropy.hash,
+            "1808d35318ac7cb98b69ff9779b699d6a631f15e0b353ac89b7c4020774832ed"
+        );
+        assert!(seed.path.is_some());
+    }
+}
+
+#[test]
+fn bitimage_passphrase_puzzle_has_required_flag() {
+    let puzzle = bitimage::get("kitten-passphrase").unwrap();
+    let seed = puzzle.key.unwrap().seed.unwrap();
+    let entropy = seed.entropy.unwrap();
+    assert!(matches!(entropy.passphrase, Some(Passphrase::Required)));
+}
+
+#[test]
+fn bitimage_no_passphrase_puzzle_has_none() {
+    let puzzle = bitimage::get("kitten").unwrap();
+    let seed = puzzle.key.unwrap().seed.unwrap();
+    let entropy = seed.entropy.unwrap();
+    assert!(entropy.passphrase.is_none());
+}
+
+#[test]
+fn bitimage_entropy_has_source() {
+    for puzzle in bitimage::all() {
+        let entropy = puzzle.key.unwrap().seed.unwrap().entropy.unwrap();
+        let source = entropy.source.expect("bitimage entropy should have source");
+        assert!(source.url.is_some());
+        assert!(source.description.is_some());
+    }
+}
+
+#[test]
+fn universal_get_works_with_bitimage() {
+    assert!(boha::get("bitimage/kitten").is_ok());
+    assert!(boha::get("bitimage/kitten-passphrase").is_ok());
 }
