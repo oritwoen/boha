@@ -1,6 +1,6 @@
 use boha::{
-    b1000, gsmg, hash_collision, zden, Author, Chain, KeySource, PubkeyFormat, Puzzle, Stats,
-    Status, TransactionType,
+    b1000, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat, Puzzle, Stats, Status,
+    TransactionType,
 };
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
@@ -350,6 +350,13 @@ fn truncate_txid(txid: &str) -> String {
     }
 }
 
+fn section(title: &str) -> KeyValueRow {
+    KeyValueRow {
+        field: format!("▸ {}", title).cyan().bold().to_string(),
+        value: "".to_string(),
+    }
+}
+
 fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
     let status_colored = match p.status {
         Status::Solved => "Solved".green().to_string(),
@@ -368,81 +375,10 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
             value: p.chain.name().to_string(),
         },
         KeyValueRow {
-            field: "Address".to_string(),
-            value: p.address.value.to_string(),
+            field: "Status".to_string(),
+            value: status_colored,
         },
     ];
-
-    if let Some(hash160) = p.address.hash160 {
-        rows.push(KeyValueRow {
-            field: "HASH160".to_string(),
-            value: hash160.to_string(),
-        });
-    }
-
-    rows.push(KeyValueRow {
-        field: "Status".to_string(),
-        value: status_colored,
-    });
-
-    match &p.key_source {
-        KeySource::Direct { bits } => {
-            rows.push(KeyValueRow {
-                field: "Bits".to_string(),
-                value: bits.to_string(),
-            });
-            if let Some((start, end)) = p.key_range_big() {
-                rows.push(KeyValueRow {
-                    field: "Range".to_string(),
-                    value: format!("0x{:x} - 0x{:x}", start, end),
-                });
-            }
-        }
-        KeySource::Script {
-            redeem_script,
-            script_hash,
-        } => {
-            rows.push(KeyValueRow {
-                field: "Redeem Script".to_string(),
-                value: redeem_script.to_string(),
-            });
-            if let Some(hash) = script_hash {
-                rows.push(KeyValueRow {
-                    field: "Script Hash".to_string(),
-                    value: hash.to_string(),
-                });
-            }
-        }
-        KeySource::Derived { path } => {
-            rows.push(KeyValueRow {
-                field: "Derivation Path".to_string(),
-                value: path.to_string(),
-            });
-        }
-        KeySource::Unknown => {}
-    }
-
-    if let Some(pubkey) = &p.pubkey {
-        rows.push(KeyValueRow {
-            field: "Pubkey".to_string(),
-            value: pubkey.key.to_string(),
-        });
-        rows.push(KeyValueRow {
-            field: "Pubkey Format".to_string(),
-            value: match pubkey.format {
-                PubkeyFormat::Compressed => "compressed",
-                PubkeyFormat::Uncompressed => "uncompressed",
-            }
-            .to_string(),
-        });
-    }
-
-    if let Some(key) = p.private_key {
-        rows.push(KeyValueRow {
-            field: "Private Key".to_string(),
-            value: key.to_string().bright_red().to_string(),
-        });
-    }
 
     if let Some(prize) = p.prize {
         rows.push(KeyValueRow {
@@ -453,38 +389,6 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         });
     }
 
-    if let Some(date) = p.start_date {
-        rows.push(KeyValueRow {
-            field: "Funded".to_string(),
-            value: date.to_string(),
-        });
-    }
-
-    if let Some(date) = p.solve_date {
-        rows.push(KeyValueRow {
-            field: "Solved".to_string(),
-            value: date.to_string(),
-        });
-    }
-
-    if let Some(formatted) = p.solve_time_formatted() {
-        rows.push(KeyValueRow {
-            field: "Solve Time".to_string(),
-            value: formatted,
-        });
-    }
-
-    if let Some(txid) = p.claim_txid() {
-        rows.push(KeyValueRow {
-            field: "Claim TX".to_string(),
-            value: txid.to_string(),
-        });
-        rows.push(KeyValueRow {
-            field: "Claim TX URL".to_string(),
-            value: p.chain.tx_explorer_url(txid),
-        });
-    }
-
     if let Some(url) = p.source_url {
         rows.push(KeyValueRow {
             field: "Source".to_string(),
@@ -492,44 +396,173 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         });
     }
 
-    if let Some(solver) = &p.solver {
-        if solver.name.is_some() || solver.address.is_some() {
+    rows.push(section("Address"));
+    rows.push(KeyValueRow {
+        field: "  Value".to_string(),
+        value: p.address.value.to_string(),
+    });
+    rows.push(KeyValueRow {
+        field: "  Type".to_string(),
+        value: p.address.kind.to_uppercase(),
+    });
+    if let Some(hash160) = p.address.hash160 {
+        rows.push(KeyValueRow {
+            field: "  HASH160".to_string(),
+            value: hash160.to_string(),
+        });
+    }
+    if let Some(rs) = &p.address.redeem_script {
+        rows.push(KeyValueRow {
+            field: "  Redeem Script".to_string(),
+            value: rs.script.to_string(),
+        });
+        rows.push(KeyValueRow {
+            field: "  Script Hash".to_string(),
+            value: rs.hash.to_string(),
+        });
+    }
+
+    if let Some(pubkey) = &p.pubkey {
+        rows.push(section("Public Key"));
+        rows.push(KeyValueRow {
+            field: "  Key".to_string(),
+            value: pubkey.key.to_string(),
+        });
+        rows.push(KeyValueRow {
+            field: "  Format".to_string(),
+            value: match pubkey.format {
+                PubkeyFormat::Compressed => "compressed",
+                PubkeyFormat::Uncompressed => "uncompressed",
+            }
+            .to_string(),
+        });
+    }
+
+    if let Some(key) = &p.key {
+        if key.is_known() {
+            rows.push(section("Private Key"));
+            if let Some(hex) = key.hex {
+                rows.push(KeyValueRow {
+                    field: "  Hex".to_string(),
+                    value: hex.to_string().bright_red().to_string(),
+                });
+            }
+            if let Some(wif) = key.wif {
+                rows.push(KeyValueRow {
+                    field: "  WIF".to_string(),
+                    value: wif.to_string().bright_red().to_string(),
+                });
+            }
+            if let Some(seed) = &key.seed {
+                rows.push(KeyValueRow {
+                    field: "  Seed".to_string(),
+                    value: seed.phrase.to_string().bright_red().to_string(),
+                });
+                if let Some(path) = seed.path {
+                    rows.push(KeyValueRow {
+                        field: "  Path".to_string(),
+                        value: path.to_string(),
+                    });
+                }
+            }
+            if let Some(mini) = key.mini {
+                rows.push(KeyValueRow {
+                    field: "  Mini".to_string(),
+                    value: mini.to_string().bright_red().to_string(),
+                });
+            }
+            if let Some(passphrase) = key.passphrase {
+                rows.push(KeyValueRow {
+                    field: "  Passphrase".to_string(),
+                    value: passphrase.to_string().bright_red().to_string(),
+                });
+            }
+        }
+
+        if let Some(bits) = key.bits {
+            rows.push(section("Key Range"));
             rows.push(KeyValueRow {
-                field: "─── Solver ───".dimmed().to_string(),
-                value: "".to_string(),
+                field: "  Bits".to_string(),
+                value: bits.to_string(),
+            });
+            if let Some((start, end)) = p.key_range_big() {
+                rows.push(KeyValueRow {
+                    field: "  Min".to_string(),
+                    value: format!("0x{:x}", start),
+                });
+                rows.push(KeyValueRow {
+                    field: "  Max".to_string(),
+                    value: format!("0x{:x}", end),
+                });
+            }
+        }
+    }
+
+    if p.start_date.is_some() || p.solve_date.is_some() || p.solve_time.is_some() {
+        rows.push(section("Timeline"));
+        if let Some(date) = p.start_date {
+            rows.push(KeyValueRow {
+                field: "  Funded".to_string(),
+                value: date.to_string(),
             });
         }
-        if let Some(name) = solver.name {
-            let verified_badge = if solver.verified {
-                " ✓".green().to_string()
-            } else {
-                "".to_string()
-            };
+        if let Some(date) = p.solve_date {
             rows.push(KeyValueRow {
-                field: "Solver".to_string(),
-                value: format!("{}{}", name.bright_white(), verified_badge),
+                field: "  Solved".to_string(),
+                value: date.to_string(),
             });
         }
-        if let Some(addr) = solver.address {
+        if let Some(formatted) = p.solve_time_formatted() {
             rows.push(KeyValueRow {
-                field: "Solver Address".to_string(),
-                value: addr.to_string(),
-            });
-        }
-        if let Some(source) = solver.source {
-            rows.push(KeyValueRow {
-                field: "Solver Source".to_string(),
-                value: source.to_string(),
+                field: "  Duration".to_string(),
+                value: formatted,
             });
         }
     }
 
-    if show_transactions && !p.transactions.is_empty() {
+    if let Some(txid) = p.claim_txid() {
+        rows.push(section("Claim"));
         rows.push(KeyValueRow {
-            field: "─── Transactions ───".dimmed().to_string(),
-            value: "".to_string(),
+            field: "  TX".to_string(),
+            value: txid.to_string(),
         });
+        rows.push(KeyValueRow {
+            field: "  Explorer".to_string(),
+            value: p.chain.tx_explorer_url(txid),
+        });
+    }
 
+    if let Some(solver) = &p.solver {
+        if solver.name.is_some() || solver.address.is_some() {
+            rows.push(section("Solver"));
+            if let Some(name) = solver.name {
+                let verified_badge = if solver.verified {
+                    " ✓".green().to_string()
+                } else {
+                    "".to_string()
+                };
+                rows.push(KeyValueRow {
+                    field: "  Name".to_string(),
+                    value: format!("{}{}", name.bright_white(), verified_badge),
+                });
+            }
+            if let Some(addr) = solver.address {
+                rows.push(KeyValueRow {
+                    field: "  Address".to_string(),
+                    value: addr.to_string(),
+                });
+            }
+            if let Some(source) = solver.source {
+                rows.push(KeyValueRow {
+                    field: "  Source".to_string(),
+                    value: source.to_string(),
+                });
+            }
+        }
+    }
+
+    if show_transactions && !p.transactions.is_empty() {
+        rows.push(section("Transactions"));
         for tx in p.transactions {
             let amount_str = tx
                 .amount
@@ -541,7 +574,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 .map(truncate_txid)
                 .unwrap_or_else(|| "-".to_string());
             rows.push(KeyValueRow {
-                field: format_transaction_type(tx.tx_type),
+                field: format!("  {}", format_transaction_type(tx.tx_type)),
                 value: format!("{} {}{}", txid_str, date_str, amount_str),
             });
         }

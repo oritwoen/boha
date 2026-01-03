@@ -93,8 +93,10 @@ pub struct Address {
     pub chain: Chain,
     /// Address type/kind (e.g., "p2pkh", "p2sh", "standard")
     pub kind: &'static str,
-    /// HASH160 of the public key (SHA256 + RIPEMD160, for P2PKH addresses)
+    /// HASH160 of the public key or script
     pub hash160: Option<&'static str>,
+    /// P2SH redeem script (only for p2sh addresses)
+    pub redeem_script: Option<RedeemScript>,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -104,24 +106,39 @@ pub enum PubkeyFormat {
     Uncompressed,
 }
 
-/// Describes how a puzzle's private key is derived or constrained.
-#[derive(Debug, Clone, PartialEq, Eq, Hash, Serialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
-pub enum KeySource {
-    /// Unknown key derivation method
-    Unknown,
+/// BIP39 seed phrase with optional derivation path.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Seed {
+    /// Mnemonic phrase (12/15/18/21/24 words)
+    pub phrase: &'static str,
+    /// HD derivation path (e.g., "m/44'/0'/0'/0/0")
+    pub path: Option<&'static str>,
+}
 
-    /// Direct private key in bit range [2^(bits-1), 2^bits - 1]
-    Direct { bits: u16 },
+/// Private key in various representations.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Key {
+    /// Raw hex (64 characters, 32 bytes)
+    pub hex: Option<&'static str>,
+    /// Wallet Import Format
+    pub wif: Option<&'static str>,
+    /// BIP39 seed phrase with optional derivation path
+    pub seed: Option<Seed>,
+    /// Mini private key format (starts with 'S')
+    pub mini: Option<&'static str>,
+    /// Brain wallet passphrase (SHA256 → key)
+    pub passphrase: Option<&'static str>,
+    /// Bit range constraint: key is in [2^(bits-1), 2^bits - 1]
+    pub bits: Option<u16>,
+}
 
-    /// HD wallet derivation from seed/mnemonic
-    Derived { path: &'static str },
-
-    /// P2SH script-based (collision bounties)
-    Script {
-        redeem_script: &'static str,
-        script_hash: Option<&'static str>,
-    },
+/// P2SH redeem script with its hash.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct RedeemScript {
+    /// The redeem script in hex
+    pub script: &'static str,
+    /// HASH160 of the redeem script
+    pub hash: &'static str,
 }
 
 /// Author/creator of a puzzle collection.
@@ -161,8 +178,7 @@ pub struct Puzzle {
     pub address: Address,
     pub status: Status,
     pub pubkey: Option<Pubkey>,
-    pub private_key: Option<&'static str>,
-    pub key_source: KeySource,
+    pub key: Option<Key>,
     pub prize: Option<f64>,
     pub start_date: Option<&'static str>,
     pub solve_date: Option<&'static str>,
@@ -215,6 +231,48 @@ fn format_duration_human_readable(seconds: u64) -> String {
     }
 }
 
+impl Key {
+    pub fn has_hex(&self) -> bool {
+        self.hex.is_some()
+    }
+
+    pub fn has_seed(&self) -> bool {
+        self.seed.is_some()
+    }
+
+    pub fn is_known(&self) -> bool {
+        self.hex.is_some()
+            || self.wif.is_some()
+            || self.seed.is_some()
+            || self.mini.is_some()
+            || self.passphrase.is_some()
+    }
+
+    pub fn range(&self) -> Option<RangeInclusive<u128>> {
+        let bits = self.bits?;
+        if !(1..=128).contains(&bits) {
+            return None;
+        }
+        let start = 1u128 << (bits - 1);
+        let end = if bits == 128 {
+            u128::MAX
+        } else {
+            (1u128 << bits) - 1
+        };
+        Some(start..=end)
+    }
+
+    pub fn range_big(&self) -> Option<(BigUint, BigUint)> {
+        let bits = self.bits?;
+        if !(1..=256).contains(&bits) {
+            return None;
+        }
+        let start = BigUint::one() << (bits - 1) as usize;
+        let end = (BigUint::one() << bits as usize) - 1u32;
+        Some((start, end))
+    }
+}
+
 impl Puzzle {
     pub fn has_pubkey(&self) -> bool {
         self.pubkey.is_some()
@@ -225,7 +283,7 @@ impl Puzzle {
     }
 
     pub fn has_private_key(&self) -> bool {
-        self.private_key.is_some()
+        self.key.is_some_and(|k| k.is_known())
     }
 
     pub fn solve_time_formatted(&self) -> Option<String> {
@@ -269,33 +327,11 @@ impl Puzzle {
     }
 
     pub fn key_range(&self) -> Option<RangeInclusive<u128>> {
-        let bits = match self.key_source {
-            KeySource::Direct { bits } => bits,
-            _ => return None,
-        };
-        if !(1..=128).contains(&bits) {
-            return None;
-        }
-        let start = 1u128 << (bits - 1);
-        let end = if bits == 128 {
-            u128::MAX
-        } else {
-            (1u128 << bits) - 1
-        };
-        Some(start..=end)
+        self.key.and_then(|k| k.range())
     }
 
     pub fn key_range_big(&self) -> Option<(BigUint, BigUint)> {
-        let bits = match self.key_source {
-            KeySource::Direct { bits } => bits,
-            _ => return None,
-        };
-        if !(1..=256).contains(&bits) {
-            return None;
-        }
-        let start = BigUint::one() << (bits - 1) as usize;
-        let end = (BigUint::one() << bits as usize) - 1u32;
-        Some((start, end))
+        self.key.and_then(|k| k.range_big())
     }
 }
 

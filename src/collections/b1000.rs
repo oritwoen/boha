@@ -4,13 +4,12 @@
 
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, Error, IntoPuzzleNum, KeySource, Pubkey, PubkeyFormat, Puzzle, Result,
-    Solver, Status, Transaction, TransactionType,
+    Address, Author, Chain, Error, IntoPuzzleNum, Key, Pubkey, PubkeyFormat, Puzzle, RedeemScript,
+    Result, Seed, Solver, Status, Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/b1000_data.rs"));
 
-/// Returns the author/creator of the b1000 puzzle collection.
 pub fn author() -> &'static Author {
     &AUTHOR
 }
@@ -22,7 +21,7 @@ pub fn get(key: impl IntoPuzzleNum) -> Result<&'static Puzzle> {
     }
     PUZZLES
         .iter()
-        .find(|p| matches!(p.key_source, KeySource::Direct { bits } if bits == number as u16))
+        .find(|p| p.key.and_then(|k| k.bits) == Some(number as u16))
         .ok_or_else(|| Error::NotFound(format!("b1000/{}", number)))
 }
 

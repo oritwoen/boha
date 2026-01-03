@@ -2,13 +2,12 @@
 
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, KeySource, Pubkey, PubkeyFormat, Puzzle, Solver, Status, Transaction,
-    TransactionType,
+    Address, Author, Chain, Key, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed, Solver, Status,
+    Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/gsmg_data.rs"));
 
-/// Returns the author/creator of the GSMG puzzle.
 pub fn author() -> &'static Author {
     &AUTHOR
 }
