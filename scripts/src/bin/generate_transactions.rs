@@ -7,7 +7,7 @@ use std::path::Path;
 use std::time::Duration;
 use toml_edit::{DocumentMut, Item, Value};
 use utils::{
-    cache_path, esplora, etherscan, extract_author_addresses, extract_existing_transactions,
+    cache_path, dcrdata, esplora, etherscan, extract_author_addresses, extract_existing_transactions,
     merge_transactions, transactions_to_array,
 };
 
@@ -238,6 +238,60 @@ fn process_cached_gsmg(
     Ok(0)
 }
 
+async fn fetch_and_cache_dcr(
+    client: &reqwest::Client,
+    address: &str,
+    collection: &str,
+    name: &str,
+    force: bool,
+) -> Result<bool, Box<dyn std::error::Error>> {
+    let cache_exists = cache_path(collection, address).exists();
+    if cache_exists && !force {
+        println!("    Skipping {} ({}) - cached", name, address);
+        return Ok(false);
+    }
+
+    println!("    Fetching {} ({})", name, address);
+
+    match dcrdata::fetch_transactions(client, address).await {
+        Ok(txs) => {
+            dcrdata::save_to_cache(collection, address, &txs)?;
+            Ok(true)
+        }
+        Err(e) => {
+            eprintln!("    Error fetching: {}", e);
+            Ok(false)
+        }
+    }
+}
+
+fn process_cached_dcr(
+    table: &mut toml_edit::Table,
+    address: &str,
+    collection: &str,
+    author_addresses: &HashSet<String>,
+) -> bool {
+    let txs = match dcrdata::load_from_cache(collection, address) {
+        Some(t) => t,
+        None => return false,
+    };
+
+    let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
+    let existing = extract_existing_transactions(table);
+    let new_transactions = dcrdata::categorize_transactions(address, txs, author_addresses, status);
+    let merged = merge_transactions(existing, new_transactions);
+
+    if !merged.is_empty() {
+        table.insert(
+            "transactions",
+            Item::Value(Value::Array(transactions_to_array(&merged))),
+        );
+        return true;
+    }
+
+    false
+}
+
 async fn fetch_and_cache_collection(
     client: &reqwest::Client,
     doc: &DocumentMut,
@@ -285,6 +339,9 @@ async fn fetch_and_cache_collection(
                             println!("    Skipping {} - no ETHERSCAN_API_KEY", name);
                             false
                         }
+                    }
+                    "decred" => {
+                        fetch_and_cache_dcr(client, &address, collection, &name, force).await?
                     }
                     _ => {
                         println!("    Skipping {} - unsupported chain: {}", name, chain);
@@ -347,6 +404,9 @@ fn process_cached_collection(
                     }
                     "ethereum" => {
                         process_cached_eth(table, &address, collection, author_addresses)
+                    }
+                    "decred" => {
+                        process_cached_dcr(table, &address, collection, author_addresses)
                     }
                     _ => {
                         println!("    Unsupported chain: {}", chain);

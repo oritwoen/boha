@@ -1,3 +1,4 @@
+pub mod dcrdata;
 pub mod esplora;
 pub mod etherscan;
 
