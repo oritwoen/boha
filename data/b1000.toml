@@ -1394,7 +1394,7 @@ solve_date = "2024-09-23 08:13:37"
 start_date = "2015-01-15 18:07:14"
 solve_time = 305733983
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.13 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 1.17 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 11.7 }, { type = "increase", txid = "6fc3dd6147c26e6458a04de586e24330c70b320ec31a67e968ca3eb2f8d5cc70", date = "2023-12-23 00:22:51", amount = 0.00006 }, { type = "claim", txid = "91ec88f5d6d6cc727e0205d3aa3709fee507df05140d187846cf22aef784621a", date = "2024-09-23 08:13:37", amount = 13.00006 }]
-solver = { address = "1Prestige1zSYorBdz94KA2UbJW3hYLTn4" }
+solver = { name = "RetiredCoder", address = "1Prestige1zSYorBdz94KA2UbJW3hYLTn4", source = "https://github.com/RetiredC" }
 
 [[puzzles]]
 key = { bits = 131 }
