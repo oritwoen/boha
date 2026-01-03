@@ -117,6 +117,28 @@ pub struct Seed {
     pub path: Option<&'static str>,
 }
 
+/// A single share from a secret sharing scheme.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Share {
+    /// Share index (1-based)
+    pub index: u8,
+    /// Share data (words, hex, or other format depending on scheme)
+    pub data: &'static str,
+}
+
+/// Secret sharing scheme configuration (e.g., Shamir, SLIP-39).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Shares {
+    /// Number of shares required to reconstruct the secret
+    pub threshold: u8,
+    /// Total number of shares generated
+    pub total: u8,
+    /// Published shares
+    pub shares: &'static [Share],
+    /// HD derivation path for the target key
+    pub derivation_path: Option<&'static str>,
+}
+
 /// Private key in various representations.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 pub struct Key {
@@ -132,6 +154,8 @@ pub struct Key {
     pub passphrase: Option<&'static str>,
     /// Bit range constraint: key is in [2^(bits-1), 2^bits - 1]
     pub bits: Option<u16>,
+    /// Secret sharing scheme (e.g., Shamir, SLIP-39)
+    pub shares: Option<Shares>,
 }
 
 /// P2SH redeem script with its hash.
@@ -240,6 +264,10 @@ impl Key {
 
     pub fn has_seed(&self) -> bool {
         self.seed.is_some()
+    }
+
+    pub fn has_shares(&self) -> bool {
+        self.shares.is_some()
     }
 
     pub fn is_known(&self) -> bool {

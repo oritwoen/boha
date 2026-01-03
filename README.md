@@ -80,7 +80,7 @@ boha -o jsonl list b1000 --unsolved | jq .
 ### Library
 
 ```rust
-use boha::{b1000, gsmg, hash_collision, zden, Status};
+use boha::{b1000, bitaps, gsmg, hash_collision, zden, Status};
 
 let p90 = b1000::get(90).unwrap();
 println!("Address: {}", p90.address.value);
@@ -106,6 +106,7 @@ let level1 = zden::get("Level 1").unwrap();
 
 let puzzle = boha::get("b1000/90").unwrap();
 let puzzle = boha::get("gsmg").unwrap();
+let puzzle = boha::get("bitaps").unwrap();
 let puzzle = boha::get("zden/Level 1").unwrap();
 ```
 
@@ -180,6 +181,16 @@ Originally 5 BTC, prize halves with each Bitcoin halving.
 | Decred | 1 | 0 | 1 |
 
 **Unsolved:** Level 5, Level HALV
+
+### bitaps
+
+[Bitaps Mnemonic Challenge](https://bitaps.com/mnemonic/challenge) - Shamir Secret Sharing Scheme (SSSS) puzzle where the original 12-word mnemonic was split into 5 shares using 3-of-5 threshold.
+
+| Address | Status | Prize |
+|---------|--------|-------|
+| bc1qyjwa0tf0en4x09magpuwmt2smpsrlaxwn85lh6 | Unsolved | ~1.0 BTC |
+
+Two of three required shares are published. Goal: break the SSSS scheme or find implementation bugs.
 
 ## Data
 

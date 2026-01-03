@@ -1,4 +1,6 @@
-use boha::{b1000, gsmg, hash_collision, zden, Chain, PubkeyFormat, Status, TransactionType};
+use boha::{
+    b1000, bitaps, gsmg, hash_collision, zden, Chain, PubkeyFormat, Status, TransactionType,
+};
 use num_bigint::BigUint;
 
 #[test]
@@ -1429,4 +1431,57 @@ fn decode_bech32m_taproot_address() {
         hex::encode(&witness_program),
         "a37c3903c8d0db6512e2b40b0dffa05e5a3ab73603ce8c9c4b7771e5412328f9"
     );
+}
+
+#[test]
+fn bitaps_count() {
+    assert_eq!(bitaps::all().count(), 1);
+}
+
+#[test]
+fn bitaps_get_returns_correct_puzzle() {
+    let puzzle = bitaps::get();
+    assert_eq!(puzzle.id, "bitaps");
+    assert_eq!(
+        puzzle.address.value,
+        "bc1qyjwa0tf0en4x09magpuwmt2smpsrlaxwn85lh6"
+    );
+    assert_eq!(puzzle.status, Status::Unsolved);
+    assert_eq!(puzzle.address.kind, "p2wpkh");
+    assert_eq!(puzzle.chain, Chain::Bitcoin);
+}
+
+#[test]
+fn bitaps_has_author() {
+    let author = bitaps::author();
+    assert_eq!(author.name, Some("Bitaps"));
+    assert!(author.profile.is_some());
+}
+
+#[test]
+fn bitaps_has_shares() {
+    let puzzle = bitaps::get();
+    let key = puzzle.key.expect("bitaps should have key");
+    let shares = key.shares.expect("bitaps key should have shares");
+    assert_eq!(shares.threshold, 3);
+    assert_eq!(shares.total, 5);
+    assert_eq!(shares.shares.len(), 2);
+    assert_eq!(shares.derivation_path, Some("m/84'/0'/0'/0/0"));
+}
+
+#[test]
+fn bitaps_shares_valid() {
+    let puzzle = bitaps::get();
+    let shares = puzzle.key.unwrap().shares.unwrap();
+    for share in shares.shares {
+        assert!(share.index > 0, "Share index should be 1-based");
+        assert!(!share.data.is_empty(), "Share data should not be empty");
+        let word_count = share.data.split_whitespace().count();
+        assert_eq!(word_count, 12, "Each share should have 12 words");
+    }
+}
+
+#[test]
+fn universal_get_works_with_bitaps() {
+    assert!(boha::get("bitaps").is_ok());
 }
