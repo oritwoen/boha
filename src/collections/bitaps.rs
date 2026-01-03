@@ -2,8 +2,8 @@
 
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, Key, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status,
-    Transaction, TransactionType,
+    Address, Author, Chain, Key, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares,
+    Solver, Status, Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/bitaps_data.rs"));

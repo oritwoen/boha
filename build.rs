@@ -276,6 +276,8 @@ struct BitapsPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    public_key: Option<String>,
+    pubkey_format: Option<String>,
     key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -1062,6 +1064,20 @@ fn generate_bitaps(out_dir: &str) {
         .map(|url| format!("Some(\"{}\")", url))
         .unwrap_or_else(|| "None".to_string());
 
+    let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
+        (Some(pk), Some(fmt)) => {
+            let format = match fmt.as_str() {
+                "compressed" => "PubkeyFormat::Compressed",
+                "uncompressed" => "PubkeyFormat::Uncompressed",
+                _ => panic!("Invalid pubkey_format '{}' for bitaps", fmt),
+            };
+            format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
+        }
+        (None, None) => "None".to_string(),
+        (Some(_), None) => panic!("bitaps has public_key but no pubkey_format"),
+        (None, Some(_)) => panic!("bitaps has pubkey_format but no public_key"),
+    };
+
     let hash160 = format_hash160(&puzzle.address, "bitcoin", "bitaps");
     let witness_program = format_witness_program(&puzzle.address, "bitaps");
     let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
@@ -1086,7 +1102,7 @@ fn generate_bitaps(out_dir: &str) {
         redeem_script: {},
     }},
     status: {},
-    pubkey: None,
+    pubkey: {},
     key: {},
     prize: {},
     start_date: {},
@@ -1104,6 +1120,7 @@ fn generate_bitaps(out_dir: &str) {
         witness_program,
         redeem_script,
         status,
+        pubkey,
         key,
         prize,
         start_date,
