@@ -4,10 +4,11 @@ mod puzzle;
 #[cfg(feature = "balance")]
 pub mod balance;
 
-pub use collections::{b1000, bitaps, gsmg, hash_collision, zden};
+pub use collections::{b1000, bitaps, bitimage, gsmg, hash_collision, zden};
 pub use puzzle::{
-    Address, Author, Chain, IntoPuzzleNum, Key, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed,
-    Share, Shares, Solver, Status, Transaction, TransactionType,
+    Address, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase, Pubkey,
+    PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status, Transaction,
+    TransactionType,
 };
 
 use std::collections::HashMap;
@@ -45,6 +46,7 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
                 .map_err(|_| Error::NotFound(id.to_string()))?;
             b1000::get(num)
         }
+        "bitimage" => bitimage::get(parts[1]),
         "hash_collision" | "peter_todd" => hash_collision::get(parts[1]),
         "zden" => zden::get(parts[1]),
         _ => Err(Error::NotFound(id.to_string())),
@@ -54,6 +56,7 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
     b1000::all()
         .chain(bitaps::all())
+        .chain(bitimage::all())
         .chain(gsmg::all())
         .chain(hash_collision::all())
         .chain(zden::all())

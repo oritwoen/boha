@@ -102,10 +102,31 @@ struct TomlRedeemScript {
 }
 
 #[derive(Debug, Deserialize)]
+struct TomlEntropySource {
+    url: Option<String>,
+    description: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+#[serde(untagged)]
+enum TomlPassphrase {
+    Known(String),
+    Required(bool),
+}
+
+#[derive(Debug, Deserialize)]
+struct TomlEntropy {
+    hash: String,
+    source: Option<TomlEntropySource>,
+    passphrase: Option<TomlPassphrase>,
+}
+
+#[derive(Debug, Deserialize)]
 struct TomlSeed {
     phrase: Option<String>,
     path: Option<String>,
     xpub: Option<String>,
+    entropy: Option<TomlEntropy>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -265,6 +286,34 @@ struct BitapsMetadata {
 }
 
 #[derive(Debug, Deserialize)]
+struct BitimageMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BitimageFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<BitimageMetadata>,
+    puzzles: Vec<BitimagePuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BitimagePuzzle {
+    name: String,
+    address: Address,
+    status: String,
+    prize: Option<f64>,
+    key: Option<TomlKey>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<SolverConfig>,
+}
+
+#[derive(Debug, Deserialize)]
 struct BitapsFile {
     author: Option<AuthorConfig>,
     metadata: Option<BitapsMetadata>,
@@ -416,6 +465,42 @@ fn generate_solver_code(solver: &Option<SolverConfig>) -> String {
     }
 }
 
+fn generate_entropy_code(entropy: &Option<TomlEntropy>) -> String {
+    match entropy {
+        Some(e) => {
+            let source = match &e.source {
+                Some(s) => {
+                    let url = match &s.url {
+                        Some(u) => format!("Some(\"{}\")", u),
+                        None => "None".to_string(),
+                    };
+                    let description = match &s.description {
+                        Some(d) => format!("Some(\"{}\")", d),
+                        None => "None".to_string(),
+                    };
+                    format!(
+                        "Some(EntropySource {{ url: {}, description: {} }})",
+                        url, description
+                    )
+                }
+                None => "None".to_string(),
+            };
+            let passphrase = match &e.passphrase {
+                Some(TomlPassphrase::Known(s)) => {
+                    format!("Some(Passphrase::Known(\"{}\"))", s)
+                }
+                Some(TomlPassphrase::Required(true)) => "Some(Passphrase::Required)".to_string(),
+                Some(TomlPassphrase::Required(false)) | None => "None".to_string(),
+            };
+            format!(
+                "Some(Entropy {{ hash: \"{}\", source: {}, passphrase: {} }})",
+                e.hash, source, passphrase
+            )
+        }
+        None => "None".to_string(),
+    }
+}
+
 fn generate_key_code(key: &Option<TomlKey>) -> String {
     match key {
         Some(k) => generate_key_code_required(k),
@@ -459,9 +544,10 @@ fn generate_key_code_required(key: &TomlKey) -> String {
                 Some(x) => format!("Some(\"{}\")", x),
                 None => "None".to_string(),
             };
+            let entropy = generate_entropy_code(&s.entropy);
             format!(
-                "Some(Seed {{ phrase: {}, path: {}, xpub: {} }})",
-                phrase, path, xpub
+                "Some(Seed {{ phrase: {}, path: {}, xpub: {}, entropy: {} }})",
+                phrase, path, xpub, entropy
             )
         }
         None => "None".to_string(),
@@ -528,6 +614,7 @@ fn main() {
     println!("cargo:rerun-if-changed=data/gsmg.toml");
     println!("cargo:rerun-if-changed=data/zden.toml");
     println!("cargo:rerun-if-changed=data/bitaps.toml");
+    println!("cargo:rerun-if-changed=data/bitimage.toml");
 
     let out_dir = env::var("OUT_DIR").unwrap();
 
@@ -536,6 +623,7 @@ fn main() {
     generate_gsmg(&out_dir);
     generate_zden(&out_dir);
     generate_bitaps(&out_dir);
+    generate_bitimage(&out_dir);
 }
 
 fn generate_b1000(out_dir: &str) {
@@ -1132,4 +1220,115 @@ fn generate_bitaps(out_dir: &str) {
     ));
 
     fs::write(&dest_path, output).expect("Failed to write bitaps_data.rs");
+}
+
+fn generate_bitimage(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("bitimage_data.rs");
+
+    let toml_content =
+        fs::read_to_string("data/bitimage.toml").expect("Failed to read data/bitimage.toml");
+
+    let data: BitimageFile = toml::from_str(&toml_content).expect("Failed to parse bitimage.toml");
+
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.8})", p),
+            None => "None".to_string(),
+        };
+
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
+        let hash160 = format_hash160(
+            &puzzle.address,
+            "bitcoin",
+            &format!("bitimage/{}", puzzle.name),
+        );
+        let witness_program =
+            format_witness_program(&puzzle.address, &format!("bitimage/{}", puzzle.name));
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+        let key = generate_key_code(&puzzle.key);
+
+        let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver);
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "bitimage/{}",
+        chain: Chain::Bitcoin,
+        address: Address {{
+            value: "{}",
+            chain: Chain::Bitcoin,
+            kind: "{}",
+            hash160: {},
+            witness_program: {},
+            redeem_script: {},
+        }},
+        status: {},
+        pubkey: None,
+        key: {},
+        prize: {},
+        start_date: {},
+        solve_date: {},
+        solve_time: {},
+        pre_genesis: false,
+        source_url: {},
+        transactions: {},
+        solver: {},
+    }},
+"#,
+            puzzle.name,
+            puzzle.address.value,
+            puzzle.address.kind,
+            hash160,
+            witness_program,
+            redeem_script,
+            status,
+            key,
+            prize,
+            start_date,
+            solve_date,
+            solve_time,
+            source_url,
+            transactions,
+            solver,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write bitimage_data.rs");
 }

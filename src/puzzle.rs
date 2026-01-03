@@ -108,6 +108,35 @@ pub enum PubkeyFormat {
     Uncompressed,
 }
 
+/// Source of entropy for deterministic seed generation (e.g., file, image).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct EntropySource {
+    /// URL to the original entropy source
+    pub url: Option<&'static str>,
+    /// Human-readable description of the entropy source
+    pub description: Option<&'static str>,
+}
+
+/// BIP39 passphrase status for entropy-based seeds.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub enum Passphrase {
+    /// Passphrase is required but unknown
+    Required,
+    /// Passphrase is known
+    Known(&'static str),
+}
+
+/// External entropy used to derive a seed (for bitimage, brainwallet-style puzzles).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Entropy {
+    /// SHA256 hash of the entropy data (for verification)
+    pub hash: &'static str,
+    /// Source of the entropy (URL, description)
+    pub source: Option<EntropySource>,
+    /// BIP39 passphrase status
+    pub passphrase: Option<Passphrase>,
+}
+
 /// BIP39 seed phrase with optional derivation path.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 pub struct Seed {
@@ -117,6 +146,8 @@ pub struct Seed {
     pub path: Option<&'static str>,
     /// Extended public key (xpub/ypub/zpub)
     pub xpub: Option<&'static str>,
+    /// External entropy source (for deterministic seeds like bitimage)
+    pub entropy: Option<Entropy>,
 }
 
 /// A single share from a secret sharing scheme.

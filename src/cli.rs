@@ -1,6 +1,6 @@
 use boha::{
-    b1000, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat, Puzzle, Stats, Status,
-    TransactionType,
+    b1000, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat, Puzzle,
+    Stats, Status, TransactionType,
 };
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
@@ -735,6 +735,8 @@ fn cmd_list(
 ) {
     let puzzles: Vec<&Puzzle> = match collection {
         "b1000" => b1000::all().collect(),
+        "bitaps" => bitaps::all().collect(),
+        "bitimage" => bitimage::all().collect(),
         "gsmg" => gsmg::all().collect(),
         "hash_collision" | "peter_todd" => hash_collision::all().collect(),
         "zden" => zden::all().collect(),
@@ -791,12 +793,14 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
 fn cmd_author(collection: &str, format: OutputFormat) {
     let author = match collection {
         "b1000" => b1000::author(),
+        "bitaps" => bitaps::author(),
+        "bitimage" => bitimage::author(),
         "gsmg" => gsmg::author(),
         "hash_collision" | "peter_todd" => hash_collision::author(),
         "zden" => zden::author(),
         _ => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, gsmg, hash_collision, zden",
+                "{} Unknown collection: {}. Use: b1000, bitaps, bitimage, gsmg, hash_collision, zden",
                 "Error:".red().bold(),
                 collection
             );
