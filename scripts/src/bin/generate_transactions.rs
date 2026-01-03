@@ -7,8 +7,8 @@ use std::path::Path;
 use std::time::Duration;
 use toml_edit::{DocumentMut, Item, Value};
 use utils::{
-    cache_path, dcrdata, esplora, etherscan, extract_author_addresses, extract_existing_transactions,
-    merge_transactions, transactions_to_array,
+    cache_path, dcrdata, etherscan, extract_author_addresses, extract_existing_transactions,
+    mempool, merge_transactions, transactions_to_array,
 };
 
 async fn fetch_and_cache_btc(
@@ -26,9 +26,9 @@ async fn fetch_and_cache_btc(
 
     println!("    Fetching {} ({})", name, address);
 
-    match esplora::fetch_transactions(client, address).await {
+    match mempool::fetch_transactions(client, address).await {
         Ok(txs) => {
-            esplora::save_to_cache(collection, address, &txs)?;
+            mempool::save_to_cache(collection, address, &txs)?;
             Ok(true)
         }
         Err(e) => {
@@ -72,14 +72,14 @@ fn process_cached_btc(
     collection: &str,
     author_addresses: &HashSet<String>,
 ) -> bool {
-    let txs = match esplora::load_from_cache(collection, address) {
+    let txs = match mempool::load_from_cache(collection, address) {
         Some(t) => t,
         None => return false,
     };
 
     let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
     let existing = extract_existing_transactions(table);
-    let new_transactions = esplora::categorize_transactions(address, txs, author_addresses, status);
+    let new_transactions = mempool::categorize_transactions(address, txs, author_addresses, status);
     let merged = merge_transactions(existing, new_transactions);
 
     if !merged.is_empty() {

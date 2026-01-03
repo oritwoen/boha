@@ -5,31 +5,31 @@ use std::collections::HashSet;
 const DUST_THRESHOLD: u64 = 10_000;
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EsploraTx {
+pub struct MempoolTx {
     pub txid: String,
-    pub status: EsploraStatus,
-    pub vin: Vec<EsploraVin>,
-    pub vout: Vec<EsploraVout>,
+    pub status: MempoolStatus,
+    pub vin: Vec<MempoolVin>,
+    pub vout: Vec<MempoolVout>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EsploraStatus {
+pub struct MempoolStatus {
     pub block_time: Option<i64>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EsploraVin {
-    pub prevout: Option<EsploraPrevout>,
+pub struct MempoolVin {
+    pub prevout: Option<MempoolPrevout>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EsploraPrevout {
+pub struct MempoolPrevout {
     pub scriptpubkey_address: Option<String>,
     pub value: u64,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EsploraVout {
+pub struct MempoolVout {
     pub scriptpubkey_address: Option<String>,
     pub value: u64,
 }
@@ -38,7 +38,7 @@ fn sats_to_btc(sats: u64) -> f64 {
     sats as f64 / 100_000_000.0
 }
 
-pub fn load_from_cache(collection: &str, address: &str) -> Option<Vec<EsploraTx>> {
+pub fn load_from_cache(collection: &str, address: &str) -> Option<Vec<MempoolTx>> {
     let path = cache_path(collection, address);
     if path.exists() {
         let content = std::fs::read_to_string(&path).ok()?;
@@ -51,7 +51,7 @@ pub fn load_from_cache(collection: &str, address: &str) -> Option<Vec<EsploraTx>
 pub fn save_to_cache(
     collection: &str,
     address: &str,
-    txs: &[EsploraTx],
+    txs: &[MempoolTx],
 ) -> Result<(), Box<dyn std::error::Error>> {
     let path = cache_path(collection, address);
     if let Some(parent) = path.parent() {
@@ -65,7 +65,7 @@ pub fn save_to_cache(
 async fn fetch_with_retry(
     client: &reqwest::Client,
     url: &str,
-) -> Result<Vec<EsploraTx>, Box<dyn std::error::Error>> {
+) -> Result<Vec<MempoolTx>, Box<dyn std::error::Error>> {
     for attempt in 0..5 {
         if attempt > 0 {
             let delay = RETRY_DELAY * (1 << attempt.min(3));
@@ -102,8 +102,8 @@ async fn fetch_with_retry(
 pub async fn fetch_transactions(
     client: &reqwest::Client,
     address: &str,
-) -> Result<Vec<EsploraTx>, Box<dyn std::error::Error>> {
-    let mut all_txs: Vec<EsploraTx> = Vec::new();
+) -> Result<Vec<MempoolTx>, Box<dyn std::error::Error>> {
+    let mut all_txs: Vec<MempoolTx> = Vec::new();
     let mut last_txid: Option<String> = None;
 
     loop {
@@ -134,7 +134,7 @@ pub async fn fetch_transactions(
 
 pub fn categorize_transactions(
     puzzle_address: &str,
-    txs: Vec<EsploraTx>,
+    txs: Vec<MempoolTx>,
     author_addresses: &HashSet<String>,
     puzzle_status: &str,
 ) -> Vec<Transaction> {
