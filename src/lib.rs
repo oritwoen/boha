@@ -6,8 +6,8 @@ pub mod balance;
 
 pub use collections::{b1000, bitaps, bitimage, gsmg, hash_collision, zden};
 pub use puzzle::{
-    Address, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase, Pubkey,
-    PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status, Transaction,
+    Address, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase, Profile,
+    Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status, Transaction,
     TransactionType,
 };
 

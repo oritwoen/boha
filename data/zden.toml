@@ -5,7 +5,7 @@
 [author]
 name = "Zden"
 addresses = ["1ZDEN78bAWtHqeRBJX7CT4QFEBA37r2N7", "1BTC4ARTieV3qDbxZK51it8KJ5mGQBYpXD"]
-profile = "https://twitter.com/zd3n"
+profiles = [{ name = "twitter", url = "https://twitter.com/zd3n" }]
 
 [metadata]
 source_url = "https://crypto.haluska.sk/"

@@ -3,7 +3,7 @@
 
 [author]
 name = "Corey Phillips"
-profile = "https://github.com/coreyphillips"
+profiles = [{ name = "github", url = "https://github.com/coreyphillips" }]
 
 [metadata]
 source_url = "https://corey-lyle-phillips.medium.com/part-1-3-turn-your-photos-into-bitcoin-private-keys-addresses-57669771cf7a"

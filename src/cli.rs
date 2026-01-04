@@ -543,29 +543,25 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
     }
 
     if let Some(solver) = &p.solver {
-        if solver.name.is_some() || solver.address.is_some() {
+        if solver.name.is_some() || !solver.addresses.is_empty() {
             rows.push(section("Solver"));
             if let Some(name) = solver.name {
-                let verified_badge = if solver.verified {
-                    " ✓".green().to_string()
-                } else {
-                    "".to_string()
-                };
                 rows.push(KeyValueRow {
                     field: "  Name".to_string(),
-                    value: format!("{}{}", name.bright_white(), verified_badge),
+                    value: name.bright_white().to_string(),
                 });
             }
-            if let Some(addr) = solver.address {
+            for (i, addr) in solver.addresses.iter().enumerate() {
+                let field = if i == 0 { "  Address" } else { "" };
                 rows.push(KeyValueRow {
-                    field: "  Address".to_string(),
+                    field: field.to_string(),
                     value: addr.to_string(),
                 });
             }
-            if let Some(source) = solver.source {
+            for profile in solver.profiles {
                 rows.push(KeyValueRow {
-                    field: "  Source".to_string(),
-                    value: source.to_string(),
+                    field: format!("  {}", profile.name),
+                    value: profile.url.to_string(),
                 });
             }
         }
@@ -848,10 +844,10 @@ fn print_author_table(author: &Author) {
         });
     }
 
-    if let Some(profile) = author.profile {
+    for profile in author.profiles {
         rows.push(KeyValueRow {
-            field: "Profile".to_string(),
-            value: profile.to_string(),
+            field: profile.name.to_string(),
+            value: profile.url.to_string(),
         });
     }
 
