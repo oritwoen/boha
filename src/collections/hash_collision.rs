@@ -2,8 +2,8 @@
 
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, Entropy, EntropySource, Error, Key, Passphrase, Puzzle, RedeemScript,
-    Result, Seed, Solver, Status, Transaction, TransactionType,
+    Address, Author, Chain, Entropy, EntropySource, Error, Key, Passphrase, Profile, Puzzle,
+    RedeemScript, Result, Seed, Solver, Status, Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/hash_collision_data.rs"));

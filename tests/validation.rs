@@ -745,14 +745,14 @@ fn b1000_has_author() {
     let author = b1000::author();
     assert_eq!(author.name, Some("saatoshi_rising"));
     assert!(!author.addresses.is_empty());
-    assert!(author.profile.is_some());
+    assert!(!author.profiles.is_empty());
 }
 
 #[test]
 fn gsmg_has_author() {
     let author = gsmg::author();
     assert_eq!(author.name, Some("GSMG.io"));
-    assert!(author.profile.is_some());
+    assert!(!author.profiles.is_empty());
 }
 
 #[test]
@@ -760,7 +760,7 @@ fn hash_collision_has_author() {
     let author = hash_collision::author();
     assert_eq!(author.name, Some("Peter Todd"));
     assert!(!author.addresses.is_empty());
-    assert!(author.profile.is_some());
+    assert!(!author.profiles.is_empty());
 }
 
 #[test]
@@ -801,21 +801,6 @@ fn author_addresses_valid_format() {
             "Invalid address in hash_collision author: {}",
             addr
         );
-    }
-}
-
-#[test]
-fn author_profile_valid_url() {
-    let authors = [b1000::author(), gsmg::author(), hash_collision::author()];
-
-    for author in authors {
-        if let Some(url) = author.profile {
-            assert!(
-                url.starts_with("http://") || url.starts_with("https://"),
-                "Invalid profile URL format: {}",
-                url
-            );
-        }
     }
 }
 
@@ -1055,7 +1040,7 @@ fn solver_name_non_empty() {
 }
 
 #[test]
-fn solver_address_format_valid() {
+fn solver_addresses_format_valid() {
     fn is_valid_btc_address(addr: &str) -> bool {
         if addr.starts_with('1') || addr.starts_with('3') {
             return bs58::decode(addr).into_vec().is_ok();
@@ -1070,7 +1055,7 @@ fn solver_address_format_valid() {
 
     for puzzle in boha::all() {
         if let Some(solver) = &puzzle.solver {
-            if let Some(addr) = solver.address {
+            for addr in solver.addresses {
                 assert!(
                     is_valid_btc_address(addr),
                     "Invalid solver address for {}: {}",
@@ -1083,15 +1068,28 @@ fn solver_address_format_valid() {
 }
 
 #[test]
-fn solver_source_valid_url() {
+fn solver_has_at_least_one_address() {
     for puzzle in boha::all() {
         if let Some(solver) = &puzzle.solver {
-            if let Some(source) = solver.source {
+            assert!(
+                !solver.addresses.is_empty(),
+                "Solver for {} should have at least one address",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn solver_profiles_valid_url() {
+    for puzzle in boha::all() {
+        if let Some(solver) = &puzzle.solver {
+            for profile in solver.profiles {
                 assert!(
-                    source.starts_with("http://") || source.starts_with("https://"),
-                    "Invalid solver source URL for {}: {}",
+                    profile.url.starts_with("http://") || profile.url.starts_with("https://"),
+                    "Invalid solver profile URL for {}: {}",
                     puzzle.id,
-                    source
+                    profile.url
                 );
             }
         }
@@ -1099,16 +1097,23 @@ fn solver_source_valid_url() {
 }
 
 #[test]
-fn verified_solver_has_source() {
-    for puzzle in boha::all() {
-        if let Some(solver) = &puzzle.solver {
-            if solver.verified {
-                assert!(
-                    solver.source.is_some(),
-                    "Verified solver for {} should have source",
-                    puzzle.id
-                );
-            }
+fn author_profiles_valid_url() {
+    let authors = [
+        boha::b1000::author(),
+        boha::zden::author(),
+        boha::hash_collision::author(),
+        boha::gsmg::author(),
+        boha::bitaps::author(),
+        boha::bitimage::author(),
+    ];
+
+    for author in authors {
+        for profile in author.profiles {
+            assert!(
+                profile.url.starts_with("http://") || profile.url.starts_with("https://"),
+                "Invalid author profile URL: {}",
+                profile.url
+            );
         }
     }
 }
@@ -1172,7 +1177,7 @@ fn zden_has_author() {
     let author = zden::author();
     assert_eq!(author.name, Some("Zden"));
     assert!(!author.addresses.is_empty());
-    assert!(author.profile.is_some());
+    assert!(!author.profiles.is_empty());
 }
 
 #[test]
@@ -1456,7 +1461,7 @@ fn bitaps_get_returns_correct_puzzle() {
 fn bitaps_has_author() {
     let author = bitaps::author();
     assert_eq!(author.name, Some("Bitaps"));
-    assert!(author.profile.is_some());
+    assert!(!author.profiles.is_empty());
 }
 
 #[test]
@@ -1523,7 +1528,7 @@ fn bitimage_get_by_name() {
 fn bitimage_has_author() {
     let author = bitimage::author();
     assert_eq!(author.name, Some("Corey Phillips"));
-    assert!(author.profile.is_some());
+    assert!(!author.profiles.is_empty());
 }
 
 #[test]

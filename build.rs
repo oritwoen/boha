@@ -1,6 +1,7 @@
 use num_bigint::BigUint;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
+use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::Path;
@@ -70,20 +71,27 @@ fn wif_to_hex(wif: &str) -> Option<String> {
 }
 
 #[derive(Debug, Deserialize)]
+struct TomlProfile {
+    name: String,
+    url: String,
+}
+
+#[derive(Debug, Deserialize)]
 struct AuthorConfig {
     name: Option<String>,
     #[serde(default)]
     addresses: Vec<String>,
-    profile: Option<String>,
+    #[serde(default)]
+    profiles: Vec<TomlProfile>,
 }
 
 #[derive(Debug, Deserialize)]
-struct SolverConfig {
+struct SolverDefinition {
     name: Option<String>,
-    address: Option<String>,
     #[serde(default)]
-    verified: bool,
-    source: Option<String>,
+    addresses: Vec<String>,
+    #[serde(default)]
+    profiles: Vec<TomlProfile>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -193,7 +201,7 @@ struct Btc1000Puzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
-    solver: Option<SolverConfig>,
+    solver: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -220,7 +228,7 @@ struct HashCollisionPuzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
-    solver: Option<SolverConfig>,
+    solver: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -248,7 +256,7 @@ struct GsmgPuzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
-    solver: Option<SolverConfig>,
+    solver: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -277,7 +285,7 @@ struct ZdenPuzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
-    solver: Option<SolverConfig>,
+    solver: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -310,7 +318,7 @@ struct BitimagePuzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
-    solver: Option<SolverConfig>,
+    solver: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -334,7 +342,7 @@ struct BitapsPuzzle {
     source_url: Option<String>,
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
-    solver: Option<SolverConfig>,
+    solver: Option<String>,
 }
 
 fn format_hash160(address: &Address, chain: &str, puzzle_id: &str) -> String {
@@ -413,6 +421,18 @@ fn generate_transactions_code(transactions: &[TomlTransaction]) -> String {
     format!("&[{}]", tx_list.join(", "))
 }
 
+fn generate_profiles_code(profiles: &[TomlProfile]) -> String {
+    if profiles.is_empty() {
+        "&[]".to_string()
+    } else {
+        let profs: Vec<String> = profiles
+            .iter()
+            .map(|p| format!("Profile {{ name: \"{}\", url: \"{}\" }}", p.name, p.url))
+            .collect();
+        format!("&[{}]", profs.join(", "))
+    }
+}
+
 fn generate_author_code(author: &Option<AuthorConfig>) -> String {
     match author {
         Some(a) => {
@@ -426,39 +446,45 @@ fn generate_author_code(author: &Option<AuthorConfig>) -> String {
                 let addrs: Vec<String> = a.addresses.iter().map(|addr| format!("\"{}\"", addr)).collect();
                 format!("&[{}]", addrs.join(", "))
             };
-            let profile = match &a.profile {
-                Some(p) => format!("Some(\"{}\")", p),
-                None => "None".to_string(),
-            };
+            let profiles = generate_profiles_code(&a.profiles);
             format!(
-                "static AUTHOR: Author = Author {{\n    name: {},\n    addresses: {},\n    profile: {},\n}};\n",
-                name, addresses, profile
+                "static AUTHOR: Author = Author {{\n    name: {},\n    addresses: {},\n    profiles: {},\n}};\n",
+                name, addresses, profiles
             )
         }
         None => {
-            "static AUTHOR: Author = Author {\n    name: None,\n    addresses: &[],\n    profile: None,\n};\n".to_string()
+            "static AUTHOR: Author = Author {\n    name: None,\n    addresses: &[],\n    profiles: &[],\n};\n".to_string()
         }
     }
 }
 
-fn generate_solver_code(solver: &Option<SolverConfig>) -> String {
-    match solver {
-        Some(s) => {
-            let name = match &s.name {
+fn generate_solver_code(
+    solver_id: &Option<String>,
+    solvers: &HashMap<String, SolverDefinition>,
+) -> String {
+    match solver_id {
+        Some(id) => {
+            let solver = solvers
+                .get(id)
+                .unwrap_or_else(|| panic!("Unknown solver: {}", id));
+            let name = match &solver.name {
                 Some(n) => format!("Some(\"{}\")", n),
                 None => "None".to_string(),
             };
-            let address = match &s.address {
-                Some(a) => format!("Some(\"{}\")", a),
-                None => "None".to_string(),
+            let addresses = if solver.addresses.is_empty() {
+                "&[]".to_string()
+            } else {
+                let addrs: Vec<String> = solver
+                    .addresses
+                    .iter()
+                    .map(|addr| format!("\"{}\"", addr))
+                    .collect();
+                format!("&[{}]", addrs.join(", "))
             };
-            let source = match &s.source {
-                Some(src) => format!("Some(\"{}\")", src),
-                None => "None".to_string(),
-            };
+            let profiles = generate_profiles_code(&solver.profiles);
             format!(
-                "Some(Solver {{ name: {}, address: {}, verified: {}, source: {} }})",
-                name, address, s.verified, source
+                "Some(Solver {{ name: {}, addresses: {}, profiles: {} }})",
+                name, addresses, profiles
             )
         }
         None => "None".to_string(),
@@ -608,6 +634,12 @@ fn generate_shares_code(shares: &Option<TomlShares>) -> String {
     }
 }
 
+fn load_solvers() -> HashMap<String, SolverDefinition> {
+    let content =
+        fs::read_to_string("data/solvers.toml").expect("Failed to read data/solvers.toml");
+    toml::from_str(&content).expect("Failed to parse solvers.toml")
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
     println!("cargo:rerun-if-changed=data/hash_collision.toml");
@@ -615,18 +647,20 @@ fn main() {
     println!("cargo:rerun-if-changed=data/zden.toml");
     println!("cargo:rerun-if-changed=data/bitaps.toml");
     println!("cargo:rerun-if-changed=data/bitimage.toml");
+    println!("cargo:rerun-if-changed=data/solvers.toml");
 
     let out_dir = env::var("OUT_DIR").unwrap();
+    let solvers = load_solvers();
 
-    generate_b1000(&out_dir);
-    generate_hash_collision(&out_dir);
-    generate_gsmg(&out_dir);
-    generate_zden(&out_dir);
-    generate_bitaps(&out_dir);
-    generate_bitimage(&out_dir);
+    generate_b1000(&out_dir, &solvers);
+    generate_hash_collision(&out_dir, &solvers);
+    generate_gsmg(&out_dir, &solvers);
+    generate_zden(&out_dir, &solvers);
+    generate_bitaps(&out_dir, &solvers);
+    generate_bitimage(&out_dir, &solvers);
 }
 
-fn generate_b1000(out_dir: &str) {
+fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("b1000_data.rs");
 
     let toml_content =
@@ -712,7 +746,7 @@ fn generate_b1000(out_dir: &str) {
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
-        let solver = generate_solver_code(&puzzle.solver);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -764,7 +798,7 @@ fn generate_b1000(out_dir: &str) {
     fs::write(&dest_path, output).expect("Failed to write b1000_data.rs");
 }
 
-fn generate_hash_collision(out_dir: &str) {
+fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("hash_collision_data.rs");
 
     let toml_content = fs::read_to_string("data/hash_collision.toml")
@@ -825,7 +859,7 @@ fn generate_hash_collision(out_dir: &str) {
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
-        let solver = generate_solver_code(&puzzle.solver);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -874,7 +908,7 @@ fn generate_hash_collision(out_dir: &str) {
     fs::write(&dest_path, output).expect("Failed to write hash_collision_data.rs");
 }
 
-fn generate_gsmg(out_dir: &str) {
+fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("gsmg_data.rs");
 
     let toml_content = fs::read_to_string("data/gsmg.toml").expect("Failed to read data/gsmg.toml");
@@ -937,7 +971,7 @@ fn generate_gsmg(out_dir: &str) {
     let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
 
     let transactions = generate_transactions_code(&puzzle.transactions);
-    let solver = generate_solver_code(&puzzle.solver);
+    let solver = generate_solver_code(&puzzle.solver, solvers);
 
     let mut output = String::new();
     output.push_str(&generate_author_code(&data.author));
@@ -986,7 +1020,7 @@ fn generate_gsmg(out_dir: &str) {
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
 }
 
-fn generate_zden(out_dir: &str) {
+fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("zden_data.rs");
 
     let toml_content = fs::read_to_string("data/zden.toml").expect("Failed to read data/zden.toml");
@@ -1055,7 +1089,7 @@ fn generate_zden(out_dir: &str) {
         let key = generate_key_code(&puzzle.key);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
-        let solver = generate_solver_code(&puzzle.solver);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -1107,7 +1141,7 @@ fn generate_zden(out_dir: &str) {
     fs::write(&dest_path, output).expect("Failed to write zden_data.rs");
 }
 
-fn generate_bitaps(out_dir: &str) {
+fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("bitaps_data.rs");
 
     let toml_content =
@@ -1172,7 +1206,7 @@ fn generate_bitaps(out_dir: &str) {
     let key = generate_key_code(&puzzle.key);
 
     let transactions = generate_transactions_code(&puzzle.transactions);
-    let solver = generate_solver_code(&puzzle.solver);
+    let solver = generate_solver_code(&puzzle.solver, solvers);
 
     let mut output = String::new();
     output.push_str(&generate_author_code(&data.author));
@@ -1222,7 +1256,7 @@ fn generate_bitaps(out_dir: &str) {
     fs::write(&dest_path, output).expect("Failed to write bitaps_data.rs");
 }
 
-fn generate_bitimage(out_dir: &str) {
+fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("bitimage_data.rs");
 
     let toml_content =
@@ -1283,7 +1317,7 @@ fn generate_bitimage(out_dir: &str) {
         let key = generate_key_code(&puzzle.key);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
-        let solver = generate_solver_code(&puzzle.solver);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
 
         output.push_str(&format!(
             r#"    Puzzle {{

@@ -316,7 +316,7 @@ mod author {
             .success()
             .stdout(predicate::str::contains("\"name\":"))
             .stdout(predicate::str::contains("\"addresses\":"))
-            .stdout(predicate::str::contains("\"profile\":"));
+            .stdout(predicate::str::contains("\"profiles\":"));
     }
 
     #[test]
