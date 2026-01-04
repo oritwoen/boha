@@ -1,9 +1,40 @@
+## [0.11.0] - 2026-01-04
+
+### Features
+
+- *(address)* Add Address struct (#60)
+- *(puzzle)* Add Key struct (#61)
+- *(cli)* Add human-panic for friendly crash reports (#62)
+- *(balance)* Add Ethereum API support (#63)
+- *(scripts)* Add Decred API support (#64)
+- *(address)* Add SegWit support (#67)
+- *(address)* Add Taproot (P2TR) address type support (#68)
+- *(bitaps)* Add mnemonic challenge (#69)
+- *(collections)* Add bitimage puzzle collection (#70)
+
+### Refactor
+
+- *(solver)* Extract solvers to dedicated TOML file (#72) (#73)
+
+### Documentation
+
+- Sync AGENTS.md with zden collection
+- Update outdated code references
+- Sync AGENTS.md with recent changes
+
+### Miscellaneous Tasks
+
+- Add `context7.json`
 ## [0.10.0] - 2026-01-02
 
 ### Features
 
 - *(zden)* Add visual crypto puzzles (#57)
 - *(data)* Add timestamps to dates (#59)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.10.0
 ## [0.9.0] - 2026-01-02
 
 ### Features
