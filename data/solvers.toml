@@ -1,7 +1,10 @@
-[prestige]
-name = "Prestige"
-addresses = ["1Prestige1zSYorBdz94KA2UbJW3hYLTn4"]
-profiles = []
+[retired_coder]
+name = "RetiredCoder"
+addresses = ["3Emiwzxme7Mrj4d89uqohXNncnRM15YESs", "1Prestige1zSYorBdz94KA2UbJW3hYLTn4"]
+profiles = [
+  { name = "github", url = "https://github.com/RetiredC" },
+  { name = "bitcointalk", url = "https://bitcointalk.org/index.php?action=profile;u=3657819" }
+]
 
 [bc1qpkp47q]
 addresses = ["bc1qpkp47q5cucrvnyepsdnjcv2kzyav5ze0ta7n67"]
