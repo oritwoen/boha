@@ -4,7 +4,7 @@
 
 [author]
 name = "Bitaps"
-profile = "https://bitaps.com"
+profiles = [{ name = "website", url = "https://bitaps.com" }]
 
 [metadata]
 source_url = "https://bitaps.com/mnemonic/challenge"

@@ -198,6 +198,15 @@ pub struct RedeemScript {
     pub hash: &'static str,
 }
 
+/// Social/web profile link.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Profile {
+    /// Platform name (e.g., "github", "twitter", "bitcointalk").
+    pub name: &'static str,
+    /// URL to the profile.
+    pub url: &'static str,
+}
+
 /// Author/creator of a puzzle collection.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize)]
 pub struct Author {
@@ -205,8 +214,8 @@ pub struct Author {
     pub name: Option<&'static str>,
     /// Addresses that initially funded the puzzle(s).
     pub addresses: &'static [&'static str],
-    /// URL to author's profile or relevant page.
-    pub profile: Option<&'static str>,
+    /// Profile links.
+    pub profiles: &'static [Profile],
 }
 
 /// Information about who solved a puzzle.
@@ -214,12 +223,10 @@ pub struct Author {
 pub struct Solver {
     /// Solver's name or pseudonym (if known).
     pub name: Option<&'static str>,
-    /// Address that claimed the funds.
-    pub address: Option<&'static str>,
-    /// Whether the solver identity has been verified.
-    pub verified: bool,
-    /// Source URL confirming the solver (e.g., bitcointalk post, twitter).
-    pub source: Option<&'static str>,
+    /// Addresses that claimed the funds.
+    pub addresses: &'static [&'static str],
+    /// Profile links.
+    pub profiles: &'static [Profile],
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]

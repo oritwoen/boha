@@ -15,17 +15,18 @@ boha/
 ├── src/
 │   ├── lib.rs              # Library entry: get(), all(), stats()
 │   ├── cli.rs              # CLI binary (--features cli) - NOT main.rs
-│   ├── puzzle.rs           # Puzzle, Address, Key, Status, Chain structs
+│   ├── puzzle.rs           # Puzzle, Address, Key, Status, Chain, Profile structs
 │   ├── balance.rs          # Multi-chain async balance fetch
 │   └── collections/        # Six collection modules with generated data
 ├── data/
 │   ├── *.toml              # Source of truth (b1000, bitaps, bitimage, gsmg, hash_collision, zden)
+│   ├── solvers.toml        # Solver definitions (referenced by ID in puzzle files)
 │   └── cache/              # API response cache for scripts
 ├── scripts/                # Separate Cargo project - see scripts/AGENTS.md
-├── build.rs                # TOML→Rust codegen (1334 lines)
+├── build.rs                # TOML→Rust codegen
 └── tests/
-    ├── validation.rs       # 77 data validation tests
-    └── cli.rs              # 44 CLI integration tests
+    ├── validation.rs       # Data validation tests
+    └── cli.rs              # CLI integration tests
 ```
 
 ## WHERE TO LOOK
@@ -47,25 +48,30 @@ boha/
 | `get(id)` | fn | lib.rs:29 | Universal puzzle lookup by ID |
 | `all()` | fn | lib.rs:56 | Iterator over all puzzles |
 | `stats()` | fn | lib.rs:77 | Aggregate statistics |
-| `Puzzle` | struct | puzzle.rs:231 | Core data type (16 fields) |
-| `Address` | struct | puzzle.rs:87 | value, chain, kind, hash160, witness_program |
-| `Key` | struct | puzzle.rs:173 | hex, wif, seed, bits, shares |
-| `Status` | enum | puzzle.rs:53 | Solved/Unsolved/Claimed/Swept |
-| `Chain` | enum | puzzle.rs:8 | Bitcoin/Ethereum/Litecoin/Monero/Decred |
-| `Seed` | struct | puzzle.rs:140 | BIP39: phrase, path, xpub, entropy |
-| `Shares` | struct | puzzle.rs:162 | SSSS: threshold, total, shares[] |
+| `Puzzle` | struct | puzzle.rs | Core data type (16 fields) |
+| `Address` | struct | puzzle.rs | value, chain, kind, hash160, witness_program |
+| `Key` | struct | puzzle.rs | hex, wif, seed, bits, shares |
+| `Status` | enum | puzzle.rs | Solved/Unsolved/Claimed/Swept |
+| `Chain` | enum | puzzle.rs | Bitcoin/Ethereum/Litecoin/Monero/Decred |
+| `Seed` | struct | puzzle.rs | BIP39: phrase, path, xpub, entropy |
+| `Shares` | struct | puzzle.rs | SSSS: threshold, total, shares[] |
+| `Profile` | struct | puzzle.rs | Social/web profile: name, url |
+| `Author` | struct | puzzle.rs | name, addresses[], profiles[] |
+| `Solver` | struct | puzzle.rs | name, addresses[], profiles[] |
 
 ## BUILD-TIME CODEGEN
 
 **Non-standard pattern**: Puzzle data in `data/*.toml` → compiled to Rust via `build.rs`.
 
 ```
-data/*.toml  ──build.rs──>  $OUT_DIR/*_data.rs  ──include!()──>  src/collections/*.rs
+data/*.toml        ──build.rs──>  $OUT_DIR/*_data.rs  ──include!()──>  src/collections/*.rs
+data/solvers.toml  ──build.rs──>  (solver references resolved during codegen)
 ```
 
 - `cargo:rerun-if-changed` triggers rebuild on TOML changes
 - Generated: `static PUZZLES: &[Puzzle] = &[...]`
 - build.rs validates: key bits match hex, WIF↔hex consistency
+- Solvers: defined once in `solvers.toml`, referenced by ID in puzzle files
 
 ## FEATURES
 
