@@ -240,6 +240,13 @@ println!("{}", puzzle.asset_path().unwrap());  // assets/zden/level-4/puzzle.png
 println!("{}", puzzle.asset_url().unwrap());   // https://raw.githubusercontent.com/...
 ```
 
+## Related Tools
+
+| Tool | Description |
+|------|-------------|
+| [vuke](https://github.com/oritwoen/vuke) | Research tool for studying vulnerable Bitcoin key generation practices. Analyze solved puzzles for weak patterns. |
+| [vgen](https://github.com/oritwoen/vgen) | Bitcoin vanity address generator with regex pattern matching and GPU acceleration. |
+
 ## License
 
 MIT
