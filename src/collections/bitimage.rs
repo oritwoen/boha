@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, Entropy, EntropySource, Error, Key, Passphrase, Profile, Puzzle,
-    RedeemScript, Result, Seed, Solver, Status, Transaction, TransactionType,
+    Address, Assets, Author, Chain, Entropy, EntropySource, Error, Key, Passphrase, Profile,
+    Puzzle, RedeemScript, Result, Seed, Solver, Status, Transaction, TransactionType,
 };
 
 include!(concat!(env!("OUT_DIR"), "/bitimage_data.rs"));

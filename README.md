@@ -54,6 +54,9 @@ boha show b1000/90
 boha show gsmg
 boha show hash_collision/sha256
 
+# Show puzzle and open asset in browser
+boha show zden/Level\ 4 --open
+
 # Get key range
 boha range 90
 
@@ -109,6 +112,14 @@ let puzzle = boha::get("gsmg").unwrap();
 let puzzle = boha::get("bitaps").unwrap();
 let puzzle = boha::get("bitimage/kitten").unwrap();
 let puzzle = boha::get("zden/Level 1").unwrap();
+
+// Access puzzle assets (images, hints)
+if let Some(path) = puzzle.asset_path() {
+    println!("Local: {}", path);
+}
+if let Some(url) = puzzle.asset_url() {
+    println!("Remote: {}", url);
+}
 ```
 
 ### Balance fetching (async)
@@ -200,7 +211,7 @@ Two of three required shares are published. Goal: break the SSSS scheme or find 
 | Puzzle | Passphrase | Status | Prize |
 |--------|------------|--------|-------|
 | kitten | No | ✅ Solved (2019-07-09) | 0.00095 BTC |
-| kitten-passphrase | Yes | ⏳ Unsolved | ~0.01 BTC |
+| kitten_passphrase | Yes | ⏳ Unsolved | ~0.01 BTC |
 
 Both puzzles use the same source file (Antonopoulos kitten tweet). The passphrase puzzle requires an unknown BIP39 passphrase.
 
@@ -208,7 +219,26 @@ Both puzzles use the same source file (Antonopoulos kitten tweet). The passphras
 
 All puzzle data is embedded at compile time from TOML files in `data/`.
 
-Each puzzle includes: address (with HASH160 and type), chain, status, prize, public key (if exposed), private key (if solved), key source, solve date (if solved), solve time, start date (when funded), transactions history, and solver information.
+Each puzzle includes: address (with HASH160 and type), chain, status, prize, public key (if exposed), private key (if solved), key source, solve date (if solved), solve time, start date (when funded), transactions history, solver information, and assets (puzzle images, hints).
+
+## Assets
+
+Visual puzzle collections (zden, gsmg, bitimage) include embedded assets in `assets/` directory:
+
+```
+assets/
+├── zden/           # 15 puzzle images
+├── gsmg/           # puzzle.png, follow_the_white_rabbit.png
+└── bitimage/       # kitten images
+```
+
+Access via library:
+
+```rust
+let puzzle = zden::get("Level 4").unwrap();
+println!("{}", puzzle.asset_path().unwrap());  // assets/zden/level-4/puzzle.png
+println!("{}", puzzle.asset_url().unwrap());   // https://raw.githubusercontent.com/...
+```
 
 ## License
 

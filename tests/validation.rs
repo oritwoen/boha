@@ -1516,7 +1516,7 @@ fn bitimage_get_by_name() {
     assert_eq!(kitten.status, Status::Solved);
     assert_eq!(kitten.chain, Chain::Bitcoin);
 
-    let passphrase = bitimage::get("kitten-passphrase").unwrap();
+    let passphrase = bitimage::get("kitten_passphrase").unwrap();
     assert_eq!(
         passphrase.address.value,
         "bc1qcyrndzgy036f6ax370g8zyvlw86ulawgt0246r"
@@ -1547,7 +1547,7 @@ fn bitimage_has_entropy() {
 
 #[test]
 fn bitimage_passphrase_puzzle_has_required_flag() {
-    let puzzle = bitimage::get("kitten-passphrase").unwrap();
+    let puzzle = bitimage::get("kitten_passphrase").unwrap();
     let seed = puzzle.key.unwrap().seed.unwrap();
     let entropy = seed.entropy.unwrap();
     assert!(matches!(entropy.passphrase, Some(Passphrase::Required)));
@@ -1574,5 +1574,142 @@ fn bitimage_entropy_has_source() {
 #[test]
 fn universal_get_works_with_bitimage() {
     assert!(boha::get("bitimage/kitten").is_ok());
-    assert!(boha::get("bitimage/kitten-passphrase").is_ok());
+    assert!(boha::get("bitimage/kitten_passphrase").is_ok());
+}
+
+// ============================================================================
+// Assets validation tests
+// ============================================================================
+
+#[test]
+fn zden_puzzles_have_assets() {
+    for puzzle in zden::all() {
+        assert!(
+            puzzle.assets.is_some(),
+            "Zden puzzle {} should have assets",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn gsmg_has_assets() {
+    let puzzle = gsmg::get();
+    assert!(puzzle.assets.is_some(), "GSMG puzzle should have assets");
+    let assets = puzzle.assets.unwrap();
+    assert_eq!(assets.puzzle, Some("puzzle.png"));
+    assert!(!assets.hints.is_empty());
+    assert!(assets.source_url.is_some());
+}
+
+#[test]
+fn bitimage_puzzles_have_assets() {
+    for puzzle in bitimage::all() {
+        assert!(
+            puzzle.assets.is_some(),
+            "Bitimage puzzle {} should have assets",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn b1000_puzzles_have_no_assets() {
+    for puzzle in b1000::all() {
+        assert!(
+            puzzle.assets.is_none(),
+            "b1000 puzzle {} should not have assets",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn hash_collision_puzzles_have_no_assets() {
+    for puzzle in hash_collision::all() {
+        assert!(
+            puzzle.assets.is_none(),
+            "hash_collision puzzle {} should not have assets",
+            puzzle.id
+        );
+    }
+}
+
+#[test]
+fn bitaps_has_no_assets() {
+    let puzzle = bitaps::get();
+    assert!(
+        puzzle.assets.is_none(),
+        "bitaps puzzle should not have assets"
+    );
+}
+
+#[test]
+fn assets_puzzle_path_exists() {
+    for puzzle in boha::all() {
+        if let Some(path) = puzzle.asset_path() {
+            let full_path = std::path::Path::new(&path);
+            assert!(
+                full_path.exists(),
+                "Asset file {} does not exist for puzzle {}",
+                full_path.display(),
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
+fn assets_hints_paths_exist() {
+    for puzzle in boha::all() {
+        if let Some(assets) = &puzzle.assets {
+            for hint in assets.hints {
+                let path = format!("assets/{}/{}", puzzle.collection(), hint);
+                let full_path = std::path::Path::new(&path);
+                assert!(
+                    full_path.exists(),
+                    "Hint asset {} does not exist for puzzle {}",
+                    full_path.display(),
+                    puzzle.id
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn assets_source_url_valid() {
+    for puzzle in boha::all() {
+        if let Some(assets) = &puzzle.assets {
+            if let Some(url) = assets.source_url {
+                assert!(
+                    url.starts_with("http://") || url.starts_with("https://"),
+                    "Invalid asset source_url for {}: {}",
+                    puzzle.id,
+                    url
+                );
+            }
+        }
+    }
+}
+
+#[test]
+fn asset_url_format() {
+    let puzzle = gsmg::get();
+    let url = puzzle.asset_url().expect("GSMG should have asset_url");
+    assert!(url.contains("raw.githubusercontent.com"));
+    assert!(url.contains("oritwoen/boha"));
+    assert!(url.ends_with("puzzle.png"));
+}
+
+#[test]
+fn asset_path_format() {
+    let puzzle = gsmg::get();
+    let path = puzzle.asset_path().expect("GSMG should have asset_path");
+    assert!(path.contains("gsmg"));
+    assert!(path.ends_with("puzzle.png"));
+
+    let kitten = bitimage::get("kitten").unwrap();
+    let path = kitten.asset_path().expect("kitten should have asset_path");
+    assert!(path.contains("bitimage"));
 }

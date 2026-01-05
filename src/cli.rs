@@ -74,6 +74,9 @@ enum Commands {
 
         #[arg(long)]
         transactions: bool,
+
+        #[arg(long)]
+        open: bool,
     },
 
     /// Show statistics
@@ -567,6 +570,43 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         }
     }
 
+    if let Some(assets) = &p.assets {
+        rows.push(section("Assets"));
+        if let Some(path) = p.asset_path() {
+            rows.push(KeyValueRow {
+                field: "  Path".to_string(),
+                value: path,
+            });
+        }
+        if let Some(url) = p.asset_url() {
+            rows.push(KeyValueRow {
+                field: "  URL".to_string(),
+                value: url,
+            });
+        }
+        if let Some(solver_path) = assets.solver {
+            rows.push(KeyValueRow {
+                field: "  Solver".to_string(),
+                value: format!("assets/{}/{}", p.collection(), solver_path),
+            });
+        }
+        if !assets.hints.is_empty() {
+            for (i, hint) in assets.hints.iter().enumerate() {
+                let field = if i == 0 { "  Hints" } else { "" };
+                rows.push(KeyValueRow {
+                    field: field.to_string(),
+                    value: format!("assets/{}/{}", p.collection(), hint),
+                });
+            }
+        }
+        if let Some(source) = assets.source_url {
+            rows.push(KeyValueRow {
+                field: "  Source".to_string(),
+                value: source.to_string(),
+            });
+        }
+    }
+
     if show_transactions && !p.transactions.is_empty() {
         rows.push(section("Transactions"));
         for tx in p.transactions {
@@ -751,9 +791,23 @@ fn cmd_list(
     output_puzzles(&filtered, format, solved);
 }
 
-fn cmd_show(id: &str, show_transactions: bool, format: OutputFormat) {
+fn cmd_show(id: &str, show_transactions: bool, open_asset: bool, format: OutputFormat) {
     match boha::get(id) {
-        Ok(puzzle) => output_puzzle(puzzle, show_transactions, format),
+        Ok(puzzle) => {
+            if open_asset {
+                if let Some(url) = puzzle.asset_url() {
+                    if let Err(e) = open::that(&url) {
+                        eprintln!("{} Failed to open URL: {}", "Warning:".yellow().bold(), e);
+                    }
+                } else {
+                    eprintln!(
+                        "{} No asset available for this puzzle",
+                        "Warning:".yellow().bold()
+                    );
+                }
+            }
+            output_puzzle(puzzle, show_transactions, format)
+        }
         Err(e) => {
             eprintln!("{} {}", "Error:".red().bold(), e);
             std::process::exit(1);
@@ -929,7 +983,11 @@ fn run_sync(cli: Cli) {
             chain,
             cli.output,
         ),
-        Commands::Show { id, transactions } => cmd_show(&id, transactions, cli.output),
+        Commands::Show {
+            id,
+            transactions,
+            open,
+        } => cmd_show(&id, transactions, open, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
@@ -956,7 +1014,11 @@ fn run(cli: Cli) {
             chain,
             cli.output,
         ),
-        Commands::Show { id, transactions } => cmd_show(&id, transactions, cli.output),
+        Commands::Show {
+            id,
+            transactions,
+            open,
+        } => cmd_show(&id, transactions, open, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
