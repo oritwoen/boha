@@ -181,7 +181,7 @@ pub struct Key {
     pub seed: Option<Seed>,
     /// Mini private key format (starts with 'S')
     pub mini: Option<&'static str>,
-    /// Brain wallet passphrase (SHA256 → key)
+    /// BIP38 decryption passphrase (for encrypted WIF starting with 6P)
     pub passphrase: Option<&'static str>,
     /// Bit range constraint: key is in [2^(bits-1), 2^bits - 1]
     pub bits: Option<u16>,

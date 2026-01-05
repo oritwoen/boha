@@ -1,6 +1,6 @@
 use boha::{
-    b1000, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat, Puzzle,
-    Stats, Status, TransactionType,
+    b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat,
+    Puzzle, Stats, Status, TransactionType,
 };
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
@@ -771,6 +771,7 @@ fn cmd_list(
 ) {
     let puzzles: Vec<&Puzzle> = match collection {
         "b1000" => b1000::all().collect(),
+        "ballet" => ballet::all().collect(),
         "bitaps" => bitaps::all().collect(),
         "bitimage" => bitimage::all().collect(),
         "gsmg" => gsmg::all().collect(),

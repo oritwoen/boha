@@ -310,6 +310,11 @@ struct BitimageMetadata {
 }
 
 #[derive(Debug, Deserialize)]
+struct BalletMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct BitimageFile {
     author: Option<AuthorConfig>,
     metadata: Option<BitimageMetadata>,
@@ -318,6 +323,30 @@ struct BitimageFile {
 
 #[derive(Debug, Deserialize)]
 struct BitimagePuzzle {
+    name: String,
+    address: Address,
+    status: String,
+    prize: Option<f64>,
+    key: Option<TomlKey>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<String>,
+    assets: Option<TomlAssets>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BalletFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<BalletMetadata>,
+    puzzles: Vec<BalletPuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BalletPuzzle {
     name: String,
     address: Address,
     status: String,
@@ -714,6 +743,7 @@ fn main() {
     println!("cargo:rerun-if-changed=data/zden.toml");
     println!("cargo:rerun-if-changed=data/bitaps.toml");
     println!("cargo:rerun-if-changed=data/bitimage.toml");
+    println!("cargo:rerun-if-changed=data/ballet.toml");
     println!("cargo:rerun-if-changed=data/solvers.toml");
     println!("cargo:rerun-if-changed=assets");
 
@@ -726,6 +756,7 @@ fn main() {
     generate_zden(&out_dir, &solvers);
     generate_bitaps(&out_dir, &solvers);
     generate_bitimage(&out_dir, &solvers);
+    generate_ballet(&out_dir, &solvers);
 }
 
 fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
@@ -1449,4 +1480,119 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write bitimage_data.rs");
+}
+
+fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
+    let dest_path = Path::new(out_dir).join("ballet_data.rs");
+
+    let toml_content =
+        fs::read_to_string("data/ballet.toml").expect("Failed to read data/ballet.toml");
+
+    let data: BalletFile = toml::from_str(&toml_content).expect("Failed to parse ballet.toml");
+
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.8})", p),
+            None => "None".to_string(),
+        };
+
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
+        let hash160 = format_hash160(
+            &puzzle.address,
+            "bitcoin",
+            &format!("ballet/{}", puzzle.name),
+        );
+        let witness_program =
+            format_witness_program(&puzzle.address, &format!("ballet/{}", puzzle.name));
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+        let key = generate_key_code(&puzzle.key);
+
+        let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
+        let assets =
+            generate_assets_code(&puzzle.assets, "ballet", &format!("ballet/{}", puzzle.name));
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "ballet/{}",
+        chain: Chain::Bitcoin,
+        address: Address {{
+            value: "{}",
+            chain: Chain::Bitcoin,
+            kind: "{}",
+            hash160: {},
+            witness_program: {},
+            redeem_script: {},
+        }},
+        status: {},
+        pubkey: None,
+        key: {},
+        prize: {},
+        start_date: {},
+        solve_date: {},
+        solve_time: {},
+        pre_genesis: false,
+        source_url: {},
+        transactions: {},
+        solver: {},
+        assets: {},
+    }},
+"#,
+            puzzle.name,
+            puzzle.address.value,
+            puzzle.address.kind,
+            hash160,
+            witness_program,
+            redeem_script,
+            status,
+            key,
+            prize,
+            start_date,
+            solve_date,
+            solve_time,
+            source_url,
+            transactions,
+            solver,
+            assets,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write ballet_data.rs");
 }

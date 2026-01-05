@@ -86,6 +86,7 @@ data/solvers.toml  ──build.rs──>  (solver references resolved during cod
 - **Static data**: All `&'static` - no heap allocation
 - **Address types**: P2PKH (legacy), P2SH (script), P2WPKH/P2WSH (SegWit), P2TR (Taproot)
 - **Optional fields**: `Option<T>` for missing data
+- **Solver vs Claimer**: Solver is who revealed/found the key (the "solution"). Claimer is who swept the funds. These may be different people - both are worth tracking.
 
 ## ANTI-PATTERNS
 
