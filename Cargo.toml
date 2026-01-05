@@ -1,6 +1,6 @@
 [package]
 name = "boha"
-version = "0.11.0"
+version = "0.12.0"
 edition = "2021"
 authors = ["oritwoen"]
 description = "Crypto bounties, puzzles and challenges data library"

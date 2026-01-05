@@ -1,3 +1,13 @@
+## [0.12.0] - 2026-01-05
+
+### Features
+
+- *(solvers)* Add `retired_coder` (#71)
+- *(assets)* Add puzzle assets support (#74)
+
+### Documentation
+
+- Add Related Tools section with vuke and vgen
 ## [0.11.0] - 2026-01-04
 
 ### Features
@@ -25,6 +35,7 @@
 ### Miscellaneous Tasks
 
 - Add `context7.json`
+- *(release)* V0.11.0
 ## [0.10.0] - 2026-01-02
 
 ### Features
