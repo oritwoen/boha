@@ -8,7 +8,7 @@ pub use collections::{b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zde
 pub use puzzle::{
     Address, Assets, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase,
     Profile, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status,
-    Transaction, TransactionType,
+    Transaction, TransactionType, Wif,
 };
 
 use std::collections::HashMap;

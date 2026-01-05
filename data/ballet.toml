@@ -19,7 +19,11 @@ solve_date = "2024-05-17 06:38:08"
 solve_time = 120355916
 
 [puzzles.key]
-wif = "6PnWfKaBfDW6mFFhhFsbNRHnVgojUhdf2b5NXP3FfwXiQ69MxEzVK2J4cH"
+hex = "a5b9247400b7e31e54481f14828ced3a538af280e9eeb1229196c3cb5e7ecdde"
+
+[puzzles.key.wif]
+encrypted = "6PnWfKaBfDW6mFFhhFsbNRHnVgojUhdf2b5NXP3FfwXiQ69MxEzVK2J4cH"
+decrypted = "L2mrYyo5a6rpyQdC88UitNeH5n1rAqPcq8Qv5gwtQE8KTvW3ZTeH"
 passphrase = "335Y-K745-C8WT-4D2W-80WP"
 
 [puzzles.assets]
@@ -44,8 +48,8 @@ status = "unsolved"
 prize = 1.00003481
 start_date = "2020-07-24 06:26:12"
 
-[puzzles.key]
-wif = "6PnQmAyBky9ZXJyZBvPQSGRUxkKh9HfnVsZWPn4YtcwoKy5vufUgfA3Ld7"
+[puzzles.key.wif]
+encrypted = "6PnQmAyBky9ZXJyZBvPQSGRUxkKh9HfnVsZWPn4YtcwoKy5vufUgfA3Ld7"
 
 [puzzles.assets]
 puzzle = "AA009926/puzzle.jpg"
@@ -77,7 +81,7 @@ status = "unsolved"
 prize = 1.00003877
 start_date = "2020-07-24 06:26:12"
 
-[puzzles.key]
+[puzzles.key.wif]
 passphrase = "594Y-L2RW-4ME7-2XVX-9B41"
 
 [puzzles.assets]

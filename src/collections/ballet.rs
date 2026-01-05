@@ -1,7 +1,7 @@
 #[allow(unused_imports)]
 use crate::{
     Address, Assets, Author, Chain, Entropy, EntropySource, Error, Key, Passphrase, Profile,
-    Puzzle, RedeemScript, Result, Seed, Solver, Status, Transaction, TransactionType,
+    Puzzle, RedeemScript, Result, Seed, Solver, Status, Transaction, TransactionType, Wif,
 };
 
 include!(concat!(env!("OUT_DIR"), "/ballet_data.rs"));

@@ -170,19 +170,28 @@ pub struct Shares {
     pub shares: &'static [Share],
 }
 
+/// Wallet Import Format (WIF) with optional BIP38 encryption.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Wif {
+    /// BIP38 encrypted WIF (starts with 6P)
+    pub encrypted: Option<&'static str>,
+    /// Decrypted/standard WIF (starts with 5, K, L)
+    pub decrypted: Option<&'static str>,
+    /// BIP38 passphrase for decryption
+    pub passphrase: Option<&'static str>,
+}
+
 /// Private key in various representations.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 pub struct Key {
     /// Raw hex (64 characters, 32 bytes)
     pub hex: Option<&'static str>,
-    /// Wallet Import Format
-    pub wif: Option<&'static str>,
+    /// Wallet Import Format (standard or BIP38 encrypted)
+    pub wif: Option<Wif>,
     /// BIP39 seed phrase with optional derivation path
     pub seed: Option<Seed>,
     /// Mini private key format (starts with 'S')
     pub mini: Option<&'static str>,
-    /// BIP38 decryption passphrase (for encrypted WIF starting with 6P)
-    pub passphrase: Option<&'static str>,
     /// Bit range constraint: key is in [2^(bits-1), 2^bits - 1]
     pub bits: Option<u16>,
     /// Secret sharing scheme (e.g., Shamir, SLIP-39)
@@ -323,11 +332,7 @@ impl Key {
     }
 
     pub fn is_known(&self) -> bool {
-        self.hex.is_some()
-            || self.wif.is_some()
-            || self.seed.is_some()
-            || self.mini.is_some()
-            || self.passphrase.is_some()
+        self.hex.is_some() || self.wif.is_some() || self.seed.is_some() || self.mini.is_some()
     }
 
     pub fn range(&self) -> Option<RangeInclusive<u128>> {
