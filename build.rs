@@ -355,6 +355,8 @@ struct BalletFile {
 struct BalletPuzzle {
     name: String,
     address: Address,
+    public_key: Option<String>,
+    pubkey_format: Option<String>,
     status: String,
     prize: Option<f64>,
     key: Option<TomlKey>,
@@ -1584,6 +1586,20 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         let assets =
             generate_assets_code(&puzzle.assets, "ballet", &format!("ballet/{}", puzzle.name));
 
+        let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
+            (Some(pk), Some(fmt)) => {
+                let format = match fmt.as_str() {
+                    "compressed" => "PubkeyFormat::Compressed",
+                    "uncompressed" => "PubkeyFormat::Uncompressed",
+                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, puzzle.name),
+                };
+                format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
+            }
+            (None, None) => "None".to_string(),
+            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", puzzle.name),
+            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", puzzle.name),
+        };
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "ballet/{}",
@@ -1597,7 +1613,7 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             redeem_script: {},
         }},
         status: {},
-        pubkey: None,
+        pubkey: {},
         key: {},
         prize: {},
         start_date: {},
@@ -1617,6 +1633,7 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             witness_program,
             redeem_script,
             status,
+            pubkey,
             key,
             prize,
             start_date,
