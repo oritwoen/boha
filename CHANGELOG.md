@@ -1,3 +1,8 @@
+## [0.12.1] - 2026-01-05
+
+### Bug Fixes
+
+- *(package)* Exclude assets from crates.io package
 ## [0.12.0] - 2026-01-05
 
 ### Features
@@ -8,6 +13,10 @@
 ### Documentation
 
 - Add Related Tools section with vuke and vgen
+
+### Miscellaneous Tasks
+
+- *(release)* V0.12.0
 ## [0.11.0] - 2026-01-04
 
 ### Features
