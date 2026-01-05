@@ -198,6 +198,19 @@ pub struct RedeemScript {
     pub hash: &'static str,
 }
 
+/// Puzzle assets (images, hints, solutions).
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
+pub struct Assets {
+    /// Relative path to main puzzle image (within collection's assets folder)
+    pub puzzle: Option<&'static str>,
+    /// Relative path to solution explanation image
+    pub solver: Option<&'static str>,
+    /// Hint images
+    pub hints: &'static [&'static str],
+    /// Original source URL for attribution
+    pub source_url: Option<&'static str>,
+}
+
 /// Social/web profile link.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 pub struct Profile {
@@ -251,6 +264,7 @@ pub struct Puzzle {
     pub source_url: Option<&'static str>,
     pub transactions: &'static [Transaction],
     pub solver: Option<Solver>,
+    pub assets: Option<Assets>,
 }
 
 fn format_duration_human_readable(seconds: u64) -> String {
@@ -392,6 +406,21 @@ impl Puzzle {
 
     pub fn transaction_count(&self) -> usize {
         self.transactions.len()
+    }
+
+    /// Returns the relative path to the main puzzle asset.
+    /// Example: "assets/zden/level_4/puzzle.png"
+    pub fn asset_path(&self) -> Option<String> {
+        self.assets
+            .and_then(|a| a.puzzle)
+            .map(|p| format!("assets/{}/{}", self.collection(), p))
+    }
+
+    /// Returns the GitHub raw URL for remote access to the main puzzle asset.
+    /// Example: "https://raw.githubusercontent.com/oritwoen/boha/main/assets/zden/level_4/puzzle.png"
+    pub fn asset_url(&self) -> Option<String> {
+        self.asset_path()
+            .map(|p| format!("https://raw.githubusercontent.com/oritwoen/boha/main/{}", p))
     }
 
     pub fn key_range(&self) -> Option<RangeInclusive<u128>> {

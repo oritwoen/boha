@@ -144,6 +144,15 @@ struct TomlShare {
 }
 
 #[derive(Debug, Deserialize)]
+struct TomlAssets {
+    puzzle: Option<String>,
+    solver: Option<String>,
+    #[serde(default)]
+    hints: Vec<String>,
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct TomlShares {
     threshold: u8,
     total: u8,
@@ -257,6 +266,7 @@ struct GsmgPuzzle {
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
     solver: Option<String>,
+    assets: Option<TomlAssets>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -286,6 +296,7 @@ struct ZdenPuzzle {
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
     solver: Option<String>,
+    assets: Option<TomlAssets>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -319,6 +330,7 @@ struct BitimagePuzzle {
     #[serde(default)]
     transactions: Vec<TomlTransaction>,
     solver: Option<String>,
+    assets: Option<TomlAssets>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -634,6 +646,57 @@ fn generate_shares_code(shares: &Option<TomlShares>) -> String {
     }
 }
 
+fn validate_asset_file(collection: &str, asset_path: &str, puzzle_id: &str) {
+    let full_path = format!("assets/{}/{}", collection, asset_path);
+    if !Path::new(&full_path).exists() {
+        panic!(
+            "Asset file not found for puzzle '{}': {}",
+            puzzle_id, full_path
+        );
+    }
+}
+
+fn generate_assets_code(assets: &Option<TomlAssets>, collection: &str, puzzle_id: &str) -> String {
+    match assets {
+        Some(a) => {
+            if let Some(ref puzzle) = a.puzzle {
+                validate_asset_file(collection, puzzle, puzzle_id);
+            }
+            if let Some(ref solver) = a.solver {
+                validate_asset_file(collection, solver, puzzle_id);
+            }
+            for hint in &a.hints {
+                validate_asset_file(collection, hint, puzzle_id);
+            }
+
+            let puzzle = match &a.puzzle {
+                Some(p) => format!("Some(\"{}\")", p),
+                None => "None".to_string(),
+            };
+            let solver = match &a.solver {
+                Some(s) => format!("Some(\"{}\")", s),
+                None => "None".to_string(),
+            };
+            let hints = if a.hints.is_empty() {
+                "&[]".to_string()
+            } else {
+                let hints_list: Vec<String> =
+                    a.hints.iter().map(|h| format!("\"{}\"", h)).collect();
+                format!("&[{}]", hints_list.join(", "))
+            };
+            let source_url = match &a.source_url {
+                Some(u) => format!("Some(\"{}\")", u),
+                None => "None".to_string(),
+            };
+            format!(
+                "Some(Assets {{ puzzle: {}, solver: {}, hints: {}, source_url: {} }})",
+                puzzle, solver, hints, source_url
+            )
+        }
+        None => "None".to_string(),
+    }
+}
+
 fn load_solvers() -> HashMap<String, SolverDefinition> {
     let content =
         fs::read_to_string("data/solvers.toml").expect("Failed to read data/solvers.toml");
@@ -648,6 +711,7 @@ fn main() {
     println!("cargo:rerun-if-changed=data/bitaps.toml");
     println!("cargo:rerun-if-changed=data/bitimage.toml");
     println!("cargo:rerun-if-changed=data/solvers.toml");
+    println!("cargo:rerun-if-changed=assets");
 
     let out_dir = env::var("OUT_DIR").unwrap();
     let solvers = load_solvers();
@@ -771,6 +835,7 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         source_url: {},
         transactions: {},
         solver: {},
+        assets: None,
     }},
 "#,
             bits,
@@ -884,6 +949,7 @@ fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefini
         source_url: {},
         transactions: {},
         solver: {},
+        assets: None,
     }},
 "#,
             puzzle.name,
@@ -972,6 +1038,7 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 
     let transactions = generate_transactions_code(&puzzle.transactions);
     let solver = generate_solver_code(&puzzle.solver, solvers);
+    let assets = generate_assets_code(&puzzle.assets, "gsmg", "gsmg");
 
     let mut output = String::new();
     output.push_str(&generate_author_code(&data.author));
@@ -999,6 +1066,7 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     source_url: {},
     transactions: {},
     solver: {},
+    assets: {},
 }};
 "#,
         puzzle.address.value,
@@ -1015,6 +1083,7 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         source_url,
         transactions,
         solver,
+        assets,
     ));
 
     fs::write(&dest_path, output).expect("Failed to write gsmg_data.rs");
@@ -1090,6 +1159,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver, solvers);
+        let assets = generate_assets_code(&puzzle.assets, "zden", &format!("zden/{}", puzzle.name));
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -1114,6 +1184,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         source_url: {},
         transactions: {},
         solver: {},
+        assets: {},
     }},
 "#,
             puzzle.name,
@@ -1133,6 +1204,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             source_url,
             transactions,
             solver,
+            assets,
         ));
     }
 
@@ -1234,6 +1306,7 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     source_url: {},
     transactions: {},
     solver: {},
+    assets: None,
 }};
 "#,
         puzzle.address.value,
@@ -1318,6 +1391,11 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver, solvers);
+        let assets = generate_assets_code(
+            &puzzle.assets,
+            "bitimage",
+            &format!("bitimage/{}", puzzle.name),
+        );
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -1342,6 +1420,7 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
         source_url: {},
         transactions: {},
         solver: {},
+        assets: {},
     }},
 "#,
             puzzle.name,
@@ -1359,6 +1438,7 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
             source_url,
             transactions,
             solver,
+            assets,
         ));
     }
 

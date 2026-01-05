@@ -27,6 +27,10 @@ hash = "1808d35318ac7cb98b69ff9779b699d6a631f15e0b353ac89b7c4020774832ed"
 url = "https://twitter.com/aantonop/status/603701870482300928"
 description = "Antonopoulos kitten tweet (May 2015)"
 
+[puzzles.assets]
+puzzle = "kitten/puzzle.jpg"
+source_url = "https://twitter.com/aantonop/status/603701870482300928"
+
 [[puzzles.transactions]]
 type = "funding"
 txid = "1482b329809e168c61a40966e9ffb029ad20a2c0022bd0e55efeea35b8a9409c"
@@ -39,7 +43,7 @@ txid = "49638d16a21133febb093580527e50039eee630e2c4918a0654a71ef437ad093"
 date = "2019-07-09 21:26:12"
 
 [[puzzles]]
-name = "kitten-passphrase"
+name = "kitten_passphrase"
 address = { value = "bc1qcyrndzgy036f6ax370g8zyvlw86ulawgt0246r", kind = "p2wpkh", hash160 = "c1073689047c749d74d1f3d071119f71f5cff5c8" }
 status = "unsolved"
 prize = 0.01001900
@@ -55,6 +59,10 @@ passphrase = true
 [puzzles.key.seed.entropy.source]
 url = "https://twitter.com/aantonop/status/603701870482300928"
 description = "Antonopoulos kitten tweet (May 2015)"
+
+[puzzles.assets]
+puzzle = "kitten_passphrase/puzzle.jpg"
+source_url = "https://twitter.com/aantonop/status/603701870482300928"
 
 [[puzzles.transactions]]
 type = "funding"
