@@ -1,8 +1,23 @@
+## [0.13.0] - 2026-01-05
+
+### Features
+
+- *(collection)* Add Ballet challenge (#76)
+- *(data)* Add WIF format to solved puzzles (#79)
+- *(release)* Update README.md version during release
+
+### Documentation
+
+- Sync AGENTS.md with Ballet collection addition
 ## [0.12.1] - 2026-01-05
 
 ### Bug Fixes
 
 - *(package)* Exclude assets from crates.io package
+
+### Miscellaneous Tasks
+
+- *(release)* V0.12.1
 ## [0.12.0] - 2026-01-05
 
 ### Features
