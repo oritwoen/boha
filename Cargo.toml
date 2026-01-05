@@ -8,6 +8,7 @@ license = "MIT"
 repository = "https://github.com/oritwoen/boha"
 keywords = ["bitcoin", "puzzle", "bounty", "cryptocurrency"]
 categories = ["data-structures", "cryptography"]
+exclude = ["assets/"]
 
 [dependencies]
 bs58 = "0.5"

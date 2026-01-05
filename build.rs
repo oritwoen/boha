@@ -647,6 +647,10 @@ fn generate_shares_code(shares: &Option<TomlShares>) -> String {
 }
 
 fn validate_asset_file(collection: &str, asset_path: &str, puzzle_id: &str) {
+    // Skip validation if assets directory doesn't exist (e.g., crates.io package)
+    if !Path::new("assets").exists() {
+        return;
+    }
     let full_path = format!("assets/{}/{}", collection, asset_path);
     if !Path::new(&full_path).exists() {
         panic!(
