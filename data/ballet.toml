@@ -20,6 +20,7 @@ solve_time = 120355916
 
 [puzzles.key]
 hex = "a5b9247400b7e31e54481f14828ced3a538af280e9eeb1229196c3cb5e7ecdde"
+bits = 256
 
 [puzzles.key.wif]
 encrypted = "6PnWfKaBfDW6mFFhhFsbNRHnVgojUhdf2b5NXP3FfwXiQ69MxEzVK2J4cH"
