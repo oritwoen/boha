@@ -6,7 +6,7 @@
 use crate::{
     Address, Author, Chain, Entropy, EntropySource, Error, IntoPuzzleNum, Key, Passphrase, Profile,
     Pubkey, PubkeyFormat, Puzzle, RedeemScript, Result, Seed, Solver, Status, Transaction,
-    TransactionType,
+    TransactionType, Wif,
 };
 
 include!(concat!(env!("OUT_DIR"), "/b1000_data.rs"));

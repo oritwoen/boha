@@ -160,13 +160,19 @@ struct TomlShares {
     shares: Vec<TomlShare>,
 }
 
+#[derive(Debug, Clone, Deserialize)]
+struct TomlWif {
+    encrypted: Option<String>,
+    decrypted: Option<String>,
+    passphrase: Option<String>,
+}
+
 #[derive(Debug, Deserialize)]
 struct TomlKey {
     hex: Option<String>,
-    wif: Option<String>,
+    wif: Option<TomlWif>,
     seed: Option<TomlSeed>,
     mini: Option<String>,
-    passphrase: Option<String>,
     bits: Option<u16>,
     shares: Option<TomlShares>,
 }
@@ -310,6 +316,11 @@ struct BitimageMetadata {
 }
 
 #[derive(Debug, Deserialize)]
+struct BalletMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct BitimageFile {
     author: Option<AuthorConfig>,
     metadata: Option<BitimageMetadata>,
@@ -320,6 +331,32 @@ struct BitimageFile {
 struct BitimagePuzzle {
     name: String,
     address: Address,
+    status: String,
+    prize: Option<f64>,
+    key: Option<TomlKey>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<String>,
+    assets: Option<TomlAssets>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BalletFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<BalletMetadata>,
+    puzzles: Vec<BalletPuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct BalletPuzzle {
+    name: String,
+    address: Address,
+    public_key: Option<String>,
+    pubkey_format: Option<String>,
     status: String,
     prize: Option<f64>,
     key: Option<TomlKey>,
@@ -546,16 +583,42 @@ fn generate_key_code(key: &Option<TomlKey>) -> String {
     }
 }
 
+fn generate_wif_code(wif: &Option<TomlWif>) -> String {
+    match wif {
+        Some(w) => {
+            let encrypted = match &w.encrypted {
+                Some(e) => format!("Some(\"{}\")", e),
+                None => "None".to_string(),
+            };
+            let decrypted = match &w.decrypted {
+                Some(d) => format!("Some(\"{}\")", d),
+                None => "None".to_string(),
+            };
+            let passphrase = match &w.passphrase {
+                Some(p) => format!("Some(\"{}\")", p),
+                None => "None".to_string(),
+            };
+            format!(
+                "Some(Wif {{ encrypted: {}, decrypted: {}, passphrase: {} }})",
+                encrypted, decrypted, passphrase
+            )
+        }
+        None => "None".to_string(),
+    }
+}
+
 fn generate_key_code_required(key: &TomlKey) -> String {
-    let (hex_val, wif_val) = match (&key.hex, &key.wif) {
-        (Some(h), Some(w)) => (Some(h.clone()), Some(w.clone())),
+    let decrypted_wif = key.wif.as_ref().and_then(|w| w.decrypted.as_ref());
+
+    let (hex_val, derived_decrypted) = match (&key.hex, decrypted_wif) {
+        (Some(h), Some(_)) => (Some(h.clone()), None),
         (Some(h), None) => {
             let derived_wif = hex_to_wif(h, true);
             (Some(h.clone()), derived_wif)
         }
         (None, Some(w)) => {
             let derived_hex = wif_to_hex(w);
-            (derived_hex, Some(w.clone()))
+            (derived_hex, None)
         }
         (None, None) => (None, None),
     };
@@ -564,10 +627,19 @@ fn generate_key_code_required(key: &TomlKey) -> String {
         Some(h) => format!("Some(\"{}\")", h),
         None => "None".to_string(),
     };
-    let wif = match &wif_val {
-        Some(w) => format!("Some(\"{}\")", w),
-        None => "None".to_string(),
+
+    let wif_code = if derived_decrypted.is_some() {
+        let mut wif_with_derived = key.wif.clone().unwrap_or(TomlWif {
+            encrypted: None,
+            decrypted: None,
+            passphrase: None,
+        });
+        wif_with_derived.decrypted = derived_decrypted;
+        generate_wif_code(&Some(wif_with_derived))
+    } else {
+        generate_wif_code(&key.wif)
     };
+
     let seed = match &key.seed {
         Some(s) => {
             let phrase = match &s.phrase {
@@ -594,18 +666,14 @@ fn generate_key_code_required(key: &TomlKey) -> String {
         Some(m) => format!("Some(\"{}\")", m),
         None => "None".to_string(),
     };
-    let passphrase = match &key.passphrase {
-        Some(p) => format!("Some(\"{}\")", p),
-        None => "None".to_string(),
-    };
     let bits = match key.bits {
         Some(b) => format!("Some({})", b),
         None => "None".to_string(),
     };
     let shares = generate_shares_code(&key.shares);
     format!(
-        "Some(Key {{ hex: {}, wif: {}, seed: {}, mini: {}, passphrase: {}, bits: {}, shares: {} }})",
-        hex, wif, seed, mini, passphrase, bits, shares
+        "Some(Key {{ hex: {}, wif: {}, seed: {}, mini: {}, bits: {}, shares: {} }})",
+        hex, wif_code, seed, mini, bits, shares
     )
 }
 
@@ -714,6 +782,7 @@ fn main() {
     println!("cargo:rerun-if-changed=data/zden.toml");
     println!("cargo:rerun-if-changed=data/bitaps.toml");
     println!("cargo:rerun-if-changed=data/bitimage.toml");
+    println!("cargo:rerun-if-changed=data/ballet.toml");
     println!("cargo:rerun-if-changed=data/solvers.toml");
     println!("cargo:rerun-if-changed=assets");
 
@@ -726,6 +795,7 @@ fn main() {
     generate_zden(&out_dir, &solvers);
     generate_bitaps(&out_dir, &solvers);
     generate_bitimage(&out_dir, &solvers);
+    generate_ballet(&out_dir, &solvers);
 }
 
 fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
@@ -1449,4 +1519,134 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write bitimage_data.rs");
+}
+
+fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
+    let dest_path = Path::new(out_dir).join("ballet_data.rs");
+
+    let toml_content =
+        fs::read_to_string("data/ballet.toml").expect("Failed to read data/ballet.toml");
+
+    let data: BalletFile = toml::from_str(&toml_content).expect("Failed to parse ballet.toml");
+
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.8})", p),
+            None => "None".to_string(),
+        };
+
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
+        let hash160 = format_hash160(
+            &puzzle.address,
+            "bitcoin",
+            &format!("ballet/{}", puzzle.name),
+        );
+        let witness_program =
+            format_witness_program(&puzzle.address, &format!("ballet/{}", puzzle.name));
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+        let key = generate_key_code(&puzzle.key);
+
+        let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
+        let assets =
+            generate_assets_code(&puzzle.assets, "ballet", &format!("ballet/{}", puzzle.name));
+
+        let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
+            (Some(pk), Some(fmt)) => {
+                let format = match fmt.as_str() {
+                    "compressed" => "PubkeyFormat::Compressed",
+                    "uncompressed" => "PubkeyFormat::Uncompressed",
+                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, puzzle.name),
+                };
+                format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
+            }
+            (None, None) => "None".to_string(),
+            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", puzzle.name),
+            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", puzzle.name),
+        };
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "ballet/{}",
+        chain: Chain::Bitcoin,
+        address: Address {{
+            value: "{}",
+            chain: Chain::Bitcoin,
+            kind: "{}",
+            hash160: {},
+            witness_program: {},
+            redeem_script: {},
+        }},
+        status: {},
+        pubkey: {},
+        key: {},
+        prize: {},
+        start_date: {},
+        solve_date: {},
+        solve_time: {},
+        pre_genesis: false,
+        source_url: {},
+        transactions: {},
+        solver: {},
+        assets: {},
+    }},
+"#,
+            puzzle.name,
+            puzzle.address.value,
+            puzzle.address.kind,
+            hash160,
+            witness_program,
+            redeem_script,
+            status,
+            pubkey,
+            key,
+            prize,
+            start_date,
+            solve_date,
+            solve_time,
+            source_url,
+            transactions,
+            solver,
+            assets,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write ballet_data.rs");
 }

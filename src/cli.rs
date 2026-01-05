@@ -1,6 +1,6 @@
 use boha::{
-    b1000, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat, Puzzle,
-    Stats, Status, TransactionType,
+    b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat,
+    Puzzle, Stats, Status, TransactionType,
 };
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
@@ -453,10 +453,24 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 });
             }
             if let Some(wif) = key.wif {
-                rows.push(KeyValueRow {
-                    field: "  WIF".to_string(),
-                    value: wif.to_string().bright_red().to_string(),
-                });
+                if let Some(encrypted) = wif.encrypted {
+                    rows.push(KeyValueRow {
+                        field: "  WIF (encrypted)".to_string(),
+                        value: encrypted.to_string().bright_red().to_string(),
+                    });
+                }
+                if let Some(decrypted) = wif.decrypted {
+                    rows.push(KeyValueRow {
+                        field: "  WIF".to_string(),
+                        value: decrypted.to_string().bright_red().to_string(),
+                    });
+                }
+                if let Some(passphrase) = wif.passphrase {
+                    rows.push(KeyValueRow {
+                        field: "  Passphrase".to_string(),
+                        value: passphrase.to_string().bright_red().to_string(),
+                    });
+                }
             }
             if let Some(seed) = &key.seed {
                 if let Some(phrase) = seed.phrase {
@@ -482,12 +496,6 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 rows.push(KeyValueRow {
                     field: "  Mini".to_string(),
                     value: mini.to_string().bright_red().to_string(),
-                });
-            }
-            if let Some(passphrase) = key.passphrase {
-                rows.push(KeyValueRow {
-                    field: "  Passphrase".to_string(),
-                    value: passphrase.to_string().bright_red().to_string(),
                 });
             }
         }
@@ -771,6 +779,7 @@ fn cmd_list(
 ) {
     let puzzles: Vec<&Puzzle> = match collection {
         "b1000" => b1000::all().collect(),
+        "ballet" => ballet::all().collect(),
         "bitaps" => bitaps::all().collect(),
         "bitimage" => bitimage::all().collect(),
         "gsmg" => gsmg::all().collect(),

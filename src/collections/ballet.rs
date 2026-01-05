@@ -1,12 +1,11 @@
-//! Peter Todd's hash collision bounties (P2SH).
-
 #[allow(unused_imports)]
 use crate::{
-    Address, Author, Chain, Entropy, EntropySource, Error, Key, Passphrase, Profile, Puzzle,
-    RedeemScript, Result, Seed, Solver, Status, Transaction, TransactionType, Wif,
+    Address, Assets, Author, Chain, Entropy, EntropySource, Error, Key, Passphrase, Profile,
+    Pubkey, PubkeyFormat, Puzzle, RedeemScript, Result, Seed, Solver, Status, Transaction,
+    TransactionType, Wif,
 };
 
-include!(concat!(env!("OUT_DIR"), "/hash_collision_data.rs"));
+include!(concat!(env!("OUT_DIR"), "/ballet_data.rs"));
 
 pub fn author() -> &'static Author {
     &AUTHOR
@@ -16,7 +15,7 @@ pub fn get(name: &str) -> Result<&'static Puzzle> {
     let search_id = if name.contains('/') {
         name.to_string()
     } else {
-        format!("hash_collision/{}", name)
+        format!("ballet/{}", name)
     };
 
     PUZZLES
@@ -29,10 +28,14 @@ pub fn all() -> impl Iterator<Item = &'static Puzzle> {
     PUZZLES.iter()
 }
 
+pub fn solved() -> impl Iterator<Item = &'static Puzzle> {
+    PUZZLES.iter().filter(|p| p.status == Status::Solved)
+}
+
 pub fn unsolved() -> impl Iterator<Item = &'static Puzzle> {
     PUZZLES.iter().filter(|p| p.status == Status::Unsolved)
 }
 
 pub const fn count() -> usize {
-    6
+    PUZZLES.len()
 }

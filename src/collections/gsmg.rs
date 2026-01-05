@@ -3,7 +3,7 @@
 #[allow(unused_imports)]
 use crate::{
     Address, Assets, Author, Chain, Entropy, EntropySource, Key, Passphrase, Profile, Pubkey,
-    PubkeyFormat, Puzzle, RedeemScript, Seed, Solver, Status, Transaction, TransactionType,
+    PubkeyFormat, Puzzle, RedeemScript, Seed, Solver, Status, Transaction, TransactionType, Wif,
 };
 
 include!(concat!(env!("OUT_DIR"), "/gsmg_data.rs"));

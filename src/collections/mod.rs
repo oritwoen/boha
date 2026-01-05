@@ -1,4 +1,5 @@
 pub mod b1000;
+pub mod ballet;
 pub mod bitaps;
 pub mod bitimage;
 pub mod gsmg;
