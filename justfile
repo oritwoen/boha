@@ -29,14 +29,18 @@ release version:
     
     echo "Releasing v$VERSION..."
     
-    sed -i '0,/^version = /s/^version = \".*\"/version = "'"$VERSION"'"/' Cargo.toml
+    sed -i '0,/^version = /s/^version = \".*\"/version = \"'"$VERSION"'\"/' Cargo.toml
     sed -i "s/^pkgver=.*/pkgver=$VERSION/" PKGBUILD
+    
+    MAJOR_MINOR=$(echo "$VERSION" | sed 's/\.[0-9]*$//')
+    sed -i 's/boha = "'"[0-9]*\.[0-9]*"'"/boha = "'"$MAJOR_MINOR"'"/' README.md
+    sed -i 's/boha = { version = "'"[0-9]*\.[0-9]*"'"/boha = { version = "'"$MAJOR_MINOR"'"/' README.md
     
     cargo update -p boha
     
     git cliff --tag "v$VERSION" -o CHANGELOG.md
     
-    git add Cargo.toml Cargo.lock PKGBUILD CHANGELOG.md
+    git add Cargo.toml Cargo.lock PKGBUILD CHANGELOG.md README.md
     git commit -m "chore(release): v$VERSION"
     
     git tag -a "v$VERSION" -m "Release v$VERSION"
