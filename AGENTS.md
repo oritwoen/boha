@@ -1,12 +1,12 @@
 # BOHA - Project Knowledge Base
 
-**Generated:** 2026-01-04
-**Commit:** 01e6826
+**Generated:** 2026-01-05
+**Commit:** 386a728
 **Branch:** main
 
 ## OVERVIEW
 
-Rust library + CLI for crypto puzzle/bounty data. Build-time TOML→Rust codegen. Six collections: b1000 (256 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), zden (15 visual puzzles).
+Rust library + CLI for crypto puzzle/bounty data. Build-time TOML→Rust codegen. Seven collections: b1000 (256 puzzles), ballet (3 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), zden (15 visual puzzles).
 
 ## STRUCTURE
 
@@ -17,9 +17,9 @@ boha/
 │   ├── cli.rs              # CLI binary (--features cli) - NOT main.rs
 │   ├── puzzle.rs           # Puzzle, Address, Key, Status, Chain, Profile structs
 │   ├── balance.rs          # Multi-chain async balance fetch
-│   └── collections/        # Six collection modules with generated data
+│   └── collections/        # Seven collection modules with generated data
 ├── data/
-│   ├── *.toml              # Source of truth (b1000, bitaps, bitimage, gsmg, hash_collision, zden)
+│   ├── *.toml              # Source of truth (b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden)
 │   ├── solvers.toml        # Solver definitions (referenced by ID in puzzle files)
 │   └── cache/              # API response cache for scripts
 ├── scripts/                # Separate Cargo project - see scripts/AGENTS.md
@@ -111,14 +111,15 @@ cargo run --features cli -- balance b1000/71
 
 ## TESTING
 
-Data-driven validation (121 tests total):
-- **validation.rs** (77): Cryptographic checks (h160, script_hash), range validation, format checks
-- **cli.rs** (44): Integration tests via assert_cmd
+Data-driven validation (160 tests total):
+- **validation.rs**: Cryptographic checks (h160, script_hash), range validation, format checks
+- **cli.rs**: Integration tests via assert_cmd
 
 ## NOTES
 
 - b1000 puzzle #N: private key in `[2^(N-1), 2^N - 1]`
 - b1000 puzzles 1-2: `pre_genesis = true` (claimed before puzzle creation 2015-01-15)
+- ballet: Physical crypto wallet cards with BIP38 encrypted keys (Bobby Lee's challenge)
 - bitaps: Shamir Secret Sharing - 2 of 3 shares published, third unknown
 - bitimage: Keys derived from files using SHA256(Base64(file)) as BIP39 entropy
 - hash_collision: Peter Todd's P2SH bounties for finding hash collisions
