@@ -46,3 +46,7 @@ path = "src/bin/add_timestamps.rs"
 [[bin]]
 name = "derive-pubkey-from-xpub"
 path = "src/bin/derive_pubkey_from_xpub.rs"
+
+[[bin]]
+name = "generate-wif"
+path = "src/bin/generate_wif.rs"
