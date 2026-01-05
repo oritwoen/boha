@@ -18,7 +18,7 @@ with_pubkey_count = 184
 # Note: Puzzle 1 has transactions predating puzzle creation (2015-01-15).
 # The trivial private key (1) was discovered and claimed in 2013, before the puzzle existed.
 [[puzzles]]
-key = { bits = 1, hex = "0000000000000000000000000000000000000000000000000000000000000001" }
+key = { bits = 1, hex = "0000000000000000000000000000000000000000000000000000000000000001" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU73sVHnoWn" } }
 address = { value = "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH", kind = "p2pkh", hash160 = "751e76e8199196d454941c45d1b3a323f1433bd6" }
 prize = 0.001
 status = "solved"
@@ -32,7 +32,7 @@ transactions = [{ type = "funding", txid = "9223da07e858c6f153fbb8a24db52374ca19
 
 # Note: Puzzle 2 has a test transaction from the author predating puzzle creation (2015-01-15).
 [[puzzles]]
-key = { bits = 2, hex = "0000000000000000000000000000000000000000000000000000000000000003" }
+key = { bits = 2, hex = "0000000000000000000000000000000000000000000000000000000000000003" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU74sHUHy8S" } }
 address = { value = "1CUNEBjYrCn2y1SdiUMohaKUi4wpP326Lb", kind = "p2pkh", hash160 = "7dd65592d0ab2fe0d0257d571abf032cd9db93dc" }
 prize = 0.002
 status = "solved"
@@ -45,7 +45,7 @@ pre_genesis = true
 transactions = [{ type = "funding", txid = "9294c9d71d9da40bc4344b5755e7652789df3bc1a9f660e040725216361d1c54", date = "2014-07-29 21:53:54", amount = 0.0001 }, { type = "pubkey_reveal", txid = "30ab16d9eb2777caa6d4734d620d618fc797f62b3f7a167b97b0edc0e0cf8973", date = "2014-07-29 21:53:54", amount = 0.0001 }, { type = "increase", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.002 }, { type = "claim", txid = "4feb64593f6bd3ebc05906db6aeb7f6c9beb65a970d97b48c64fb4653774d79e", date = "2015-01-15 18:07:14", amount = 0.002 }]
 
 [[puzzles]]
-key = { bits = 3, hex = "0000000000000000000000000000000000000000000000000000000000000007" }
+key = { bits = 3, hex = "0000000000000000000000000000000000000000000000000000000000000007" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU76rnZwVdz" } }
 address = { value = "19ZewH8Kk1PDbSNdJ97FP4EiCjTRaZMZQA", kind = "p2pkh", hash160 = "5dedfbf9ea599dd4e3ca6a80b333c472fd0b3f69" }
 prize = 0.003
 status = "solved"
@@ -57,7 +57,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.003 }, { type = "claim", txid = "fa1b9a669a7c16f1d0b15cfb57e9830ccee36db984bd074de450e47088c8d078", date = "2015-01-15 18:07:14", amount = 0.003 }]
 
 [[puzzles]]
-key = { bits = 4, hex = "0000000000000000000000000000000000000000000000000000000000000008" }
+key = { bits = 4, hex = "0000000000000000000000000000000000000000000000000000000000000008" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU77MfhviY5" } }
 address = { value = "1EhqbyUMvvs7BfL8goY6qcPbD6YKfPqb7e", kind = "p2pkh", hash160 = "9652d86bedf43ad264362e6e6eba6eb764508127" }
 prize = 0.004
 status = "solved"
@@ -69,7 +69,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.004 }, { type = "claim", txid = "7c4f3c3022a956e7ad80bd0d3642f7e2e0a3dd4b275b7241cf1963610250d65b", date = "2015-01-15 18:07:14", amount = 0.004 }]
 
 [[puzzles]]
-key = { bits = 5, hex = "0000000000000000000000000000000000000000000000000000000000000015" }
+key = { bits = 5, hex = "0000000000000000000000000000000000000000000000000000000000000015" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU7Dq8Au4Pv" } }
 address = { value = "1E6NuFjCi27W5zoXg8TRdcSRq84zJeBW3k", kind = "p2pkh", hash160 = "8f9dff39a81ee4abcbad2ad8bafff090415a2be8" }
 prize = 0.005
 status = "solved"
@@ -81,7 +81,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.005 }, { type = "claim", txid = "4f5a32521f352d48cc4491c6de3485764997c0cd089f63e822f4e7ed05015d20", date = "2015-01-15 18:07:14", amount = 0.005 }]
 
 [[puzzles]]
-key = { bits = 6, hex = "0000000000000000000000000000000000000000000000000000000000000031" }
+key = { bits = 6, hex = "0000000000000000000000000000000000000000000000000000000000000031" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU7Tmu6qHxS" } }
 address = { value = "1PitScNLyp2HCygzadCh7FveTnfmpPbfp8", kind = "p2pkh", hash160 = "f93ec34e9e34a8f8ff7d600cdad83047b1bcb45c" }
 prize = 0.006
 status = "solved"
@@ -93,7 +93,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.006 }, { type = "claim", txid = "aa75e831a27d71dae09a5feeb7fec041ba0a55d1e9c3ac1d32ce88852dcedaa3", date = "2015-01-15 18:07:14", amount = 0.006 }]
 
 [[puzzles]]
-key = { bits = 7, hex = "000000000000000000000000000000000000000000000000000000000000004c" }
+key = { bits = 7, hex = "000000000000000000000000000000000000000000000000000000000000004c" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU7hDgvu64y" } }
 address = { value = "1McVt1vMtCC7yn5b9wgX1833yCcLXzueeC", kind = "p2pkh", hash160 = "e2192e8a7dd8dd1c88321959b477968b941aa973" }
 prize = 0.007
 status = "solved"
@@ -105,7 +105,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.007 }, { type = "claim", txid = "09817b72199818d5610d44f9427f87c84ef3905004b751c5198059188e2de9b4", date = "2015-01-15 18:07:14", amount = 0.007 }]
 
 [[puzzles]]
-key = { bits = 8, hex = "00000000000000000000000000000000000000000000000000000000000000e0" }
+key = { bits = 8, hex = "00000000000000000000000000000000000000000000000000000000000000e0" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFU8xvGK1zpm" } }
 address = { value = "1M92tSqNmQLYw33fuBvjmeadirh1ysMBxK", kind = "p2pkh", hash160 = "dce76b2613052ea012204404a97b3c25eac31715" }
 prize = 0.008
 status = "solved"
@@ -117,7 +117,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.008 }, { type = "claim", txid = "0827fb603364998f7f24724e2f4f4befd6ada60dbef28f91307fe7a79e98a4f8", date = "2015-01-15 18:07:14", amount = 0.008 }]
 
 [[puzzles]]
-key = { bits = 9, hex = "00000000000000000000000000000000000000000000000000000000000001d3" }
+key = { bits = 9, hex = "00000000000000000000000000000000000000000000000000000000000001d3" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFUB3vfDKcxZ" } }
 address = { value = "1CQFwcjw1dwhtkVWBttNLDtqL7ivBonGPV", kind = "p2pkh", hash160 = "7d0f6c64afb419bbd7e971e943d7404b0e0daab4" }
 prize = 0.009
 status = "solved"
@@ -129,7 +129,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.009 }, { type = "claim", txid = "49647889152f4f444e6007e94d59f24003e9f012687efbd7bc273c26371c3aba", date = "2015-01-15 18:07:14", amount = 0.009 }]
 
 [[puzzles]]
-key = { bits = 10, hex = "0000000000000000000000000000000000000000000000000000000000000202" }
+key = { bits = 10, hex = "0000000000000000000000000000000000000000000000000000000000000202" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFUBTL67V6dE" } }
 address = { value = "1LeBZP5QCwwgXRtmVUvTVrraqPUokyLHqe", kind = "p2pkh", hash160 = "d7729816650e581d7462d52ad6f732da0e2ec93b" }
 prize = 0.01
 status = "solved"
@@ -141,7 +141,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.01 }, { type = "claim", txid = "b70f19f2581acf4320cf069379982f2df6f9c8b8ef91ed59279e32453a81ad62", date = "2015-01-15 18:07:14", amount = 0.01 }]
 
 [[puzzles]]
-key = { bits = 11, hex = "0000000000000000000000000000000000000000000000000000000000000483" }
+key = { bits = 11, hex = "0000000000000000000000000000000000000000000000000000000000000483" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFUGxXgtm63M" } }
 address = { value = "1PgQVLmst3Z314JrQn5TNiys8Hc38TcXJu", kind = "p2pkh", hash160 = "f8c698da3164ef8fa4258692d118cc9a902c5acc" }
 prize = 0.011
 status = "solved"
@@ -153,7 +153,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.011 }, { type = "claim", txid = "5c2f4fc31a359f72a363488496365eff2e8eed1b59e4e6dc240d5b8dfa740376", date = "2015-01-15 18:07:14", amount = 0.011 }]
 
 [[puzzles]]
-key = { bits = 12, hex = "0000000000000000000000000000000000000000000000000000000000000a7b" }
+key = { bits = 12, hex = "0000000000000000000000000000000000000000000000000000000000000a7b" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFUW5RtS2JN1" } }
 address = { value = "1DBaumZxUkM4qMQRt2LVWyFJq5kDtSZQot", kind = "p2pkh", hash160 = "85a1f9ba4da24c24e582d9b891dacbd1b043f971" }
 prize = 0.012
 status = "solved"
@@ -165,7 +165,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.012 }, { type = "claim", txid = "5bf0a6d4af73ac148a5b1d26c82d4c7567f45f868f427b48efad7cae08fb22df", date = "2015-01-15 18:07:14", amount = 0.012 }]
 
 [[puzzles]]
-key = { bits = 13, hex = "0000000000000000000000000000000000000000000000000000000000001460" }
+key = { bits = 13, hex = "0000000000000000000000000000000000000000000000000000000000001460" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFUspniiQZds" } }
 address = { value = "1Pie8JkxBT6MGPz9Nvi3fsPkr2D8q3GBc1", kind = "p2pkh", hash160 = "f932d0188616c964416b91fb9cf76ba9790a921e" }
 prize = 0.013
 status = "solved"
@@ -177,7 +177,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.013 }, { type = "claim", txid = "2686aca4a211031b75396dbb9baecadfc01a1534d8682c8eacd307ab2c8f47e0", date = "2015-01-15 18:07:14", amount = 0.013 }]
 
 [[puzzles]]
-key = { bits = 14, hex = "0000000000000000000000000000000000000000000000000000000000002930" }
+key = { bits = 14, hex = "0000000000000000000000000000000000000000000000000000000000002930" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFVfZyiN5iEG" } }
 address = { value = "1ErZWg5cFCe4Vw5BzgfzB74VNLaXEiEkhk", kind = "p2pkh", hash160 = "97f9281a1383879d72ac52a6a3e9e8b9a4a4f655" }
 prize = 0.014
 status = "solved"
@@ -189,7 +189,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.014 }, { type = "claim", txid = "c0d88c38111f54c86e2f5f1921c8dedd6b8ca6052baf496010ab755dcece5b46", date = "2015-01-15 18:07:14", amount = 0.014 }]
 
 [[puzzles]]
-key = { bits = 15, hex = "00000000000000000000000000000000000000000000000000000000000068f3" }
+key = { bits = 15, hex = "00000000000000000000000000000000000000000000000000000000000068f3" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFY5iMZbuRxj" } }
 address = { value = "1QCbW9HWnwQWiQqVo5exhAnmfqKRrCRsvW", kind = "p2pkh", hash160 = "fe7c45126731f7384640b0b0045fd40bac72e2a2" }
 prize = 0.015
 status = "solved"
@@ -201,7 +201,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.015 }, { type = "claim", txid = "b82f780d5619131a0f98eb0bcfc2f01ce4b3997bc0066d9498b22073c163f4cf", date = "2015-01-15 18:07:14", amount = 0.015 }]
 
 [[puzzles]]
-key = { bits = 16, hex = "000000000000000000000000000000000000000000000000000000000000c936" }
+key = { bits = 16, hex = "000000000000000000000000000000000000000000000000000000000000c936" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFbjHrFMWzJp" } }
 address = { value = "1BDyrQ6WoF8VN3g9SAS1iKZcPzFfnDVieY", kind = "p2pkh", hash160 = "7025b4efb3ff42eb4d6d71fab6b53b4f4967e3dd" }
 prize = 0.016
 status = "solved"
@@ -213,7 +213,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.016 }, { type = "claim", txid = "4d102a549127e6fcdc4f6b4820a2c99eeba71af9fc0d6e79f43571f192bd09c8", date = "2015-01-15 18:07:14", amount = 0.016 }]
 
 [[puzzles]]
-key = { bits = 17, hex = "000000000000000000000000000000000000000000000000000000000001764f" }
+key = { bits = 17, hex = "000000000000000000000000000000000000000000000000000000000001764f" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFiHkRsp99uC" } }
 address = { value = "1HduPEXZRdG26SUT5Yk83mLkPyjnZuJ7Bm", kind = "p2pkh", hash160 = "b67cb6edeabc0c8b927c9ea327628e7aa63e2d52" }
 prize = 0.017
 status = "solved"
@@ -225,7 +225,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.017 }, { type = "claim", txid = "e1818d951b51d4a0ed05f49b52e3300524bbdd03ad5d29bad15a1a09a5431e50", date = "2015-01-15 18:07:14", amount = 0.017 }]
 
 [[puzzles]]
-key = { bits = 18, hex = "000000000000000000000000000000000000000000000000000000000003080d" }
+key = { bits = 18, hex = "000000000000000000000000000000000000000000000000000000000003080d" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rFyWkjT5fywW" } }
 address = { value = "1GnNTmTVLZiqQfLbAdp9DVdicEnB5GoERE", kind = "p2pkh", hash160 = "ad1e852b08eba53df306ec9daa8c643426953f94" }
 prize = 0.018
 status = "solved"
@@ -237,7 +237,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.018 }, { type = "claim", txid = "f785502a72d26cd6b6d26da5d5b4917f2fc5b74e57d7a139f4b7c2275acf2b62", date = "2015-01-15 18:07:14", amount = 0.018 }]
 
 [[puzzles]]
-key = { bits = 19, hex = "000000000000000000000000000000000000000000000000000000000005749f" }
+key = { bits = 19, hex = "000000000000000000000000000000000000000000000000000000000005749f" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rGP2jMrxCfX3" } }
 address = { value = "1NWmZRpHH4XSPwsW6dsS3nrNWfL1yrJj4w", kind = "p2pkh", hash160 = "ebfbe6819fcdebab061732ce91df7d586a037dee" }
 prize = 0.019
 status = "solved"
@@ -249,7 +249,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.019 }, { type = "claim", txid = "ea746998394eafff179098d4df6a9c7caf79b2583a316ac0948276edfc58ba43", date = "2015-01-15 18:07:14", amount = 0.019 }]
 
 [[puzzles]]
-key = { bits = 20, hex = "00000000000000000000000000000000000000000000000000000000000d2c55" }
+key = { bits = 20, hex = "00000000000000000000000000000000000000000000000000000000000d2c55" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rHfuE2Tg4nJW" } }
 address = { value = "1HsMJxNiV7TLxmoF6uJNkydxPFDog4NQum", kind = "p2pkh", hash160 = "b907c3a2a3b27789dfb509b730dd47703c272868" }
 prize = 0.02
 status = "solved"
@@ -261,7 +261,7 @@ solve_time = 0
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.02 }, { type = "claim", txid = "3121aba5b7cc4d766a1e1b937c456d299bd75c6f3059c82353a4918b714d66c4", date = "2015-01-15 18:07:14", amount = 0.02 }]
 
 [[puzzles]]
-key = { bits = 21, hex = "00000000000000000000000000000000000000000000000000000000001ba534" }
+key = { bits = 21, hex = "00000000000000000000000000000000000000000000000000000000001ba534" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rL6JJvw6XUry" } }
 address = { value = "14oFNXucftsHiUMY8uctg6N487riuyXs4h", kind = "p2pkh", hash160 = "29a78213caa9eea824acf08022ab9dfc83414f56" }
 prize = 0.021
 status = "solved"
@@ -273,7 +273,7 @@ solve_time = 3857
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.021 }, { type = "claim", txid = "cfbfafab6e04041ad36fb2395c2dd384f943ebdf61910c799f8f4a87276b2914", date = "2015-01-15 19:11:31", amount = 0.021 }]
 
 [[puzzles]]
-key = { bits = 22, hex = "00000000000000000000000000000000000000000000000000000000002de40f" }
+key = { bits = 22, hex = "00000000000000000000000000000000000000000000000000000000002de40f" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rP9Ja2dhtxoh" } }
 address = { value = "1CfZWK1QTQE3eS9qn61dQjV89KDjZzfNcv", kind = "p2pkh", hash160 = "7ff45303774ef7a52fffd8011981034b258cb86b" }
 prize = 0.022
 status = "solved"
@@ -285,7 +285,7 @@ solve_time = 14891
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.022 }, { type = "claim", txid = "0eb5b5c103e68eb0931430e7786cf1b6962f9eed5a2cb5271d4dd1699b77e86f", date = "2015-01-15 22:15:25", amount = 0.022 }]
 
 [[puzzles]]
-key = { bits = 23, hex = "0000000000000000000000000000000000000000000000000000000000556e52" }
+key = { bits = 23, hex = "0000000000000000000000000000000000000000000000000000000000556e52" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rVkthFNsQ6i7" } }
 address = { value = "1L2GM8eE7mJWLdo3HZS6su1832NX2txaac", kind = "p2pkh", hash160 = "d0a79df189fe1ad5c306cc70497b358415da579e" }
 prize = 0.023
 status = "solved"
@@ -297,7 +297,7 @@ solve_time = 3857
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.023 }, { type = "claim", txid = "cfbfafab6e04041ad36fb2395c2dd384f943ebdf61910c799f8f4a87276b2914", date = "2015-01-15 19:11:31", amount = 0.023 }]
 
 [[puzzles]]
-key = { bits = 24, hex = "0000000000000000000000000000000000000000000000000000000000dc2a04" }
+key = { bits = 24, hex = "0000000000000000000000000000000000000000000000000000000000dc2a04" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7rtHyNcFoApRd" } }
 address = { value = "1rSnXMr63jdCuegJFuidJqWxUPV7AtUf7", kind = "p2pkh", hash160 = "0959e80121f36aea13b3bad361c15dac26189e2f" }
 prize = 0.024
 status = "solved"
@@ -309,7 +309,7 @@ solve_time = 14891
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.024 }, { type = "claim", txid = "0eb5b5c103e68eb0931430e7786cf1b6962f9eed5a2cb5271d4dd1699b77e86f", date = "2015-01-15 22:15:25", amount = 0.024 }]
 
 [[puzzles]]
-key = { bits = 25, hex = "0000000000000000000000000000000000000000000000000000000001fa5ee5" }
+key = { bits = 25, hex = "0000000000000000000000000000000000000000000000000000000001fa5ee5" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7siAXycwkwRQg" } }
 address = { value = "15JhYXn6Mx3oF4Y7PcTAv2wVVAuCFFQNiP", kind = "p2pkh", hash160 = "2f396b29b27324300d0c59b17c3abc1835bd3dbb" }
 prize = 0.025
 status = "solved"
@@ -321,7 +321,7 @@ solve_time = 14891
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.025 }, { type = "claim", txid = "0eb5b5c103e68eb0931430e7786cf1b6962f9eed5a2cb5271d4dd1699b77e86f", date = "2015-01-15 22:15:25", amount = 0.025 }]
 
 [[puzzles]]
-key = { bits = 26, hex = "000000000000000000000000000000000000000000000000000000000340326e" }
+key = { bits = 26, hex = "000000000000000000000000000000000000000000000000000000000340326e" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7tefTXkqGMNis" } }
 address = { value = "1JVnST957hGztonaWK6FougdtjxzHzRMMg", kind = "p2pkh", hash160 = "bfebb73562d4541b32a02ba664d140b5a574792f" }
 prize = 0.026
 status = "solved"
@@ -333,7 +333,7 @@ solve_time = 14891
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.026 }, { type = "claim", txid = "0eb5b5c103e68eb0931430e7786cf1b6962f9eed5a2cb5271d4dd1699b77e86f", date = "2015-01-15 22:15:25", amount = 0.026 }]
 
 [[puzzles]]
-key = { bits = 27, hex = "0000000000000000000000000000000000000000000000000000000006ac3875" }
+key = { bits = 27, hex = "0000000000000000000000000000000000000000000000000000000006ac3875" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M7wBBz2KJQdASx" } }
 address = { value = "128z5d7nN7PkCuX5qoA4Ys6pmxUYnEy86k", kind = "p2pkh", hash160 = "0c7aaf6caa7e5424b63d317f0f8f1f9fa40d5560" }
 prize = 0.027
 status = "solved"
@@ -345,7 +345,7 @@ solve_time = 14891
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.027 }, { type = "claim", txid = "0eb5b5c103e68eb0931430e7786cf1b6962f9eed5a2cb5271d4dd1699b77e86f", date = "2015-01-15 22:15:25", amount = 0.027 }]
 
 [[puzzles]]
-key = { bits = 28, hex = "000000000000000000000000000000000000000000000000000000000d916ce8" }
+key = { bits = 28, hex = "000000000000000000000000000000000000000000000000000000000d916ce8" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M82GSgY8p5EkUe" } }
 address = { value = "12jbtzBb54r97TCwW3G1gCFoumpckRAPdY", kind = "p2pkh", hash160 = "1306b9e4ff56513a476841bac7ba48d69516b1da" }
 prize = 0.028
 status = "solved"
@@ -357,7 +357,7 @@ solve_time = 14891
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.028 }, { type = "claim", txid = "0eb5b5c103e68eb0931430e7786cf1b6962f9eed5a2cb5271d4dd1699b77e86f", date = "2015-01-15 22:15:25", amount = 0.028 }]
 
 [[puzzles]]
-key = { bits = 29, hex = "0000000000000000000000000000000000000000000000000000000017e2551e" }
+key = { bits = 29, hex = "0000000000000000000000000000000000000000000000000000000017e2551e" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M89tAnjFUUDRtJ" } }
 address = { value = "19EEC52krRUK1RkUAEZmQdjTyHT7Gp1TYT", kind = "p2pkh", hash160 = "5a416cc9148f4a377b672c8ae5d3287adaafadec" }
 prize = 0.029
 status = "solved"
@@ -369,7 +369,7 @@ solve_time = 31164
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.029 }, { type = "claim", txid = "c9878a6de4f0d482020411aa870eb3f6ca04b3dd1b2cf3ac5cf1ae265196e269", date = "2015-01-16 02:46:38", amount = 0.029 }]
 
 [[puzzles]]
-key = { bits = 30, hex = "000000000000000000000000000000000000000000000000000000003d94cd64" }
+key = { bits = 30, hex = "000000000000000000000000000000000000000000000000000000003d94cd64" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M8diLSC5MyERoW" } }
 address = { value = "1LHtnpd8nU5VHEMkG2TMYYNUjjLc992bps", kind = "p2pkh", hash160 = "d39c4704664e1deb76c9331e637564c257d68a08" }
 prize = 0.03
 status = "solved"
@@ -381,7 +381,7 @@ solve_time = 69884
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.03 }, { type = "claim", txid = "7c08f94495f5773e65c50d7a0a03e366802de9ac4063ed79316d9eba332d0e9d", date = "2015-01-16 13:31:58", amount = 0.03 }]
 
 [[puzzles]]
-key = { bits = 31, hex = "000000000000000000000000000000000000000000000000000000007d4fe747" }
+key = { bits = 31, hex = "000000000000000000000000000000000000000000000000000000007d4fe747" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9M9SmFMSCA4jQRW" } }
 address = { value = "1LhE6sCTuGae42Axu1L1ZB7L96yi9irEBE", kind = "p2pkh", hash160 = "d805f6f251f7479ebd853b3d0f4b9b2656d92f1d" }
 prize = 0.031
 status = "solved"
@@ -393,7 +393,7 @@ solve_time = 50101
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.031 }, { type = "claim", txid = "d482463d265ca83307f80ebcc2c3cb47b5b0e2347d08674ba0b7c2c6876155af", date = "2015-01-16 08:02:15", amount = 0.031 }]
 
 [[puzzles]]
-key = { bits = 32, hex = "00000000000000000000000000000000000000000000000000000000b862a62e" }
+key = { bits = 32, hex = "00000000000000000000000000000000000000000000000000000000b862a62e" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9MACNivtz8yMYTd" } }
 address = { value = "1FRoHA9xewq7DjrZ1psWJVeTer8gHRqEvR", kind = "p2pkh", hash160 = "9e42601eeaedc244e15f17375adb0e2cd08efdc9" }
 prize = 0.032
 status = "solved"
@@ -405,7 +405,7 @@ solve_time = 39005
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.032 }, { type = "claim", txid = "919f5c226b8926d2203c6e1995738b7223b157740cb5c0fd33399860ded9866b", date = "2015-01-16 04:57:19", amount = 0.032 }]
 
 [[puzzles]]
-key = { bits = 33, hex = "00000000000000000000000000000000000000000000000000000001a96ca8d8" }
+key = { bits = 33, hex = "00000000000000000000000000000000000000000000000000000001a96ca8d8" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9MDGKrXXQL647jj" } }
 address = { value = "187swFMjz1G54ycVU56B7jZFHFTNVQFDiu", kind = "p2pkh", hash160 = "4e15e5189752d1eaf444dfd6bff399feb0443977" }
 prize = 0.033
 status = "solved"
@@ -417,7 +417,7 @@ solve_time = 81374
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.033 }, { type = "claim", txid = "718f7962432312acda2aeecdf18e94f5960f51013cc4d38134e7493c21e77baf", date = "2015-01-16 16:43:28", amount = 0.033 }]
 
 [[puzzles]]
-key = { bits = 34, hex = "000000000000000000000000000000000000000000000000000000034a65911d" }
+key = { bits = 34, hex = "000000000000000000000000000000000000000000000000000000034a65911d" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9MJaAKqns7PN9Ra" } }
 address = { value = "1PWABE7oUahG2AFFQhhvViQovnCr4rEv7Q", kind = "p2pkh", hash160 = "f6d67d7983bf70450f295c9cb828daab265f1bfa" }
 prize = 0.034
 status = "solved"
@@ -429,7 +429,7 @@ solve_time = 108440
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.034 }, { type = "claim", txid = "03da907c6b671764ee78fcca78e126c781640efb691d011f5aff0f09072a6104", date = "2015-01-17 00:14:34", amount = 0.034 }]
 
 [[puzzles]]
-key = { bits = 35, hex = "00000000000000000000000000000000000000000000000000000004aed21170" }
+key = { bits = 35, hex = "00000000000000000000000000000000000000000000000000000004aed21170" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9MP7J9oTbu6KuRr" } }
 address = { value = "1PWCx5fovoEaoBowAvF5k91m2Xat9bMgwb", kind = "p2pkh", hash160 = "f6d8ce225ffbdecec170f8298c3fc28ae686df25" }
 prize = 0.035
 status = "solved"
@@ -441,7 +441,7 @@ solve_time = 134773
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.035 }, { type = "claim", txid = "9308722efdd45b5e4f6efbad73c9b0e5172bbc4db877a54d47b99caa31f08ab0", date = "2015-01-17 07:33:27", amount = 0.035 }]
 
 [[puzzles]]
-key = { bits = 36, hex = "00000000000000000000000000000000000000000000000000000009de820a7c" }
+key = { bits = 36, hex = "00000000000000000000000000000000000000000000000000000009de820a7c" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9Mg1Upu7eJAtiDr" } }
 address = { value = "1Be2UF9NLfyLFbtm3TCbmuocc9N1Kduci1", kind = "p2pkh", hash160 = "74b1e012be1521e5d8d75e745a26ced845ea3d37" }
 prize = 0.036
 status = "solved"
@@ -453,7 +453,7 @@ solve_time = 169646
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.036 }, { type = "claim", txid = "ef14a1ad1e267ffa71c2d6d719e094a444a0fce6658b47132df7b7c1d95b95b2", date = "2015-01-17 17:14:40", amount = 0.036 }]
 
 [[puzzles]]
-key = { bits = 37, hex = "0000000000000000000000000000000000000000000000000000001757756a93" }
+key = { bits = 37, hex = "0000000000000000000000000000000000000000000000000000001757756a93" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9NRuiZFAX6XciCX" } }
 address = { value = "14iXhn8bGajVWegZHJ18vJLHhntcpL4dex", kind = "p2pkh", hash160 = "28c30fb9118ed1da72e7c4f89c0164756e8a021d" }
 prize = 0.037
 status = "solved"
@@ -465,7 +465,7 @@ solve_time = 278697
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.037 }, { type = "claim", txid = "21552e7e7e07498972ebf6e3ef56d7fc91dadbc7af32790e36ca2eeb4fd575c5", date = "2015-01-18 23:32:11", amount = 0.037 }]
 
 [[puzzles]]
-key = { bits = 38, hex = "00000000000000000000000000000000000000000000000000000022382facd0" }
+key = { bits = 38, hex = "00000000000000000000000000000000000000000000000000000022382facd0" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9P3MahktLW5315v" } }
 address = { value = "1HBtApAFA9B2YZw3G2YKSMCtb3dVnjuNe2", kind = "p2pkh", hash160 = "b190e2d40cfdeee2cee072954a2be89e7ba39364" }
 prize = 0.038
 status = "solved"
@@ -477,7 +477,7 @@ solve_time = 318013
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.038 }, { type = "claim", txid = "3def611be07c9e5866c9cf293fcb52ca132e56abcd8fa19130bd7a8d5d4b7c28", date = "2015-01-19 10:27:27", amount = 0.038 }]
 
 [[puzzles]]
-key = { bits = 39, hex = "0000000000000000000000000000000000000000000000000000004b5f8303e9" }
+key = { bits = 39, hex = "0000000000000000000000000000000000000000000000000000004b5f8303e9" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9RMTSCcQzX3EjMZ" } }
 address = { value = "122AJhKLEfkFBaGAd84pLp1kfE7xK3GdT8", kind = "p2pkh", hash160 = "0b304f2a79a027270276533fe1ed4eff30910876" }
 prize = 0.039
 status = "solved"
@@ -489,7 +489,7 @@ solve_time = 476892
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.039 }, { type = "claim", txid = "41abfd3419ec99b62c571c05a8183214c1ee21bc35acd0a2f24c4097c62b291f", date = "2015-01-21 06:35:26", amount = 0.039 }]
 
 [[puzzles]]
-key = { bits = 40, hex = "000000000000000000000000000000000000000000000000000000e9ae4933d6" }
+key = { bits = 40, hex = "000000000000000000000000000000000000000000000000000000e9ae4933d6" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9aFJuCJDo5F6Jm7" } }
 address = { value = "1EeAxcprB2PpCnr34VfZdFrkUWuxyiNEFv", kind = "p2pkh", hash160 = "95a156cd21b4a69de969eb6716864f4c8b82a82a" }
 prize = 0.04
 status = "solved"
@@ -501,7 +501,7 @@ solve_time = 1297024
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.04 }, { type = "claim", txid = "26dbcd4f8bbd5007385fc79954ba238bc684c305d565c60146549bb5acc3f329", date = "2015-01-30 18:24:18", amount = 0.04 }]
 
 [[puzzles]]
-key = { bits = 41, hex = "00000000000000000000000000000000000000000000000000000153869acc5b" }
+key = { bits = 41, hex = "00000000000000000000000000000000000000000000000000000153869acc5b" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9gCD9CBomewdcUD" } }
 address = { value = "1L5sU9qvJeuwQUdt4y1eiLmquFxKjtHr3E", kind = "p2pkh", hash160 = "d1562eb37357f9e6fc41cb2359f4d3eda4032329" }
 prize = 0.041
 status = "solved"
@@ -513,7 +513,7 @@ solve_time = 1297024
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.041 }, { type = "claim", txid = "26dbcd4f8bbd5007385fc79954ba238bc684c305d565c60146549bb5acc3f329", date = "2015-01-30 18:24:18", amount = 0.041 }]
 
 [[puzzles]]
-key = { bits = 42, hex = "000000000000000000000000000000000000000000000000000002a221c58d8f" }
+key = { bits = 42, hex = "000000000000000000000000000000000000000000000000000002a221c58d8f" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgd9zzYEemjCVJ3vo9" } }
 address = { value = "1E32GPWgDyeyQac4aJxm9HVoLrrEYPnM4N", kind = "p2pkh", hash160 = "8efb85f9c5b5db2d55973a04128dc7510075ae23" }
 prize = 0.042
 status = "solved"
@@ -525,7 +525,7 @@ solve_time = 1297024
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.042 }, { type = "claim", txid = "26dbcd4f8bbd5007385fc79954ba238bc684c305d565c60146549bb5acc3f329", date = "2015-01-30 18:24:18", amount = 0.042 }]
 
 [[puzzles]]
-key = { bits = 43, hex = "000000000000000000000000000000000000000000000000000006bd3b27c591" }
+key = { bits = 43, hex = "000000000000000000000000000000000000000000000000000006bd3b27c591" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgdB23bP5LsYN8Krv7" } }
 address = { value = "1PiFuqGpG8yGM5v6rNHWS3TjsG6awgEGA1", kind = "p2pkh", hash160 = "f92044c7924e5525c61207972c253c9fc9f086f7" }
 prize = 0.043
 status = "solved"
@@ -537,7 +537,7 @@ solve_time = 1297024
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.043 }, { type = "claim", txid = "26dbcd4f8bbd5007385fc79954ba238bc684c305d565c60146549bb5acc3f329", date = "2015-01-30 18:24:18", amount = 0.043 }]
 
 [[puzzles]]
-key = { bits = 44, hex = "00000000000000000000000000000000000000000000000000000e02b35a358f" }
+key = { bits = 44, hex = "00000000000000000000000000000000000000000000000000000e02b35a358f" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgdCpdGyxm7PWoNQdr" } }
 address = { value = "1CkR2uS7LmFwc3T2jV8C1BhWb5mQaoxedF", kind = "p2pkh", hash160 = "80df54e1f612f2fc5bdc05c9d21a83aa8d20791e" }
 prize = 0.044
 status = "solved"
@@ -549,7 +549,7 @@ solve_time = 1297024
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.044 }, { type = "claim", txid = "26dbcd4f8bbd5007385fc79954ba238bc684c305d565c60146549bb5acc3f329", date = "2015-01-30 18:24:18", amount = 0.044 }]
 
 [[puzzles]]
-key = { bits = 45, hex = "0000000000000000000000000000000000000000000000000000122fca143c05" }
+key = { bits = 45, hex = "0000000000000000000000000000000000000000000000000000122fca143c05" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgdDrgx63tbte4scLA" } }
 address = { value = "1NtiLNGegHWE3Mp9g2JPkgx6wUg4TW7bbk", kind = "p2pkh", hash160 = "f0225bfc68a6e17e87cd8b5e60ae3be18f120753" }
 prize = 0.045
 status = "solved"
@@ -561,7 +561,7 @@ solve_time = 1297024
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.045 }, { type = "claim", txid = "26dbcd4f8bbd5007385fc79954ba238bc684c305d565c60146549bb5acc3f329", date = "2015-01-30 18:24:18", amount = 0.045 }]
 
 [[puzzles]]
-key = { bits = 46, hex = "00000000000000000000000000000000000000000000000000002ec18388d544" }
+key = { bits = 46, hex = "00000000000000000000000000000000000000000000000000002ec18388d544" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgdLwb42sQhwTBJDnG" } }
 address = { value = "1F3JRMWudBaj48EhwcHDdpeuy2jwACNxjP", kind = "p2pkh", hash160 = "9a012260d01c5113df66c8a8438c9f7a1e3d5dac" }
 prize = 0.046
 status = "solved"
@@ -573,7 +573,7 @@ solve_time = 1306618
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.046 }, { type = "claim", txid = "ff02b5d1efe2c95c6efadae4384eb7fb654e64b8bef2cbeb3d45774665555504", date = "2015-01-30 21:04:12", amount = 0.046 }]
 
 [[puzzles]]
-key = { bits = 47, hex = "00000000000000000000000000000000000000000000000000006cd610b53cba" }
+key = { bits = 47, hex = "00000000000000000000000000000000000000000000000000006cd610b53cba" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgdcLTenJYVVVTRzxN" } }
 address = { value = "1Pd8VvT49sHKsmqrQiP61RsVwmXCZ6ay7Z", kind = "p2pkh", hash160 = "f828005d41b0f4fed4c8dca3b06011072cfb07d4" }
 prize = 0.047
 status = "solved"
@@ -585,7 +585,7 @@ solve_time = 19793590
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.047 }, { type = "claim", txid = "39553513f731ae20f98f3307e863f0aecee9842f22273bb2ddfc0fb6ba481c5e", date = "2015-09-01 20:20:24", amount = 0.047 }]
 
 [[puzzles]]
-key = { bits = 48, hex = "0000000000000000000000000000000000000000000000000000ade6d7ce3b9b" }
+key = { bits = 48, hex = "0000000000000000000000000000000000000000000000000000ade6d7ce3b9b" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgdtUGWxHzvDi28MfR" } }
 address = { value = "1DFYhaB2J9q1LLZJWKTnscPWos9VBqDHzv", kind = "p2pkh", hash160 = "8661cb56d9df0a61f01328b55af7e56a3fe7a2b2" }
 prize = 0.048
 status = "solved"
@@ -597,7 +597,7 @@ solve_time = 19793590
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.048 }, { type = "claim", txid = "39553513f731ae20f98f3307e863f0aecee9842f22273bb2ddfc0fb6ba481c5e", date = "2015-09-01 20:20:24", amount = 0.048 }]
 
 [[puzzles]]
-key = { bits = 49, hex = "000000000000000000000000000000000000000000000000000174176b015f4d" }
+key = { bits = 49, hex = "000000000000000000000000000000000000000000000000000174176b015f4d" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgejcjwprJ4MAYLw8e" } }
 address = { value = "12CiUhYVTTH33w3SPUBqcpMoqnApAV4WCF", kind = "p2pkh", hash160 = "0d2f533966c6578e1111978ca698f8add7fffdf3" }
 prize = 0.049
 status = "solved"
@@ -609,7 +609,7 @@ solve_time = 19793590
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.049 }, { type = "claim", txid = "39553513f731ae20f98f3307e863f0aecee9842f22273bb2ddfc0fb6ba481c5e", date = "2015-09-01 20:20:24", amount = 0.049 }]
 
 [[puzzles]]
-key = { bits = 50, hex = "00000000000000000000000000000000000000000000000000022bd43c2e9354" }
+key = { bits = 50, hex = "00000000000000000000000000000000000000000000000000022bd43c2e9354" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgfXBMYdNVA4EjUMzg" } }
 address = { value = "1MEzite4ReNuWaL5Ds17ePKt2dCxWEofwk", kind = "p2pkh", hash160 = "de081b76f840e462fa2cdf360173dfaf4a976a47" }
 prize = 0.05
 status = "solved"
@@ -621,7 +621,7 @@ solve_time = 19793590
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.05 }, { type = "claim", txid = "39553513f731ae20f98f3307e863f0aecee9842f22273bb2ddfc0fb6ba481c5e", date = "2015-09-01 20:20:24", amount = 0.05 }]
 
 [[puzzles]]
-key = { bits = 51, hex = "00000000000000000000000000000000000000000000000000075070a1a009d4" }
+key = { bits = 51, hex = "00000000000000000000000000000000000000000000000000075070a1a009d4" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjgm9fa43QnU2CpULaK" } }
 address = { value = "1NpnQyZ7x24ud82b7WiRNvPm6N8bqGQnaS", kind = "p2pkh", hash160 = "ef6419cffd7fad7027994354eb8efae223c2dbe7" }
 prize = 0.051
 status = "solved"
@@ -633,7 +633,7 @@ solve_time = 70041846
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.051 }, { type = "claim", txid = "70ee9ab241829a6f49ebf9f109e97f6e466d938e558bade1c5fe341310bc356e", date = "2017-04-05 10:11:20", amount = 0.051 }]
 
 [[puzzles]]
-key = { bits = 52, hex = "000000000000000000000000000000000000000000000000000efae164cb9e3c" }
+key = { bits = 52, hex = "000000000000000000000000000000000000000000000000000efae164cb9e3c" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjguYJTZsntce5oQQrh" } }
 address = { value = "15z9c9sVpu6fwNiK7dMAFgMYSK4GqsGZim", kind = "p2pkh", hash160 = "36af659edbe94453f6344e920d143f1778653ae7" }
 prize = 0.052
 status = "solved"
@@ -645,7 +645,7 @@ solve_time = 71452971
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.052 }, { type = "claim", txid = "b0df330141225a2253c375b7b6c36c0016a9633934295916df6b0fd31afb4a8b", date = "2017-04-21 18:10:05", amount = 0.052 }]
 
 [[puzzles]]
-key = { bits = 53, hex = "00000000000000000000000000000000000000000000000000180788e47e326c" }
+key = { bits = 53, hex = "00000000000000000000000000000000000000000000000000180788e47e326c" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjh5SmqrUoK2mhwSYFV" } }
 address = { value = "15K1YKJMiJ4fpesTVUcByoz334rHmknxmT", kind = "p2pkh", hash160 = "2f4870ef54fa4b048c1365d42594cc7d3d269551" }
 prize = 0.53
 status = "solved"
@@ -657,7 +657,7 @@ solve_time = 83211373
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.053 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.477 }, { type = "claim", txid = "0e343c3640fa8cc1f7a97556255f46a08b89bd7d1b62ca94b86b37e51835b3b3", date = "2017-09-04 20:23:27", amount = 0.53 }]
 
 [[puzzles]]
-key = { bits = 54, hex = "00000000000000000000000000000000000000000000000000236fb6d5ad1f43" }
+key = { bits = 54, hex = "00000000000000000000000000000000000000000000000000236fb6d5ad1f43" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjhHvuTMSDchRp5hktc" } }
 address = { value = "1KYUv7nSvXx4642TKeuC2SNdTk326uUpFy", kind = "p2pkh", hash160 = "cb66763cf7fde659869ae7f06884d9a0f879a092" }
 prize = 0.54
 status = "solved"
@@ -669,7 +669,7 @@ solve_time = 89485028
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.054 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.486 }, { type = "claim", txid = "02e9c6ccae985a6485e633b56a084dae2a32736e5b866c3b9622db9d3c57078f", date = "2017-11-16 11:04:22", amount = 0.54 }]
 
 [[puzzles]]
-key = { bits = 55, hex = "000000000000000000000000000000000000000000000000006abe1f9b67e114" }
+key = { bits = 55, hex = "000000000000000000000000000000000000000000000000006abe1f9b67e114" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjidyYKE5NcJQZYvknA" } }
 address = { value = "1LzhS3k3e9Ub8i2W1V8xQFdB8n2MYCHPCa", kind = "p2pkh", hash160 = "db53d9bbd1f3a83b094eeca7dd970bd85b492fa2" }
 prize = 0.55
 status = "solved"
@@ -681,7 +681,7 @@ solve_time = 106236398
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.055 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.495 }, { type = "increase", txid = "0cec4460b09db31a00ff1475c32b6a02a89fde2ff89d8ff8fd79535a21474d90", date = "2018-03-11 04:50:13", amount = 0.00011515 }, { type = "claim", txid = "ecc8c09284a6f9e6d52cccf7f8f4aef1d0c4a33984375dea4cea70923066078d", date = "2018-05-29 08:13:52", amount = 0.55011515 }]
 
 [[puzzles]]
-key = { bits = 56, hex = "000000000000000000000000000000000000000000000000009d18b63ac4ffdf" }
+key = { bits = 56, hex = "000000000000000000000000000000000000000000000000009d18b63ac4ffdf" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjjb65nDHeqyjiBaJXv" } }
 address = { value = "17aPYR1m6pVAacXg1PTDDU7XafvK1dxvhi", kind = "p2pkh", hash160 = "48214c5969ae9f43f75070cea1e2cb41d5bdcccd" }
 prize = 0.56
 status = "solved"
@@ -693,7 +693,7 @@ solve_time = 115040275
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.056 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.504 }, { type = "claim", txid = "5317fdbea32034f8f983bd2324e99e5da593aaf3c4aed6425d8104dc3b8c77d2", date = "2018-09-08 05:45:09", amount = 0.504 }]
 
 [[puzzles]]
-key = { bits = 57, hex = "00000000000000000000000000000000000000000000000001eb25c90795d61c" }
+key = { bits = 57, hex = "00000000000000000000000000000000000000000000000001eb25c90795d61c" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjqtiAvYTJzYEmqup7b" } }
 address = { value = "15c9mPGLku1HuW9LRtBf4jcHVpBUt8txKz", kind = "p2pkh", hash160 = "328660ef43f66abe2653fa178452a5dfc594c2a1" }
 prize = 0.57
 status = "solved"
@@ -705,7 +705,7 @@ solve_time = 120293765
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.057 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.513 }, { type = "claim", txid = "fd773819f5fb5d672d32bfe99e30af086e86c2c2b35dd7cfe337bf8960a96aa7", date = "2018-11-08 01:03:19", amount = 0.57 }]
 
 [[puzzles]]
-key = { bits = 58, hex = "00000000000000000000000000000000000000000000000002c675b852189a21" }
+key = { bits = 58, hex = "00000000000000000000000000000000000000000000000002c675b852189a21" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYjv2kTamEYQT9BNC7o1" } }
 address = { value = "1Dn8NF8qDyyfHMktmuoQLGyjWmZXgvosXf", kind = "p2pkh", hash160 = "8c2a6071f89c90c4dab5ab295d7729d1b54ea60f" }
 prize = 0.58
 status = "solved"
@@ -717,7 +717,7 @@ solve_time = 122471768
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.058 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.522 }, { type = "claim", txid = "17d31de2bd300bc1bad430ec0db77ca27466bbb97bf03df6a3ff386d60e58996", date = "2018-12-03 06:03:22", amount = 0.58 }]
 
 [[puzzles]]
-key = { bits = 59, hex = "00000000000000000000000000000000000000000000000007496cbb87cab44f" }
+key = { bits = 59, hex = "00000000000000000000000000000000000000000000000007496cbb87cab44f" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYkHpsTBP19HvTFqiU6i" } }
 address = { value = "1HAX2n9Uruu9YDt4cqRgYcvtGvZj1rbUyt", kind = "p2pkh", hash160 = "b14ed3146f5b2c9bde1703deae9ef33af8110210" }
 prize = 0.59
 status = "solved"
@@ -729,7 +729,7 @@ solve_time = 128579538
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.059 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.531 }, { type = "claim", txid = "66cd4fd4b240df28c5f61c4c86865f57e5f4e203dc8ea36d520e553e61d96e04", date = "2019-02-11 22:39:32", amount = 0.59 }]
 
 [[puzzles]]
-key = { bits = 60, hex = "0000000000000000000000000000000000000000000000000fc07a1825367bbe" }
+key = { bits = 60, hex = "0000000000000000000000000000000000000000000000000fc07a1825367bbe" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYkzijLsc5qE43yZ5eLV" } }
 address = { value = "1Kn5h2qpgw9mWE5jKpk8PP4qvvJ1QVy8su", kind = "p2pkh", hash160 = "cdf8e5c7503a9d22642e3ecfc87817672787b9c5" }
 prize = 0.6
 status = "solved"
@@ -741,7 +741,7 @@ solve_time = 129059558
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.06 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.54 }, { type = "claim", txid = "6c08747ecd15904128c3f15f3bf47f6f365405da2661f17eb5119008807cee3e", date = "2019-02-17 11:59:52", amount = 0.6 }]
 
 [[puzzles]]
-key = { bits = 61, hex = "00000000000000000000000000000000000000000000000013c96a3742f64906" }
+key = { bits = 61, hex = "00000000000000000000000000000000000000000000000013c96a3742f64906" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYmLDHsih379uP9zbHSD" } }
 address = { value = "1AVJKwzs9AskraJLGHAZPiaZcrpDr1U6AB", kind = "p2pkh", hash160 = "68133e19b2dfb9034edf9830a200cfdf38c90cbd" }
 prize = 0.61
 status = "solved"
@@ -753,7 +753,7 @@ solve_time = 136233964
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.061 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.549 }, { type = "increase", txid = "cdae2da8fe4b18dc264e568a29e804f2b32529b8018a9d28e271ac7e9077c718", date = "2019-02-24 21:48:34", amount = 0.00000793 }, { type = "claim", txid = "481d2b7ceb253520336fbbe681126ae58d14ecd552320d88203b2e806e76358d", date = "2019-05-11 12:53:18", amount = 0.61 }]
 
 [[puzzles]]
-key = { bits = 62, hex = "000000000000000000000000000000000000000000000000363d541eb611abee" }
+key = { bits = 62, hex = "000000000000000000000000000000000000000000000000363d541eb611abee" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYpCemuaUp7NigjvtJug" } }
 address = { value = "1Me6EfpwZK5kQziBwBfvLiHjaPGxCKLoJi", kind = "p2pkh", hash160 = "e26646db84b0602f32b34b5a62ca3cae1f91b779" }
 prize = 0.62
 status = "solved"
@@ -765,7 +765,7 @@ solve_time = 146594627
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.062 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.558 }, { type = "increase", txid = "1377682be6c1b875153d7c2d5bceb9985cdf6b6d1054d96b20c4e8ccc7963195", date = "2019-06-11 10:21:45", amount = 0.000061 }, { type = "increase", txid = "c6c7ec1a1435c9f049857fc8cf37ab14b90ee2a83e28e9bd059175ae17e955f8", date = "2019-06-20 19:31:16", amount = 0.00001 }, { type = "increase", txid = "c725a765997cf82ca4a40cb2166f9ed2c2677e9ad9446112dd94920db7034a07", date = "2019-06-20 20:49:30", amount = 0.00001 }, { type = "increase", txid = "9623ca8da4f10db5ca90a0673674571a3150e568cb82c2e2ad6ca55af77a67f9", date = "2019-06-20 21:20:44", amount = 0.00001 }, { type = "claim", txid = "d96269bdbae871174f629f4ec136d8c2c99cb1a1db15d12903418dfc92df5465", date = "2019-09-08 10:51:01", amount = 0.620091 }]
 
 [[puzzles]]
-key = { bits = 63, hex = "0000000000000000000000000000000000000000000000007cce5efdaccf6808" }
+key = { bits = 63, hex = "0000000000000000000000000000000000000000000000007cce5efdaccf6808" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qYv5Z9J7hv7VYYN3XL3Y" } }
 address = { value = "1NpYjtLira16LfGbGwZJ5JbDPh3ai9bjf4", kind = "p2pkh", hash160 = "ef58afb697b094423ce90721fbb19a359ef7c50e" }
 prize = 0.63
 status = "solved"
@@ -777,7 +777,7 @@ solve_time = 141589165
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.063 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.567 }, { type = "increase", txid = "5738c12f1c607609b6a33b870981c79d67bbbe4e43bfdf0799f7efd5d866aac2", date = "2019-06-20 19:31:16", amount = 0.00001 }, { type = "increase", txid = "c725a765997cf82ca4a40cb2166f9ed2c2677e9ad9446112dd94920db7034a07", date = "2019-06-20 20:49:30", amount = 0.00001 }, { type = "increase", txid = "9623ca8da4f10db5ca90a0673674571a3150e568cb82c2e2ad6ca55af77a67f9", date = "2019-06-20 21:20:44", amount = 0.00001 }, { type = "claim", txid = "195876f004cb9cfa4ff22f4d3df94feda86c5a481fde6979889ea568ac2ca4ac", date = "2019-07-12 12:26:39", amount = 0.63003 }]
 
 [[puzzles]]
-key = { bits = 64, hex = "000000000000000000000000000000000000000000000000f7051f27b09112d4" }
+key = { bits = 64, hex = "000000000000000000000000000000000000000000000000f7051f27b09112d4" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qZ6FxoaD5r1kYegmtbaT" } }
 address = { value = "16jY7qLJnxb7CHZyqBP8qca9d51gAjyXQN", kind = "p2pkh", hash160 = "3ee4133d991f52fdf6a25c9834e0745ac74248a4" }
 prize = 0.64
 status = "solved"
@@ -789,7 +789,7 @@ solve_time = 241418509
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.064 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.576 }, { type = "increase", txid = "c725a765997cf82ca4a40cb2166f9ed2c2677e9ad9446112dd94920db7034a07", date = "2019-06-20 20:49:30", amount = 0.00001 }, { type = "increase", txid = "9623ca8da4f10db5ca90a0673674571a3150e568cb82c2e2ad6ca55af77a67f9", date = "2019-06-20 21:20:44", amount = 0.00001 }, { type = "increase", txid = "ed53ace1d284e1b9c5b2058fd296ee7d5be43efd6ce87d0a03adfe039c171e28", date = "2019-10-31 00:45:03", amount = 0.00000564 }, { type = "increase", txid = "5815ecc9699c32adbfc77e2f7bd0e35c87e3ffeacd248cac7eb35452b49d508d", date = "2020-11-23 03:00:39", amount = 0.00001 }, { type = "increase", txid = "e6e7ee7bcb9a9b616121faa56cdd6e8a1d9c5fd93a67b41c93c705d396b8ea26", date = "2020-12-08 18:48:04", amount = 0.00012 }, { type = "increase", txid = "776b63fc5506eb23ec7aec5b89db0c51c228a3c592939af1a6f802faa97f5d13", date = "2020-12-20 05:03:18", amount = 0.00001 }, { type = "increase", txid = "7696793c052f4ed3362a0036f8cb7aa11302c134f2e4af2eae933af54809969c", date = "2021-05-07 22:44:07", amount = 0.00002021 }, { type = "increase", txid = "8058cbfcbe89688aaac3a48c65f461a3efa5e09c536b4c4211b4030f311588b3", date = "2021-08-29 11:30:32", amount = 0.00002 }, { type = "increase", txid = "5ba85ff53e1c4816d96490d9b4ff06cd8b07751298a846e7579131c5973d348b", date = "2022-02-22 11:26:14", amount = 0.00000696 }, { type = "increase", txid = "07af703e54e326116144536a2da7fe732224cb07de96d99be9031b443e74a619", date = "2022-03-31 20:58:56", amount = 0.0000101 }, { type = "increase", txid = "294e3134d6fbb970131236ca947965b23b5bfb8e1e5eeb070b567f06a903f4e3", date = "2022-05-17 19:19:30", amount = 0.00000642 }, { type = "increase", txid = "a63f1b15dd736529b29f92b443bf401c41d190403923f8fc913d377c2acea1c4", date = "2022-06-01 00:14:56", amount = 0.00010026 }, { type = "claim", txid = "9c1d797c34e3b04f9b721bac45fe3a410393bdd25d169bc62dcbca46b069fa9f", date = "2022-09-09 22:49:03", amount = 0.64032959 }]
 
 [[puzzles]]
-key = { bits = 65, hex = "000000000000000000000000000000000000000000000001a838b13505b26867" }
+key = { bits = 65, hex = "000000000000000000000000000000000000000000000001a838b13505b26867" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qZM21gaY8WN2CdwnTG57" } }
 address = { value = "18ZMbwUFLMHoZBbfpCjUJQTCMCbktshgpe", kind = "p2pkh", hash160 = "52e763a7ddc1aa4fa811578c491c1bc7fd570137" }
 prize = 0.65
 status = "solved"
@@ -801,7 +801,7 @@ solve_time = 138580308
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.065 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.585 }, { type = "increase", txid = "7c432398c7631600af01695c9767eff109cbfae4f7ecccaff388043a474d4f1e", date = "2019-05-16 04:25:45", amount = 0.00001 }, { type = "pubkey_reveal", txid = "17e4e323cfbc68d7f0071cad09364e8193eedf8fefbcbd8a21b4b65717a4b3d3", date = "2019-06-01 02:07:26", amount = 0.00001 }, { type = "claim", txid = "43bb89f7d16fb47fee3eaeee0fa26aa2d0d6874c8907b2eca4ec2420bf4a9dc3", date = "2019-06-07 16:39:02", amount = 0.65 }]
 
 [[puzzles]]
-key = { bits = 66, hex = "000000000000000000000000000000000000000000000002832ed74f2b5e35ee" }
+key = { bits = 66, hex = "000000000000000000000000000000000000000000000002832ed74f2b5e35ee" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qZfFoWMiwBt943V7CQeX" } }
 address = { value = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so", kind = "p2pkh", hash160 = "20d45a6a762535700ce9e0b216e31994335db8a5" }
 prize = 6.6
 status = "solved"
@@ -814,7 +814,7 @@ transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860
 solver = "bc1qpkp47q"
 
 [[puzzles]]
-key = { bits = 67, hex = "00000000000000000000000000000000000000000000000730fc235c1942c1ae" }
+key = { bits = 67, hex = "00000000000000000000000000000000000000000000000730fc235c1942c1ae" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qbP2K5cm35XKMND1X1KW" } }
 address = { value = "1BY8GQbnueYofwSuFAT3USAhGjPrkxDdW9", kind = "p2pkh", hash160 = "739437bb3dd6d1983e66629c5f08c70e52769371" }
 prize = 6.7
 status = "solved"
@@ -827,7 +827,7 @@ transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860
 solver = "bc1qfk357t"
 
 [[puzzles]]
-key = { bits = 68, hex = "00000000000000000000000000000000000000000000000bebb3940cd0fc1491" }
+key = { bits = 68, hex = "00000000000000000000000000000000000000000000000bebb3940cd0fc1491" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qd7sDG4F2sdMtzNe8y2U" } }
 address = { value = "1MVDYgVaSN6iKKEsbzRUAYFrYJadLYZvvZ", kind = "p2pkh", hash160 = "e0b8a2baee1b77fc703455f39d51477451fc8cfc" }
 prize = 6.8
 status = "solved"
@@ -840,7 +840,7 @@ transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860
 solver = "bc1qfwpccz"
 
 [[puzzles]]
-key = { bits = 69, hex = "0000000000000000000000000000000000000000000000101d83275fb2bc7e0c" }
+key = { bits = 69, hex = "0000000000000000000000000000000000000000000000101d83275fb2bc7e0c" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qefJjCmLAPHbQ4x7D9Qy" } }
 address = { value = "19vkiEajfhuZ8bs8Zu2jgmC6oqZbWqhxhG", kind = "p2pkh", hash160 = "61eb8a50c86b0584bb727dd65bed8d2400d6d5aa" }
 prize = 6.9
 status = "solved"
@@ -853,7 +853,7 @@ transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860
 solver = "15g7XHM6u"
 
 [[puzzles]]
-key = { bits = 70, hex = "0000000000000000000000000000000000000000000000349b84b6431a6c4ef1" }
+key = { bits = 70, hex = "0000000000000000000000000000000000000000000000349b84b6431a6c4ef1" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qt5RQNhFCn1r58in2E78" } }
 address = { value = "19YZECXj3SxEZMoUeJ1yiPsw8xANe7M7QR", kind = "p2pkh", hash160 = "5db8cda53a6a002db10365967d7f85d19e171b10" }
 prize = 0.7
 status = "solved"
@@ -898,7 +898,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.074 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.666 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 6.66 }, { type = "increase", txid = "49548037c2bc4a22da68dd097be67d98a1e8f47aeaaac6fb92751f755e7d89eb", date = "2023-09-25 15:00:17", amount = 0.00003777 }, { type = "increase", txid = "480f8e96b46315d494fecc06f035e782179e5d9aae7e7417be55c63ff96f06e8", date = "2025-01-28 03:11:55", amount = 0.000006 }, { type = "increase", txid = "89993b4ff06bc6ee94af5b7e78888cbcbdefa38335a53342e4d371f70fa472e6", date = "2025-02-10 06:05:27", amount = 0.000006 }]
 
 [[puzzles]]
-key = { bits = 75, hex = "0000000000000000000000000000000000000000000004c5ce114686a1336e07" }
+key = { bits = 75, hex = "0000000000000000000000000000000000000000000004c5ce114686a1336e07" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3yHuxB7NfERRuDTNy2kbr" } }
 address = { value = "1J36UjUByGroXcCvmj13U6uwaVv9caEeAt", kind = "p2pkh", hash160 = "badf8b0d34289e679ec65c6c61d3a974353be5cf" }
 prize = 0.75
 status = "solved"
@@ -942,7 +942,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.079 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.711 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 7.11 }]
 
 [[puzzles]]
-key = { bits = 80, hex = "00000000000000000000000000000000000000000000ea1a5c66dcc11b5ad180" }
+key = { bits = 80, hex = "00000000000000000000000000000000000000000000ea1a5c66dcc11b5ad180" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZiAPRB6KvN7FnKsw69PP7vW" } }
 address = { value = "1BCf6rHUW6m3iH2ptsvnjgLruAiPQQepLe", kind = "p2pkh", hash160 = "6fe5a36eef0684af0b91f3b6cfc972d68c4f6fab" }
 prize = 0.8
 status = "solved"
@@ -986,7 +986,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.084 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.756 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 7.56 }, { type = "increase", txid = "99e69ed74aa55f1f92e946909dd2f7e7b488721e3b82aee27fe82f30aef47d0e", date = "2025-10-28 12:03:12", amount = 0.000015 }]
 
 [[puzzles]]
-key = { bits = 85, hex = "00000000000000000000000000000000000000000011720c4f018d51b8cebba8" }
+key = { bits = 85, hex = "00000000000000000000000000000000000000000011720c4f018d51b8cebba8" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZkCnRjpBspr8M5K8YnUtDNa" } }
 address = { value = "1Kh22PvXERd2xpTQk3ur6pPEqFeckCJfAr", kind = "p2pkh", hash160 = "cd03c1e6268ce9b89e3c3eeab8d0f1b6e8cac281" }
 prize = 0.85
 status = "solved"
@@ -1030,7 +1030,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.089 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.801 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 8.01 }]
 
 [[puzzles]]
-key = { bits = 90, hex = "000000000000000000000000000000000000000002ce00bb2136a445c71e85bf" }
+key = { bits = 90, hex = "000000000000000000000000000000000000000002ce00bb2136a445c71e85bf" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVrbEiEhLWVU4Yn1RCfnX51KrT" } }
 address = { value = "1L12FHH2FHjvTviyanuiFVfmzCy46RRATU", kind = "p2pkh", hash160 = "d06b6e206691295ec345782d7ea0686969d8674b" }
 prize = 0.9
 status = "solved"
@@ -1074,7 +1074,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.094 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.846 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 8.46 }]
 
 [[puzzles]]
-key = { bits = 95, hex = "0000000000000000000000000000000000000000527a792b183c7f64a0e8b1f4" }
+key = { bits = 95, hex = "0000000000000000000000000000000000000000527a792b183c7f64a0e8b1f4" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciVsLfMYB8ydZ3QXMqEra1sapfT" } }
 address = { value = "19eVSDuizydXxhohGh8Ki9WY9KsHdSwoQC", kind = "p2pkh", hash160 = "5ed822125365274262191d2b77e88d436dd56d88" }
 prize = 0.95
 status = "solved"
@@ -1118,7 +1118,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.099 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.891 }, { type = "increase", txid = "cc3fb8769d4e928dab2f5ddbb65838ada2bc0d4e33cfd933d8a1a09fc4b6fa7e", date = "2022-12-13 23:51:04", amount = 0.00094933 }, { type = "increase", txid = "17324bb2efbfa6826d6923f580751f28d8c5297f262a764e27d62bc4e9ba5b68", date = "2023-01-23 02:46:23", amount = 0.00189209 }, { type = "increase", txid = "7de20a1b73abad37d2af5ced79297f33b38f724ef4477901765ddbfb740cc834", date = "2023-02-16 02:52:13", amount = 0.00069016 }, { type = "increase", txid = "b425616ced3391587a8f778c36a949336c0717c62db71953a658bc16a8c7f748", date = "2023-02-16 13:39:42", amount = 0.0090418 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 8.91 }]
 
 [[puzzles]]
-key = { bits = 100, hex = "000000000000000000000000000000000000000af55fc59c335c8ec67ed24826" }
+key = { bits = 100, hex = "000000000000000000000000000000000000000af55fc59c335c8ec67ed24826" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrciWJvjTPYdp4sSLwstc63avmfRA" } }
 address = { value = "1KCgMv8fo2TPBpddVi9jqmMmcne9uSNJ5F", kind = "p2pkh", hash160 = "c7a7b23f6bd98b8aaf527beb724dda9460b1bc6e" }
 prize = 1.0
 status = "solved"
@@ -1162,7 +1162,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.104 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.936 }, { type = "increase", txid = "a83225cc95582f66fb42d285c64c52a6a6b6b2cec715e2429c67e3f3243071d0", date = "2023-02-02 21:40:21", amount = 0.000006 }, { type = "increase", txid = "123c8804d6d28510c7c11a1b56ea36b4caa1e86f7e6edaf64ee65d16bf9fad67", date = "2023-02-04 01:25:54", amount = 0.00001 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 9.36 }]
 
 [[puzzles]]
-key = { bits = 105, hex = "000000000000000000000000000000000000016f14fc2054cd87ee6396b33df3" }
+key = { bits = 105, hex = "000000000000000000000000000000000000016f14fc2054cd87ee6396b33df3" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7Lrcim5eBMkFQwQtRbW6wxT1ajoNqE" } }
 address = { value = "1CMjscKB3QW7SDyQ4c3C3DEUHiHRhiZVib", kind = "p2pkh", hash160 = "7c957db6fdd0733bb83bc6d6d747711263ba50b0" }
 prize = 1.05
 status = "solved"
@@ -1206,7 +1206,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.109 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 0.981 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 9.81 }, { type = "increase", txid = "5478d5178f0d80ad412b5f5de7d28bb1f31ec1d0eecd0c74f4447bad6d31fc3d", date = "2025-11-21 18:58:34", amount = 0.000105 }]
 
 [[puzzles]]
-key = { bits = 110, hex = "00000000000000000000000000000000000035c0d7234df7deb0f20cf7062444" }
+key = { bits = 110, hex = "00000000000000000000000000000000000035c0d7234df7deb0f20cf7062444" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrctLcZtumiizzSmSckgpxQu6ieu6" } }
 address = { value = "12JzYkkN76xkwvcPT6AWKZtGX6w2LAgsJg", kind = "p2pkh", hash160 = "0e5f3c406397442996825fd395543514fd06f207" }
 prize = 1.1
 status = "solved"
@@ -1250,7 +1250,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.114 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 1.026 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 10.26 }]
 
 [[puzzles]]
-key = { bits = 115, hex = "0000000000000000000000000000000000060f4d11574f5deee49961d9609ac6" }
+key = { bits = 115, hex = "0000000000000000000000000000000000060f4d11574f5deee49961d9609ac6" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7LrhcVkatbczm7Y9ZaB56U1jLNU2Xh" } }
 address = { value = "1NLbHuJebVwUZ1XqDjsAyfTRUPwDQbemfv", kind = "p2pkh", hash160 = "ea0f2b7576bd098921fce9bfebe37f6383e639a4" }
 prize = 1.15
 status = "solved"
@@ -1294,7 +1294,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.119 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 1.071 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 10.71 }]
 
 [[puzzles]]
-key = { bits = 120, hex = "0000000000000000000000000000000000b10f22572c497a836ea187f2e1fc23" }
+key = { bits = 120, hex = "0000000000000000000000000000000000b10f22572c497a836ea187f2e1fc23" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7Lu5nahGjEQZB8k82itXNSb1Aa2Woh" } }
 address = { value = "17s2b9ksz5y7abUm92cHwG8jEPCzK3dLnT", kind = "p2pkh", hash160 = "4b46e10a541aeec6be3fac709c256fb7da69308e" }
 prize = 1.2
 status = "solved"
@@ -1339,7 +1339,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.124 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 1.116 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 11.16 }]
 
 [[puzzles]]
-key = { bits = 125, hex = "000000000000000000000000000000001c533b6bb7f0804e09960225e44877ac" }
+key = { bits = 125, hex = "000000000000000000000000000000001c533b6bb7f0804e09960225e44877ac" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH7Nbdz1FhKePEPcr4to6PqoSc6KxQy6" } }
 address = { value = "1PXAyUB8ZoH3WD8n5zoAthYjN15yN5CVq5", kind = "p2pkh", hash160 = "f7079256aa027dc437cbb539f955472416725fc8" }
 prize = 12.5
 status = "solved"
@@ -1384,7 +1384,7 @@ start_date = "2015-01-15 18:07:14"
 transactions = [{ type = "funding", txid = "08389f34c98c606322740c0be6a7125d9860bb8d5cb182c02f98461e5fa6cd15", date = "2015-01-15 18:07:14", amount = 0.129 }, { type = "increase", txid = "5d45587cfd1d5b0fb826805541da7d94c61fe432259e68ee26f4a04544384164", date = "2017-07-11 05:00:53", amount = 1.161 }, { type = "increase", txid = "12f34b58b04dfb0233ce889f674781c0e0c7ba95482cca469125af41a78d13b3", date = "2023-04-16 06:29:48", amount = 11.61 }]
 
 [[puzzles]]
-key = { bits = 130, hex = "000000000000000000000000000000033e7665705359f04f28b88cf897c603c9" }
+key = { bits = 130, hex = "000000000000000000000000000000033e7665705359f04f28b88cf897c603c9" , wif = { decrypted = "KwDiBf89QgGbjEhKnhXJuH8DvUBxVmJ3761ahfZuohBr53Zh9M3t" } }
 address = { value = "1Fo65aKq8s8iquMt6weF1rku1moWVEd5Ua", kind = "p2pkh", hash160 = "a24922852051a9002ebf4c864a55acb75bb4cf75" }
 prize = 13.0
 status = "solved"
