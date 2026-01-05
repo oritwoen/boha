@@ -8,6 +8,8 @@ use std::path::Path;
 use toml_edit::{DocumentMut, Item, Value};
 use utils::mempool::{load_from_cache, MempoolTx};
 
+const DUST_THRESHOLD: u64 = 10_000;
+
 struct AddressTimestamps {
     funding_time: Option<i64>,
     claim_time: Option<i64>,
@@ -28,12 +30,15 @@ fn analyze_transactions(address: &str, txs: &[MempoolTx]) -> AddressTimestamps {
             .iter()
             .any(|vout| vout.scriptpubkey_address.as_deref() == Some(address));
 
-        let is_claim = tx.vin.iter().any(|vin| {
-            vin.prevout
-                .as_ref()
-                .and_then(|p| p.scriptpubkey_address.as_deref())
-                == Some(address)
-        });
+        let amount_from_puzzle: u64 = tx
+            .vin
+            .iter()
+            .filter_map(|vin| vin.prevout.as_ref())
+            .filter(|p| p.scriptpubkey_address.as_deref() == Some(address))
+            .map(|p| p.value)
+            .sum();
+
+        let is_claim = amount_from_puzzle > DUST_THRESHOLD;
 
         if is_funding {
             funding_time = Some(match funding_time {
