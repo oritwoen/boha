@@ -800,7 +800,10 @@ fn cmd_show(id: &str, show_transactions: bool, open_asset: bool, format: OutputF
                         eprintln!("{} Failed to open URL: {}", "Warning:".yellow().bold(), e);
                     }
                 } else {
-                    eprintln!("{} No asset available for this puzzle", "Warning:".yellow().bold());
+                    eprintln!(
+                        "{} No asset available for this puzzle",
+                        "Warning:".yellow().bold()
+                    );
                 }
             }
             output_puzzle(puzzle, show_transactions, format)
@@ -980,7 +983,11 @@ fn run_sync(cli: Cli) {
             chain,
             cli.output,
         ),
-        Commands::Show { id, transactions, open } => cmd_show(&id, transactions, open, cli.output),
+        Commands::Show {
+            id,
+            transactions,
+            open,
+        } => cmd_show(&id, transactions, open, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
@@ -1007,7 +1014,11 @@ fn run(cli: Cli) {
             chain,
             cli.output,
         ),
-        Commands::Show { id, transactions, open } => cmd_show(&id, transactions, open, cli.output),
+        Commands::Show {
+            id,
+            transactions,
+            open,
+        } => cmd_show(&id, transactions, open, cli.output),
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
