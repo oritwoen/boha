@@ -431,7 +431,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         rows.push(section("Public Key"));
         rows.push(KeyValueRow {
             field: "  Key".to_string(),
-            value: pubkey.key.to_string(),
+            value: pubkey.value.to_string(),
         });
         rows.push(KeyValueRow {
             field: "  Format".to_string(),
@@ -838,7 +838,7 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
                 start: format!("0x{:x}", start),
                 end: format!("0x{:x}", end),
                 address: Some(p.address.value.to_string()),
-                pubkey: p.pubkey.map(|pk| pk.key.to_string()),
+                pubkey: p.pubkey.map(|pk| pk.value.to_string()),
             };
             output_range(&range, format);
         }

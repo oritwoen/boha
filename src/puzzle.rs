@@ -253,7 +253,7 @@ pub struct Solver {
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize)]
 pub struct Pubkey {
-    pub key: &'static str,
+    pub value: &'static str,
     pub format: PubkeyFormat,
 }
 
@@ -366,7 +366,7 @@ impl Puzzle {
     }
 
     pub fn pubkey_str(&self) -> Option<&'static str> {
-        self.pubkey.map(|p| p.key)
+        self.pubkey.map(|p| p.value)
     }
 
     pub fn has_private_key(&self) -> bool {

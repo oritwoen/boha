@@ -402,7 +402,7 @@ fn gsmg_has_uncompressed_pubkey() {
     let pubkey = puzzle.pubkey.expect("GSMG should have pubkey");
     assert_eq!(pubkey.format, PubkeyFormat::Uncompressed);
     assert_eq!(
-        pubkey.key,
+        pubkey.value,
         "04f4d1bbd91e65e2a019566a17574e97dae908b784b388891848007e4f55d5a4649c73d25fc5ed8fd7227cab0be4e576c0c6404db5aa546286563e4be12bf33559"
     );
 }
@@ -428,7 +428,7 @@ fn pubkey_format_matches_key_length() {
             match pubkey.format {
                 PubkeyFormat::Compressed => {
                     assert_eq!(
-                        pubkey.key.len(),
+                        pubkey.value.len(),
                         66,
                         "Compressed pubkey should be 66 hex chars: {}",
                         puzzle.id
@@ -436,7 +436,7 @@ fn pubkey_format_matches_key_length() {
                 }
                 PubkeyFormat::Uncompressed => {
                     assert_eq!(
-                        pubkey.key.len(),
+                        pubkey.value.len(),
                         130,
                         "Uncompressed pubkey should be 130 hex chars: {}",
                         puzzle.id
@@ -452,7 +452,7 @@ fn pubkey_has_non_empty_key() {
     for puzzle in boha::all() {
         if let Some(pubkey) = &puzzle.pubkey {
             assert!(
-                !pubkey.key.is_empty(),
+                !pubkey.value.is_empty(),
                 "Puzzle {} has empty pubkey",
                 puzzle.id
             );
@@ -606,7 +606,7 @@ fn redeem_script_hash_matches_script() {
 fn pubkey_matches_hash160() {
     for puzzle in boha::all() {
         if let (Some(pubkey), Some(expected)) = (&puzzle.pubkey, puzzle.address.hash160) {
-            let computed = hash160(pubkey.key).unwrap_or_else(|| {
+            let computed = hash160(pubkey.value).unwrap_or_else(|| {
                 panic!("Failed to compute hash160 from pubkey for {}", puzzle.id)
             });
             assert_eq!(
