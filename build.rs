@@ -153,6 +153,12 @@ struct TomlAssets {
 }
 
 #[derive(Debug, Deserialize)]
+struct TomlPubkey {
+    value: String,
+    format: String,
+}
+
+#[derive(Debug, Deserialize)]
 struct TomlShares {
     threshold: u8,
     total: u8,
@@ -206,8 +212,7 @@ struct Btc1000Puzzle {
     #[allow(dead_code)]
     has_pubkey: Option<bool>,
     key: TomlKey,
-    public_key: Option<String>,
-    pubkey_format: Option<String>,
+    pubkey: Option<TomlPubkey>,
     start_date: Option<String>,
     solve_date: Option<String>,
     solve_time: Option<u64>,
@@ -263,8 +268,7 @@ struct GsmgPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
-    public_key: Option<String>,
-    pubkey_format: Option<String>,
+    pubkey: Option<TomlPubkey>,
     start_date: Option<String>,
     solve_date: Option<String>,
     solve_time: Option<u64>,
@@ -294,8 +298,7 @@ struct ZdenPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
-    public_key: Option<String>,
-    pubkey_format: Option<String>,
+    pubkey: Option<TomlPubkey>,
     key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -357,8 +360,7 @@ struct BalletFile {
 struct BalletPuzzle {
     name: String,
     address: Address,
-    public_key: Option<String>,
-    pubkey_format: Option<String>,
+    pubkey: Option<TomlPubkey>,
     status: String,
     prize: Option<f64>,
     key: Option<TomlKey>,
@@ -384,8 +386,7 @@ struct BitapsPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
-    public_key: Option<String>,
-    pubkey_format: Option<String>,
+    pubkey: Option<TomlPubkey>,
     key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -407,6 +408,26 @@ fn format_hash160(address: &Address, chain: &str, puzzle_id: &str) -> String {
     }
     match &address.hash160 {
         Some(h) => format!("Some(\"{}\")", h),
+        None => "None".to_string(),
+    }
+}
+
+fn format_pubkey(pubkey: &Option<TomlPubkey>, puzzle_id: &str) -> String {
+    match pubkey {
+        Some(pk) => {
+            let format = match pk.format.as_str() {
+                "compressed" => "PubkeyFormat::Compressed",
+                "uncompressed" => "PubkeyFormat::Uncompressed",
+                _ => panic!(
+                    "Invalid pubkey format '{}' for puzzle {}",
+                    pk.format, puzzle_id
+                ),
+            };
+            format!(
+                "Some(Pubkey {{ value: \"{}\", format: {} }})",
+                pk.value, format
+            )
+        }
         None => "None".to_string(),
     }
 }
@@ -844,19 +865,7 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             _ => "Status::Unsolved",
         };
 
-        let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
-            (Some(pk), Some(fmt)) => {
-                let format = match fmt.as_str() {
-                    "compressed" => "PubkeyFormat::Compressed",
-                    "uncompressed" => "PubkeyFormat::Uncompressed",
-                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, bits),
-                };
-                format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
-            }
-            (None, None) => "None".to_string(),
-            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", bits),
-            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", bits),
-        };
+        let pubkey = format_pubkey(&puzzle.pubkey, &bits.to_string());
 
         let key = generate_key_code_required(&puzzle.key);
 
@@ -1100,19 +1109,7 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         .map(|url| format!("Some(\"{}\")", url))
         .unwrap_or_else(|| "None".to_string());
 
-    let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
-        (Some(pk), Some(fmt)) => {
-            let format = match fmt.as_str() {
-                "compressed" => "PubkeyFormat::Compressed",
-                "uncompressed" => "PubkeyFormat::Uncompressed",
-                _ => panic!("Invalid pubkey_format '{}' for gsmg", fmt),
-            };
-            format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
-        }
-        (None, None) => "None".to_string(),
-        (Some(_), None) => panic!("gsmg has public_key but no pubkey_format"),
-        (None, Some(_)) => panic!("gsmg has pubkey_format but no public_key"),
-    };
+    let pubkey = format_pubkey(&puzzle.pubkey, "gsmg");
 
     let hash160 = format_hash160(&puzzle.address, "bitcoin", "gsmg");
     let witness_program = format_witness_program(&puzzle.address, "gsmg");
@@ -1243,19 +1240,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         let solver = generate_solver_code(&puzzle.solver, solvers);
         let assets = generate_assets_code(&puzzle.assets, "zden", &format!("zden/{}", puzzle.name));
 
-        let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
-            (Some(pk), Some(fmt)) => {
-                let format = match fmt.as_str() {
-                    "compressed" => "PubkeyFormat::Compressed",
-                    "uncompressed" => "PubkeyFormat::Uncompressed",
-                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, puzzle.name),
-                };
-                format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
-            }
-            (None, None) => "None".to_string(),
-            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", puzzle.name),
-            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", puzzle.name),
-        };
+        let pubkey = format_pubkey(&puzzle.pubkey, &puzzle.name);
 
         output.push_str(&format!(
             r#"    Puzzle {{
@@ -1355,19 +1340,7 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         .map(|url| format!("Some(\"{}\")", url))
         .unwrap_or_else(|| "None".to_string());
 
-    let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
-        (Some(pk), Some(fmt)) => {
-            let format = match fmt.as_str() {
-                "compressed" => "PubkeyFormat::Compressed",
-                "uncompressed" => "PubkeyFormat::Uncompressed",
-                _ => panic!("Invalid pubkey_format '{}' for bitaps", fmt),
-            };
-            format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
-        }
-        (None, None) => "None".to_string(),
-        (Some(_), None) => panic!("bitaps has public_key but no pubkey_format"),
-        (None, Some(_)) => panic!("bitaps has pubkey_format but no public_key"),
-    };
+    let pubkey = format_pubkey(&puzzle.pubkey, "bitaps");
 
     let hash160 = format_hash160(&puzzle.address, "bitcoin", "bitaps");
     let witness_program = format_witness_program(&puzzle.address, "bitaps");
@@ -1609,19 +1582,7 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         let assets =
             generate_assets_code(&puzzle.assets, "ballet", &format!("ballet/{}", puzzle.name));
 
-        let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
-            (Some(pk), Some(fmt)) => {
-                let format = match fmt.as_str() {
-                    "compressed" => "PubkeyFormat::Compressed",
-                    "uncompressed" => "PubkeyFormat::Uncompressed",
-                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, puzzle.name),
-                };
-                format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
-            }
-            (None, None) => "None".to_string(),
-            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", puzzle.name),
-            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", puzzle.name),
-        };
+        let pubkey = format_pubkey(&puzzle.pubkey, &puzzle.name);
 
         output.push_str(&format!(
             r#"    Puzzle {{

@@ -13,8 +13,7 @@ source_url = "https://x.com/bobbyclee/status/1289004702122643456"
 [[puzzles]]
 name = "AA007448"
 address = { value = "1LL6Xy92LwGDRfQP9fBU7f1477cEKctr7c", kind = "p2pkh", hash160 = "d406e9a3e9969c600cf2075631600d2079e5fe40" }
-public_key = "0351a7b8675ac06922080803608908267ec7f5bf93ecdd78969083647ac8a67d0d"
-pubkey_format = "compressed"
+pubkey = { value = "0351a7b8675ac06922080803608908267ec7f5bf93ecdd78969083647ac8a67d0d", format = "compressed" }
 status = "solved"
 prize = 0.00110000
 start_date = "2020-07-24 05:46:12"
