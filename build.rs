@@ -294,6 +294,8 @@ struct ZdenPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    public_key: Option<String>,
+    pubkey_format: Option<String>,
     key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -609,6 +611,12 @@ fn generate_wif_code(wif: &Option<TomlWif>) -> String {
 
 fn generate_key_code_required(key: &TomlKey) -> String {
     let decrypted_wif = key.wif.as_ref().and_then(|w| w.decrypted.as_ref());
+
+    // Validate: bits is required when hex or decrypted wif exists
+    let has_private_key = key.hex.is_some() || decrypted_wif.is_some();
+    if has_private_key && key.bits.is_none() {
+        panic!("Key has hex or decrypted wif but missing required 'bits' field");
+    }
 
     let (hex_val, derived_decrypted) = match (&key.hex, decrypted_wif) {
         (Some(h), Some(_)) => (Some(h.clone()), None),
@@ -1235,6 +1243,20 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         let solver = generate_solver_code(&puzzle.solver, solvers);
         let assets = generate_assets_code(&puzzle.assets, "zden", &format!("zden/{}", puzzle.name));
 
+        let pubkey = match (&puzzle.public_key, &puzzle.pubkey_format) {
+            (Some(pk), Some(fmt)) => {
+                let format = match fmt.as_str() {
+                    "compressed" => "PubkeyFormat::Compressed",
+                    "uncompressed" => "PubkeyFormat::Uncompressed",
+                    _ => panic!("Invalid pubkey_format '{}' for puzzle {}", fmt, puzzle.name),
+                };
+                format!("Some(Pubkey {{ key: \"{}\", format: {} }})", pk, format)
+            }
+            (None, None) => "None".to_string(),
+            (Some(_), None) => panic!("Puzzle {} has public_key but no pubkey_format", puzzle.name),
+            (None, Some(_)) => panic!("Puzzle {} has pubkey_format but no public_key", puzzle.name),
+        };
+
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "zden/{}",
@@ -1248,7 +1270,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             redeem_script: {},
         }},
         status: {},
-        pubkey: None,
+        pubkey: {},
         key: {},
         prize: {},
         start_date: {},
@@ -1270,6 +1292,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             witness_program,
             redeem_script,
             status,
+            pubkey,
             key,
             prize,
             start_date,

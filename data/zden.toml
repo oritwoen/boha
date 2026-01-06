@@ -16,6 +16,9 @@ source_url = "https://crypto.haluska.sk/"
 name = "Level 1"
 chain = "bitcoin"
 address = { value = "1cryptommoqPHVNHuxVQG3bzujnRJYB1D", kind = "p2pkh", hash160 = "06c84797d2e333a2e692bb1c248f2cb20be50852" }
+public_key = "0408fe136fc5f5ab550da96673c050c539ce9877ec69965dde958d080cc4a2b896d6db9afd83e05875a401edcbc0e870c23251cb12b55677dba04a495806fd9fb7"
+pubkey_format = "uncompressed"
+key = { bits = 255, hex = "46c92e7276ae95778df0d7a248ab736cb6275190ded54438377a2e4b0d42a096", wif = { decrypted = "5JMTiDVHj3pj8VfaTe6pDtD9byZr6too3PD3AGBJrXF1hVsitc8" } }
 status = "solved"
 prize = 0.0260414
 start_date = "2016-06-07 21:05:42"
