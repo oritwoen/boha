@@ -50,6 +50,8 @@ source_url = "https://crypto.haluska.sk/crypto2.png"
 name = "Level 3"
 chain = "bitcoin"
 address = { value = "1cryptoJzomVVJUSys8Qv1gKPCXFoZy1U", kind = "p2pkh", hash160 = "06c84797d250f130abafce9eafefea3f425e162e" }
+pubkey = { value = "043648d46ea6de8285c56df043a9f438693692c33da0bacb0f3383e65d9983a8bf12be321634a4fdbc5cb58bd76a2c62a7546e3f70d6b28c35d5843527583ad48f", format = "uncompressed" }
+key = { bits = 256, hex = "6008c37d0aa226dbbe611be64106964bca6cbba7098fe4602a932c590e14b074", wif = { decrypted = "5JYaeV69haogQrDcGuW2Pmux8Mm2qtGYr9T2psxiKYfmhDYErQ2" } }
 status = "solved"
 prize = 0.0260414
 start_date = "2016-06-23 17:10:53"
