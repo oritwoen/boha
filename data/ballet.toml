@@ -33,6 +33,7 @@ passphrase = "335Y-K745-C8WT-4D2W-80WP"
 [puzzles.assets]
 puzzle = "AA007448/puzzle.jpg"
 source_url = "https://x.com/bobbyclee/status/1289004702122643456"
+source_archives = ["AA007448/source_archive.md"]
 
 [[puzzles]]
 name = "AA009926"
@@ -49,6 +50,7 @@ encrypted = "6PnQmAyBky9ZXJyZBvPQSGRUxkKh9HfnVsZWPn4YtcwoKy5vufUgfA3Ld7"
 puzzle = "AA009926/puzzle.jpg"
 hints = ["AA009926/revealed.jpg"]
 source_url = "https://x.com/bobbyclee/status/1289004702122643456"
+source_archives = ["AA007448/source_archive.md"]
 
 [[puzzles]]
 name = "AA012381"
@@ -64,3 +66,4 @@ passphrase = "594Y-L2RW-4ME7-2XVX-9B41"
 [puzzles.assets]
 puzzle = "AA012381/puzzle.jpg"
 source_url = "https://x.com/bobbyclee/status/1289004702122643456"
+source_archives = ["AA007448/source_archive.md"]

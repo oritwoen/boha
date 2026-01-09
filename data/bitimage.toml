@@ -30,6 +30,7 @@ description = "Antonopoulos kitten tweet (May 2015)"
 [puzzles.assets]
 puzzle = "kitten/puzzle.jpg"
 source_url = "https://twitter.com/aantonop/status/603701870482300928"
+source_archives = ["kitten/source_archive.md"]
 
 [[puzzles.transactions]]
 type = "funding"
@@ -63,6 +64,7 @@ description = "Antonopoulos kitten tweet (May 2015)"
 [puzzles.assets]
 puzzle = "kitten_passphrase/puzzle.jpg"
 source_url = "https://twitter.com/aantonop/status/603701870482300928"
+source_archives = ["kitten/source_archive.md"]
 
 [[puzzles.transactions]]
 type = "funding"
