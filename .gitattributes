@@ -1,0 +1,1 @@
+assets/**/source_archive.png filter=lfs diff=lfs merge=lfs -text
