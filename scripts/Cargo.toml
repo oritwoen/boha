@@ -6,6 +6,7 @@ edition = "2021"
 [dependencies]
 bs58 = { version = "0.5", features = ["check"] }
 chrono = "0.4"
+clap = { version = "4", features = ["derive"] }
 hex = "0.4"
 hmac = "0.12"
 ripemd = "0.1"
@@ -18,6 +19,7 @@ tokio = { version = "1", features = ["full"] }
 toml = "0.8"
 toml_edit = "0.22"
 dotenvy = "0.15"
+playwright = "0.0.20"
 
 [[bin]]
 name = "fetch-start-dates"
@@ -50,3 +52,7 @@ path = "src/bin/derive_pubkey_from_xpub.rs"
 [[bin]]
 name = "generate-wif"
 path = "src/bin/generate_wif.rs"
+
+[[bin]]
+name = "archive-tweet"
+path = "src/bin/archive_tweet.rs"

@@ -166,22 +166,21 @@ pub fn categorize_transactions(
             })
         });
 
-        let amount_from_puzzle: f64 = tx
-            .vin
-            .iter()
-            .filter(|input| {
-                sorted_txs.iter().any(|prev_tx| {
-                    prev_tx.txid == input.txid
-                        && prev_tx.vout.get(input.vout as usize).is_some_and(|out| {
-                            out.script_pub_key
-                                .addresses
-                                .as_ref()
-                                .is_some_and(|addrs| addrs.contains(&puzzle_address.to_string()))
-                        })
+        let amount_from_puzzle: f64 =
+            tx.vin
+                .iter()
+                .filter(|input| {
+                    sorted_txs.iter().any(|prev_tx| {
+                        prev_tx.txid == input.txid
+                            && prev_tx.vout.get(input.vout as usize).is_some_and(|out| {
+                                out.script_pub_key.addresses.as_ref().is_some_and(|addrs| {
+                                    addrs.contains(&puzzle_address.to_string())
+                                })
+                            })
+                    })
                 })
-            })
-            .map(|input| input.amountin)
-            .sum();
+                .map(|input| input.amountin)
+                .sum();
 
         let amount_to_author: f64 = tx
             .vout

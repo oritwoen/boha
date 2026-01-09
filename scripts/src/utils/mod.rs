@@ -1,6 +1,9 @@
 pub mod dcrdata;
 pub mod etherscan;
 pub mod mempool;
+pub mod playwright;
+pub mod source_archives;
+pub mod wayback;
 
 use chrono::{DateTime, Utc};
 use std::collections::HashSet;
@@ -127,7 +130,10 @@ pub fn extract_existing_transactions(table: &toml_edit::Table) -> Vec<Transactio
                         .and_then(|v| v.as_str())
                         .unwrap_or("")
                         .to_string();
-                    let date = inline.get("date").and_then(|v| v.as_str()).map(String::from);
+                    let date = inline
+                        .get("date")
+                        .and_then(|v| v.as_str())
+                        .map(String::from);
                     let amount = inline
                         .get("amount")
                         .and_then(|v| v.as_float().or_else(|| v.as_integer().map(|i| i as f64)));

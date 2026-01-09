@@ -3,3 +3,6 @@ scripts/target/
 .private-journal/
 data/cache/
 scripts/.env
+scripts/.playwright-state.json
+
+.sisyphus
