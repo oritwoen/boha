@@ -207,12 +207,11 @@ impl PlaywrightContext {
             .map_err(|e| pw_err("context.new_page", e))?;
 
         page.goto_builder(url)
-            .wait_until(DocumentLoadState::DomContentLoaded)
+            .wait_until(DocumentLoadState::NetworkIdle)
             .goto()
             .await
             .map_err(|e| pw_err("page.goto(tweet)", e))?;
 
-        // Wait for the main tweet container.
         let tweet = page
             .wait_for_selector_builder("article[data-testid=\"tweet\"]")
             .state(FrameState::Visible)
@@ -221,6 +220,8 @@ impl PlaywrightContext {
             .await
             .map_err(|e| pw_err("wait_for tweet container", e))?
             .ok_or_else(|| io_err("tweet container not found"))?;
+
+        tokio::time::sleep(Duration::from_millis(2000)).await;
 
         // The text container is absent for media-only tweets; that's ok.
         let text = match page.query_selector("[data-testid=\"tweetText\"]").await {

@@ -179,10 +179,12 @@ pub async fn screenshot_wayback(
     let page = ctx.new_page().await?;
 
     page.goto_builder(wayback_url)
-        .wait_until(DocumentLoadState::DomContentLoaded)
+        .wait_until(DocumentLoadState::NetworkIdle)
         .goto()
         .await
         .map_err(|e| pw_err("page.goto(wayback)", e))?;
+
+    tokio::time::sleep(Duration::from_millis(2000)).await;
 
     let tweet = find_tweet_container(&page).await;
 
