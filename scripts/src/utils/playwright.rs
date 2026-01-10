@@ -253,10 +253,23 @@ impl PlaywrightContext {
                 r#"() => {
                 document.querySelector('[role="banner"]')?.remove();
                 document.querySelector('[data-testid="TopNavBar"]')?.remove();
-                document.querySelectorAll('[style*="position: fixed"], [style*="position: sticky"]').forEach(el => {
-                    const rect = el.getBoundingClientRect();
-                    if (rect.top < 100) el.remove();
-                });
+                
+                const article = document.querySelector('article[data-testid="tweet"]');
+                if (article) {
+                    const header = article.querySelector('[role="button"][aria-label*="Back"], [role="button"][aria-label*="Wstecz"]');
+                    if (header) {
+                        header.closest('div[style*="position: sticky"], div[style*="position: fixed"]')?.remove();
+                        header.parentElement?.remove();
+                    }
+                    
+                    article.querySelectorAll('div').forEach(div => {
+                        const style = window.getComputedStyle(div);
+                        if (style.background && style.background.includes('gradient') && 
+                            div.getBoundingClientRect().top < 50) {
+                            div.remove();
+                        }
+                    });
+                }
             }"#,
                 (),
             )
