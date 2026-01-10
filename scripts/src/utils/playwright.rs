@@ -55,10 +55,13 @@ impl PlaywrightContext {
             .await
             .map_err(|e| pw_err("chromium.launch", e))?;
 
-        let mut context_builder = browser.context_builder().viewport(Some(Viewport {
-            width: VIEWPORT_WIDTH,
-            height: VIEWPORT_HEIGHT,
-        }));
+        let mut context_builder = browser
+            .context_builder()
+            .viewport(Some(Viewport {
+                width: VIEWPORT_WIDTH,
+                height: VIEWPORT_HEIGHT,
+            }))
+            .user_agent("Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36");
 
         if let Some(state) = storage_state {
             context_builder = context_builder.storage_state(state);
@@ -68,6 +71,13 @@ impl PlaywrightContext {
             .build()
             .await
             .map_err(|e| pw_err("browser.new_context", e))?;
+
+        context
+            .add_init_script(
+                "Object.defineProperty(navigator, 'webdriver', {get: () => undefined})",
+            )
+            .await
+            .map_err(|e| pw_err("context.add_init_script", e))?;
 
         let this = Self {
             playwright,
@@ -134,8 +144,18 @@ impl PlaywrightContext {
         }
 
         let content = std::fs::read_to_string(&cookies_path)?;
-        let cookies: Vec<playwright::api::Cookie> = serde_json::from_str(&content)
+        let mut cookies: Vec<playwright::api::Cookie> = serde_json::from_str(&content)
             .map_err(|e| format!("Failed to parse cookies JSON: {}", e))?;
+
+        let mut x_com_cookies = Vec::new();
+        for cookie in &cookies {
+            if cookie.domain == Some(".twitter.com".to_string()) {
+                let mut x_cookie = cookie.clone();
+                x_cookie.domain = Some(".x.com".to_string());
+                x_com_cookies.push(x_cookie);
+            }
+        }
+        cookies.extend(x_com_cookies);
 
         self.context
             .add_cookies(&cookies)
