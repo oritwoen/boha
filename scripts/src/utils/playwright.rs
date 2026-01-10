@@ -7,8 +7,8 @@ use std::time::Duration;
 
 pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error>>;
 
-const VIEWPORT_WIDTH: i32 = 1280;
-const VIEWPORT_HEIGHT: i32 = 720;
+const VIEWPORT_WIDTH: i32 = 1920;
+const VIEWPORT_HEIGHT: i32 = 1080;
 
 #[derive(Debug, Clone)]
 pub struct TweetArchive {
