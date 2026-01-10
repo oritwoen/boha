@@ -77,7 +77,14 @@ impl PlaywrightContext {
         };
 
         if headed {
-            this.run_manual_login().await?;
+            if let Err(e) = this.load_cookies_from_file().await {
+                eprintln!("Warning: failed to load cookies from file: {}", e);
+                eprintln!("Falling back to manual login...");
+                this.run_manual_login().await?;
+            } else {
+                eprintln!("Loaded cookies from scripts/twitter-cookies.json");
+                this.save_current_state().await?;
+            }
         }
 
         Ok(this)
@@ -113,6 +120,42 @@ impl PlaywrightContext {
         }
 
         Err("unreachable".into())
+    }
+
+    async fn load_cookies_from_file(&self) -> Result<()> {
+        let cookies_path = self
+            .state_path
+            .parent()
+            .ok_or("invalid state path")?
+            .join("twitter-cookies.json");
+
+        if !cookies_path.exists() {
+            return Err(format!("Cookies file not found: {}", cookies_path.display()).into());
+        }
+
+        let content = std::fs::read_to_string(&cookies_path)?;
+        let cookies: Vec<playwright::api::Cookie> = serde_json::from_str(&content)
+            .map_err(|e| format!("Failed to parse cookies JSON: {}", e))?;
+
+        self.context
+            .add_cookies(&cookies)
+            .await
+            .map_err(|e| pw_err("context.add_cookies", e))?;
+
+        Ok(())
+    }
+
+    async fn save_current_state(&self) -> Result<()> {
+        let storage_state = self
+            .context
+            .storage_state()
+            .await
+            .map_err(|e| pw_err("context.storage_state", e))?;
+
+        save_storage_state(&self.state_path, &storage_state)?;
+        eprintln!("Saved storage state to {}", self.state_path.display());
+
+        Ok(())
     }
 
     async fn run_manual_login(&self) -> Result<()> {
