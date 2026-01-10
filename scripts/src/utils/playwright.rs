@@ -248,6 +248,20 @@ impl PlaywrightContext {
 
         tokio::time::sleep(Duration::from_millis(2000)).await;
 
+        let _ = page
+            .evaluate::<(), ()>(
+                r#"() => {
+                document.querySelector('[role="banner"]')?.remove();
+                document.querySelector('[data-testid="TopNavBar"]')?.remove();
+                document.querySelectorAll('[style*="position: fixed"], [style*="position: sticky"]').forEach(el => {
+                    const rect = el.getBoundingClientRect();
+                    if (rect.top < 100) el.remove();
+                });
+            }"#,
+                (),
+            )
+            .await;
+
         // The text container is absent for media-only tweets; that's ok.
         let text = match page.query_selector("[data-testid=\"tweetText\"]").await {
             Ok(Some(el)) => el
