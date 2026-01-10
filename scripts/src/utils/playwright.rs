@@ -226,7 +226,13 @@ impl PlaywrightContext {
             .await
             .map_err(|e| pw_err("context.new_page", e))?;
 
-        page.goto_builder(url)
+        let desktop_url = if url.contains('?') {
+            format!("{}&mx=2", url)
+        } else {
+            format!("{}?mx=2", url)
+        };
+
+        page.goto_builder(&desktop_url)
             .wait_until(DocumentLoadState::NetworkIdle)
             .goto()
             .await
