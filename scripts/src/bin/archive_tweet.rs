@@ -202,7 +202,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
 
     if refs_by_url.is_empty() {
-        println!("No Twitter status URLs found for {}", collection);
+        println!("No X/Twitter status URLs found for {}", collection);
         return Ok(());
     }
 

@@ -9,9 +9,9 @@ pub struct PuzzlePath {
     pub array_index: usize,
 }
 
-/// Extract Twitter/X status URLs from a TOML document
+/// Extract X/Twitter status URLs from a TOML document
 ///
-/// Returns a list of (PuzzlePath, url) tuples for all found Twitter status URLs.
+/// Returns a list of (PuzzlePath, url) tuples for all found X/Twitter status URLs.
 /// Ignores profile URLs (without /status/ in path).
 ///
 /// Checks three locations:
@@ -116,12 +116,12 @@ pub fn extract_twitter_urls(
     Ok(results)
 }
 
-/// Check if a URL is a Twitter/X status URL (not a profile URL)
+/// Check if a URL is an X/Twitter status URL (not a profile URL)
 fn is_twitter_status_url(url: &str) -> bool {
     (url.contains("twitter.com") || url.contains("x.com")) && url.contains("/status/")
 }
 
-/// Canonicalize a Twitter/X URL
+/// Canonicalize an X/Twitter URL
 ///
 /// - Normalizes twitter.com → x.com
 /// - Strips tracking params (?s=20, ?ref_src=..., etc.)

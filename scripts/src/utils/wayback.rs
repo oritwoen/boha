@@ -241,7 +241,7 @@ async fn find_tweet_container(
         return Some(el);
     }
 
-    // Older Twitter layouts (Wayback snapshots are often from 2015-2016).
+    // Older X/Twitter layouts (Wayback snapshots are often from 2015-2016).
     for selector in [
         "div.permalink-tweet",
         "div.permalink-tweet-container",
@@ -347,7 +347,7 @@ async fn extract_author_from_dom(page: &playwright::api::Page) -> Option<String>
         return Some(handle);
     }
 
-    // Older Twitter layout: <span class="username">@handle</span>
+    // Older X/Twitter layout: <span class="username">@handle</span>
     for selector in ["span.username", "span.screen-name", "span.nickname"] {
         if let Ok(Some(el)) = page.query_selector(selector).await {
             let text = el.inner_text().await.ok()?;
