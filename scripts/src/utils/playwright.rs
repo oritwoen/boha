@@ -256,19 +256,34 @@ impl PlaywrightContext {
                 
                 const article = document.querySelector('article[data-testid="tweet"]');
                 if (article) {
-                    const header = article.querySelector('[role="button"][aria-label*="Back"], [role="button"][aria-label*="Wstecz"]');
-                    if (header) {
-                        header.closest('div[style*="position: sticky"], div[style*="position: fixed"]')?.remove();
-                        header.parentElement?.remove();
-                    }
+                    let toRemove = [];
                     
                     article.querySelectorAll('div').forEach(div => {
+                        const ariaLabel = div.getAttribute('aria-label');
+                        const role = div.getAttribute('role');
+                        
+                        if (role === 'button' && (ariaLabel?.includes('Back') || ariaLabel?.includes('Wstecz'))) {
+                            let parent = div;
+                            for (let i = 0; i < 5; i++) {
+                                parent = parent.parentElement;
+                                if (!parent) break;
+                                const style = window.getComputedStyle(parent);
+                                if (style.position === 'sticky' || style.position === 'fixed') {
+                                    toRemove.push(parent);
+                                    break;
+                                }
+                            }
+                        }
+                        
                         const style = window.getComputedStyle(div);
-                        if (style.background && style.background.includes('gradient') && 
-                            div.getBoundingClientRect().top < 50) {
-                            div.remove();
+                        const rect = div.getBoundingClientRect();
+                        if ((style.background?.includes('gradient') || style.backdropFilter?.includes('blur')) && 
+                            rect.top < 100 && rect.height < 200) {
+                            toRemove.push(div);
                         }
                     });
+                    
+                    toRemove.forEach(el => el.remove());
                 }
             }"#,
                 (),
