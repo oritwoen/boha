@@ -241,6 +241,11 @@ impl PlaywrightContext {
             .map_err(|e| pw_err("wait_for tweet container", e))?
             .ok_or_else(|| io_err("tweet container not found"))?;
 
+        tweet
+            .scroll_into_view_if_needed(None)
+            .await
+            .map_err(|e| pw_err("tweet.scroll_into_view", e))?;
+
         tokio::time::sleep(Duration::from_millis(2000)).await;
 
         // The text container is absent for media-only tweets; that's ok.
