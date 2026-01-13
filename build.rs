@@ -169,7 +169,14 @@ fn validate_wif_derives_address(
         }
     };
 
-    let is_compressed = wif.starts_with('K') || wif.starts_with('L');
+    let is_compressed = match wif.chars().next() {
+        Some('K') | Some('L') => true,
+        Some('5') => false,
+        _ => panic!(
+            "Puzzle '{}' has {} WIF '{}' with invalid prefix (expected '5', 'K', or 'L')",
+            puzzle_id, wif_type, wif
+        ),
+    };
     let derived_address = match private_key_to_address(&hex_key, is_compressed) {
         Some(addr) => addr,
         None => {
@@ -226,6 +233,32 @@ fn validate_encrypted_wif_derives_address(
              Derived:  {}\n\
              This means the encrypted WIF or passphrase does not match the puzzle address.",
             puzzle_id, encrypted_wif, expected_address, derived_address
+        );
+    }
+}
+
+fn validate_hex_derives_address(hex_key: &str, expected_address: &str, puzzle_id: &str) {
+    // Try both compressed and uncompressed formats
+    let compressed_addr = private_key_to_address(hex_key, true);
+    let uncompressed_addr = private_key_to_address(hex_key, false);
+
+    let matches = compressed_addr
+        .as_ref()
+        .map_or(false, |a| a == expected_address)
+        || uncompressed_addr
+            .as_ref()
+            .map_or(false, |a| a == expected_address);
+
+    if !matches {
+        let derived_compressed = compressed_addr.unwrap_or_else(|| "ERROR".to_string());
+        let derived_uncompressed = uncompressed_addr.unwrap_or_else(|| "ERROR".to_string());
+        panic!(
+            "Puzzle '{}' has hex key '{}' that derives WRONG ADDRESS\n\
+             Expected: {}\n\
+             Derived (compressed):   {}\n\
+             Derived (uncompressed): {}\n\
+             This means the hex key does not match the puzzle address. Please verify the source.",
+            puzzle_id, hex_key, expected_address, derived_compressed, derived_uncompressed
         );
     }
 }
@@ -771,6 +804,7 @@ fn generate_wif_code(wif: &Option<TomlWif>, puzzle_id: &str, expected_address: &
         Some(w) => {
             if let Some(e) = &w.encrypted {
                 validate_wif_checksum(e, puzzle_id, "encrypted");
+                // Only validate derivation if passphrase is known (unsolved puzzles may lack passphrase)
                 if let Some(p) = &w.passphrase {
                     validate_encrypted_wif_derives_address(e, p, expected_address, puzzle_id);
                 }
@@ -824,7 +858,10 @@ fn generate_key_code_required(key: &TomlKey, puzzle_id: &str, expected_address: 
     };
 
     let hex = match &hex_val {
-        Some(h) => format!("Some(\"{}\")", h),
+        Some(h) => {
+            validate_hex_derives_address(h, expected_address, puzzle_id);
+            format!("Some(\"{}\")", h)
+        }
         None => "None".to_string(),
     };
 
