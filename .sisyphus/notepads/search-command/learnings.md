@@ -65,3 +65,10 @@
 - Added `#[allow(dead_code)]` on `cmd_search()` to keep `cargo build --features cli` clean until Task 7 wires the command into `run()`/`run_sync()`.
 - Until Task 7 replaces the `_ => todo!("search command not implemented yet")` match arm, `boha search ...` will still panic before `cmd_search()` runs.
 
+## Task 7: Wiring `cmd_search()` into CLI
+- Replaced `todo!()` placeholders in both `run_sync()` (balance feature) and `run()` (non-balance) with `cmd_search(...)` calls following the `Commands::List` pattern.
+- Once the wiring made tests execute the real search logic, the CLI contract was enforced by the integration tests:
+  - Table output with zero matches must exit with code `1` (stderr contains `No puzzles found`); JSON remains `[]` with success.
+  - `--case-sensitive` is treated as ID/text-only matching; technical fields (address/hash/key/txid) are ignored in that mode so `GSMG` fails but `gsmg` succeeds.
+  - Non-exact ID matching uses the identifier part after `/` unless the query itself contains `/`, so `search 1 --limit 3` yields `b1000/1`, `b1000/10`, `b1000/11`.
+- Sorting is deterministic: primary by computed relevance score, tie-breaker by `puzzle.id`.

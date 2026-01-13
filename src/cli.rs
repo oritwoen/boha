@@ -842,11 +842,13 @@ fn puzzle_matches(
 
     let mut matched_fields: Vec<&'static str> = Vec::new();
     let mut first_match_position: Option<usize> = None;
+    let mut first_match_field_rank: Option<usize> = None;
 
-    let mut record_match = |label: &'static str, position: usize| {
+    let mut record_match = |label: &'static str, position: usize, field_rank: usize| {
         matched_fields.push(label);
         if first_match_position.is_none() {
             first_match_position = Some(position);
+            first_match_field_rank = Some(field_rank);
         }
     };
 
@@ -864,63 +866,83 @@ fn puzzle_matches(
         }
     };
 
-    if let Some(position) = matches_in(puzzle.id) {
-        record_match("id", position);
+    let id_haystack = if exact || query.contains('/') {
+        puzzle.id
+    } else {
+        puzzle
+            .id
+            .split_once('/')
+            .map(|(_, rest)| rest)
+            .unwrap_or(puzzle.id)
+    };
+
+    if let Some(position) = matches_in(id_haystack) {
+        record_match("id", position, 0);
     }
 
-    if let Some(position) = matches_in(puzzle.address.value) {
-        record_match("address.value", position);
-    }
-
-    if let Some(hash160) = puzzle.address.hash160 {
-        if let Some(position) = matches_in(hash160) {
-            record_match("address.hash160", position);
+    if !case_sensitive {
+        if let Some(position) = matches_in(puzzle.address.value) {
+            record_match("address.value", position, 1);
         }
     }
 
-    if let Some(witness_program) = puzzle.address.witness_program {
-        if let Some(position) = matches_in(witness_program) {
-            record_match("address.witness_program", position);
-        }
-    }
-
-    if let Some(pubkey) = puzzle.pubkey {
-        if let Some(position) = matches_in(pubkey.value) {
-            record_match("pubkey.value", position);
-        }
-    }
-
-    if let Some(key) = puzzle.key {
-        if let Some(hex) = key.hex {
-            if let Some(position) = matches_in(hex) {
-                record_match("key.hex", position);
+    if !case_sensitive {
+        if let Some(hash160) = puzzle.address.hash160 {
+            if let Some(position) = matches_in(hash160) {
+                record_match("address.hash160", position, 2);
             }
         }
+    }
 
-        if let Some(wif) = key.wif {
-            if let Some(encrypted) = wif.encrypted {
-                if let Some(position) = matches_in(encrypted) {
-                    record_match("key.wif.encrypted", position);
+    if !case_sensitive {
+        if let Some(witness_program) = puzzle.address.witness_program {
+            if let Some(position) = matches_in(witness_program) {
+                record_match("address.witness_program", position, 3);
+            }
+        }
+    }
+
+    if !case_sensitive {
+        if let Some(pubkey) = puzzle.pubkey {
+            if let Some(position) = matches_in(pubkey.value) {
+                record_match("pubkey.value", position, 4);
+            }
+        }
+    }
+
+    if !case_sensitive {
+        if let Some(key) = puzzle.key {
+            if let Some(hex) = key.hex {
+                if let Some(position) = matches_in(hex) {
+                    record_match("key.hex", position, 5);
                 }
             }
-            if let Some(decrypted) = wif.decrypted {
-                if let Some(position) = matches_in(decrypted) {
-                    record_match("key.wif.decrypted", position);
+
+            if let Some(wif) = key.wif {
+                if let Some(encrypted) = wif.encrypted {
+                    if let Some(position) = matches_in(encrypted) {
+                        record_match("key.wif.encrypted", position, 6);
+                    }
+                }
+                if let Some(decrypted) = wif.decrypted {
+                    if let Some(position) = matches_in(decrypted) {
+                        record_match("key.wif.decrypted", position, 7);
+                    }
                 }
             }
-        }
 
-        if let Some(seed) = key.seed {
-            if let Some(phrase) = seed.phrase {
-                if let Some(position) = matches_in(phrase) {
-                    record_match("key.seed.phrase", position);
+            if let Some(seed) = key.seed {
+                if let Some(phrase) = seed.phrase {
+                    if let Some(position) = matches_in(phrase) {
+                        record_match("key.seed.phrase", position, 8);
+                    }
                 }
             }
-        }
 
-        if let Some(mini) = key.mini {
-            if let Some(position) = matches_in(mini) {
-                record_match("key.mini", position);
+            if let Some(mini) = key.mini {
+                if let Some(position) = matches_in(mini) {
+                    record_match("key.mini", position, 9);
+                }
             }
         }
     }
@@ -928,38 +950,52 @@ fn puzzle_matches(
     if let Some(solver) = &puzzle.solver {
         if let Some(name) = solver.name {
             if let Some(position) = matches_in(name) {
-                record_match("solver.name", position);
+                record_match("solver.name", position, 10);
             }
         }
 
-        for addr in solver.addresses {
-            if let Some(position) = matches_in(addr) {
-                record_match("solver.addresses", position);
-                break;
+        if !case_sensitive {
+            for addr in solver.addresses {
+                if let Some(position) = matches_in(addr) {
+                    record_match("solver.addresses", position, 11);
+                    break;
+                }
             }
         }
     }
 
-    for tx in puzzle.transactions {
-        if let Some(txid) = tx.txid {
-            if let Some(position) = matches_in(txid) {
-                record_match("transactions.txid", position);
-                break;
+    if !case_sensitive {
+        for tx in puzzle.transactions {
+            if let Some(txid) = tx.txid {
+                if let Some(position) = matches_in(txid) {
+                    record_match("transactions.txid", position, 12);
+                    break;
+                }
             }
         }
     }
 
     if let Some(position) = matches_in(puzzle.chain.name()) {
-        record_match("chain", position);
+        record_match("chain", position, 13);
     }
 
     if matched_fields.is_empty() {
         return None;
     }
 
-    let num_matches = matched_fields.len();
+    let _num_matches = matched_fields.len();
     let position = first_match_position.expect("matched_fields is non-empty");
-    let score = num_matches * 100 + 100usize.saturating_sub(position);
+    let field_rank = first_match_field_rank.expect("matched_fields is non-empty");
+
+    let rank_score = 1_000_000usize.saturating_sub(field_rank * 50_000);
+    let position_score = 10_000usize.saturating_sub(position);
+    let id_len_bonus = if field_rank == 0 {
+        100usize.saturating_mul(10_000usize.saturating_sub(puzzle.id.len()))
+    } else {
+        0
+    };
+
+    let score = rank_score + position_score + id_len_bonus;
 
     Some((matched_fields, score))
 }
@@ -970,7 +1006,7 @@ fn output_search_results(results: &[SearchResult], format: OutputFormat, query: 
         OutputFormat::Table => {
             if results.is_empty() {
                 eprintln!("No puzzles found matching '{}'", query);
-                return;
+                std::process::exit(1);
             }
 
             let rows: Vec<SearchTableRow> = results
@@ -1113,7 +1149,11 @@ fn cmd_search(
         })
         .collect();
 
-    results.sort_by(|a, b| b.relevance_score.cmp(&a.relevance_score));
+    results.sort_by(|a, b| {
+        b.relevance_score
+            .cmp(&a.relevance_score)
+            .then_with(|| a.puzzle.id.cmp(b.puzzle.id))
+    });
 
     if let Some(limit) = limit {
         results.truncate(limit);
@@ -1355,7 +1395,20 @@ fn run_sync(cli: Cli) {
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
         Commands::Balance { .. } => unreachable!(),
-        _ => todo!("search command not implemented yet"),
+        Commands::Search {
+            query,
+            exact,
+            case_sensitive,
+            limit,
+            collection,
+        } => cmd_search(
+            &query,
+            exact,
+            case_sensitive,
+            limit,
+            collection.as_deref(),
+            cli.output,
+        ),
     }
 }
 
@@ -1386,6 +1439,19 @@ fn run(cli: Cli) {
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
-        _ => todo!("search command not implemented yet"),
+        Commands::Search {
+            query,
+            exact,
+            case_sensitive,
+            limit,
+            collection,
+        } => cmd_search(
+            &query,
+            exact,
+            case_sensitive,
+            limit,
+            collection.as_deref(),
+            cli.output,
+        ),
     }
 }
