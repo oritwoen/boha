@@ -131,6 +131,41 @@ struct PuzzleTableRow {
     solve_time: String,
 }
 
+#[allow(dead_code)]
+#[derive(Serialize)]
+struct SearchResult<'a> {
+    #[serde(flatten)]
+    puzzle: &'a Puzzle,
+    matched_fields: Vec<&'static str>,
+    #[serde(skip)] // Internal only - used for sorting, not exposed in output
+    relevance_score: usize,
+}
+
+#[allow(dead_code)]
+#[derive(Tabled)]
+struct SearchTableRow {
+    #[tabled(rename = "ID")]
+    id: String,
+    #[tabled(rename = "Chain")]
+    chain: String,
+    #[tabled(rename = "Address")]
+    address: String,
+    #[tabled(rename = "Status")]
+    status: String,
+    #[tabled(rename = "Matched")]
+    matched: String,
+}
+
+#[allow(dead_code)]
+#[derive(Serialize)]
+struct SearchCsvRow {
+    id: String,
+    chain: String,
+    address: String,
+    status: String,
+    matched_fields: String, // semicolon-separated
+}
+
 impl PuzzleTableRow {
     fn from_puzzle(p: &Puzzle, show_solve_time: bool) -> Self {
         let status = match p.status {
@@ -1023,7 +1058,7 @@ fn run_sync(cli: Cli) {
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
         Commands::Balance { .. } => unreachable!(),
-        Commands::Search { .. } => todo!("search command not implemented yet"),
+        _ => todo!("search command not implemented yet"),
     }
 }
 
@@ -1054,6 +1089,6 @@ fn run(cli: Cli) {
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
-        Commands::Search { .. } => todo!("search command not implemented yet"),
+        _ => todo!("search command not implemented yet"),
     }
 }
