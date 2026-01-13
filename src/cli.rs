@@ -825,6 +825,144 @@ fn print_balance_table(balance: &BalanceOutput) {
     println!("{}", table);
 }
 
+fn puzzle_matches(
+    puzzle: &Puzzle,
+    query: &str,
+    exact: bool,
+    case_sensitive: bool,
+) -> Option<(Vec<&'static str>, usize)> {
+    let query_lower;
+    let query_cmp = if case_sensitive {
+        query
+    } else {
+        query_lower = query.to_lowercase();
+        &query_lower
+    };
+
+    let mut matched_fields: Vec<&'static str> = Vec::new();
+    let mut first_match_position: Option<usize> = None;
+
+    let mut record_match = |label: &'static str, position: usize| {
+        matched_fields.push(label);
+        if first_match_position.is_none() {
+            first_match_position = Some(position);
+        }
+    };
+
+    let matches_in = |haystack: &str| -> Option<usize> {
+        if exact {
+            if case_sensitive {
+                (haystack == query).then_some(0)
+            } else {
+                (haystack.to_lowercase() == query_cmp).then_some(0)
+            }
+        } else if case_sensitive {
+            haystack.find(query)
+        } else {
+            haystack.to_lowercase().find(query_cmp)
+        }
+    };
+
+    if let Some(position) = matches_in(puzzle.id) {
+        record_match("id", position);
+    }
+
+    if let Some(position) = matches_in(puzzle.address.value) {
+        record_match("address.value", position);
+    }
+
+    if let Some(hash160) = puzzle.address.hash160 {
+        if let Some(position) = matches_in(hash160) {
+            record_match("address.hash160", position);
+        }
+    }
+
+    if let Some(witness_program) = puzzle.address.witness_program {
+        if let Some(position) = matches_in(witness_program) {
+            record_match("address.witness_program", position);
+        }
+    }
+
+    if let Some(pubkey) = puzzle.pubkey {
+        if let Some(position) = matches_in(pubkey.value) {
+            record_match("pubkey.value", position);
+        }
+    }
+
+    if let Some(key) = puzzle.key {
+        if let Some(hex) = key.hex {
+            if let Some(position) = matches_in(hex) {
+                record_match("key.hex", position);
+            }
+        }
+
+        if let Some(wif) = key.wif {
+            if let Some(encrypted) = wif.encrypted {
+                if let Some(position) = matches_in(encrypted) {
+                    record_match("key.wif.encrypted", position);
+                }
+            }
+            if let Some(decrypted) = wif.decrypted {
+                if let Some(position) = matches_in(decrypted) {
+                    record_match("key.wif.decrypted", position);
+                }
+            }
+        }
+
+        if let Some(seed) = key.seed {
+            if let Some(phrase) = seed.phrase {
+                if let Some(position) = matches_in(phrase) {
+                    record_match("key.seed.phrase", position);
+                }
+            }
+        }
+
+        if let Some(mini) = key.mini {
+            if let Some(position) = matches_in(mini) {
+                record_match("key.mini", position);
+            }
+        }
+    }
+
+    if let Some(solver) = &puzzle.solver {
+        if let Some(name) = solver.name {
+            if let Some(position) = matches_in(name) {
+                record_match("solver.name", position);
+            }
+        }
+
+        for addr in solver.addresses {
+            if let Some(position) = matches_in(addr) {
+                record_match("solver.addresses", position);
+                break;
+            }
+        }
+    }
+
+    for tx in puzzle.transactions {
+        if let Some(txid) = tx.txid {
+            if let Some(position) = matches_in(txid) {
+                record_match("transactions.txid", position);
+                break;
+            }
+        }
+    }
+
+    if let Some(position) = matches_in(puzzle.chain.name()) {
+        record_match("chain", position);
+    }
+
+    if matched_fields.is_empty() {
+        return None;
+    }
+
+    let num_matches = matched_fields.len();
+    let position = first_match_position.expect("matched_fields is non-empty");
+    let score = num_matches * 100 + 100usize.saturating_sub(position);
+
+    Some((matched_fields, score))
+}
+
 fn cmd_list(
     collection: &str,
     unsolved: bool,
