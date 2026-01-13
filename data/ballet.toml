@@ -43,7 +43,7 @@ start_date = "2020-07-24 05:46:12"
 transactions = [{ type = "funding", txid = "3771eac625e0ac4eb60bab31ea73424634b068ac4e724af0cd87330311837933", date = "2020-07-24 05:46:12", amount = 1.0 }, { type = "increase", txid = "5037ba0edc3ea80df73f38eb4d3ab4c0e395433807d58a4c8289bec11e677bd7", date = "2022-01-30 13:11:20", amount = 0.00001 }, { type = "increase", txid = "ddd79c2a6f1772359e9b6c8ab2140275e9005d0dee8bce566e6b8d52a9a3921c", date = "2024-05-17 17:34:48", amount = 0.00002481 }]
 
 [puzzles.key.wif]
-encrypted = "6PnQmAyBky9ZXJyZBvPQSGRUxkKh9HfnVsZWPn4YtcwoKy5vufUgfA3Ld7"
+encrypted = "6PnQmAyBky9ZXJyZBv9QSGRUXkKh9HfnVsZWPn4YtcwoKy5vufUgfA3Ld7"
 
 [puzzles.assets]
 puzzle = "AA009926/puzzle.jpg"

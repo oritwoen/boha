@@ -1,4 +1,9 @@
+use bip38::Decrypt;
+use k256::ecdsa::SigningKey;
+use k256::elliptic_curve::sec1::ToEncodedPoint;
+use k256::PublicKey;
 use num_bigint::BigUint;
+use ripemd::Ripemd160;
 use serde::Deserialize;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
@@ -19,6 +24,38 @@ fn sha256(data: &[u8]) -> [u8; 32] {
     let mut hasher = Sha256::new();
     hasher.update(data);
     hasher.finalize().into()
+}
+
+fn hash160(data: &[u8]) -> [u8; 20] {
+    let sha = sha256(data);
+    let mut hasher = Ripemd160::new();
+    hasher.update(sha);
+    hasher.finalize().into()
+}
+
+fn private_key_to_address(hex_key: &str, compressed: bool) -> Option<String> {
+    let key_bytes = hex::decode(hex_key).ok()?;
+    if key_bytes.len() != 32 {
+        return None;
+    }
+
+    let signing_key = SigningKey::from_bytes((&key_bytes[..]).into()).ok()?;
+    let public_key = PublicKey::from(signing_key.verifying_key());
+
+    let pubkey_bytes = if compressed {
+        public_key.to_sec1_bytes().to_vec()
+    } else {
+        public_key.to_encoded_point(false).as_bytes().to_vec()
+    };
+
+    let hash = hash160(&pubkey_bytes);
+
+    let mut data = vec![0x00];
+    data.extend_from_slice(&hash);
+    let checksum = &sha256(&sha256(&data))[..4];
+    data.extend_from_slice(checksum);
+
+    Some(bs58::encode(data).into_string())
 }
 
 fn hex_to_wif(hex_key: &str, compressed: bool) -> Option<String> {
@@ -68,6 +105,128 @@ fn wif_to_hex(wif: &str) -> Option<String> {
     };
 
     Some(hex::encode(key_bytes))
+}
+
+/// Validates WIF checksum and panics with detailed error if invalid.
+/// This catches typos and corrupted WIF strings at build time.
+fn validate_wif_checksum(wif: &str, puzzle_id: &str, wif_type: &str) {
+    let decoded = match bs58::decode(wif).into_vec() {
+        Ok(d) => d,
+        Err(e) => panic!(
+            "Puzzle '{}' has invalid Base58 in {} WIF '{}': {}",
+            puzzle_id, wif_type, wif, e
+        ),
+    };
+
+    if decoded.len() < 37 {
+        panic!(
+            "Puzzle '{}' has {} WIF '{}' that is too short (decoded {} bytes, need at least 37)",
+            puzzle_id,
+            wif_type,
+            wif,
+            decoded.len()
+        );
+    }
+
+    let data = &decoded[..decoded.len() - 4];
+    let checksum = &decoded[decoded.len() - 4..];
+    let expected_checksum = &sha256(&sha256(data))[..4];
+
+    if checksum != expected_checksum {
+        panic!(
+            "Puzzle '{}' has {} WIF '{}' with INVALID CHECKSUM\n\
+             Expected: {:02x}{:02x}{:02x}{:02x}\n\
+             Got:      {:02x}{:02x}{:02x}{:02x}\n\
+             This is likely a typo when copying the WIF. Please verify the original source.",
+            puzzle_id,
+            wif_type,
+            wif,
+            expected_checksum[0],
+            expected_checksum[1],
+            expected_checksum[2],
+            expected_checksum[3],
+            checksum[0],
+            checksum[1],
+            checksum[2],
+            checksum[3]
+        );
+    }
+}
+
+fn validate_wif_derives_address(
+    wif: &str,
+    expected_address: &str,
+    puzzle_id: &str,
+    wif_type: &str,
+) {
+    let hex_key = match wif_to_hex(wif) {
+        Some(h) => h,
+        None => {
+            panic!(
+                "Puzzle '{}' has {} WIF '{}' that cannot be decoded to hex",
+                puzzle_id, wif_type, wif
+            );
+        }
+    };
+
+    let is_compressed = wif.starts_with('K') || wif.starts_with('L');
+    let derived_address = match private_key_to_address(&hex_key, is_compressed) {
+        Some(addr) => addr,
+        None => {
+            panic!(
+                "Puzzle '{}' has {} WIF '{}' that cannot derive address from hex '{}'",
+                puzzle_id, wif_type, wif, hex_key
+            );
+        }
+    };
+
+    if derived_address != expected_address {
+        panic!(
+            "Puzzle '{}' has {} WIF '{}' that derives WRONG ADDRESS\n\
+             Expected: {}\n\
+             Derived:  {}\n\
+             This means the WIF does not match the puzzle address. Please verify the source.",
+            puzzle_id, wif_type, wif, expected_address, derived_address
+        );
+    }
+}
+
+fn validate_encrypted_wif_derives_address(
+    encrypted_wif: &str,
+    passphrase: &str,
+    expected_address: &str,
+    puzzle_id: &str,
+) {
+    let (private_key_bytes, compressed) = match encrypted_wif.decrypt(passphrase) {
+        Ok(result) => result,
+        Err(e) => {
+            panic!(
+                "Puzzle '{}' has encrypted WIF '{}' that cannot be decrypted with passphrase '{}': {:?}",
+                puzzle_id, encrypted_wif, passphrase, e
+            );
+        }
+    };
+
+    let hex_key = hex::encode(private_key_bytes);
+    let derived_address = match private_key_to_address(&hex_key, compressed) {
+        Some(addr) => addr,
+        None => {
+            panic!(
+                "Puzzle '{}' has encrypted WIF '{}' that cannot derive address after decryption",
+                puzzle_id, encrypted_wif
+            );
+        }
+    };
+
+    if derived_address != expected_address {
+        panic!(
+            "Puzzle '{}' has encrypted WIF '{}' (with passphrase '{}') that derives WRONG ADDRESS\n\
+             Expected: {}\n\
+             Derived:  {}\n\
+             This means the encrypted WIF or passphrase does not match the puzzle address.",
+            puzzle_id, encrypted_wif, passphrase, expected_address, derived_address
+        );
+    }
 }
 
 #[derive(Debug, Deserialize)]
@@ -599,16 +758,27 @@ fn generate_entropy_code(entropy: &Option<TomlEntropy>) -> String {
     }
 }
 
-fn generate_key_code(key: &Option<TomlKey>) -> String {
+fn generate_key_code(key: &Option<TomlKey>, puzzle_id: &str, expected_address: &str) -> String {
     match key {
-        Some(k) => generate_key_code_required(k),
+        Some(k) => generate_key_code_required(k, puzzle_id, expected_address),
         None => "None".to_string(),
     }
 }
 
-fn generate_wif_code(wif: &Option<TomlWif>) -> String {
+fn generate_wif_code(wif: &Option<TomlWif>, puzzle_id: &str, expected_address: &str) -> String {
     match wif {
         Some(w) => {
+            if let Some(e) = &w.encrypted {
+                validate_wif_checksum(e, puzzle_id, "encrypted");
+                if let Some(p) = &w.passphrase {
+                    validate_encrypted_wif_derives_address(e, p, expected_address, puzzle_id);
+                }
+            }
+            if let Some(d) = &w.decrypted {
+                validate_wif_checksum(d, puzzle_id, "decrypted");
+                validate_wif_derives_address(d, expected_address, puzzle_id, "decrypted");
+            }
+
             let encrypted = match &w.encrypted {
                 Some(e) => format!("Some(\"{}\")", e),
                 None => "None".to_string(),
@@ -630,7 +800,7 @@ fn generate_wif_code(wif: &Option<TomlWif>) -> String {
     }
 }
 
-fn generate_key_code_required(key: &TomlKey) -> String {
+fn generate_key_code_required(key: &TomlKey, puzzle_id: &str, expected_address: &str) -> String {
     let decrypted_wif = key.wif.as_ref().and_then(|w| w.decrypted.as_ref());
 
     // Validate: bits is required when hex or decrypted wif exists
@@ -664,9 +834,9 @@ fn generate_key_code_required(key: &TomlKey) -> String {
             passphrase: None,
         });
         wif_with_derived.decrypted = derived_decrypted;
-        generate_wif_code(&Some(wif_with_derived))
+        generate_wif_code(&Some(wif_with_derived), puzzle_id, expected_address)
     } else {
-        generate_wif_code(&key.wif)
+        generate_wif_code(&key.wif, puzzle_id, expected_address)
     };
 
     let seed = match &key.seed {
@@ -867,7 +1037,8 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 
         let pubkey = format_pubkey(&puzzle.pubkey, &bits.to_string());
 
-        let key = generate_key_code_required(&puzzle.key);
+        let puzzle_id = format!("b1000/{}", bits);
+        let key = generate_key_code_required(&puzzle.key, &puzzle_id, &puzzle.address.value);
 
         let prize = match puzzle.prize {
             Some(p) => format!("Some({:.6})", p),
@@ -1234,7 +1405,8 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         let witness_program =
             format_witness_program(&puzzle.address, &format!("zden/{}", puzzle.name));
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
-        let key = generate_key_code(&puzzle.key);
+        let puzzle_id = format!("zden/{}", puzzle.name);
+        let key = generate_key_code(&puzzle.key, &puzzle_id, &puzzle.address.value);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver, solvers);
@@ -1345,7 +1517,7 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let hash160 = format_hash160(&puzzle.address, "bitcoin", "bitaps");
     let witness_program = format_witness_program(&puzzle.address, "bitaps");
     let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
-    let key = generate_key_code(&puzzle.key);
+    let key = generate_key_code(&puzzle.key, "bitaps", &puzzle.address.value);
 
     let transactions = generate_transactions_code(&puzzle.transactions);
     let solver = generate_solver_code(&puzzle.solver, solvers);
@@ -1457,7 +1629,8 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
         let witness_program =
             format_witness_program(&puzzle.address, &format!("bitimage/{}", puzzle.name));
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
-        let key = generate_key_code(&puzzle.key);
+        let puzzle_id = format!("bitimage/{}", puzzle.name);
+        let key = generate_key_code(&puzzle.key, &puzzle_id, &puzzle.address.value);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver, solvers);
@@ -1575,7 +1748,8 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         let witness_program =
             format_witness_program(&puzzle.address, &format!("ballet/{}", puzzle.name));
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
-        let key = generate_key_code(&puzzle.key);
+        let puzzle_id = format!("ballet/{}", puzzle.name);
+        let key = generate_key_code(&puzzle.key, &puzzle_id, &puzzle.address.value);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver, solvers);
