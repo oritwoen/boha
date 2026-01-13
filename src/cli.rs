@@ -1040,7 +1040,7 @@ fn output_search_results(results: &[SearchResult], format: OutputFormat, query: 
         }
         OutputFormat::Json => {
             if results.is_empty() {
-                print!("[]");
+                println!("[]");
             } else {
                 println!("{}", serde_json::to_string_pretty(results).unwrap());
             }
@@ -1052,7 +1052,7 @@ fn output_search_results(results: &[SearchResult], format: OutputFormat, query: 
         }
         OutputFormat::Yaml => {
             if results.is_empty() {
-                print!("[]");
+                println!("[]");
             } else {
                 println!("{}", serde_yaml::to_string(results).unwrap());
             }
@@ -1108,7 +1108,7 @@ fn cmd_search(
             | "peter_todd" | "zden" | "all" => {}
             _ => {
                 eprintln!(
-                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden",
+                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, all",
                     "Error:".red().bold(),
                     collection
                 );
@@ -1128,7 +1128,7 @@ fn cmd_search(
         Some("all") | None => boha::all().collect(),
         Some(collection) => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden",
+                "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, all",
                 "Error:".red().bold(),
                 collection
             );

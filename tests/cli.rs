@@ -627,6 +627,6 @@ mod search {
             .args(["-o", "json", "search", "xyznonexistent123456"])
             .assert()
             .success()
-            .stdout(predicate::str::diff("[]"));
+            .stdout(predicate::str::diff("[]\n"));
     }
 }
