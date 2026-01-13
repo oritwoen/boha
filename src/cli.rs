@@ -1052,6 +1052,76 @@ fn output_search_results(results: &[SearchResult], format: OutputFormat, query: 
     }
 }
 
+#[allow(dead_code)]
+fn cmd_search(
+    query: &str,
+    exact: bool,
+    case_sensitive: bool,
+    limit: Option<usize>,
+    collection: Option<&str>,
+    format: OutputFormat,
+) {
+    if query.trim().is_empty() {
+        eprintln!("{} Search query cannot be empty", "Error:".red().bold());
+        std::process::exit(1);
+    }
+
+    if let Some(collection) = collection {
+        match collection {
+            "b1000" | "ballet" | "bitaps" | "bitimage" | "gsmg" | "hash_collision"
+            | "peter_todd" | "zden" | "all" => {}
+            _ => {
+                eprintln!(
+                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden",
+                    "Error:".red().bold(),
+                    collection
+                );
+                std::process::exit(1);
+            }
+        }
+    }
+
+    let puzzles: Vec<&'static Puzzle> = match collection {
+        Some("b1000") => b1000::all().collect(),
+        Some("ballet") => ballet::all().collect(),
+        Some("bitaps") => bitaps::all().collect(),
+        Some("bitimage") => bitimage::all().collect(),
+        Some("gsmg") => gsmg::all().collect(),
+        Some("hash_collision") | Some("peter_todd") => hash_collision::all().collect(),
+        Some("zden") => zden::all().collect(),
+        Some("all") | None => boha::all().collect(),
+        Some(collection) => {
+            eprintln!(
+                "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden",
+                "Error:".red().bold(),
+                collection
+            );
+            std::process::exit(1);
+        }
+    };
+
+    let mut results: Vec<SearchResult> = puzzles
+        .into_iter()
+        .filter_map(|p| {
+            puzzle_matches(p, query, exact, case_sensitive).map(
+                |(matched_fields, relevance_score)| SearchResult {
+                    puzzle: p,
+                    matched_fields,
+                    relevance_score,
+                },
+            )
+        })
+        .collect();
+
+    results.sort_by(|a, b| b.relevance_score.cmp(&a.relevance_score));
+
+    if let Some(limit) = limit {
+        results.truncate(limit);
+    }
+
+    output_search_results(&results, format, query);
+}
+
 fn cmd_list(
     collection: &str,
     unsolved: bool,

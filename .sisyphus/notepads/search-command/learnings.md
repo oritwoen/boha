@@ -59,3 +59,9 @@
 - Empty result behavior is format-specific: table prints `No puzzles found matching '<query>'` to stderr; json/yaml print `[]` (no extra newline); jsonl prints nothing.
 - CSV empty output requires manually writing headers (serde-based `csv::Writer::serialize` only emits headers when at least one row is serialized).
 - `SearchResult` was made non-generic (`puzzle: &'static Puzzle`) so the required signature `fn output_search_results(results: &[SearchResult], ...)` compiles.
+
+## Task 6: `cmd_search()` handler
+- `SearchResult` requires `puzzle: &'static Puzzle`, so `cmd_search()` must collect as `Vec<&'static Puzzle>` (not `Vec<&Puzzle>`) to avoid losing the `'static` lifetime.
+- Added `#[allow(dead_code)]` on `cmd_search()` to keep `cargo build --features cli` clean until Task 7 wires the command into `run()`/`run_sync()`.
+- Until Task 7 replaces the `_ => todo!("search command not implemented yet")` match arm, `boha search ...` will still panic before `cmd_search()` runs.
+
