@@ -983,7 +983,6 @@ fn puzzle_matches(
         return None;
     }
 
-    let _num_matches = matched_fields.len();
     let position = first_match_position.expect("matched_fields is non-empty");
     let field_rank = first_match_field_rank.expect("matched_fields is non-empty");
 
@@ -1100,21 +1099,6 @@ fn cmd_search(
     if query.trim().is_empty() {
         eprintln!("{} Search query cannot be empty", "Error:".red().bold());
         std::process::exit(1);
-    }
-
-    if let Some(collection) = collection {
-        match collection {
-            "b1000" | "ballet" | "bitaps" | "bitimage" | "gsmg" | "hash_collision"
-            | "peter_todd" | "zden" | "all" => {}
-            _ => {
-                eprintln!(
-                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
-                    "Error:".red().bold(),
-                    collection
-                );
-                std::process::exit(1);
-            }
-        }
     }
 
     let puzzles: Vec<&'static Puzzle> = match collection {
