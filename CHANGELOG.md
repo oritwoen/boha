@@ -1,3 +1,22 @@
+## [0.14.0] - 2026-01-13
+
+### Features
+
+- *(zden)* Add private key for Level 1 puzzle (#81)
+- *(build)* WIF validation at build time (#93)
+
+### Other
+
+- *(zden)* Add private key for Level 2 puzzle (#85)
+- *(zden)* Add Level 3 private key (#87)
+
+### Refactor
+
+- *(pubkey)* Rename key to value and use inline TOML tables (#83)
+
+### Documentation
+
+- Update AGENTS.md metadata to current commit
 ## [0.13.0] - 2026-01-05
 
 ### Features
@@ -9,6 +28,10 @@
 ### Documentation
 
 - Sync AGENTS.md with Ballet collection addition
+
+### Miscellaneous Tasks
+
+- *(release)* V0.13.0
 ## [0.12.1] - 2026-01-05
 
 ### Bug Fixes
