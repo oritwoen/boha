@@ -244,10 +244,10 @@ fn validate_hex_derives_address(hex_key: &str, expected_address: &str, puzzle_id
 
     let matches = compressed_addr
         .as_ref()
-        .map_or(false, |a| a == expected_address)
+        .is_some_and(|a| a == expected_address)
         || uncompressed_addr
             .as_ref()
-            .map_or(false, |a| a == expected_address);
+            .is_some_and(|a| a == expected_address);
 
     if !matches {
         let derived_compressed = compressed_addr.unwrap_or_else(|| "ERROR".to_string());
