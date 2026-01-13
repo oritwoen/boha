@@ -3,3 +3,5 @@ scripts/target/
 .private-journal/
 data/cache/
 scripts/.env
+scripts/twitter-cookies.json
+scripts/.playwright-state.json
