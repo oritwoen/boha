@@ -53,3 +53,9 @@
 - Matching logic: `==` for `--exact`, `contains` otherwise; case-insensitive compares `to_lowercase()` versions of both sides.
 - Relevance score uses the byte index of the first match in the first matched field and `100usize.saturating_sub(position)` to avoid underflow.
 - Kept the implementation comment-free to satisfy the repo’s comment/docstring hook (self-documenting structure + stable label strings).
+
+## Task 5: `output_search_results()` helper
+- Table output follows `output_puzzles()` patterns: `tabled` + `Style::rounded()`, then a `Total: N results` line.
+- Empty result behavior is format-specific: table prints `No puzzles found matching '<query>'` to stderr; json/yaml print `[]` (no extra newline); jsonl prints nothing.
+- CSV empty output requires manually writing headers (serde-based `csv::Writer::serialize` only emits headers when at least one row is serialized).
+- `SearchResult` was made non-generic (`puzzle: &'static Puzzle`) so the required signature `fn output_search_results(results: &[SearchResult], ...)` compiles.

@@ -133,9 +133,9 @@ struct PuzzleTableRow {
 
 #[allow(dead_code)]
 #[derive(Serialize)]
-struct SearchResult<'a> {
+struct SearchResult {
     #[serde(flatten)]
-    puzzle: &'a Puzzle,
+    puzzle: &'static Puzzle,
     matched_fields: Vec<&'static str>,
     #[serde(skip)] // Internal only - used for sorting, not exposed in output
     relevance_score: usize,
@@ -825,6 +825,7 @@ fn print_balance_table(balance: &BalanceOutput) {
     println!("{}", table);
 }
 
+#[allow(dead_code)]
 fn puzzle_matches(
     puzzle: &Puzzle,
     query: &str,
@@ -961,6 +962,94 @@ fn puzzle_matches(
     let score = num_matches * 100 + 100usize.saturating_sub(position);
 
     Some((matched_fields, score))
+}
+
+#[allow(dead_code)]
+fn output_search_results(results: &[SearchResult], format: OutputFormat, query: &str) {
+    match format {
+        OutputFormat::Table => {
+            if results.is_empty() {
+                eprintln!("No puzzles found matching '{}'", query);
+                return;
+            }
+
+            let rows: Vec<SearchTableRow> = results
+                .iter()
+                .map(|r| {
+                    let status = match r.puzzle.status {
+                        Status::Solved => "solved".green().to_string(),
+                        Status::Unsolved => "unsolved".yellow().to_string(),
+                        Status::Claimed => "claimed".cyan().to_string(),
+                        Status::Swept => "swept".red().to_string(),
+                    };
+
+                    SearchTableRow {
+                        id: r.puzzle.id.to_string(),
+                        chain: r.puzzle.chain.symbol().to_string(),
+                        address: r.puzzle.address.value.to_string(),
+                        status,
+                        matched: r.matched_fields.join(", "),
+                    }
+                })
+                .collect();
+
+            let mut table = Table::new(rows);
+            table.with(Style::rounded());
+            println!("{}", table);
+            println!(
+                "\n{} {} results",
+                "Total:".dimmed(),
+                results.len().to_string().bright_white()
+            );
+        }
+        OutputFormat::Json => {
+            if results.is_empty() {
+                print!("[]");
+            } else {
+                println!("{}", serde_json::to_string_pretty(results).unwrap());
+            }
+        }
+        OutputFormat::Jsonl => {
+            for r in results {
+                println!("{}", serde_json::to_string(r).unwrap());
+            }
+        }
+        OutputFormat::Yaml => {
+            if results.is_empty() {
+                print!("[]");
+            } else {
+                println!("{}", serde_yaml::to_string(results).unwrap());
+            }
+        }
+        OutputFormat::Csv => {
+            let mut wtr = csv::Writer::from_writer(std::io::stdout());
+
+            if results.is_empty() {
+                wtr.write_record(["id", "chain", "address", "status", "matched_fields"])
+                    .unwrap();
+            } else {
+                for r in results {
+                    let status = match r.puzzle.status {
+                        Status::Solved => "solved",
+                        Status::Unsolved => "unsolved",
+                        Status::Claimed => "claimed",
+                        Status::Swept => "swept",
+                    };
+
+                    wtr.serialize(SearchCsvRow {
+                        id: r.puzzle.id.to_string(),
+                        chain: r.puzzle.chain.symbol().to_string(),
+                        address: r.puzzle.address.value.to_string(),
+                        status: status.to_string(),
+                        matched_fields: r.matched_fields.join(";"),
+                    })
+                    .unwrap();
+                }
+            }
+
+            wtr.flush().unwrap();
+        }
+    }
 }
 
 fn cmd_list(
