@@ -201,8 +201,9 @@ fn validate_encrypted_wif_derives_address(
         Ok(result) => result,
         Err(e) => {
             panic!(
-                "Puzzle '{}' has encrypted WIF '{}' that cannot be decrypted with passphrase '{}': {:?}",
-                puzzle_id, encrypted_wif, passphrase, e
+                "Puzzle '{}' has encrypted WIF '{}' that cannot be decrypted with the provided passphrase: {:?}\n\
+                 The passphrase may be incorrect or the encrypted WIF may be invalid.",
+                puzzle_id, encrypted_wif, e
             );
         }
     };
@@ -220,11 +221,11 @@ fn validate_encrypted_wif_derives_address(
 
     if derived_address != expected_address {
         panic!(
-            "Puzzle '{}' has encrypted WIF '{}' (with passphrase '{}') that derives WRONG ADDRESS\n\
+            "Puzzle '{}' has encrypted WIF '{}' that derives WRONG ADDRESS after decryption\n\
              Expected: {}\n\
              Derived:  {}\n\
              This means the encrypted WIF or passphrase does not match the puzzle address.",
-            puzzle_id, encrypted_wif, passphrase, expected_address, derived_address
+            puzzle_id, encrypted_wif, expected_address, derived_address
         );
     }
 }
