@@ -1108,7 +1108,7 @@ fn cmd_search(
             | "peter_todd" | "zden" | "all" => {}
             _ => {
                 eprintln!(
-                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, all",
+                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
                     "Error:".red().bold(),
                     collection
                 );
@@ -1128,7 +1128,7 @@ fn cmd_search(
         Some("all") | None => boha::all().collect(),
         Some(collection) => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, all",
+                "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
                 "Error:".red().bold(),
                 collection
             );
@@ -1253,7 +1253,7 @@ fn cmd_author(collection: &str, format: OutputFormat) {
         "zden" => zden::author(),
         _ => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, bitaps, bitimage, gsmg, hash_collision, zden",
+                "{} Unknown collection: {}. Use: b1000, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden",
                 "Error:".red().bold(),
                 collection
             );
