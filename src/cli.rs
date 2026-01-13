@@ -91,6 +91,28 @@ enum Commands {
     /// Check balance (requires balance feature)
     #[cfg(feature = "balance")]
     Balance { id: String },
+
+    /// Search puzzles by query
+    Search {
+        /// Search query (required)
+        query: String,
+
+        /// Require exact match
+        #[arg(long)]
+        exact: bool,
+
+        /// Case-sensitive search
+        #[arg(long)]
+        case_sensitive: bool,
+
+        /// Limit number of results
+        #[arg(long)]
+        limit: Option<usize>,
+
+        /// Filter by collection
+        #[arg(long)]
+        collection: Option<String>,
+    },
 }
 
 #[derive(Tabled)]
@@ -107,6 +129,41 @@ struct PuzzleTableRow {
     prize: String,
     #[tabled(rename = "Solve Time")]
     solve_time: String,
+}
+
+#[allow(dead_code)]
+#[derive(Serialize)]
+struct SearchResult {
+    #[serde(flatten)]
+    puzzle: &'static Puzzle,
+    matched_fields: Vec<&'static str>,
+    #[serde(skip)] // Internal only - used for sorting, not exposed in output
+    relevance_score: usize,
+}
+
+#[allow(dead_code)]
+#[derive(Tabled)]
+struct SearchTableRow {
+    #[tabled(rename = "ID")]
+    id: String,
+    #[tabled(rename = "Chain")]
+    chain: String,
+    #[tabled(rename = "Address")]
+    address: String,
+    #[tabled(rename = "Status")]
+    status: String,
+    #[tabled(rename = "Matched")]
+    matched: String,
+}
+
+#[allow(dead_code)]
+#[derive(Serialize)]
+struct SearchCsvRow {
+    id: String,
+    chain: String,
+    address: String,
+    status: String,
+    matched_fields: String, // semicolon-separated
 }
 
 impl PuzzleTableRow {
@@ -768,6 +825,327 @@ fn print_balance_table(balance: &BalanceOutput) {
     println!("{}", table);
 }
 
+#[allow(dead_code)]
+fn puzzle_matches(
+    puzzle: &Puzzle,
+    query: &str,
+    exact: bool,
+    case_sensitive: bool,
+) -> Option<(Vec<&'static str>, usize)> {
+    let query_lower;
+    let query_cmp = if case_sensitive {
+        query
+    } else {
+        query_lower = query.to_lowercase();
+        &query_lower
+    };
+
+    let mut matched_fields: Vec<&'static str> = Vec::new();
+    let mut first_match_position: Option<usize> = None;
+    let mut first_match_field_rank: Option<usize> = None;
+
+    let mut record_match = |label: &'static str, position: usize, field_rank: usize| {
+        matched_fields.push(label);
+        if first_match_position.is_none() {
+            first_match_position = Some(position);
+            first_match_field_rank = Some(field_rank);
+        }
+    };
+
+    let matches_in = |haystack: &str| -> Option<usize> {
+        if exact {
+            if case_sensitive {
+                (haystack == query).then_some(0)
+            } else {
+                (haystack.to_lowercase() == query_cmp).then_some(0)
+            }
+        } else if case_sensitive {
+            haystack.find(query)
+        } else {
+            haystack.to_lowercase().find(query_cmp)
+        }
+    };
+
+    let id_haystack = if exact || query.contains('/') {
+        puzzle.id
+    } else {
+        puzzle
+            .id
+            .split_once('/')
+            .map(|(_, rest)| rest)
+            .unwrap_or(puzzle.id)
+    };
+
+    if let Some(position) = matches_in(id_haystack) {
+        record_match("id", position, 0);
+    }
+
+    if !case_sensitive {
+        if let Some(position) = matches_in(puzzle.address.value) {
+            record_match("address.value", position, 1);
+        }
+    }
+
+    if !case_sensitive {
+        if let Some(hash160) = puzzle.address.hash160 {
+            if let Some(position) = matches_in(hash160) {
+                record_match("address.hash160", position, 2);
+            }
+        }
+    }
+
+    if !case_sensitive {
+        if let Some(witness_program) = puzzle.address.witness_program {
+            if let Some(position) = matches_in(witness_program) {
+                record_match("address.witness_program", position, 3);
+            }
+        }
+    }
+
+    if !case_sensitive {
+        if let Some(pubkey) = puzzle.pubkey {
+            if let Some(position) = matches_in(pubkey.value) {
+                record_match("pubkey.value", position, 4);
+            }
+        }
+    }
+
+    if !case_sensitive {
+        if let Some(key) = puzzle.key {
+            if let Some(hex) = key.hex {
+                if let Some(position) = matches_in(hex) {
+                    record_match("key.hex", position, 5);
+                }
+            }
+
+            if let Some(wif) = key.wif {
+                if let Some(encrypted) = wif.encrypted {
+                    if let Some(position) = matches_in(encrypted) {
+                        record_match("key.wif.encrypted", position, 6);
+                    }
+                }
+                if let Some(decrypted) = wif.decrypted {
+                    if let Some(position) = matches_in(decrypted) {
+                        record_match("key.wif.decrypted", position, 7);
+                    }
+                }
+            }
+
+            if let Some(seed) = key.seed {
+                if let Some(phrase) = seed.phrase {
+                    if let Some(position) = matches_in(phrase) {
+                        record_match("key.seed.phrase", position, 8);
+                    }
+                }
+            }
+
+            if let Some(mini) = key.mini {
+                if let Some(position) = matches_in(mini) {
+                    record_match("key.mini", position, 9);
+                }
+            }
+        }
+    }
+
+    if let Some(solver) = &puzzle.solver {
+        if let Some(name) = solver.name {
+            if let Some(position) = matches_in(name) {
+                record_match("solver.name", position, 10);
+            }
+        }
+
+        if !case_sensitive {
+            for addr in solver.addresses {
+                if let Some(position) = matches_in(addr) {
+                    record_match("solver.addresses", position, 11);
+                    break;
+                }
+            }
+        }
+    }
+
+    if !case_sensitive {
+        for tx in puzzle.transactions {
+            if let Some(txid) = tx.txid {
+                if let Some(position) = matches_in(txid) {
+                    record_match("transactions.txid", position, 12);
+                    break;
+                }
+            }
+        }
+    }
+
+    if let Some(position) = matches_in(puzzle.chain.name()) {
+        record_match("chain", position, 13);
+    }
+
+    if matched_fields.is_empty() {
+        return None;
+    }
+
+    let position = first_match_position.expect("matched_fields is non-empty");
+    let field_rank = first_match_field_rank.expect("matched_fields is non-empty");
+
+    let rank_score = 1_000_000usize.saturating_sub(field_rank * 50_000);
+    let position_score = 10_000usize.saturating_sub(position);
+    let id_len_bonus = if field_rank == 0 {
+        100usize.saturating_mul(10_000usize.saturating_sub(puzzle.id.len()))
+    } else {
+        0
+    };
+
+    let score = rank_score + position_score + id_len_bonus;
+
+    Some((matched_fields, score))
+}
+
+#[allow(dead_code)]
+fn output_search_results(results: &[SearchResult], format: OutputFormat, query: &str) {
+    match format {
+        OutputFormat::Table => {
+            if results.is_empty() {
+                eprintln!("No puzzles found matching '{}'", query);
+                std::process::exit(1);
+            }
+
+            let rows: Vec<SearchTableRow> = results
+                .iter()
+                .map(|r| {
+                    let status = match r.puzzle.status {
+                        Status::Solved => "solved".green().to_string(),
+                        Status::Unsolved => "unsolved".yellow().to_string(),
+                        Status::Claimed => "claimed".cyan().to_string(),
+                        Status::Swept => "swept".red().to_string(),
+                    };
+
+                    SearchTableRow {
+                        id: r.puzzle.id.to_string(),
+                        chain: r.puzzle.chain.symbol().to_string(),
+                        address: r.puzzle.address.value.to_string(),
+                        status,
+                        matched: r.matched_fields.join(", "),
+                    }
+                })
+                .collect();
+
+            let mut table = Table::new(rows);
+            table.with(Style::rounded());
+            println!("{}", table);
+            println!(
+                "\n{} {} results",
+                "Total:".dimmed(),
+                results.len().to_string().bright_white()
+            );
+        }
+        OutputFormat::Json => {
+            if results.is_empty() {
+                println!("[]");
+            } else {
+                println!("{}", serde_json::to_string_pretty(results).unwrap());
+            }
+        }
+        OutputFormat::Jsonl => {
+            for r in results {
+                println!("{}", serde_json::to_string(r).unwrap());
+            }
+        }
+        OutputFormat::Yaml => {
+            if results.is_empty() {
+                println!("[]");
+            } else {
+                println!("{}", serde_yaml::to_string(results).unwrap());
+            }
+        }
+        OutputFormat::Csv => {
+            let mut wtr = csv::Writer::from_writer(std::io::stdout());
+
+            if results.is_empty() {
+                wtr.write_record(["id", "chain", "address", "status", "matched_fields"])
+                    .unwrap();
+            } else {
+                for r in results {
+                    let status = match r.puzzle.status {
+                        Status::Solved => "solved",
+                        Status::Unsolved => "unsolved",
+                        Status::Claimed => "claimed",
+                        Status::Swept => "swept",
+                    };
+
+                    wtr.serialize(SearchCsvRow {
+                        id: r.puzzle.id.to_string(),
+                        chain: r.puzzle.chain.symbol().to_string(),
+                        address: r.puzzle.address.value.to_string(),
+                        status: status.to_string(),
+                        matched_fields: r.matched_fields.join(";"),
+                    })
+                    .unwrap();
+                }
+            }
+
+            wtr.flush().unwrap();
+        }
+    }
+}
+
+#[allow(dead_code)]
+fn cmd_search(
+    query: &str,
+    exact: bool,
+    case_sensitive: bool,
+    limit: Option<usize>,
+    collection: Option<&str>,
+    format: OutputFormat,
+) {
+    if query.trim().is_empty() {
+        eprintln!("{} Search query cannot be empty", "Error:".red().bold());
+        std::process::exit(1);
+    }
+
+    let puzzles: Vec<&'static Puzzle> = match collection {
+        Some("b1000") => b1000::all().collect(),
+        Some("ballet") => ballet::all().collect(),
+        Some("bitaps") => bitaps::all().collect(),
+        Some("bitimage") => bitimage::all().collect(),
+        Some("gsmg") => gsmg::all().collect(),
+        Some("hash_collision") | Some("peter_todd") => hash_collision::all().collect(),
+        Some("zden") => zden::all().collect(),
+        Some("all") | None => boha::all().collect(),
+        Some(collection) => {
+            eprintln!(
+                "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
+                "Error:".red().bold(),
+                collection
+            );
+            std::process::exit(1);
+        }
+    };
+
+    let mut results: Vec<SearchResult> = puzzles
+        .into_iter()
+        .filter_map(|p| {
+            puzzle_matches(p, query, exact, case_sensitive).map(
+                |(matched_fields, relevance_score)| SearchResult {
+                    puzzle: p,
+                    matched_fields,
+                    relevance_score,
+                },
+            )
+        })
+        .collect();
+
+    results.sort_by(|a, b| {
+        b.relevance_score
+            .cmp(&a.relevance_score)
+            .then_with(|| a.puzzle.id.cmp(b.puzzle.id))
+    });
+
+    if let Some(limit) = limit {
+        results.truncate(limit);
+    }
+
+    output_search_results(&results, format, query);
+}
+
 fn cmd_list(
     collection: &str,
     unsolved: bool,
@@ -859,7 +1237,7 @@ fn cmd_author(collection: &str, format: OutputFormat) {
         "zden" => zden::author(),
         _ => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, bitaps, bitimage, gsmg, hash_collision, zden",
+                "{} Unknown collection: {}. Use: b1000, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden",
                 "Error:".red().bold(),
                 collection
             );
@@ -1001,6 +1379,20 @@ fn run_sync(cli: Cli) {
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
         Commands::Balance { .. } => unreachable!(),
+        Commands::Search {
+            query,
+            exact,
+            case_sensitive,
+            limit,
+            collection,
+        } => cmd_search(
+            &query,
+            exact,
+            case_sensitive,
+            limit,
+            collection.as_deref(),
+            cli.output,
+        ),
     }
 }
 
@@ -1031,5 +1423,19 @@ fn run(cli: Cli) {
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
+        Commands::Search {
+            query,
+            exact,
+            case_sensitive,
+            limit,
+            collection,
+        } => cmd_search(
+            &query,
+            exact,
+            case_sensitive,
+            limit,
+            collection.as_deref(),
+            cli.output,
+        ),
     }
 }
