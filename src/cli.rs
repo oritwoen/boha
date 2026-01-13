@@ -91,6 +91,28 @@ enum Commands {
     /// Check balance (requires balance feature)
     #[cfg(feature = "balance")]
     Balance { id: String },
+
+    /// Search puzzles by query
+    Search {
+        /// Search query (required)
+        query: String,
+
+        /// Require exact match
+        #[arg(long)]
+        exact: bool,
+
+        /// Case-sensitive search
+        #[arg(long)]
+        case_sensitive: bool,
+
+        /// Limit number of results
+        #[arg(long)]
+        limit: Option<usize>,
+
+        /// Filter by collection
+        #[arg(long)]
+        collection: Option<String>,
+    },
 }
 
 #[derive(Tabled)]
@@ -1001,6 +1023,7 @@ fn run_sync(cli: Cli) {
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
         Commands::Balance { .. } => unreachable!(),
+        Commands::Search { .. } => todo!("search command not implemented yet"),
     }
 }
 
@@ -1031,5 +1054,6 @@ fn run(cli: Cli) {
         Commands::Stats => cmd_stats(cli.output),
         Commands::Range { puzzle_number } => cmd_range(puzzle_number, cli.output),
         Commands::Author { collection } => cmd_author(&collection, cli.output),
+        Commands::Search { .. } => todo!("search command not implemented yet"),
     }
 }
