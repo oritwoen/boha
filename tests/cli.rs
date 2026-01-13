@@ -2,7 +2,7 @@ use assert_cmd::Command;
 use predicates::prelude::*;
 
 fn boha() -> Command {
-    let mut cmd = Command::cargo_bin("boha").unwrap();
+    let mut cmd = Command::new(env!("CARGO_BIN_EXE_boha"));
     cmd.env("NO_COLOR", "1");
     cmd
 }
@@ -484,5 +484,149 @@ mod balance {
             .assert()
             .success()
             .stdout(predicate::str::contains("Address"));
+    }
+}
+
+mod search {
+    use super::*;
+
+    #[test]
+    fn basic_substring_search() {
+        boha()
+            .args(["search", "1BgGZ"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000/1"))
+            .stdout(predicate::str::contains(
+                "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH",
+            ));
+    }
+
+    #[test]
+    fn exact_match() {
+        boha()
+            .args(["search", "--exact", "b1000/66"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000/66"))
+            .stdout(predicate::str::contains("b1000/1").not())
+            .stdout(predicate::str::contains("b1000/67").not());
+    }
+
+    #[test]
+    fn case_insensitive_default() {
+        boha()
+            .args(["search", "gsmg"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("gsmg"))
+            .stdout(predicate::str::contains(
+                "1GSMG1JC9wtdSwfwApgj2xcmJPAwx7prBe",
+            ));
+    }
+
+    #[test]
+    fn case_insensitive_uppercase() {
+        boha()
+            .args(["search", "GSMG"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("gsmg"));
+    }
+
+    #[test]
+    fn case_sensitive_no_match() {
+        boha()
+            .args(["search", "--case-sensitive", "GSMG"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("No puzzles found"));
+    }
+
+    #[test]
+    fn case_sensitive_match() {
+        boha()
+            .args(["search", "--case-sensitive", "gsmg"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("gsmg"));
+    }
+
+    #[test]
+    fn collection_filter() {
+        boha()
+            .args(["search", "--collection", "zden", "level"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("zden/"))
+            .stdout(predicate::str::contains("Level"))
+            .stdout(predicate::str::contains("b1000/").not())
+            .stdout(predicate::str::contains("hash_collision/").not());
+    }
+
+    #[test]
+    fn collection_unknown_error() {
+        boha()
+            .args(["search", "--collection", "nonexistent", "test"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("Error:"));
+    }
+
+    #[test]
+    fn limit_results() {
+        boha()
+            .args(["search", "--limit", "3", "1"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000/1"))
+            .stdout(predicate::str::contains("b1000/10"))
+            .stdout(predicate::str::contains("b1000/11"))
+            .stdout(predicate::str::contains("b1000/12").not());
+    }
+
+    #[test]
+    fn empty_query_error() {
+        boha()
+            .args(["search", ""])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("Error:"));
+    }
+
+    #[test]
+    fn whitespace_query_error() {
+        boha()
+            .args(["search", "  "])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("Error:"));
+    }
+
+    #[test]
+    fn json_output_has_matched_fields() {
+        boha()
+            .args(["-o", "json", "search", "sha256"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("matched_fields"));
+    }
+
+    #[test]
+    fn no_results_table() {
+        boha()
+            .args(["search", "xyznonexistent123456"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("No puzzles found"));
+    }
+
+    #[test]
+    fn no_results_json() {
+        boha()
+            .args(["-o", "json", "search", "xyznonexistent123456"])
+            .assert()
+            .success()
+            .stdout(predicate::str::diff("[]"));
     }
 }
