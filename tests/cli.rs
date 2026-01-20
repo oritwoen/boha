@@ -630,3 +630,281 @@ mod search {
             .stdout(predicate::str::diff("[]\n"));
     }
 }
+mod verify {
+    use super::*;
+
+    #[test]
+    fn verify_result_success() {
+        // RED: This should fail - verify command doesn't exist yet
+        boha()
+            .args(["verify", "b1000/66"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("verified"));
+    }
+
+    #[test]
+    fn verify_result_no_key() {
+        // RED: This should fail - verify command doesn't exist yet
+        boha()
+            .args(["verify", "b1000/71"])
+            .assert()
+            .code(2)
+            .stderr(predicate::str::contains("no private key"));
+    }
+
+    #[test]
+    fn verify_result_not_found() {
+        // RED: This should fail - verify command doesn't exist yet
+        boha().args(["verify", "invalid/id"]).assert().code(1);
+    }
+}
+
+#[cfg(test)]
+mod verify_bitcoin {
+    use boha::verify::{verify_bitcoin_address, VerifyError};
+    use boha::PubkeyFormat;
+
+    #[test]
+    fn verify_bitcoin_p2pkh_success() {
+        // b1000/66 - known solved puzzle
+        let hex = "000000000000000000000000000000000000000000000002832ed74f2b5e35ee";
+        let expected = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so";
+
+        let result = verify_bitcoin_address(hex, expected, PubkeyFormat::Compressed);
+        match &result {
+            Ok(addr) => println!("Success! Derived: {}", addr),
+            Err(e) => println!("Error: {:?}", e),
+        }
+        assert!(
+            result.is_ok(),
+            "Verification should succeed for b1000/66: {:?}",
+            result
+        );
+    }
+
+    #[test]
+    fn verify_bitcoin_p2wpkh_success() {
+        // This test will use a known P2WPKH puzzle when we have hex data
+        // For now, placeholder
+    }
+
+    #[test]
+    fn verify_bitcoin_invalid_key() {
+        let hex = "invalid_hex";
+        let expected = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so";
+
+        let result = verify_bitcoin_address(hex, expected, PubkeyFormat::Compressed);
+        assert!(result.is_err(), "Should fail with invalid hex");
+    }
+}
+
+#[cfg(test)]
+mod verify_multichain {
+    use boha::verify::{verify_decred_address, verify_ethereum_address, verify_litecoin_address};
+    use boha::PubkeyFormat;
+
+    #[test]
+    fn verify_ethereum_success() {
+        let hex = "fad9c8855b740a0b7ed4c221dbad0f33a83a49cad6b3fe8d5817ac83d38b6a19";
+        let expected = "0x96216849c49358b10257cb55b28ea603c874b05e";
+
+        let result = verify_ethereum_address(hex, expected);
+        assert!(
+            result.is_ok(),
+            "Ethereum verification should succeed: {:?}",
+            result
+        );
+        assert_eq!(result.unwrap(), expected);
+    }
+
+    #[test]
+    fn verify_ethereum_case_insensitive() {
+        let hex = "fad9c8855b740a0b7ed4c221dbad0f33a83a49cad6b3fe8d5817ac83d38b6a19";
+        let expected_upper = "0x96216849C49358B10257CB55B28EA603C874B05E";
+
+        let result = verify_ethereum_address(hex, expected_upper);
+        assert!(
+            result.is_ok(),
+            "Ethereum verification should be case-insensitive: {:?}",
+            result
+        );
+    }
+
+    #[test]
+    fn verify_ethereum_invalid_key() {
+        let hex = "invalid_hex";
+        let expected = "0x96216849c49358b10257cb55b28ea603c874b05e";
+
+        let result = verify_ethereum_address(hex, expected);
+        assert!(result.is_err(), "Should fail with invalid hex");
+    }
+
+    #[test]
+    fn verify_litecoin_p2pkh_success() {
+        let hex = "0000000000000000000000000000000000000000000000000000000000000001";
+        let expected = "LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ";
+
+        let result = verify_litecoin_address(hex, expected, PubkeyFormat::Compressed);
+        assert!(
+            result.is_ok(),
+            "Litecoin P2PKH verification should succeed: {:?}",
+            result
+        );
+        assert_eq!(result.unwrap(), expected);
+    }
+
+    #[test]
+    fn verify_litecoin_invalid_key() {
+        let hex = "not_a_valid_hex_string";
+        let expected = "LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ";
+
+        let result = verify_litecoin_address(hex, expected, PubkeyFormat::Compressed);
+        assert!(result.is_err(), "Should fail with invalid hex");
+    }
+
+    #[test]
+    fn verify_decred_p2pkh_success() {
+        let hex = "0000000000000000000000000000000000000000000000000000000000000001";
+        let expected = "DsmcYVbP1Nmag2H4AS17UTvmWXmGeA7nLDx";
+
+        let result = verify_decred_address(hex, expected, PubkeyFormat::Compressed);
+        assert!(
+            result.is_ok(),
+            "Decred P2PKH verification should succeed: {:?}",
+            result
+        );
+        assert_eq!(result.unwrap(), expected);
+    }
+
+    #[test]
+    fn verify_decred_invalid_key() {
+        let hex = "zzz";
+        let expected = "DsmcYVbP1Nmag2H4AS17UTvmWXmGeA7nLDx";
+
+        let result = verify_decred_address(hex, expected, PubkeyFormat::Compressed);
+        assert!(result.is_err(), "Should fail with invalid hex");
+    }
+}
+
+#[cfg(test)]
+mod verify_wif {
+    use boha::verify::verify_wif;
+
+    #[test]
+    fn verify_wif_compressed_success() {
+        // b1000/66 WIF (compressed)
+        let wif = "KwDiBf89QgGbjEhKnhXJuH7LrciVrZi3qZfFoWMiwBt943V7CQeX";
+        let expected = "13zb1hQbWVsc2S7ZTZnP2G4undNNpdh5so";
+
+        let result = verify_wif(wif, expected);
+        assert!(
+            result.is_ok(),
+            "WIF verification should succeed: {:?}",
+            result
+        );
+        assert_eq!(result.unwrap(), expected);
+    }
+
+    #[test]
+    fn verify_wif_uncompressed_success() {
+        // zden Level 1 WIF (uncompressed)
+        let wif = "5JMTiDVHj3pj8VfaTe6pDtD9byZr6too3PD3AGBJrXF1hVsitc8";
+        let expected = "1cryptommoqPHVNHuxVQG3bzujnRJYB1D";
+
+        let result = verify_wif(wif, expected);
+        assert!(
+            result.is_ok(),
+            "WIF verification should succeed: {:?}",
+            result
+        );
+        assert_eq!(result.unwrap(), expected);
+    }
+
+    #[test]
+    fn verify_wif_invalid_checksum() {
+        let wif = "5HpHagT65TZzG1PH3CSu63k8DbpvD8s5ip4nEB3kEsreAnchuDX"; // Changed last char
+        let expected = "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH";
+
+        let result = verify_wif(wif, expected);
+        assert!(result.is_err(), "Should fail with invalid checksum");
+    }
+
+    #[test]
+    fn verify_wif_invalid_base58() {
+        let wif = "invalid_wif_with_bad_chars_0OIl";
+        let expected = "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH";
+
+        let result = verify_wif(wif, expected);
+        assert!(result.is_err(), "Should fail with invalid base58");
+    }
+
+    #[test]
+    fn verify_wif_wrong_network() {
+        // Litecoin WIF (starts with T or 6)
+        let wif = "T3tFDaAKKmPKvCGEzP6Yk4Gqy3Ry8Qz9Qz9Qz9Qz9Qz9Qz9Qz9";
+        let expected = "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH";
+
+        let result = verify_wif(wif, expected);
+        assert!(result.is_err(), "Should fail with wrong network byte");
+    }
+}
+
+#[cfg(test)]
+mod verify_seed {
+    use boha::verify::verify_seed;
+    use boha::PubkeyFormat;
+
+    #[test]
+    fn verify_seed_standard_path() {
+        // BIP39 test vector: "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about"
+        // Derivation path: m/44'/0'/0'/0/0 (BIP44 standard)
+        let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        let path = "m/44'/0'/0'/0/0";
+        let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
+
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        assert!(
+            result.is_ok(),
+            "Seed verification should succeed: {:?}",
+            result
+        );
+        assert_eq!(result.unwrap(), expected);
+    }
+
+    #[test]
+    fn verify_seed_segwit_path() {
+        // Same seed, different path: m/84'/0'/0'/0/0 (BIP84 SegWit)
+        let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        let path = "m/84'/0'/0'/0/0";
+        let expected = "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu";
+
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        assert!(
+            result.is_ok(),
+            "Seed verification with SegWit path should succeed: {:?}",
+            result
+        );
+        assert_eq!(result.unwrap(), expected);
+    }
+
+    #[test]
+    fn verify_seed_invalid_phrase() {
+        let phrase = "invalid mnemonic phrase that is not valid";
+        let path = "m/44'/0'/0'/0/0";
+        let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
+
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        assert!(result.is_err(), "Should fail with invalid mnemonic");
+    }
+
+    #[test]
+    fn verify_seed_invalid_path() {
+        let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        let path = "invalid/path/format";
+        let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
+
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        assert!(result.is_err(), "Should fail with invalid derivation path");
+    }
+}

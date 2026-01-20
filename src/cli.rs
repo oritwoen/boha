@@ -113,6 +113,20 @@ enum Commands {
         #[arg(long)]
         collection: Option<String>,
     },
+
+    /// Verify puzzle private key derives correct address
+    Verify {
+        /// Puzzle ID (e.g., b1000/66, gsmg, bitaps). Omit when using --all
+        id: Option<String>,
+
+        /// Verify all puzzles with private keys
+        #[arg(long)]
+        all: bool,
+
+        /// Quiet mode - no output, exit code only
+        #[arg(short, long)]
+        quiet: bool,
+    },
 }
 
 #[derive(Tabled)]
@@ -1393,6 +1407,7 @@ fn run_sync(cli: Cli) {
             collection.as_deref(),
             cli.output,
         ),
+        Commands::Verify { id, all, quiet } => cmd_verify(id.as_deref(), all, quiet, cli.output),
     }
 }
 
@@ -1437,5 +1452,356 @@ fn run(cli: Cli) {
             collection.as_deref(),
             cli.output,
         ),
+        Commands::Verify { id, all, quiet } => cmd_verify(id.as_deref(), all, quiet, cli.output),
+    }
+}
+
+#[derive(Serialize, Tabled)]
+struct VerifyOutput {
+    id: String,
+    verified: bool,
+    #[tabled(skip)]
+    private_key: Option<String>,
+    expected_address: String,
+    #[tabled(skip)]
+    derived_address: Option<String>,
+    #[tabled(skip)]
+    error: Option<String>,
+}
+
+fn cmd_verify(id: Option<&str>, all: bool, quiet: bool, format: OutputFormat) {
+    if all {
+        cmd_verify_all(quiet, format);
+    } else if let Some(id) = id {
+        cmd_verify_single(id, quiet, format);
+    } else {
+        eprintln!("Error: Either provide a puzzle ID or use --all flag");
+        std::process::exit(1);
+    }
+}
+
+fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
+    use boha::verify;
+
+    let puzzle = match boha::get(id) {
+        Ok(p) => p,
+        Err(_) => {
+            eprintln!("Error: Puzzle '{}' not found", id);
+            std::process::exit(1);
+        }
+    };
+
+    if puzzle.key.is_none() {
+        eprintln!("Error: Puzzle '{}' has no private key", id);
+        std::process::exit(2);
+    }
+
+    let key = puzzle.key.as_ref().unwrap();
+    let expected_address = &puzzle.address.value;
+
+    let result = if let Some(hex) = key.hex {
+        match puzzle.chain {
+            Chain::Bitcoin => {
+                let pubkey_format = puzzle
+                    .pubkey
+                    .as_ref()
+                    .map(|p| p.format)
+                    .unwrap_or(PubkeyFormat::Compressed);
+                verify::verify_bitcoin_address(hex, expected_address, pubkey_format)
+            }
+            Chain::Ethereum => verify::verify_ethereum_address(hex, expected_address),
+            Chain::Litecoin => {
+                let pubkey_format = puzzle
+                    .pubkey
+                    .as_ref()
+                    .map(|p| p.format)
+                    .unwrap_or(PubkeyFormat::Compressed);
+                verify::verify_litecoin_address(hex, expected_address, pubkey_format)
+            }
+            Chain::Decred => {
+                let pubkey_format = puzzle
+                    .pubkey
+                    .as_ref()
+                    .map(|p| p.format)
+                    .unwrap_or(PubkeyFormat::Compressed);
+                verify::verify_decred_address(hex, expected_address, pubkey_format)
+            }
+            Chain::Monero => Err(verify::VerifyError::UnsupportedChain(
+                "Monero verification not supported".to_string(),
+            )),
+        }
+    } else if let Some(ref wif_data) = key.wif {
+        if let Some(wif) = wif_data.decrypted {
+            verify::verify_wif(wif, expected_address)
+        } else {
+            eprintln!("Error: WIF is encrypted, cannot verify without passphrase");
+            std::process::exit(2);
+        }
+    } else if let Some(ref seed) = key.seed {
+        if let Some(phrase) = seed.phrase {
+            if let Some(path) = seed.path {
+                let pubkey_format = puzzle
+                    .pubkey
+                    .as_ref()
+                    .map(|p| p.format)
+                    .unwrap_or(PubkeyFormat::Compressed);
+                verify::verify_seed(phrase, path, expected_address, pubkey_format)
+            } else {
+                eprintln!("Error: Seed has no derivation path");
+                std::process::exit(2);
+            }
+        } else {
+            eprintln!("Error: Seed has no mnemonic phrase");
+            std::process::exit(2);
+        }
+    } else {
+        eprintln!("Error: Puzzle '{}' has no private key", id);
+        std::process::exit(2);
+    };
+
+    let output = match result {
+        Ok(derived) => VerifyOutput {
+            id: id.to_string(),
+            verified: true,
+            private_key: key.hex.map(|s| s.to_string()),
+            expected_address: expected_address.to_string(),
+            derived_address: Some(derived),
+            error: None,
+        },
+        Err(e) => {
+            let output = VerifyOutput {
+                id: id.to_string(),
+                verified: false,
+                private_key: key.hex.map(|s| s.to_string()),
+                expected_address: expected_address.to_string(),
+                derived_address: None,
+                error: Some(e.to_string()),
+            };
+            if !quiet {
+                output_verify(&output, format);
+            }
+            std::process::exit(3);
+        }
+    };
+
+    if !quiet {
+        output_verify(&output, format);
+    }
+}
+
+fn output_verify(result: &VerifyOutput, format: OutputFormat) {
+    match format {
+        OutputFormat::Table => {
+            if result.verified {
+                println!(
+                    "{} Private key verified for {}",
+                    "✓".green().bold(),
+                    result.id.cyan()
+                );
+                println!("  Address: {}", result.expected_address);
+            } else {
+                println!(
+                    "{} Verification failed for {}",
+                    "✗".red().bold(),
+                    result.id.cyan()
+                );
+                println!("  Expected: {}", result.expected_address);
+                if let Some(ref derived) = result.derived_address {
+                    println!("  Derived:  {}", derived);
+                }
+                if let Some(ref error) = result.error {
+                    println!("  Error: {}", error.red());
+                }
+            }
+        }
+        OutputFormat::Json => {
+            println!("{}", serde_json::to_string_pretty(result).unwrap());
+        }
+        OutputFormat::Jsonl => {
+            println!("{}", serde_json::to_string(result).unwrap());
+        }
+        OutputFormat::Yaml => {
+            println!("{}", serde_yaml::to_string(result).unwrap());
+        }
+        OutputFormat::Csv => {
+            let mut wtr = csv::Writer::from_writer(std::io::stdout());
+            wtr.serialize(result).unwrap();
+            wtr.flush().unwrap();
+        }
+    }
+}
+
+fn cmd_verify_all(quiet: bool, format: OutputFormat) {
+    use boha::verify;
+
+    let mut results = Vec::new();
+    let mut verified_count = 0;
+    let mut failed_count = 0;
+    let mut skipped_count = 0;
+
+    for puzzle in boha::all() {
+        if puzzle.key.is_none() {
+            skipped_count += 1;
+            continue;
+        }
+
+        let key = puzzle.key.as_ref().unwrap();
+        let expected_address = &puzzle.address.value;
+        let id = puzzle.id;
+
+        let result = if let Some(hex) = key.hex {
+            match puzzle.chain {
+                Chain::Bitcoin => {
+                    let pubkey_format = puzzle
+                        .pubkey
+                        .as_ref()
+                        .map(|p| p.format)
+                        .unwrap_or(PubkeyFormat::Compressed);
+                    verify::verify_bitcoin_address(hex, expected_address, pubkey_format)
+                }
+                Chain::Ethereum => verify::verify_ethereum_address(hex, expected_address),
+                Chain::Litecoin => {
+                    let pubkey_format = puzzle
+                        .pubkey
+                        .as_ref()
+                        .map(|p| p.format)
+                        .unwrap_or(PubkeyFormat::Compressed);
+                    verify::verify_litecoin_address(hex, expected_address, pubkey_format)
+                }
+                Chain::Decred => {
+                    let pubkey_format = puzzle
+                        .pubkey
+                        .as_ref()
+                        .map(|p| p.format)
+                        .unwrap_or(PubkeyFormat::Compressed);
+                    verify::verify_decred_address(hex, expected_address, pubkey_format)
+                }
+                Chain::Monero => {
+                    skipped_count += 1;
+                    continue;
+                }
+            }
+        } else if let Some(ref wif_data) = key.wif {
+            if let Some(wif) = wif_data.decrypted {
+                verify::verify_wif(wif, expected_address)
+            } else {
+                skipped_count += 1;
+                continue;
+            }
+        } else if let Some(ref seed) = key.seed {
+            if let Some(phrase) = seed.phrase {
+                if let Some(path) = seed.path {
+                    let pubkey_format = puzzle
+                        .pubkey
+                        .as_ref()
+                        .map(|p| p.format)
+                        .unwrap_or(PubkeyFormat::Compressed);
+                    verify::verify_seed(phrase, path, expected_address, pubkey_format)
+                } else {
+                    skipped_count += 1;
+                    continue;
+                }
+            } else {
+                skipped_count += 1;
+                continue;
+            }
+        } else {
+            skipped_count += 1;
+            continue;
+        };
+
+        let output = match result {
+            Ok(derived) => {
+                verified_count += 1;
+                VerifyOutput {
+                    id: id.to_string(),
+                    verified: true,
+                    private_key: key.hex.map(|s| s.to_string()),
+                    expected_address: expected_address.to_string(),
+                    derived_address: Some(derived),
+                    error: None,
+                }
+            }
+            Err(e) => {
+                failed_count += 1;
+                VerifyOutput {
+                    id: id.to_string(),
+                    verified: false,
+                    private_key: key.hex.map(|s| s.to_string()),
+                    expected_address: expected_address.to_string(),
+                    derived_address: None,
+                    error: Some(e.to_string()),
+                }
+            }
+        };
+
+        results.push(output);
+    }
+
+    if !quiet {
+        match format {
+            OutputFormat::Table => {
+                println!("\n{} Verification Summary", "━".repeat(50).bright_black());
+                println!(
+                    "  {} {} verified",
+                    "✓".green().bold(),
+                    verified_count.to_string().green()
+                );
+                if failed_count > 0 {
+                    println!(
+                        "  {} {} failed",
+                        "✗".red().bold(),
+                        failed_count.to_string().red()
+                    );
+                }
+                if skipped_count > 0 {
+                    println!(
+                        "  {} {} skipped (no key)",
+                        "○".yellow(),
+                        skipped_count.to_string().yellow()
+                    );
+                }
+                println!("{}\n", "━".repeat(50).bright_black());
+
+                if failed_count > 0 {
+                    println!("{}", "Failed verifications:".red().bold());
+                    for result in &results {
+                        if !result.verified {
+                            println!(
+                                "  {} {} - {}",
+                                "✗".red().bold(),
+                                result.id.cyan(),
+                                result
+                                    .error
+                                    .as_ref()
+                                    .unwrap_or(&"Unknown error".to_string())
+                            );
+                        }
+                    }
+                }
+            }
+            OutputFormat::Json => {
+                println!("{}", serde_json::to_string_pretty(&results).unwrap());
+            }
+            OutputFormat::Jsonl => {
+                for result in &results {
+                    println!("{}", serde_json::to_string(result).unwrap());
+                }
+            }
+            OutputFormat::Yaml => {
+                println!("{}", serde_yaml::to_string(&results).unwrap());
+            }
+            OutputFormat::Csv => {
+                let mut wtr = csv::Writer::from_writer(std::io::stdout());
+                for result in &results {
+                    wtr.serialize(result).unwrap();
+                }
+                wtr.flush().unwrap();
+            }
+        }
+    }
+
+    if failed_count > 0 {
+        std::process::exit(3);
     }
 }

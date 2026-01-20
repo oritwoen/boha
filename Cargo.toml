@@ -72,6 +72,36 @@ optional = true
 version = "5"
 optional = true
 
+[dependencies.k256]
+version = "0.13"
+features = ["ecdsa"]
+optional = true
+
+[dependencies.bip39]
+version = "2"
+optional = true
+
+[dependencies.bip32]
+version = "0.5"
+optional = true
+
+[dependencies.tiny-keccak]
+version = "2"
+features = ["keccak"]
+optional = true
+
+[dependencies.bech32]
+version = "0.11"
+optional = true
+
+[dependencies.blake2]
+version = "0.10"
+optional = true
+
+[dependencies.blake-hash]
+version = "0.4"
+optional = true
+
 [build-dependencies]
 toml = "0.8"
 serde = { version = "1", features = ["derive"] }
@@ -86,7 +116,7 @@ chrono = "0.4"
 
 [features]
 default = []
-cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv", "human-panic", "open"]
+cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv", "human-panic", "open", "k256", "bip39", "bip32", "tiny-keccak", "bech32", "blake-hash"]
 balance = ["reqwest", "tokio", "futures", "dotenvy"]
 
 [[bin]]

@@ -69,6 +69,11 @@ boha range 90
 # Check balance (requires --features balance)
 boha balance b1000/71
 
+# Verify private key derives correct address
+boha verify b1000/66
+boha verify --all
+boha verify --all --quiet; echo $?
+
 # Output formats (default: table)
 boha -o json stats
 boha -o yaml show b1000/90

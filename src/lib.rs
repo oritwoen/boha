@@ -4,6 +4,9 @@ mod puzzle;
 #[cfg(feature = "balance")]
 pub mod balance;
 
+#[cfg(feature = "cli")]
+pub mod verify;
+
 pub mod version {
     include!(concat!(env!("OUT_DIR"), "/data_version.rs"));
 }
