@@ -35,7 +35,7 @@ enum OutputFormat {
 #[derive(Parser)]
 #[command(name = "boha")]
 #[command(about = "Crypto bounties, puzzles and challenges data")]
-#[command(version)]
+#[command(version = boha::version::FULL_VERSION)]
 struct Cli {
     /// Output format
     #[arg(short, long, value_enum, default_value = "table", global = true)]
