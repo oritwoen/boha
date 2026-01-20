@@ -4,6 +4,10 @@ mod puzzle;
 #[cfg(feature = "balance")]
 pub mod balance;
 
+pub mod version {
+    include!(concat!(env!("OUT_DIR"), "/data_version.rs"));
+}
+
 pub use collections::{b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden};
 pub use puzzle::{
     Address, Assets, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase,

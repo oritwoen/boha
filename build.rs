@@ -1012,6 +1012,56 @@ fn load_solvers() -> HashMap<String, SolverDefinition> {
     toml::from_str(&content).expect("Failed to parse solvers.toml")
 }
 
+fn generate_data_version(out_dir: &str) {
+    let dest_path = Path::new(out_dir).join("data_version.rs");
+
+    let git_hash = std::process::Command::new("git")
+        .args(["rev-parse", "--short=7", "HEAD"])
+        .output()
+        .ok()
+        .filter(|o| o.status.success())
+        .map(|o| String::from_utf8_lossy(&o.stdout).trim().to_string())
+        .unwrap_or_else(|| "unknown".to_string());
+
+    let build_date = chrono::Utc::now().format("%Y-%m-%d").to_string();
+
+    let data_files = [
+        "data/b1000.toml",
+        "data/ballet.toml",
+        "data/bitaps.toml",
+        "data/bitimage.toml",
+        "data/gsmg.toml",
+        "data/hash_collision.toml",
+        "data/solvers.toml",
+        "data/zden.toml",
+    ];
+
+    let mut hasher = Sha256::new();
+    for file in &data_files {
+        if let Ok(content) = fs::read(file) {
+            hasher.update(&content);
+        }
+    }
+    let data_hash = hex::encode(&hasher.finalize()[..4]);
+
+    let pkg_version = env::var("CARGO_PKG_VERSION").unwrap_or_else(|_| "unknown".to_string());
+    let full_version = format!(
+        "{} (data: {}-{}, {})",
+        pkg_version, git_hash, data_hash, build_date
+    );
+
+    let output = format!(
+        r#"pub const GIT_HASH: &str = "{}";
+pub const BUILD_DATE: &str = "{}";
+pub const DATA_HASH: &str = "{}";
+pub const FULL_VERSION: &str = "{}";
+"#,
+        git_hash, build_date, data_hash, full_version
+    );
+
+    fs::write(&dest_path, output).expect("Failed to write data_version.rs");
+}
+
 fn main() {
     println!("cargo:rerun-if-changed=data/b1000.toml");
     println!("cargo:rerun-if-changed=data/hash_collision.toml");
@@ -1022,10 +1072,13 @@ fn main() {
     println!("cargo:rerun-if-changed=data/ballet.toml");
     println!("cargo:rerun-if-changed=data/solvers.toml");
     println!("cargo:rerun-if-changed=assets");
+    println!("cargo:rerun-if-changed=.git/HEAD");
+    println!("cargo:rerun-if-changed=.git/refs/heads");
 
     let out_dir = env::var("OUT_DIR").unwrap();
     let solvers = load_solvers();
 
+    generate_data_version(&out_dir);
     generate_b1000(&out_dir, &solvers);
     generate_hash_collision(&out_dir, &solvers);
     generate_gsmg(&out_dir, &solvers);
