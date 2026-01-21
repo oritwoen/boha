@@ -414,6 +414,13 @@ pub fn verify_wif(wif: &str, expected_address: &str) -> Result<String, VerifyErr
     }
 
     let compressed = decoded.len() == 38;
+    if compressed && decoded[33] != 0x01 {
+        return Err(VerifyError::InvalidKey(format!(
+            "Invalid compression flag: 0x{:02x} (expected 0x01)",
+            decoded[33]
+        )));
+    }
+
     let key_bytes = &decoded[1..33];
     let hex_key = hex::encode(key_bytes);
 

@@ -1486,13 +1486,17 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
     let puzzle = match boha::get(id) {
         Ok(p) => p,
         Err(_) => {
-            eprintln!("Error: Puzzle '{}' not found", id);
+            if !quiet {
+                eprintln!("Error: Puzzle '{}' not found", id);
+            }
             std::process::exit(1);
         }
     };
 
     if puzzle.key.is_none() {
-        eprintln!("Error: Puzzle '{}' has no private key", id);
+        if !quiet {
+            eprintln!("Error: Puzzle '{}' has no private key", id);
+        }
         std::process::exit(2);
     }
 
@@ -1534,7 +1538,9 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
         if let Some(wif) = wif_data.decrypted {
             verify::verify_wif(wif, expected_address)
         } else {
-            eprintln!("Error: WIF is encrypted, cannot verify without passphrase");
+            if !quiet {
+                eprintln!("Error: WIF is encrypted, cannot verify without passphrase");
+            }
             std::process::exit(2);
         }
     } else if let Some(ref seed) = key.seed {
@@ -1547,15 +1553,21 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
                     .unwrap_or(PubkeyFormat::Compressed);
                 verify::verify_seed(phrase, path, expected_address, pubkey_format)
             } else {
-                eprintln!("Error: Seed has no derivation path");
+                if !quiet {
+                    eprintln!("Error: Seed has no derivation path");
+                }
                 std::process::exit(2);
             }
         } else {
-            eprintln!("Error: Seed has no mnemonic phrase");
+            if !quiet {
+                eprintln!("Error: Seed has no mnemonic phrase");
+            }
             std::process::exit(2);
         }
     } else {
-        eprintln!("Error: Puzzle '{}' has no private key", id);
+        if !quiet {
+            eprintln!("Error: Puzzle '{}' has no private key", id);
+        }
         std::process::exit(2);
     };
 
