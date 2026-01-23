@@ -9,60 +9,79 @@
 //!   cargo run -p scripts --bin extract-pubkey --collection zden  # Filter by collection
 
 use reqwest::Client;
-use serde::{Deserialize, Serialize};
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::Duration;
 
 const RATE_LIMIT_DELAY: Duration = Duration::from_millis(500);
 
+fn cache_dir() -> std::path::PathBuf {
+    Path::new(env!("CARGO_MANIFEST_DIR")).join("../data/cache")
+}
+
+fn read_cache<T: DeserializeOwned>(cache_key: &str) -> Option<T> {
+    let cache_path = cache_dir().join(format!("{}.json", cache_key));
+    let content = std::fs::read_to_string(&cache_path).ok()?;
+    serde_json::from_str(&content).ok()
+}
+
+fn write_cache<T: Serialize>(cache_key: &str, data: &T) {
+    let cache_dir = cache_dir();
+    let _ = std::fs::create_dir_all(&cache_dir);
+    let cache_path = cache_dir.join(format!("{}.json", cache_key));
+    let _ = std::fs::write(&cache_path, serde_json::to_string_pretty(data).unwrap_or_default());
+}
+
 // ============================================================================
 // API Response Types
 // ============================================================================
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct MempoolTxResponse {
     vin: Vec<MempoolVin>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct MempoolVin {
     scriptsig: Option<String>,
     witness: Option<Vec<String>>,
     prevout: Option<MempoolPrevout>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct MempoolPrevout {
     #[allow(dead_code)]
     scriptpubkey_type: Option<String>,
     scriptpubkey_address: Option<String>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct DcrdataTxResponse {
     vin: Vec<DcrdataVin>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct DcrdataVin {
     #[serde(rename = "scriptSig")]
     script_sig: Option<DcrdataScriptSig>,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct DcrdataScriptSig {
     hex: String,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct EtherscanTxResponse {
     result: EtherscanTxResult,
 }
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, Serialize)]
 struct EtherscanTxResult {
     from: String,
+    #[serde(rename = "type")]
+    tx_type: Option<String>,
     nonce: String,
     #[serde(rename = "gasPrice")]
     gas_price: String,
@@ -174,22 +193,27 @@ fn extract_pubkey_from_witness(witness: &[String]) -> Option<(String, String)> {
     Some((pubkey_hex.clone(), format.to_string()))
 }
 
-/// Fetch BTC/LTC transaction and extract pubkey
 async fn fetch_btc_pubkey(
     client: &Client,
     txid: &str,
     address: &str,
     chain: &str,
 ) -> Result<Option<(String, String)>, Box<dyn std::error::Error>> {
-    let base_url = match chain {
-        "litecoin" => "https://litecoinspace.org/api/tx",
-        _ => "https://mempool.space/api/tx",
+    let cache_key = format!("{}-{}", chain, txid);
+    
+    let response: MempoolTxResponse = if let Some(cached) = read_cache(&cache_key) {
+        cached
+    } else {
+        let base_url = match chain {
+            "litecoin" => "https://litecoinspace.org/api/tx",
+            _ => "https://mempool.space/api/tx",
+        };
+        let url = format!("{}/{}", base_url, txid);
+        tokio::time::sleep(RATE_LIMIT_DELAY).await;
+        let data: MempoolTxResponse = client.get(&url).send().await?.json().await?;
+        write_cache(&cache_key, &data);
+        data
     };
-
-    let url = format!("{}/{}", base_url, txid);
-    tokio::time::sleep(RATE_LIMIT_DELAY).await;
-
-    let response: MempoolTxResponse = client.get(&url).send().await?.json().await?;
 
     // Find the vin that spends from our address
     for vin in &response.vin {
@@ -226,15 +250,21 @@ async fn fetch_btc_pubkey(
     Ok(None)
 }
 
-/// Fetch DCR transaction and extract pubkey
 async fn fetch_dcr_pubkey(
     client: &Client,
     txid: &str,
 ) -> Result<Option<(String, String)>, Box<dyn std::error::Error>> {
-    let url = format!("https://dcrdata.decred.org/api/tx/{}", txid);
-    tokio::time::sleep(RATE_LIMIT_DELAY).await;
-
-    let response: DcrdataTxResponse = client.get(&url).send().await?.json().await?;
+    let cache_key = format!("decred-{}", txid);
+    
+    let response: DcrdataTxResponse = if let Some(cached) = read_cache(&cache_key) {
+        cached
+    } else {
+        let url = format!("https://dcrdata.decred.org/api/tx/{}", txid);
+        tokio::time::sleep(RATE_LIMIT_DELAY).await;
+        let data: DcrdataTxResponse = client.get(&url).send().await?.json().await?;
+        write_cache(&cache_key, &data);
+        data
+    };
 
     // DCR uses same scriptsig format as BTC
     for vin in &response.vin {
@@ -352,19 +382,33 @@ async fn fetch_eth_pubkey(
     client: &Client,
     txid: &str,
     api_key: &str,
+    expected_address: &str,
 ) -> Result<Option<(String, String)>, Box<dyn std::error::Error>> {
     use secp256k1::{ecdsa::{RecoverableSignature, RecoveryId}, Message, Secp256k1};
 
     let secp = Secp256k1::new();
+    let cache_key = format!("ethereum-{}", txid);
 
-    let url = format!(
-        "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionByHash&txhash={}&apikey={}",
-        txid, api_key
-    );
-    tokio::time::sleep(RATE_LIMIT_DELAY).await;
-
-    let response: EtherscanTxResponse = client.get(&url).send().await?.json().await?;
+    let response: EtherscanTxResponse = if let Some(cached) = read_cache(&cache_key) {
+        cached
+    } else {
+        let url = format!(
+            "https://api.etherscan.io/v2/api?chainid=1&module=proxy&action=eth_getTransactionByHash&txhash={}&apikey={}",
+            txid, api_key
+        );
+        tokio::time::sleep(RATE_LIMIT_DELAY).await;
+        let data: EtherscanTxResponse = client.get(&url).send().await?.json().await?;
+        write_cache(&cache_key, &data);
+        data
+    };
     let tx = &response.result;
+
+    // Check if transaction is legacy (type "0x0" or absent)
+    let tx_type = tx.tx_type.as_deref().unwrap_or("0x0");
+    if tx_type != "0x0" {
+        eprintln!("    Skipping non-legacy ETH tx type {}", tx_type);
+        return Ok(None);
+    }
 
     let v = parse_hex_u64(&tx.v);
     let r = hex_to_bytes(&tx.r);
@@ -411,10 +455,11 @@ async fn fetch_eth_pubkey(
     use sha3::{Digest, Keccak256};
     let pubkey_hash = Keccak256::digest(&pubkey_bytes[1..]);
     let derived_address = format!("0x{}", hex::encode(&pubkey_hash[12..]));
-    let expected_address = tx.from.to_lowercase();
+    let expected_lower = expected_address.to_lowercase();
 
-    if derived_address != expected_address {
-        eprintln!("    Warning: derived address {} != expected {}", derived_address, expected_address);
+    if derived_address != expected_lower {
+        eprintln!("    Error: derived address {} != expected {}", derived_address, expected_lower);
+        return Ok(None);
     }
 
     Ok(Some((hex::encode(pubkey_bytes), "uncompressed".to_string())))
@@ -610,8 +655,10 @@ fn find_puzzles_needing_pubkey(data_dir: &Path) -> Vec<PuzzleToProcess> {
                 continue;
             }
 
-            // Skip P2SH addresses (hash_collision uses redeem_script)
-            if puzzle.address.kind.as_deref() == Some("p2sh") {
+            if puzzle.address.kind.as_deref()
+                .map(|k| k.eq_ignore_ascii_case("p2sh"))
+                .unwrap_or(false)
+            {
                 continue;
             }
 
@@ -687,13 +734,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         .timeout(Duration::from_secs(30))
         .build()?;
 
-    let data_dir = Path::new("../data");
+    let data_dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("../data");
 
     println!("Scanning for puzzles needing pubkey extraction...\n");
 
-    let mut puzzles = find_puzzles_needing_pubkey(data_dir);
+    let mut puzzles = find_puzzles_needing_pubkey(&data_dir);
 
-    // Apply collection filter
     if let Some(filter) = &collection_filter {
         puzzles.retain(|p| &p.collection == filter);
     }
@@ -701,6 +747,11 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     if puzzles.is_empty() {
         println!("No puzzles need pubkey extraction.");
         return Ok(());
+    }
+
+    let needs_eth = puzzles.iter().any(|p| p.chain == "ethereum");
+    if needs_eth && etherscan_api_key.is_none() {
+        return Err("ETHERSCAN_API_KEY is required to process ethereum puzzles".into());
     }
 
     println!("Found {} puzzles needing pubkey:\n", puzzles.len());
@@ -724,23 +775,29 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             &puzzle.claim_txid[..16.min(puzzle.claim_txid.len())]
         );
 
-        let result = match puzzle.chain.as_str() {
+        let fetch_result = match puzzle.chain.as_str() {
             "bitcoin" | "litecoin" => {
-                fetch_btc_pubkey(&client, &puzzle.claim_txid, &puzzle.address, &puzzle.chain)
-                    .await?
+                fetch_btc_pubkey(&client, &puzzle.claim_txid, &puzzle.address, &puzzle.chain).await
             }
-            "decred" => fetch_dcr_pubkey(&client, &puzzle.claim_txid).await?,
+            "decred" => fetch_dcr_pubkey(&client, &puzzle.claim_txid).await,
             "ethereum" => {
                 if let Some(api_key) = &etherscan_api_key {
-                    fetch_eth_pubkey(&client, &puzzle.claim_txid, api_key).await?
+                    fetch_eth_pubkey(&client, &puzzle.claim_txid, api_key, &puzzle.address).await
                 } else {
-                    eprintln!("    Skipping ETH - no ETHERSCAN_API_KEY");
-                    None
+                    Ok(None)
                 }
             }
             _ => {
                 eprintln!("    Unsupported chain: {}", puzzle.chain);
-                None
+                Ok(None)
+            }
+        };
+
+        let result = match fetch_result {
+            Ok(res) => res,
+            Err(err) => {
+                eprintln!("    Fetch failed for {}:{}: {}", puzzle.chain, puzzle.claim_txid, err);
+                continue;
             }
         };
 
