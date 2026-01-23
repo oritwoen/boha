@@ -26,6 +26,79 @@
     { "required": ["puzzle"] },
     { "required": ["puzzles"] }
   ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "puzzles": {
+            "contains": {
+              "required": ["name"]
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "puzzles": {
+            "items": {
+              "required": ["name"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "puzzles": {
+            "contains": {
+              "required": ["chain"]
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "puzzles": {
+            "items": {
+              "required": ["chain"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "puzzles": {
+            "contains": {
+              "required": ["key"],
+              "properties": {
+                "key": {
+                  "type": "object",
+                  "required": ["bits"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "puzzles": {
+            "items": {
+              "required": ["key"],
+              "properties": {
+                "key": {
+                  "required": ["bits"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
   "additionalProperties": true,
   "$defs": {
     "puzzle": {
