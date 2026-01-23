@@ -228,7 +228,7 @@ Both puzzles use the same source file (Antonopoulos kitten tweet). The passphras
 
 ## Data
 
-All puzzle data is embedded at compile time from TOML files in `data/`.
+All puzzle data is embedded at compile time from JSONC files in `data/`.
 
 Each puzzle includes: address (with HASH160 and type), chain, status, prize, public key (if exposed), private key (if solved), key source, solve date (if solved), solve time, start date (when funded), transactions history, solver information, and assets (puzzle images, hints).
 

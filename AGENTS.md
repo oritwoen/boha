@@ -6,7 +6,7 @@
 
 ## OVERVIEW
 
-Rust library + CLI for crypto puzzle/bounty data. Build-time TOML→Rust codegen. Seven collections: b1000 (256 puzzles), ballet (3 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), zden (15 visual puzzles).
+Rust library + CLI for crypto puzzle/bounty data. Build-time JSONC→Rust codegen with JSON Schema validation. Seven collections: b1000 (256 puzzles), ballet (3 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), zden (15 visual puzzles).
 
 ## STRUCTURE
 
@@ -19,11 +19,12 @@ boha/
 │   ├── balance.rs          # Multi-chain async balance fetch
 │   └── collections/        # Seven collection modules with generated data
 ├── data/
-│   ├── *.toml              # Source of truth (b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden)
-│   ├── solvers.toml        # Solver definitions (referenced by ID in puzzle files)
+│   ├── *.jsonc             # Source of truth (b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden)
+│   ├── solvers.jsonc       # Solver definitions (referenced by ID in puzzle files)
+│   ├── schemas/            # JSON Schema files for validation
 │   └── cache/              # API response cache for scripts
 ├── scripts/                # Separate Cargo project - see scripts/AGENTS.md
-├── build.rs                # TOML→Rust codegen
+├── build.rs                # JSONC→Rust codegen
 └── tests/
     ├── validation.rs       # Data validation tests
     └── cli.rs              # CLI integration tests
@@ -33,8 +34,8 @@ boha/
 
 | Task | Location | Notes |
 |------|----------|-------|
-| Add puzzle collection | `data/*.toml` + `build.rs` + `src/collections/` | Follow b1000 pattern |
-| Update puzzle data | `data/*.toml` | Rebuild auto-triggers |
+| Add puzzle collection | `data/*.jsonc` + `build.rs` + `src/collections/` | Follow b1000 pattern |
+| Update puzzle data | `data/*.jsonc` | Rebuild auto-triggers |
 | Add CLI command | `src/cli.rs` | clap derive macros |
 | Modify Puzzle struct | `src/puzzle.rs` + `build.rs` | Must sync both |
 | Add address type | `src/puzzle.rs` (kind field) | P2PKH/P2SH/P2WPKH/P2WSH/P2TR |
@@ -61,17 +62,19 @@ boha/
 
 ## BUILD-TIME CODEGEN
 
-**Non-standard pattern**: Puzzle data in `data/*.toml` → compiled to Rust via `build.rs`.
+**Non-standard pattern**: Puzzle data in `data/*.jsonc` → compiled to Rust via `build.rs`.
 
 ```
-data/*.toml        ──build.rs──>  $OUT_DIR/*_data.rs  ──include!()──>  src/collections/*.rs
-data/solvers.toml  ──build.rs──>  (solver references resolved during codegen)
+data/*.jsonc        ──build.rs──>  $OUT_DIR/*_data.rs  ──include!()──>  src/collections/*.rs
+data/solvers.jsonc  ──build.rs──>  (solver references resolved during codegen)
+data/schemas/       ──editor──>    (JSON Schema validation & autocomplete)
 ```
 
-- `cargo:rerun-if-changed` triggers rebuild on TOML changes
+- `cargo:rerun-if-changed` triggers rebuild on JSONC changes
 - Generated: `static PUZZLES: &[Puzzle] = &[...]`
 - build.rs validates: key bits match hex, WIF↔hex consistency
-- Solvers: defined once in `solvers.toml`, referenced by ID in puzzle files
+- Solvers: defined once in `solvers.jsonc`, referenced by ID in puzzle files
+- JSON Schema provides editor validation and autocomplete
 
 ## FEATURES
 
@@ -90,7 +93,7 @@ data/solvers.toml  ──build.rs──>  (solver references resolved during cod
 
 ## ANTI-PATTERNS
 
-- **Don't hardcode puzzle data in Rust** → Put in `data/*.toml`
+- **Don't hardcode puzzle data in Rust** → Put in `data/*.jsonc`
 - **Don't add runtime config** → All data embedded at compile time
 - **Don't use non-static strings** → Must be `&'static str`
 

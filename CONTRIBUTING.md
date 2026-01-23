@@ -25,10 +25,11 @@ cargo clippy
 
 ## Adding Puzzle Data
 
-Puzzle data lives in `data/*.toml` files. The build script generates Rust code from these at compile time.
+Puzzle data lives in `data/*.jsonc` files with JSON Schema validation. The build script generates Rust code from these at compile time.
 
 When adding or updating puzzles:
-- Follow the existing TOML structure
+- Follow the existing JSONC structure
+- Use JSON Schema for validation (schemas in `data/schemas/`)
 - Verify addresses are valid
 - Include source references where possible
 
