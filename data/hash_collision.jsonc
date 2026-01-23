@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/hash_collision.schema.json",
+  "$schema": "./schemas/collection.schema.json",
   "author": {
     "name": "Peter Todd",
     "addresses": ["1FCYd7j4CThTMzts78rh6iQJLBRGPW9fWv", "3MeoP8VzBURphKjrpkyY2GoW52z32ZmfK7"],
@@ -149,6 +149,7 @@
         }
       },
       "status": "claimed",
+      "prize": 0.001,
       "solve_date": "2018-05-15 00:40:36",
       "start_date": "2013-09-13 04:58:06",
       "solve_time": 147296550,

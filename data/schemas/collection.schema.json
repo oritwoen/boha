@@ -1,8 +1,7 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/bitimage.schema.json",
-  "title": "Bitimage Puzzles",
-  "description": "Bitcoin addresses derived from arbitrary files using SHA256(Base64(file)) as BIP39 entropy",
+  "title": "BOHA Puzzle Collection",
+  "description": "Universal schema for all BOHA puzzle collections",
   "type": "object",
   "properties": {
     "author": {
@@ -11,24 +10,34 @@
     "metadata": {
       "$ref": "./definitions.schema.json#/$defs/metadata"
     },
+    "puzzle": {
+      "$ref": "#/$defs/puzzle",
+      "description": "Single puzzle (gsmg, bitaps)"
+    },
     "puzzles": {
       "type": "array",
       "items": {
         "$ref": "#/$defs/puzzle"
       },
-      "description": "Array of bitimage puzzles"
+      "description": "Array of puzzles"
     }
   },
-  "required": ["puzzles"],
+  "oneOf": [
+    { "required": ["puzzle"] },
+    { "required": ["puzzles"] }
+  ],
   "additionalProperties": true,
   "$defs": {
     "puzzle": {
       "type": "object",
-      "description": "Single bitimage puzzle",
+      "description": "Puzzle entry",
       "properties": {
         "name": {
           "type": "string",
-          "description": "Puzzle name (e.g., kitten, kitten_passphrase)"
+          "description": "Puzzle name/identifier"
+        },
+        "chain": {
+          "$ref": "./definitions.schema.json#/$defs/chain"
         },
         "address": {
           "$ref": "./definitions.schema.json#/$defs/address"
@@ -38,36 +47,13 @@
         },
         "prize": {
           "type": ["number", "null"],
-          "description": "Prize amount in BTC"
+          "description": "Prize amount in native currency"
+        },
+        "pubkey": {
+          "$ref": "./definitions.schema.json#/$defs/pubkey"
         },
         "key": {
-          "type": ["object", "null"],
-          "description": "Key information with BIP39 seed/entropy",
-          "properties": {
-            "hex": {
-              "type": ["string", "null"],
-              "pattern": "^[a-f0-9]{64}$"
-            },
-            "wif": {
-              "$ref": "./definitions.schema.json#/$defs/wif"
-            },
-            "seed": {
-              "$ref": "./definitions.schema.json#/$defs/seed",
-              "description": "BIP39 seed with entropy derived from file"
-            },
-            "mini": {
-              "type": ["string", "null"]
-            },
-            "bits": {
-              "type": ["integer", "null"],
-              "minimum": 1,
-              "maximum": 256
-            },
-            "shares": {
-              "$ref": "./definitions.schema.json#/$defs/shares"
-            }
-          },
-          "additionalProperties": true
+          "$ref": "./definitions.schema.json#/$defs/key"
         },
         "start_date": {
           "type": ["string", "null"],
@@ -80,6 +66,10 @@
         "solve_time": {
           "type": ["integer", "null"],
           "description": "Time to solve in seconds"
+        },
+        "pre_genesis": {
+          "type": "boolean",
+          "description": "True if puzzle was solved before puzzle creation"
         },
         "source_url": {
           "type": ["string", "null"]
@@ -94,11 +84,14 @@
           "type": ["string", "null"],
           "description": "Solver ID reference"
         },
+        "has_pubkey": {
+          "type": ["boolean", "null"]
+        },
         "assets": {
           "$ref": "./definitions.schema.json#/$defs/assets"
         }
       },
-      "required": ["name", "address", "status"],
+      "required": ["address", "status"],
       "additionalProperties": true
     }
   }

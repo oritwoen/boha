@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/zden.schema.json",
+  "$schema": "./schemas/collection.schema.json",
   "author": {
     "name": "Zden",
     "addresses": ["1ZDEN78bAWtHqeRBJX7CT4QFEBA37r2N7", "1BTC4ARTieV3qDbxZK51it8KJ5mGQBYpXD"],

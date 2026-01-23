@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/gsmg.schema.json",
+  "$schema": "./schemas/collection.schema.json",
   "author": {
     "name": "GSMG.io",
     "addresses": ["1EtbTvVB8QTGN4mduSdy7n4cZQm4iYTpQ1", "17ucy1K9ZUAaoY6JVtM932W9jUp5LXfyHa"],

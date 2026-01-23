@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/solvers.schema.json",
   "title": "Solver Definitions",
   "description": "HashMap of solver definitions referenced by ID in puzzle files",
   "type": "object",

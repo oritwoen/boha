@@ -1,6 +1,5 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://example.com/definitions.schema.json",
   "title": "BOHA Shared Definitions",
   "description": "Shared type definitions for BOHA puzzle data validation",
   "$defs": {
@@ -222,26 +221,16 @@
               "type": "null"
             },
             {
-              "type": "object",
-              "properties": {
-                "known": {
-                  "type": "string",
-                  "description": "Known BIP39 passphrase"
-                }
-              }
+              "type": "string",
+              "description": "Known BIP39 passphrase"
             },
             {
-              "type": "object",
-              "properties": {
-                "required": {
-                  "type": "boolean",
-                  "const": true,
-                  "description": "Passphrase is required but unknown"
-                }
-              }
+              "type": "boolean",
+              "const": true,
+              "description": "Set to true if passphrase is required but unknown"
             }
           ],
-          "description": "BIP39 passphrase (known, required, or null)"
+          "description": "BIP39 passphrase: string (known), true (required but unknown), or null (none)"
         }
       },
       "required": ["hash"],

@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/bitimage.schema.json",
+  "$schema": "./schemas/collection.schema.json",
   "author": {
     "name": "Corey Phillips",
     "profiles": [
@@ -51,7 +51,8 @@
         {
           "type": "claim",
           "txid": "49638d16a21133febb093580527e50039eee630e2c4918a0654a71ef437ad093",
-          "date": "2019-07-09 21:26:12"
+          "date": "2019-07-09 21:26:12",
+          "amount": 0.00095133
         }
       ]
     },

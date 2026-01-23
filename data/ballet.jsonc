@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/ballet.schema.json",
+  "$schema": "./schemas/collection.schema.json",
   "author": {
     "name": "Bobby Lee",
     "addresses": ["bc1q8car4m7afzx46m2kuhe5xv2ztvc98mk3glyccx"],

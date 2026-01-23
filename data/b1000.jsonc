@@ -1,5 +1,5 @@
 {
-  "$schema": "./schemas/b1000.schema.json",
+  "$schema": "./schemas/collection.schema.json",
   "author": {
     "name": "saatoshi_rising",
     "addresses": ["1Czoy8xtddvcGrEhUUCZDQ9QqdRfKh697F", "bc1quksn4yxlxp80tn929gqnh8xpnngqj0fqr99q4z"],
