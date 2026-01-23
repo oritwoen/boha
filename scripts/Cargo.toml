@@ -9,7 +9,8 @@ chrono = "0.4"
 hex = "0.4"
 hmac = "0.12"
 ripemd = "0.1"
-secp256k1 = "0.29"
+secp256k1 = { version = "0.29", features = ["recovery"] }
+sha3 = "0.10"
 sha2 = "0.10"
 reqwest = { version = "0.12", features = ["json"] }
 serde = { version = "1", features = ["derive"] }
@@ -50,3 +51,7 @@ path = "src/bin/derive_pubkey_from_xpub.rs"
 [[bin]]
 name = "generate-wif"
 path = "src/bin/generate_wif.rs"
+
+[[bin]]
+name = "extract-pubkey"
+path = "src/bin/extract_pubkey.rs"
