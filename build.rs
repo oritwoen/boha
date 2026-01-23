@@ -273,6 +273,41 @@ fn validate_hex_derives_address(hex_key: &str, expected_address: &str, puzzle_id
     }
 }
 
+/// Validates that solved/claimed/swept puzzles with claim/sweep transactions have a pubkey.
+/// Panics if a puzzle has a claim or sweep transaction but no pubkey (except P2SH addresses).
+/// This enforces the invariant that public keys are always revealed in claim transactions.
+fn validate_pubkey_for_claimed_puzzles(
+    puzzle_id: &str,
+    status: &str,
+    transactions: &[TomlTransaction],
+    address_kind: &str,
+    pubkey: &Option<TomlPubkey>,
+) {
+    // Skip unsolved puzzles - they don't need pubkey validation
+    if status == "unsolved" {
+        return;
+    }
+
+    // Skip P2SH addresses (hash_collision collection uses redeem_script instead)
+    if address_kind == "p2sh" {
+        return;
+    }
+
+    // Check if puzzle has claim or sweep transactions
+    let has_claim_or_sweep = transactions
+        .iter()
+        .any(|tx| tx.tx_type == "claim" || tx.tx_type == "sweep");
+
+    // If it has claim/sweep transactions, pubkey must be present
+    if has_claim_or_sweep && pubkey.is_none() {
+        panic!(
+            "Puzzle '{}' has status '{}' with claim/sweep transaction but no pubkey. \
+             The public key is always revealed in claim transactions and must be recorded in the data.",
+            puzzle_id, status
+        );
+    }
+}
+
 #[derive(Debug, Deserialize)]
 struct TomlProfile {
     name: String,
@@ -539,6 +574,7 @@ struct BitimageFile {
 struct BitimagePuzzle {
     name: String,
     address: Address,
+    pubkey: Option<TomlPubkey>,
     status: String,
     prize: Option<f64>,
     key: Option<TomlKey>,
@@ -1117,6 +1153,9 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let data = wrapped.inner;
 
     for puzzle in &data.puzzles {
+        let bits = puzzle.key.bits.expect("key.bits required for b1000");
+        let puzzle_id = format!("b1000/{}", bits);
+
         if let Some(pk) = &puzzle.key.hex {
             if let Some(derived_bits) = bits_from_private_key(pk) {
                 let declared_bits = puzzle.key.bits.expect("key.bits required for b1000");
@@ -1127,6 +1166,14 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
                 );
             }
         }
+
+        validate_pubkey_for_claimed_puzzles(
+            &puzzle_id,
+            &puzzle.status,
+            &puzzle.transactions,
+            &puzzle.address.kind,
+            &puzzle.pubkey,
+        );
     }
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
@@ -1361,6 +1408,15 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let puzzle = &data.puzzle;
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
+    // Validate pubkey presence for claimed puzzles
+    validate_pubkey_for_claimed_puzzles(
+        "gsmg",
+        &puzzle.status,
+        &puzzle.transactions,
+        &puzzle.address.kind,
+        &puzzle.pubkey,
+    );
+
     let status = match puzzle.status.as_str() {
         "solved" => "Status::Solved",
         "claimed" => "Status::Claimed",
@@ -1465,6 +1521,18 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    // Validate pubkey presence for claimed puzzles
+    for puzzle in &data.puzzles {
+        let puzzle_id = format!("zden/{}", puzzle.name);
+        validate_pubkey_for_claimed_puzzles(
+            &puzzle_id,
+            &puzzle.status,
+            &puzzle.transactions,
+            &puzzle.address.kind,
+            &puzzle.pubkey,
+        );
+    }
 
     let mut output = String::new();
     output.push_str(&generate_author_code(&data.author));
@@ -1597,6 +1665,15 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 
     let puzzle = &data.puzzle;
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    // Validate pubkey presence for claimed puzzles
+    validate_pubkey_for_claimed_puzzles(
+        "bitaps",
+        &puzzle.status,
+        &puzzle.transactions,
+        &puzzle.address.kind,
+        &puzzle.pubkey,
+    );
 
     let status = match puzzle.status.as_str() {
         "solved" => "Status::Solved",
@@ -1753,6 +1830,7 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
         let puzzle_id = format!("bitimage/{}", puzzle.name);
         let key = generate_key_code(&puzzle.key, &puzzle_id, &puzzle.address.value);
+        let pubkey = format_pubkey(&puzzle.pubkey, &puzzle_id);
 
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver, solvers);
@@ -1764,30 +1842,30 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
 
         output.push_str(&format!(
             r#"    Puzzle {{
-        id: "bitimage/{}",
-        chain: Chain::Bitcoin,
-        address: Address {{
-            value: "{}",
-            chain: Chain::Bitcoin,
-            kind: "{}",
-            hash160: {},
-            witness_program: {},
-            redeem_script: {},
-        }},
-        status: {},
-        pubkey: None,
-        key: {},
-        prize: {},
-        start_date: {},
-        solve_date: {},
-        solve_time: {},
-        pre_genesis: false,
-        source_url: {},
-        transactions: {},
-        solver: {},
-        assets: {},
-    }},
-"#,
+         id: "bitimage/{}",
+         chain: Chain::Bitcoin,
+         address: Address {{
+             value: "{}",
+             chain: Chain::Bitcoin,
+             kind: "{}",
+             hash160: {},
+             witness_program: {},
+             redeem_script: {},
+         }},
+         status: {},
+         pubkey: {},
+         key: {},
+         prize: {},
+         start_date: {},
+         solve_date: {},
+         solve_time: {},
+         pre_genesis: false,
+         source_url: {},
+         transactions: {},
+         solver: {},
+         assets: {},
+     }},
+ "#,
             puzzle.name,
             puzzle.address.value,
             puzzle.address.kind,
@@ -1795,6 +1873,7 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
             witness_program,
             redeem_script,
             status,
+            pubkey,
             key,
             prize,
             start_date,
@@ -1823,6 +1902,18 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    // Validate pubkey presence for claimed puzzles
+    for puzzle in &data.puzzles {
+        let puzzle_id = format!("ballet/{}", puzzle.name);
+        validate_pubkey_for_claimed_puzzles(
+            &puzzle_id,
+            &puzzle.status,
+            &puzzle.transactions,
+            &puzzle.address.kind,
+            &puzzle.pubkey,
+        );
+    }
 
     let mut output = String::new();
     output.push_str(&generate_author_code(&data.author));

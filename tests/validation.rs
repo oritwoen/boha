@@ -1713,3 +1713,34 @@ fn asset_path_format() {
     let path = kitten.asset_path().expect("kitten should have asset_path");
     assert!(path.contains("bitimage"));
 }
+
+#[test]
+fn claimed_puzzles_have_pubkey() {
+    for puzzle in boha::all() {
+        // Skip unsolved puzzles - they don't need pubkey
+        if puzzle.status == Status::Unsolved {
+            continue;
+        }
+
+        // Skip P2SH addresses (hash_collision puzzles use redeem_script instead)
+        if puzzle.address.kind == "p2sh" {
+            continue;
+        }
+
+        // Check if puzzle has a Claim or Sweep transaction
+        let has_claim_or_sweep = puzzle
+            .transactions
+            .iter()
+            .any(|tx| matches!(tx.tx_type, TransactionType::Claim | TransactionType::Sweep));
+
+        // If status is Solved/Claimed/Swept and has claim/sweep tx, pubkey MUST exist
+        if has_claim_or_sweep {
+            assert!(
+                puzzle.pubkey.is_some(),
+                "Puzzle {} has status {:?} with claim/sweep tx but no pubkey",
+                puzzle.id,
+                puzzle.status
+            );
+        }
+    }
+}
