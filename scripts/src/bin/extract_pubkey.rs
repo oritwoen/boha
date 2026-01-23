@@ -206,7 +206,7 @@ async fn fetch_btc_pubkey(
 
         // Check witness first (SegWit)
         if let Some(witness) = &vin.witness {
-            if !witness.is_empty() && witness[0] != "" {
+            if !witness.is_empty() && !witness[0].is_empty() {
                 if let Some(result) = extract_pubkey_from_witness(witness) {
                     return Ok(Some(result));
                 }
@@ -291,7 +291,7 @@ fn hex_to_bytes(s: &str) -> Vec<u8> {
     hex::decode(&s).unwrap_or_default()
 }
 
-fn encode_eth_signing_hash(tx: &EtherscanTxResult, chain_id: u64) -> [u8; 32] {
+fn encode_eth_signing_hash(tx: &EtherscanTxResult, chain_id: Option<u64>) -> [u8; 32] {
     use sha3::{Digest, Keccak256};
 
     let nonce = parse_hex_u64(&tx.nonce);
@@ -318,22 +318,30 @@ fn encode_eth_signing_hash(tx: &EtherscanTxResult, chain_id: u64) -> [u8; 32] {
     let gas_price_trimmed: Vec<u8> = gas_price.iter().skip_while(|&&b| b == 0).copied().collect();
     let value_trimmed: Vec<u8> = value.iter().skip_while(|&&b| b == 0).copied().collect();
 
-    let chain_id_bytes = {
-        let bytes = chain_id.to_be_bytes();
-        bytes.iter().skip_while(|&&b| b == 0).copied().collect::<Vec<_>>()
-    };
-
-    let items = vec![
+    let mut items = vec![
         rlp_encode_bytes(&nonce_bytes),
         rlp_encode_bytes(&gas_price_trimmed),
         rlp_encode_bytes(&gas_limit_bytes),
         rlp_encode_bytes(&to),
         rlp_encode_bytes(&value_trimmed),
         rlp_encode_bytes(&data),
-        rlp_encode_bytes(&chain_id_bytes),
-        rlp_encode_bytes(&[]),
-        rlp_encode_bytes(&[]),
     ];
+
+    // EIP-155: append [chainId, 0, 0] for replay protection
+    // Legacy (v=27/28): no chain_id in signing hash
+    if let Some(chain_id) = chain_id {
+        let chain_id_bytes = {
+            let bytes = chain_id.to_be_bytes();
+            bytes
+                .iter()
+                .skip_while(|&&b| b == 0)
+                .copied()
+                .collect::<Vec<_>>()
+        };
+        items.push(rlp_encode_bytes(&chain_id_bytes));
+        items.push(rlp_encode_bytes(&[]));
+        items.push(rlp_encode_bytes(&[]));
+    }
 
     let rlp = rlp_encode_list(&items);
     let hash: [u8; 32] = Keccak256::digest(&rlp).into();
@@ -362,11 +370,15 @@ async fn fetch_eth_pubkey(
     let r = hex_to_bytes(&tx.r);
     let s = hex_to_bytes(&tx.s);
 
-    let chain_id: u64 = 1;
-    let recovery_id = if v >= 35 {
-        ((v - 35) % 2) as i32
+    let (chain_id, recovery_id) = if v >= 35 {
+        // EIP-155: v = chainId * 2 + 35 + {0,1}
+        let chain_id = (v - 35) / 2;
+        let recovery_id = ((v - 35) % 2) as i32;
+        (Some(chain_id), recovery_id)
     } else {
-        (v - 27) as i32
+        // Legacy: v = 27 or 28
+        let recovery_id = (v - 27) as i32;
+        (None, recovery_id)
     };
 
     let signing_hash = encode_eth_signing_hash(tx, chain_id);
@@ -478,7 +490,7 @@ fn strip_jsonc_comments(content: &str) -> String {
 
 fn update_jsonc_with_pubkey(
     content: &str,
-    puzzle_name: &str,
+    identifier: &PuzzleIdentifier,
     pubkey_value: &str,
     pubkey_format: &str,
 ) -> Option<String> {
@@ -488,21 +500,26 @@ fn update_jsonc_with_pubkey(
     let mut puzzle_indent = 0;
     let mut inserted = false;
 
-    for (_i, line) in lines.iter().enumerate() {
-        if line.contains(&format!("\"name\": \"{}\"", puzzle_name)) {
+    for line in lines.iter() {
+        let is_target_line = match identifier {
+            PuzzleIdentifier::Name(name) => line.contains(&format!("\"name\": \"{}\"", name)),
+            PuzzleIdentifier::Bits(bits) => line.contains(&format!("\"bits\": {}", bits)),
+            PuzzleIdentifier::SinglePuzzle => line.contains("\"puzzle\":"),
+        };
+
+        if is_target_line && !in_target_puzzle {
             in_target_puzzle = true;
             puzzle_indent = line.len() - line.trim_start().len();
+            if matches!(identifier, PuzzleIdentifier::SinglePuzzle) {
+                puzzle_indent += 2;
+            }
             result_lines.push(line.to_string());
             continue;
         }
 
         if in_target_puzzle && !inserted {
             if line.trim().starts_with("\"pubkey\"") {
-                if line.contains("}") || line.contains("},") {
-                    continue;
-                } else {
-                    continue;
-                }
+                continue;
             }
 
             if line.trim().starts_with("\"status\"") {
@@ -530,9 +547,20 @@ fn update_jsonc_with_pubkey(
 // Main Processing Logic
 // ============================================================================
 
+/// Identifier type for different collection formats
+#[derive(Debug, Clone)]
+enum PuzzleIdentifier {
+    /// For zden/bitimage: "name": "puzzle_name"
+    Name(String),
+    /// For b1000: "bits": N
+    Bits(u32),
+    /// For gsmg/bitaps: single puzzle collection, insert at collection level
+    SinglePuzzle,
+}
+
 struct PuzzleToProcess {
     collection: String,
-    name: String,
+    identifier: PuzzleIdentifier,
     chain: String,
     address: String,
     claim_txid: String,
@@ -604,15 +632,17 @@ fn find_puzzles_needing_pubkey(data_dir: &Path) -> Vec<PuzzleToProcess> {
 
             let chain = puzzle.chain.unwrap_or_else(|| "bitcoin".to_string());
 
-            let name = puzzle
-                .name
-                .clone()
-                .or_else(|| puzzle.key.as_ref().and_then(|k| k.bits.map(|b| b.to_string())))
-                .unwrap_or_else(|| "unknown".to_string());
+            let identifier = if let Some(name) = puzzle.name.clone() {
+                PuzzleIdentifier::Name(name)
+            } else if let Some(bits) = puzzle.key.as_ref().and_then(|k| k.bits) {
+                PuzzleIdentifier::Bits(bits)
+            } else {
+                PuzzleIdentifier::SinglePuzzle
+            };
 
             puzzles.push(PuzzleToProcess {
                 collection: collection_name.to_string(),
-                name,
+                identifier,
                 chain,
                 address: puzzle.address.value.clone(),
                 claim_txid,
@@ -676,13 +706,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Found {} puzzles needing pubkey:\n", puzzles.len());
 
     // Group by collection for file updates
-    let mut updates_by_collection: HashMap<String, Vec<(String, String, String)>> = HashMap::new();
+    let mut updates_by_collection: HashMap<String, Vec<(PuzzleIdentifier, String, String)>> =
+        HashMap::new();
 
     for puzzle in &puzzles {
+        let display_name = match &puzzle.identifier {
+            PuzzleIdentifier::Name(n) => n.clone(),
+            PuzzleIdentifier::Bits(b) => b.to_string(),
+            PuzzleIdentifier::SinglePuzzle => "puzzle".to_string(),
+        };
+
         println!(
             "Processing: {}/{} ({}) - txid: {}",
             puzzle.collection,
-            puzzle.name,
+            display_name,
             puzzle.chain,
             &puzzle.claim_txid[..16.min(puzzle.claim_txid.len())]
         );
@@ -714,7 +751,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
                 updates_by_collection
                     .entry(puzzle.collection.clone())
                     .or_default()
-                    .push((puzzle.name.clone(), pubkey, format));
+                    .push((puzzle.identifier.clone(), pubkey, format));
             }
             None => {
                 println!("    Could not extract pubkey");
@@ -732,13 +769,20 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             let path = data_dir.join(format!("{}.jsonc", collection));
             let mut content = std::fs::read_to_string(&path)?;
 
-            for (name, pubkey, format) in updates {
-                if let Some(new_content) = update_jsonc_with_pubkey(&content, name, pubkey, format)
+            for (identifier, pubkey, format) in updates {
+                let display_name = match identifier {
+                    PuzzleIdentifier::Name(n) => n.clone(),
+                    PuzzleIdentifier::Bits(b) => b.to_string(),
+                    PuzzleIdentifier::SinglePuzzle => "puzzle".to_string(),
+                };
+
+                if let Some(new_content) =
+                    update_jsonc_with_pubkey(&content, identifier, pubkey, format)
                 {
                     content = new_content;
-                    println!("  Updated {}/{}", collection, name);
+                    println!("  Updated {}/{}", collection, display_name);
                 } else {
-                    eprintln!("  Failed to update {}/{}", collection, name);
+                    eprintln!("  Failed to update {}/{}", collection, display_name);
                 }
             }
 
@@ -750,11 +794,17 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Dry-run mode. Use --apply to update files.");
 
         for (collection, updates) in &updates_by_collection {
-            for (name, pubkey, format) in updates {
+            for (identifier, pubkey, format) in updates {
+                let display_name = match identifier {
+                    PuzzleIdentifier::Name(n) => n.clone(),
+                    PuzzleIdentifier::Bits(b) => b.to_string(),
+                    PuzzleIdentifier::SinglePuzzle => "puzzle".to_string(),
+                };
+
                 println!(
                     "  Would update {}/{}: pubkey = {}... ({})",
                     collection,
-                    name,
+                    display_name,
                     &pubkey[..16.min(pubkey.len())],
                     format
                 );
