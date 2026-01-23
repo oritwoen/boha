@@ -6,7 +6,6 @@ use k256::PublicKey;
 use num_bigint::BigUint;
 use ripemd::Ripemd160;
 use serde::Deserialize;
-use serde_json;
 use sha2::{Digest, Sha256};
 use std::collections::HashMap;
 use std::env;
