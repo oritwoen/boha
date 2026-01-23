@@ -104,7 +104,9 @@ optional = true
 
 [build-dependencies]
 toml = "0.8"
+json-strip-comments = "3.1"
 serde = { version = "1", features = ["derive"] }
+serde_json = "1"
 num-bigint = "0.4"
 hex = "0.4"
 bs58 = "0.5"
