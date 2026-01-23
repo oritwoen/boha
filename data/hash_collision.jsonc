@@ -1,0 +1,172 @@
+{
+  "$schema": "./schemas/collection.schema.json",
+  "author": {
+    "name": "Peter Todd",
+    "addresses": ["1FCYd7j4CThTMzts78rh6iQJLBRGPW9fWv", "3MeoP8VzBURphKjrpkyY2GoW52z32ZmfK7"],
+    "profiles": [
+      {
+        "name": "bitcointalk",
+        "url": "https://bitcointalk.org/index.php?topic=293382.0"
+      }
+    ]
+  },
+  "metadata": {
+    "source_url": "https://bitcointalk.org/index.php?topic=293382.0"
+  },
+  "puzzles": [
+    {
+      "name": "sha1",
+      "address": {
+        "value": "37k7toV1Nv4DfmQbmZ8KuZDQCYK9x5KpzP",
+        "kind": "p2sh",
+        "hash160": "4266fc6f2c2861d7fe229b279a79803afca7ba34",
+        "redeem_script": {
+          "script": "6e879169a77ca787",
+          "hash": "4266fc6f2c2861d7fe229b279a79803afca7ba34"
+        }
+      },
+      "status": "claimed",
+      "prize": 2.48,
+      "solve_date": "2023-02-22 23:00:49",
+      "start_date": "2013-09-13 04:48:29",
+      "solve_time": 298059140,
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "09de8e2de5f6261af40c522c8fcc008c6a8321368b4df707c0c2a8f431138a83",
+          "date": "2013-09-13 04:48:29",
+          "amount": 0.01
+        },
+        {
+          "type": "claim",
+          "txid": "9ec2a0db0c4c3423a6b2c3cb2a26fc626b037121b4b5f3f57b08916196ff14e0",
+          "date": "2023-02-22 23:00:49",
+          "amount": 0.000096
+        }
+      ]
+    },
+    {
+      "name": "sha256",
+      "address": {
+        "value": "35Snmmy3uhaer2gTboc81ayCip4m9DT4ko",
+        "kind": "p2sh",
+        "hash160": "292fb39df7cd619a396069383928e6bfb74ebec5",
+        "redeem_script": {
+          "script": "6e879169a87ca887",
+          "hash": "292fb39df7cd619a396069383928e6bfb74ebec5"
+        }
+      },
+      "status": "unsolved",
+      "prize": 0.27734251,
+      "start_date": "2013-09-13 05:59:09",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0",
+          "date": "2013-09-13 05:59:09",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "name": "ripemd160",
+      "address": {
+        "value": "3KyiQEGqqdb4nqfhUzGKN6KPhXmQsLNpay",
+        "kind": "p2sh",
+        "hash160": "c89ab551eab767697bc4d9caca650c41b39497c6",
+        "redeem_script": {
+          "script": "6e879169a67ca687",
+          "hash": "c89ab551eab767697bc4d9caca650c41b39497c6"
+        }
+      },
+      "status": "unsolved",
+      "prize": 0.11576888,
+      "start_date": "2013-09-13 05:59:09",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0",
+          "date": "2013-09-13 05:59:09",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "name": "hash160",
+      "address": {
+        "value": "39VXyuoc6SXYKp9TcAhoiN1mb4ns6z3Yu6",
+        "kind": "p2sh",
+        "hash160": "55951b1e750beb68712edae7042ffeb7491c388d",
+        "redeem_script": {
+          "script": "6e879169a97ca987",
+          "hash": "55951b1e750beb68712edae7042ffeb7491c388d"
+        }
+      },
+      "status": "unsolved",
+      "prize": 0.10026873,
+      "start_date": "2013-09-13 05:59:09",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0",
+          "date": "2013-09-13 05:59:09",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "name": "hash256",
+      "address": {
+        "value": "3DUQQvz4t57Jy7jxE86kyFcNpKtURNf1VW",
+        "kind": "p2sh",
+        "hash160": "813ee00988dc0188450da05b77bd2d3e887f2ca4",
+        "redeem_script": {
+          "script": "6e879169aa7caa87",
+          "hash": "813ee00988dc0188450da05b77bd2d3e887f2ca4"
+        }
+      },
+      "status": "unsolved",
+      "prize": 0.10026873,
+      "start_date": "2013-09-13 05:59:09",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "397f12ee15f8a3d2ab25c0f6bb7d3c64d2038ca056af10dd8251b98ae0f076b0",
+          "date": "2013-09-13 05:59:09",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      "name": "op_abs",
+      "address": {
+        "value": "3QsT6Sast6ghfsjZ9VJj9u8jkM2qTfDgHV",
+        "kind": "p2sh",
+        "hash160": "fe441065b6532231de2fac563152205ec4f59c74",
+        "redeem_script": {
+          "script": "6e879169907c9087",
+          "hash": "fe441065b6532231de2fac563152205ec4f59c74"
+        }
+      },
+      "status": "claimed",
+      "prize": 0.001,
+      "solve_date": "2018-05-15 00:40:36",
+      "start_date": "2013-09-13 04:58:06",
+      "solve_time": 147296550,
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "aa7768318c367b8d9b59d1529da9f6aa5eac45255f4752e01a58bdb80b4751bf",
+          "date": "2013-09-13 04:58:06",
+          "amount": 0.001
+        },
+        {
+          "type": "claim",
+          "txid": "d48e41c95bb491f3077e27b8f3a0ebb40722381e5f6ff1a26c7c03ebf946603b",
+          "date": "2018-05-15 00:40:36",
+          "amount": 0.0001
+        }
+      ]
+    }
+  ]
+}

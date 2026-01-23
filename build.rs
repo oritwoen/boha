@@ -1,4 +1,5 @@
 use bip38::Decrypt;
+use json_strip_comments::strip;
 use k256::ecdsa::SigningKey;
 use k256::elliptic_curve::sec1::ToEncodedPoint;
 use k256::PublicKey;
@@ -10,6 +11,15 @@ use std::collections::HashMap;
 use std::env;
 use std::fs;
 use std::path::Path;
+
+#[derive(Debug, Deserialize)]
+struct WithSchema<T> {
+    #[serde(rename = "$schema")]
+    #[allow(dead_code)]
+    schema: Option<String>,
+    #[serde(flatten)]
+    inner: T,
+}
 
 fn bits_from_private_key(private_key: &str) -> Option<u16> {
     let bytes = hex::decode(private_key).ok()?;
@@ -1007,9 +1017,17 @@ fn generate_assets_code(assets: &Option<TomlAssets>, collection: &str, puzzle_id
 }
 
 fn load_solvers() -> HashMap<String, SolverDefinition> {
-    let content =
-        fs::read_to_string("data/solvers.toml").expect("Failed to read data/solvers.toml");
-    toml::from_str(&content).expect("Failed to parse solvers.toml")
+    let mut content =
+        fs::read_to_string("data/solvers.jsonc").expect("Failed to read data/solvers.jsonc");
+    strip(&mut content).expect("Failed to strip comments from solvers.jsonc");
+    let mut value: serde_json::Value =
+        serde_json::from_str(&content).expect("Failed to parse solvers.jsonc");
+    if let Some(obj) = value.as_object_mut() {
+        obj.remove("$schema");
+    }
+    let solvers: HashMap<String, SolverDefinition> =
+        serde_json::from_value(value).expect("Failed to deserialize solvers");
+    solvers
 }
 
 fn generate_data_version(out_dir: &str) {
@@ -1026,14 +1044,14 @@ fn generate_data_version(out_dir: &str) {
     let build_date = chrono::Utc::now().format("%Y-%m-%d").to_string();
 
     let data_files = [
-        "data/b1000.toml",
-        "data/ballet.toml",
-        "data/bitaps.toml",
-        "data/bitimage.toml",
-        "data/gsmg.toml",
-        "data/hash_collision.toml",
-        "data/solvers.toml",
-        "data/zden.toml",
+        "data/b1000.jsonc",
+        "data/ballet.jsonc",
+        "data/bitaps.jsonc",
+        "data/bitimage.jsonc",
+        "data/gsmg.jsonc",
+        "data/hash_collision.jsonc",
+        "data/solvers.jsonc",
+        "data/zden.jsonc",
     ];
 
     let mut hasher = Sha256::new();
@@ -1063,14 +1081,14 @@ pub const FULL_VERSION: &str = "{}";
 }
 
 fn main() {
-    println!("cargo:rerun-if-changed=data/b1000.toml");
-    println!("cargo:rerun-if-changed=data/hash_collision.toml");
-    println!("cargo:rerun-if-changed=data/gsmg.toml");
-    println!("cargo:rerun-if-changed=data/zden.toml");
-    println!("cargo:rerun-if-changed=data/bitaps.toml");
-    println!("cargo:rerun-if-changed=data/bitimage.toml");
-    println!("cargo:rerun-if-changed=data/ballet.toml");
-    println!("cargo:rerun-if-changed=data/solvers.toml");
+    println!("cargo:rerun-if-changed=data/b1000.jsonc");
+    println!("cargo:rerun-if-changed=data/hash_collision.jsonc");
+    println!("cargo:rerun-if-changed=data/gsmg.jsonc");
+    println!("cargo:rerun-if-changed=data/zden.jsonc");
+    println!("cargo:rerun-if-changed=data/bitaps.jsonc");
+    println!("cargo:rerun-if-changed=data/bitimage.jsonc");
+    println!("cargo:rerun-if-changed=data/ballet.jsonc");
+    println!("cargo:rerun-if-changed=data/solvers.jsonc");
     println!("cargo:rerun-if-changed=assets");
     println!("cargo:rerun-if-changed=.git/HEAD");
     println!("cargo:rerun-if-changed=.git/refs/heads");
@@ -1091,10 +1109,12 @@ fn main() {
 fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("b1000_data.rs");
 
-    let toml_content =
-        fs::read_to_string("data/b1000.toml").expect("Failed to read data/b1000.toml");
-
-    let data: Btc1000File = toml::from_str(&toml_content).expect("Failed to parse b1000.toml");
+    let mut content =
+        fs::read_to_string("data/b1000.jsonc").expect("Failed to read data/b1000.jsonc");
+    strip(&mut content).expect("Failed to strip comments from b1000.jsonc");
+    let wrapped: WithSchema<Btc1000File> =
+        serde_json::from_str(&content).expect("Failed to parse b1000.jsonc");
+    let data = wrapped.inner;
 
     for puzzle in &data.puzzles {
         if let Some(pk) = &puzzle.key.hex {
@@ -1219,11 +1239,12 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("hash_collision_data.rs");
 
-    let toml_content = fs::read_to_string("data/hash_collision.toml")
-        .expect("Failed to read data/hash_collision.toml");
-
-    let data: HashCollisionFile =
-        toml::from_str(&toml_content).expect("Failed to parse hash_collision.toml");
+    let mut content = fs::read_to_string("data/hash_collision.jsonc")
+        .expect("Failed to read data/hash_collision.jsonc");
+    strip(&mut content).expect("Failed to strip comments from hash_collision.jsonc");
+    let wrapped: WithSchema<HashCollisionFile> =
+        serde_json::from_str(&content).expect("Failed to parse hash_collision.jsonc");
+    let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
@@ -1330,9 +1351,12 @@ fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefini
 fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("gsmg_data.rs");
 
-    let toml_content = fs::read_to_string("data/gsmg.toml").expect("Failed to read data/gsmg.toml");
-
-    let data: GsmgFile = toml::from_str(&toml_content).expect("Failed to parse gsmg.toml");
+    let mut content =
+        fs::read_to_string("data/gsmg.jsonc").expect("Failed to read data/gsmg.jsonc");
+    strip(&mut content).expect("Failed to strip comments from gsmg.jsonc");
+    let wrapped: WithSchema<GsmgFile> =
+        serde_json::from_str(&content).expect("Failed to parse gsmg.jsonc");
+    let data = wrapped.inner;
 
     let puzzle = &data.puzzle;
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
@@ -1433,9 +1457,12 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("zden_data.rs");
 
-    let toml_content = fs::read_to_string("data/zden.toml").expect("Failed to read data/zden.toml");
-
-    let data: ZdenFile = toml::from_str(&toml_content).expect("Failed to parse zden.toml");
+    let mut content =
+        fs::read_to_string("data/zden.jsonc").expect("Failed to read data/zden.jsonc");
+    strip(&mut content).expect("Failed to strip comments from zden.jsonc");
+    let wrapped: WithSchema<ZdenFile> =
+        serde_json::from_str(&content).expect("Failed to parse zden.jsonc");
+    let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
@@ -1561,10 +1588,12 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("bitaps_data.rs");
 
-    let toml_content =
-        fs::read_to_string("data/bitaps.toml").expect("Failed to read data/bitaps.toml");
-
-    let data: BitapsFile = toml::from_str(&toml_content).expect("Failed to parse bitaps.toml");
+    let mut content =
+        fs::read_to_string("data/bitaps.jsonc").expect("Failed to read data/bitaps.jsonc");
+    strip(&mut content).expect("Failed to strip comments from bitaps.jsonc");
+    let wrapped: WithSchema<BitapsFile> =
+        serde_json::from_str(&content).expect("Failed to parse bitaps.jsonc");
+    let data = wrapped.inner;
 
     let puzzle = &data.puzzle;
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
@@ -1665,10 +1694,12 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
 fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("bitimage_data.rs");
 
-    let toml_content =
-        fs::read_to_string("data/bitimage.toml").expect("Failed to read data/bitimage.toml");
-
-    let data: BitimageFile = toml::from_str(&toml_content).expect("Failed to parse bitimage.toml");
+    let mut content =
+        fs::read_to_string("data/bitimage.jsonc").expect("Failed to read data/bitimage.jsonc");
+    strip(&mut content).expect("Failed to strip comments from bitimage.jsonc");
+    let wrapped: WithSchema<BitimageFile> =
+        serde_json::from_str(&content).expect("Failed to parse bitimage.jsonc");
+    let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 
@@ -1784,10 +1815,12 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
 fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("ballet_data.rs");
 
-    let toml_content =
-        fs::read_to_string("data/ballet.toml").expect("Failed to read data/ballet.toml");
-
-    let data: BalletFile = toml::from_str(&toml_content).expect("Failed to parse ballet.toml");
+    let mut content =
+        fs::read_to_string("data/ballet.jsonc").expect("Failed to read data/ballet.jsonc");
+    strip(&mut content).expect("Failed to strip comments from ballet.jsonc");
+    let wrapped: WithSchema<BalletFile> =
+        serde_json::from_str(&content).expect("Failed to parse ballet.jsonc");
+    let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
 

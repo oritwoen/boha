@@ -1,0 +1,37 @@
+{
+  "$schema": "./schemas/solvers.schema.json",
+  "retired_coder": {
+    "name": "RetiredCoder",
+    "addresses": ["3Emiwzxme7Mrj4d89uqohXNncnRM15YESs", "1Prestige1zSYorBdz94KA2UbJW3hYLTn4"],
+    "profiles": [
+      {
+        "name": "github",
+        "url": "https://github.com/RetiredC"
+      },
+      {
+        "name": "bitcointalk",
+        "url": "https://bitcointalk.org/index.php?action=profile;u=3657819"
+      }
+    ]
+  },
+  "bc1qpkp47q": {
+    "addresses": ["bc1qpkp47q5cucrvnyepsdnjcv2kzyav5ze0ta7n67"],
+    "profiles": []
+  },
+  "bc1qfk357t": {
+    "addresses": ["bc1qfk357t8n045f8mwx672rx2re4pftm5gmjzdwq7"],
+    "profiles": []
+  },
+  "bc1qfwpccz": {
+    "addresses": ["bc1qfwpccz2udt3efk7y2wt9l44h34cs5yevjc80lk"],
+    "profiles": []
+  },
+  "15g7XHM6u": {
+    "addresses": ["15g7XHM6u921DvvPrgguxYkxDL8ruPGHXZ"],
+    "profiles": []
+  },
+  "3MpeFYTuw": {
+    "addresses": ["3MpeFYTuwfrxSnUXNmTnY3XTgvhPp5k7vF"],
+    "profiles": []
+  }
+}

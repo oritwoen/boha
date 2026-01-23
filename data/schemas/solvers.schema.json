@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Solver Definitions",
+  "description": "HashMap of solver definitions referenced by ID in puzzle files",
+  "type": "object",
+  "additionalProperties": {
+    "$ref": "#/$defs/solver"
+  },
+  "examples": [
+    {
+      "retired_coder": {
+        "name": "RetiredCoder",
+        "addresses": ["3Emiwzxme7Mrj4d89uqohXNncnRM15YESs"],
+        "profiles": [
+          {
+            "name": "github",
+            "url": "https://github.com/RetiredC"
+          }
+        ]
+      }
+    }
+  ],
+  "$defs": {
+    "solver": {
+      "type": "object",
+      "description": "Solver information (who found/revealed the key)",
+      "properties": {
+        "name": {
+          "type": ["string", "null"],
+          "description": "Solver name"
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Solver's known addresses (string array, not Address objects)"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "./definitions.schema.json#/$defs/profile"
+          },
+          "description": "Solver's social/web profiles"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

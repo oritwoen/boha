@@ -1,0 +1,171 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "BOHA Puzzle Collection",
+  "description": "Universal schema for all BOHA puzzle collections",
+  "type": "object",
+  "properties": {
+    "author": {
+      "$ref": "./definitions.schema.json#/$defs/author"
+    },
+    "metadata": {
+      "$ref": "./definitions.schema.json#/$defs/metadata"
+    },
+    "puzzle": {
+      "$ref": "#/$defs/puzzle",
+      "description": "Single puzzle (gsmg, bitaps)"
+    },
+    "puzzles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/puzzle"
+      },
+      "description": "Array of puzzles"
+    }
+  },
+  "oneOf": [
+    { "required": ["puzzle"] },
+    { "required": ["puzzles"] }
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "puzzles": {
+            "contains": {
+              "required": ["name"]
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "puzzles": {
+            "items": {
+              "required": ["name"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "puzzles": {
+            "contains": {
+              "required": ["chain"]
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "puzzles": {
+            "items": {
+              "required": ["chain"]
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "puzzles": {
+            "contains": {
+              "required": ["key"],
+              "properties": {
+                "key": {
+                  "type": "object",
+                  "required": ["bits"]
+                }
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "puzzles": {
+            "items": {
+              "required": ["key"],
+              "properties": {
+                "key": {
+                  "required": ["bits"]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  ],
+  "additionalProperties": true,
+  "$defs": {
+    "puzzle": {
+      "type": "object",
+      "description": "Puzzle entry",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Puzzle name/identifier"
+        },
+        "chain": {
+          "$ref": "./definitions.schema.json#/$defs/chain"
+        },
+        "address": {
+          "$ref": "./definitions.schema.json#/$defs/address"
+        },
+        "status": {
+          "$ref": "./definitions.schema.json#/$defs/status"
+        },
+        "prize": {
+          "type": ["number", "null"],
+          "description": "Prize amount in native currency"
+        },
+        "pubkey": {
+          "$ref": "./definitions.schema.json#/$defs/pubkey"
+        },
+        "key": {
+          "$ref": "./definitions.schema.json#/$defs/key"
+        },
+        "start_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_time": {
+          "type": ["integer", "null"],
+          "description": "Time to solve in seconds"
+        },
+        "pre_genesis": {
+          "type": "boolean",
+          "description": "True if puzzle was solved before puzzle creation"
+        },
+        "source_url": {
+          "type": ["string", "null"]
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "./definitions.schema.json#/$defs/transaction"
+          }
+        },
+        "solver": {
+          "type": ["string", "null"],
+          "description": "Solver ID reference"
+        },
+        "has_pubkey": {
+          "type": ["boolean", "null"]
+        },
+        "assets": {
+          "$ref": "./definitions.schema.json#/$defs/assets"
+        }
+      },
+      "required": ["address", "status"],
+      "additionalProperties": true
+    }
+  }
+}
