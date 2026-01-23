@@ -1,0 +1,101 @@
+{
+  "$schema": "./schemas/bitimage.schema.json",
+  "author": {
+    "name": "Corey Phillips",
+    "profiles": [
+      {
+        "name": "github",
+        "url": "https://github.com/coreyphillips"
+      }
+    ]
+  },
+  "metadata": {
+    "source_url": "https://corey-lyle-phillips.medium.com/part-1-3-turn-your-photos-into-bitcoin-private-keys-addresses-57669771cf7a"
+  },
+  "puzzles": [
+    {
+      "name": "kitten",
+      "address": {
+        "value": "bc1q57euh23y3qs2f9d5mtwpax5lqecfvrdkqce82a",
+        "kind": "p2wpkh",
+        "hash160": "a7b3cbaa248820a495b4dadc1e9a9f0670960db6"
+      },
+      "status": "solved",
+      "prize": 0.00095133,
+      "start_date": "2019-07-03 02:48:04",
+      "solve_date": "2019-07-09 21:26:12",
+      "solve_time": 585488,
+      "key": {
+        "seed": {
+          "path": "m/84'/0'/0'/0/0",
+          "entropy": {
+            "hash": "1808d35318ac7cb98b69ff9779b699d6a631f15e0b353ac89b7c4020774832ed",
+            "source": {
+              "url": "https://twitter.com/aantonop/status/603701870482300928",
+              "description": "Antonopoulos kitten tweet (May 2015)"
+            }
+          }
+        }
+      },
+      "assets": {
+        "puzzle": "kitten/puzzle.jpg",
+        "source_url": "https://twitter.com/aantonop/status/603701870482300928"
+      },
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "1482b329809e168c61a40966e9ffb029ad20a2c0022bd0e55efeea35b8a9409c",
+          "date": "2019-07-03 02:48:04",
+          "amount": 0.00095133
+        },
+        {
+          "type": "claim",
+          "txid": "49638d16a21133febb093580527e50039eee630e2c4918a0654a71ef437ad093",
+          "date": "2019-07-09 21:26:12"
+        }
+      ]
+    },
+    {
+      "name": "kitten_passphrase",
+      "address": {
+        "value": "bc1qcyrndzgy036f6ax370g8zyvlw86ulawgt0246r",
+        "kind": "p2wpkh",
+        "hash160": "c1073689047c749d74d1f3d071119f71f5cff5c8"
+      },
+      "status": "unsolved",
+      "prize": 0.010019,
+      "start_date": "2019-06-28 08:06:08",
+      "key": {
+        "seed": {
+          "path": "m/84'/0'/0'/0/0",
+          "entropy": {
+            "hash": "1808d35318ac7cb98b69ff9779b699d6a631f15e0b353ac89b7c4020774832ed",
+            "passphrase": true,
+            "source": {
+              "url": "https://twitter.com/aantonop/status/603701870482300928",
+              "description": "Antonopoulos kitten tweet (May 2015)"
+            }
+          }
+        }
+      },
+      "assets": {
+        "puzzle": "kitten_passphrase/puzzle.jpg",
+        "source_url": "https://twitter.com/aantonop/status/603701870482300928"
+      },
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "c3a8c1eedc3512cc92e8798eb240d81bcb2446dfe91339bbafd5e9687c3c663d",
+          "date": "2019-06-28 08:06:08",
+          "amount": 0.01
+        },
+        {
+          "type": "increase",
+          "txid": "1e4c42f9aedfbdea00c2134af18de6d449a1a88565486a4de5b749634ecc07d8",
+          "date": "2025-04-11 14:43:52",
+          "amount": 0.000019
+        }
+      ]
+    }
+  ]
+}
