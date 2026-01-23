@@ -1,0 +1,108 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/ballet.schema.json",
+  "title": "Ballet Puzzles",
+  "description": "Physical crypto wallet cards with BIP38 encrypted keys (Bobby Lee's challenge)",
+  "type": "object",
+  "properties": {
+    "author": {
+      "$ref": "./definitions.schema.json#/$defs/author"
+    },
+    "metadata": {
+      "$ref": "./definitions.schema.json#/$defs/metadata"
+    },
+    "puzzles": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/puzzle"
+      },
+      "description": "Array of ballet puzzles"
+    }
+  },
+  "required": ["puzzles"],
+  "additionalProperties": true,
+  "$defs": {
+    "puzzle": {
+      "type": "object",
+      "description": "Single ballet puzzle",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Puzzle name/identifier"
+        },
+        "address": {
+          "$ref": "./definitions.schema.json#/$defs/address"
+        },
+        "pubkey": {
+          "$ref": "./definitions.schema.json#/$defs/pubkey"
+        },
+        "status": {
+          "$ref": "./definitions.schema.json#/$defs/status"
+        },
+        "prize": {
+          "type": ["number", "null"],
+          "description": "Prize amount in BTC"
+        },
+        "key": {
+          "type": ["object", "null"],
+          "description": "Key information with BIP38 encrypted WIF",
+          "properties": {
+            "hex": {
+              "type": ["string", "null"],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "wif": {
+              "$ref": "./definitions.schema.json#/$defs/wif",
+              "description": "WIF with encrypted and/or decrypted forms"
+            },
+            "seed": {
+              "$ref": "./definitions.schema.json#/$defs/seed"
+            },
+            "mini": {
+              "type": ["string", "null"]
+            },
+            "bits": {
+              "type": ["integer", "null"],
+              "minimum": 1,
+              "maximum": 256
+            },
+            "shares": {
+              "$ref": "./definitions.schema.json#/$defs/shares"
+            }
+          },
+          "additionalProperties": true
+        },
+        "start_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_time": {
+          "type": ["integer", "null"],
+          "description": "Time to solve in seconds"
+        },
+        "source_url": {
+          "type": ["string", "null"]
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "./definitions.schema.json#/$defs/transaction"
+          }
+        },
+        "solver": {
+          "type": ["string", "null"],
+          "description": "Solver ID reference"
+        },
+        "assets": {
+          "$ref": "./definitions.schema.json#/$defs/assets"
+        }
+      },
+      "required": ["name", "address", "status"],
+      "additionalProperties": true
+    }
+  }
+}

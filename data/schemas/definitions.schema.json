@@ -1,0 +1,384 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/definitions.schema.json",
+  "title": "BOHA Shared Definitions",
+  "description": "Shared type definitions for BOHA puzzle data validation",
+  "$defs": {
+    "address": {
+      "type": "object",
+      "description": "Bitcoin/crypto address with type and optional hash information",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "The address string"
+        },
+        "kind": {
+          "type": "string",
+          "enum": ["p2pkh", "p2sh", "p2wpkh", "p2wsh", "p2tr", "standard"],
+          "description": "Address type: p2pkh (legacy), p2sh (script), p2wpkh/p2wsh (SegWit), p2tr (Taproot), standard (other)"
+        },
+        "hash160": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{40}$",
+          "description": "RIPEMD160(SHA256(pubkey)) - 20 bytes as hex"
+        },
+        "witness_program": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Witness program for SegWit/Taproot - 32 bytes as hex"
+        },
+        "redeem_script": {
+          "$ref": "#/$defs/redeem_script"
+        }
+      },
+      "required": ["value", "kind"],
+      "additionalProperties": true
+    },
+    "redeem_script": {
+      "type": ["object", "null"],
+      "description": "P2SH redeem script",
+      "properties": {
+        "script": {
+          "type": "string",
+          "description": "Redeem script in hex"
+        },
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{40}$",
+          "description": "HASH160 of redeem script"
+        }
+      },
+      "required": ["script", "hash"],
+      "additionalProperties": true
+    },
+    "status": {
+      "type": "string",
+      "enum": ["solved", "unsolved", "claimed", "swept"],
+      "description": "Puzzle status: solved (key found), unsolved (no solution), claimed (funds claimed), swept (funds moved)"
+    },
+    "chain": {
+      "type": "string",
+      "enum": ["bitcoin", "ethereum", "litecoin", "monero", "decred"],
+      "description": "Blockchain network"
+    },
+    "pubkey": {
+      "type": ["object", "null"],
+      "description": "Public key information",
+      "properties": {
+        "value": {
+          "type": "string",
+          "description": "Public key in hex (compressed or uncompressed)"
+        },
+        "format": {
+          "type": "string",
+          "enum": ["compressed", "uncompressed"],
+          "description": "Public key format"
+        }
+      },
+      "required": ["value", "format"],
+      "additionalProperties": true
+    },
+    "transaction": {
+      "type": "object",
+      "description": "Blockchain transaction record",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["funding", "increase", "decrease", "sweep", "claim", "pubkey_reveal"],
+          "description": "Transaction type"
+        },
+        "txid": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Transaction ID (256-bit hash)"
+        },
+        "date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$",
+          "description": "Transaction date in ISO format with time"
+        },
+        "amount": {
+          "type": ["number", "null"],
+          "description": "Amount in BTC/ETH/etc"
+        }
+      },
+      "required": ["type"],
+      "additionalProperties": true
+    },
+    "profile": {
+      "type": "object",
+      "description": "Social/web profile link",
+      "properties": {
+        "name": {
+          "type": "string",
+          "description": "Profile type (twitter, github, bitcointalk, etc)"
+        },
+        "url": {
+          "type": "string",
+          "description": "Profile URL"
+        }
+      },
+      "required": ["name", "url"],
+      "additionalProperties": true
+    },
+    "author": {
+      "type": ["object", "null"],
+      "description": "Puzzle author/creator information",
+      "properties": {
+        "name": {
+          "type": ["string", "null"],
+          "description": "Author name"
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Author's known addresses (string array, not Address objects)"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/profile"
+          },
+          "description": "Author's social/web profiles"
+        }
+      },
+      "additionalProperties": true
+    },
+    "solver": {
+      "type": ["object", "null"],
+      "description": "Puzzle solver information (who found/revealed the key)",
+      "properties": {
+        "name": {
+          "type": ["string", "null"],
+          "description": "Solver name"
+        },
+        "addresses": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Solver's known addresses (string array, not Address objects)"
+        },
+        "profiles": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/profile"
+          },
+          "description": "Solver's social/web profiles"
+        }
+      },
+      "additionalProperties": true
+    },
+    "wif": {
+      "type": ["object", "null"],
+      "description": "Wallet Import Format key (encrypted and/or decrypted)",
+      "properties": {
+        "encrypted": {
+          "type": ["string", "null"],
+          "pattern": "^6P[1-9A-HJ-NP-Za-km-z]{56}$",
+          "description": "BIP38 encrypted WIF"
+        },
+        "decrypted": {
+          "type": ["string", "null"],
+          "pattern": "^[5KL][1-9A-HJ-NP-Za-km-z]{50,51}$",
+          "description": "Decrypted WIF (uncompressed: 5..., compressed: K/L...)"
+        },
+        "passphrase": {
+          "type": ["string", "null"],
+          "description": "Passphrase for BIP38 decryption"
+        }
+      },
+      "additionalProperties": true
+    },
+    "entropy": {
+      "type": ["object", "null"],
+      "description": "BIP39 entropy information",
+      "properties": {
+        "hash": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "SHA256 hash of entropy source"
+        },
+        "source": {
+          "type": ["object", "null"],
+          "description": "Entropy source information",
+          "properties": {
+            "url": {
+              "type": ["string", "null"],
+              "description": "URL to entropy source"
+            },
+            "description": {
+              "type": ["string", "null"],
+              "description": "Description of entropy source"
+            }
+          },
+          "additionalProperties": true
+        },
+        "passphrase": {
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "known": {
+                  "type": "string",
+                  "description": "Known BIP39 passphrase"
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "required": {
+                  "type": "boolean",
+                  "const": true,
+                  "description": "Passphrase is required but unknown"
+                }
+              }
+            }
+          ],
+          "description": "BIP39 passphrase (known, required, or null)"
+        }
+      },
+      "required": ["hash"],
+      "additionalProperties": true
+    },
+    "seed": {
+      "type": ["object", "null"],
+      "description": "BIP39 seed/mnemonic information",
+      "properties": {
+        "phrase": {
+          "type": ["string", "null"],
+          "description": "BIP39 mnemonic phrase"
+        },
+        "path": {
+          "type": ["string", "null"],
+          "description": "BIP32 derivation path (e.g., m/44'/0'/0'/0/0)"
+        },
+        "xpub": {
+          "type": ["string", "null"],
+          "description": "Extended public key"
+        },
+        "entropy": {
+          "$ref": "#/$defs/entropy"
+        }
+      },
+      "additionalProperties": true
+    },
+    "share": {
+      "type": "object",
+      "description": "Shamir Secret Sharing share",
+      "properties": {
+        "index": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 255,
+          "description": "Share index"
+        },
+        "data": {
+          "type": "string",
+          "description": "Share data in hex"
+        }
+      },
+      "required": ["index", "data"],
+      "additionalProperties": true
+    },
+    "shares": {
+      "type": ["object", "null"],
+      "description": "Shamir Secret Sharing scheme information",
+      "properties": {
+        "threshold": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Minimum shares needed to reconstruct secret"
+        },
+        "total": {
+          "type": "integer",
+          "minimum": 1,
+          "description": "Total shares created"
+        },
+        "shares": {
+          "type": "array",
+          "items": {
+            "$ref": "#/$defs/share"
+          },
+          "description": "Published shares"
+        }
+      },
+      "required": ["threshold", "total"],
+      "additionalProperties": true
+    },
+    "key": {
+      "type": ["object", "null"],
+      "description": "Private key information (hex, WIF, seed, or SSSS)",
+      "properties": {
+        "hex": {
+          "type": ["string", "null"],
+          "pattern": "^[a-f0-9]{64}$",
+          "description": "Private key as 256-bit hex"
+        },
+        "wif": {
+          "$ref": "#/$defs/wif"
+        },
+        "seed": {
+          "$ref": "#/$defs/seed"
+        },
+        "mini": {
+          "type": ["string", "null"],
+          "description": "Mini private key format"
+        },
+        "bits": {
+          "type": ["integer", "null"],
+          "minimum": 1,
+          "maximum": 256,
+          "description": "Bit length of private key (for b1000 puzzles)"
+        },
+        "shares": {
+          "$ref": "#/$defs/shares"
+        }
+      },
+      "additionalProperties": true
+    },
+    "assets": {
+      "type": ["object", "null"],
+      "description": "Puzzle assets (images, hints, etc)",
+      "properties": {
+        "puzzle": {
+          "type": ["string", "null"],
+          "description": "Path to puzzle image/file"
+        },
+        "solver": {
+          "type": ["string", "null"],
+          "description": "Path to solver image/file"
+        },
+        "hints": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Paths to hint files"
+        },
+        "source_url": {
+          "type": ["string", "null"],
+          "description": "URL to asset source"
+        }
+      },
+      "additionalProperties": true
+    },
+    "metadata": {
+      "type": ["object", "null"],
+      "description": "Collection metadata",
+      "properties": {
+        "source_url": {
+          "type": ["string", "null"],
+          "description": "URL to puzzle source/documentation"
+        }
+      },
+      "additionalProperties": true
+    }
+  }
+}

@@ -1,0 +1,97 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/bitaps.schema.json",
+  "title": "Bitaps Mnemonic Challenge",
+  "description": "Shamir Secret Sharing Scheme (SSSS) puzzle where 12-word mnemonic was split into 5 shares using 3-of-5 threshold",
+  "type": "object",
+  "properties": {
+    "author": {
+      "$ref": "./definitions.schema.json#/$defs/author"
+    },
+    "metadata": {
+      "$ref": "./definitions.schema.json#/$defs/metadata"
+    },
+    "puzzle": {
+      "$ref": "#/$defs/puzzle"
+    }
+  },
+  "required": ["puzzle"],
+  "additionalProperties": true,
+  "$defs": {
+    "puzzle": {
+      "type": "object",
+      "description": "Bitaps SSSS puzzle (single object, not array)",
+      "properties": {
+        "address": {
+          "$ref": "./definitions.schema.json#/$defs/address"
+        },
+        "status": {
+          "$ref": "./definitions.schema.json#/$defs/status"
+        },
+        "prize": {
+          "type": ["number", "null"],
+          "description": "Prize amount in BTC"
+        },
+        "pubkey": {
+          "$ref": "./definitions.schema.json#/$defs/pubkey"
+        },
+        "key": {
+          "type": ["object", "null"],
+          "description": "Key information with SSSS shares",
+          "properties": {
+            "hex": {
+              "type": ["string", "null"],
+              "pattern": "^[a-f0-9]{64}$"
+            },
+            "wif": {
+              "$ref": "./definitions.schema.json#/$defs/wif"
+            },
+            "seed": {
+              "$ref": "./definitions.schema.json#/$defs/seed"
+            },
+            "mini": {
+              "type": ["string", "null"]
+            },
+            "bits": {
+              "type": ["integer", "null"],
+              "minimum": 1,
+              "maximum": 256
+            },
+            "shares": {
+              "$ref": "./definitions.schema.json#/$defs/shares",
+              "description": "SSSS shares (2 of 3 published)"
+            }
+          },
+          "additionalProperties": true
+        },
+        "start_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_time": {
+          "type": ["integer", "null"],
+          "description": "Time to solve in seconds"
+        },
+        "source_url": {
+          "type": ["string", "null"]
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "./definitions.schema.json#/$defs/transaction"
+          }
+        },
+        "solver": {
+          "type": ["string", "null"],
+          "description": "Solver ID reference"
+        }
+      },
+      "required": ["address", "status"],
+      "additionalProperties": true
+    }
+  }
+}

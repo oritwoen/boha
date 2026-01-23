@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/gsmg.schema.json",
+  "title": "GSMG.IO 5 BTC Puzzle",
+  "description": "Multi-phase cryptographic challenge with single Bitcoin address",
+  "type": "object",
+  "properties": {
+    "author": {
+      "$ref": "./definitions.schema.json#/$defs/author"
+    },
+    "metadata": {
+      "$ref": "./definitions.schema.json#/$defs/metadata"
+    },
+    "puzzle": {
+      "$ref": "#/$defs/puzzle"
+    }
+  },
+  "required": ["puzzle"],
+  "additionalProperties": true,
+  "$defs": {
+    "puzzle": {
+      "type": "object",
+      "description": "GSMG puzzle (single object, not array)",
+      "properties": {
+        "address": {
+          "$ref": "./definitions.schema.json#/$defs/address"
+        },
+        "status": {
+          "$ref": "./definitions.schema.json#/$defs/status"
+        },
+        "prize": {
+          "type": ["number", "null"],
+          "description": "Prize amount in BTC (halves with each Bitcoin halving)"
+        },
+        "pubkey": {
+          "$ref": "./definitions.schema.json#/$defs/pubkey"
+        },
+        "start_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_date": {
+          "type": ["string", "null"],
+          "pattern": "^\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}$"
+        },
+        "solve_time": {
+          "type": ["integer", "null"],
+          "description": "Time to solve in seconds"
+        },
+        "source_url": {
+          "type": ["string", "null"]
+        },
+        "transactions": {
+          "type": "array",
+          "items": {
+            "$ref": "./definitions.schema.json#/$defs/transaction"
+          }
+        },
+        "solver": {
+          "type": ["string", "null"],
+          "description": "Solver ID reference"
+        },
+        "assets": {
+          "$ref": "./definitions.schema.json#/$defs/assets"
+        }
+      },
+      "required": ["address", "status"],
+      "additionalProperties": true
+    }
+  }
+}
