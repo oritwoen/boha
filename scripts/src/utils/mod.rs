@@ -3,10 +3,10 @@ pub mod etherscan;
 pub mod mempool;
 
 use chrono::{DateTime, Utc};
+use serde_json::Value;
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
 use std::time::Duration;
-use toml_edit::{Array, InlineTable, Value};
 
 pub const RATE_LIMIT_DELAY: Duration = Duration::from_secs(3);
 pub const RETRY_DELAY: Duration = Duration::from_secs(60);
@@ -89,48 +89,50 @@ pub fn merge_transactions(
     merged
 }
 
-pub fn transaction_to_inline_table(tx: &Transaction) -> InlineTable {
-    let mut table = InlineTable::new();
-    table.insert("type", Value::from(tx.tx_type.as_str()));
-    table.insert("txid", Value::from(tx.txid.as_str()));
+pub fn transaction_to_inline_table(tx: &Transaction) -> Value {
+    let mut obj = serde_json::Map::new();
+    obj.insert("type".to_string(), Value::String(tx.tx_type.clone()));
+    obj.insert("txid".to_string(), Value::String(tx.txid.clone()));
     if let Some(date) = &tx.date {
-        table.insert("date", Value::from(date.as_str()));
+        obj.insert("date".to_string(), Value::String(date.clone()));
     }
     if let Some(amount) = tx.amount {
-        table.insert("amount", Value::from(amount));
+        obj.insert("amount".to_string(), Value::Number(
+            serde_json::Number::from_f64(amount).unwrap_or(serde_json::Number::from(0))
+        ));
     }
-    table
+    Value::Object(obj)
 }
 
-pub fn transactions_to_array(transactions: &[Transaction]) -> Array {
-    let mut array = Array::new();
+pub fn transactions_to_array(transactions: &[Transaction]) -> Value {
+    let mut array = Vec::new();
     for tx in transactions {
-        array.push(Value::InlineTable(transaction_to_inline_table(tx)));
+        array.push(transaction_to_inline_table(tx));
     }
-    array
+    Value::Array(array)
 }
 
-pub fn extract_existing_transactions(table: &toml_edit::Table) -> Vec<Transaction> {
+pub fn extract_existing_transactions(value: &Value) -> Vec<Transaction> {
     let mut result = Vec::new();
 
-    if let Some(txs) = table.get("transactions") {
+    if let Some(txs) = value.get("transactions") {
         if let Some(arr) = txs.as_array() {
             for item in arr.iter() {
-                if let Some(inline) = item.as_inline_table() {
-                    let tx_type = inline
+                if let Some(obj) = item.as_object() {
+                    let tx_type = obj
                         .get("type")
                         .and_then(|v| v.as_str())
                         .unwrap_or("")
                         .to_string();
-                    let txid = inline
+                    let txid = obj
                         .get("txid")
                         .and_then(|v| v.as_str())
                         .unwrap_or("")
                         .to_string();
-                    let date = inline.get("date").and_then(|v| v.as_str()).map(String::from);
-                    let amount = inline
+                    let date = obj.get("date").and_then(|v| v.as_str()).map(String::from);
+                    let amount = obj
                         .get("amount")
-                        .and_then(|v| v.as_float().or_else(|| v.as_integer().map(|i| i as f64)));
+                        .and_then(|v| v.as_f64());
 
                     if !txid.is_empty() {
                         result.push(Transaction {
@@ -148,12 +150,12 @@ pub fn extract_existing_transactions(table: &toml_edit::Table) -> Vec<Transactio
     result
 }
 
-pub fn extract_author_addresses(doc: &toml_edit::DocumentMut) -> HashSet<String> {
+pub fn extract_author_addresses(value: &Value) -> HashSet<String> {
     let mut addresses = HashSet::new();
 
-    if let Some(author) = doc.get("author") {
-        if let Some(table) = author.as_table() {
-            if let Some(addrs) = table.get("addresses") {
+    if let Some(author) = value.get("author") {
+        if let Some(obj) = author.as_object() {
+            if let Some(addrs) = obj.get("addresses") {
                 if let Some(arr) = addrs.as_array() {
                     for addr in arr.iter() {
                         if let Some(s) = addr.as_str() {
