@@ -1,7 +1,6 @@
 use ripemd::Ripemd160;
 use sha2::{Digest, Sha256};
 use std::path::Path;
-use toml_edit::{value, DocumentMut};
 
 fn zpub_to_xpub(zpub: &str) -> Result<String, Box<dyn std::error::Error>> {
     let decoded = bs58::decode(zpub).with_check(None).into_vec()?;
@@ -131,18 +130,16 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if computed_hash160_hex == expected_hash160 {
         println!("\n✓ HASH160 matches! Public key is correct.");
 
-        // Update bitaps.toml
-        let toml_path = Path::new("../data/bitaps.toml");
-        if toml_path.exists() {
-            let content = std::fs::read_to_string(toml_path)?;
-            let mut doc: DocumentMut = content.parse()?;
+        // Update bitaps.jsonc
+        let jsonc_path = Path::new("../data/bitaps.jsonc");
+        if jsonc_path.exists() {
+            let content = std::fs::read_to_string(jsonc_path)?;
+            let mut value: serde_json::Value = serde_json::from_str(&content)?;
 
-            if let Some(puzzle) = doc.get_mut("puzzle") {
-                if let Some(table) = puzzle.as_table_mut() {
-                    table.insert("pubkey", value(&pubkey_hex));
-                    std::fs::write(toml_path, doc.to_string())?;
-                    println!("\n✓ Updated bitaps.toml with pubkey");
-                }
+            if let Some(puzzle) = value.get_mut("puzzle") {
+                puzzle["pubkey"] = serde_json::json!(&pubkey_hex);
+                std::fs::write(jsonc_path, value.to_string())?;
+                println!("\n✓ Updated bitaps.jsonc with pubkey");
             }
         }
     } else {
