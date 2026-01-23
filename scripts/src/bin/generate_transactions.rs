@@ -2,10 +2,10 @@ mod utils {
     include!("../utils/mod.rs");
 }
 
+use serde_json::Value;
 use std::collections::HashSet;
 use std::path::Path;
 use std::time::Duration;
-use toml_edit::{DocumentMut, Item, Value};
 use utils::{
     cache_path, dcrdata, etherscan, extract_author_addresses, extract_existing_transactions,
     mempool, merge_transactions, transactions_to_array,
@@ -66,8 +66,72 @@ async fn fetch_and_cache_eth(
     }
 }
 
+fn strip_jsonc_comments(content: &str) -> String {
+    let mut result = String::new();
+    let mut in_string = false;
+    let mut in_line_comment = false;
+    let mut in_block_comment = false;
+    let mut chars = content.chars().peekable();
+
+    while let Some(c) = chars.next() {
+        if in_line_comment {
+            if c == '\n' {
+                in_line_comment = false;
+                result.push(c);
+            }
+            continue;
+        }
+
+        if in_block_comment {
+            if c == '*' && chars.peek() == Some(&'/') {
+                chars.next();
+                in_block_comment = false;
+            }
+            continue;
+        }
+
+        if in_string {
+            result.push(c);
+            if c == '\\' {
+                if let Some(next) = chars.next() {
+                    result.push(next);
+                }
+            } else if c == '"' {
+                in_string = false;
+            }
+            continue;
+        }
+
+        if c == '"' {
+            in_string = true;
+            result.push(c);
+            continue;
+        }
+
+        if c == '/' {
+            match chars.peek() {
+                Some('/') => {
+                    chars.next();
+                    in_line_comment = true;
+                    continue;
+                }
+                Some('*') => {
+                    chars.next();
+                    in_block_comment = true;
+                    continue;
+                }
+                _ => {}
+            }
+        }
+
+        result.push(c);
+    }
+
+    result
+}
+
 fn process_cached_btc(
-    table: &mut toml_edit::Table,
+    puzzle: &mut Value,
     address: &str,
     collection: &str,
     author_addresses: &HashSet<String>,
@@ -77,16 +141,17 @@ fn process_cached_btc(
         None => return false,
     };
 
-    let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
-    let existing = extract_existing_transactions(table);
-    let new_transactions = mempool::categorize_transactions(address, txs, author_addresses, status);
+    let status = puzzle
+        .get("status")
+        .and_then(|s| s.as_str())
+        .unwrap_or("")
+        .to_string();
+    let existing = extract_existing_transactions(puzzle);
+    let new_transactions = mempool::categorize_transactions(address, txs, author_addresses, &status);
     let merged = merge_transactions(existing, new_transactions);
 
     if !merged.is_empty() {
-        table.insert(
-            "transactions",
-            Item::Value(Value::Array(transactions_to_array(&merged))),
-        );
+        puzzle["transactions"] = transactions_to_array(&merged);
         return true;
     }
 
@@ -94,7 +159,7 @@ fn process_cached_btc(
 }
 
 fn process_cached_eth(
-    table: &mut toml_edit::Table,
+    puzzle: &mut Value,
     address: &str,
     collection: &str,
     author_addresses: &HashSet<String>,
@@ -104,17 +169,18 @@ fn process_cached_eth(
         None => return false,
     };
 
-    let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
-    let existing = extract_existing_transactions(table);
+    let status = puzzle
+        .get("status")
+        .and_then(|s| s.as_str())
+        .unwrap_or("")
+        .to_string();
+    let existing = extract_existing_transactions(puzzle);
     let new_transactions =
-        etherscan::categorize_transactions(address, txs, author_addresses, status);
+        etherscan::categorize_transactions(address, txs, author_addresses, &status);
     let merged = merge_transactions(existing, new_transactions);
 
     if !merged.is_empty() {
-        table.insert(
-            "transactions",
-            Item::Value(Value::Array(transactions_to_array(&merged))),
-        );
+        puzzle["transactions"] = transactions_to_array(&merged);
         return true;
     }
 
@@ -123,16 +189,16 @@ fn process_cached_eth(
 
 async fn fetch_and_cache_b1000(
     client: &reqwest::Client,
-    doc: &DocumentMut,
+    doc: &Value,
     filter_puzzle: Option<i64>,
     force: bool,
 ) -> Result<usize, Box<dyn std::error::Error>> {
     let mut count = 0;
 
     if let Some(puzzles) = doc.get("puzzles") {
-        if let Some(array) = puzzles.as_array_of_tables() {
-            for (idx, table) in array.iter().enumerate() {
-                let bits = table.get("bits").and_then(|b| b.as_integer()).unwrap_or(0);
+        if let Some(array) = puzzles.as_array() {
+            for (idx, puzzle) in array.iter().enumerate() {
+                let bits = puzzle.get("key").and_then(|k| k.get("bits")).and_then(|b| b.as_i64()).unwrap_or(0);
 
                 if let Some(filter) = filter_puzzle {
                     if bits != filter {
@@ -140,9 +206,10 @@ async fn fetch_and_cache_b1000(
                     }
                 }
 
-                let address = table
+                let address = puzzle
                     .get("address")
-                    .and_then(|a| a.as_str())
+                    .and_then(|a| a.get("value"))
+                    .and_then(|v| v.as_str())
                     .unwrap_or("")
                     .to_string();
 
@@ -158,16 +225,16 @@ async fn fetch_and_cache_b1000(
 }
 
 fn process_cached_b1000(
-    doc: &mut DocumentMut,
+    doc: &mut Value,
     author_addresses: &HashSet<String>,
     filter_puzzle: Option<i64>,
 ) -> Result<usize, Box<dyn std::error::Error>> {
     let mut count = 0;
 
     if let Some(puzzles) = doc.get_mut("puzzles") {
-        if let Some(array) = puzzles.as_array_of_tables_mut() {
-            for (idx, table) in array.iter_mut().enumerate() {
-                let bits = table.get("bits").and_then(|b| b.as_integer()).unwrap_or(0);
+        if let Some(array) = puzzles.as_array_mut() {
+            for (idx, puzzle) in array.iter_mut().enumerate() {
+                let bits = puzzle.get("key").and_then(|k| k.get("bits")).and_then(|b| b.as_i64()).unwrap_or(0);
 
                 if let Some(filter) = filter_puzzle {
                     if bits != filter {
@@ -175,15 +242,16 @@ fn process_cached_b1000(
                     }
                 }
 
-                let address = table
+                let address = puzzle
                     .get("address")
-                    .and_then(|a| a.as_str())
+                    .and_then(|a| a.get("value"))
+                    .and_then(|v| v.as_str())
                     .unwrap_or("")
                     .to_string();
 
                 println!("  [{}/256] Processing puzzle {} ({})", idx + 1, bits, address);
 
-                if process_cached_btc(table, &address, "b1000", author_addresses) {
+                if process_cached_btc(puzzle, &address, "b1000", author_addresses) {
                     count += 1;
                 }
             }
@@ -195,20 +263,19 @@ fn process_cached_b1000(
 
 async fn fetch_and_cache_gsmg(
     client: &reqwest::Client,
-    doc: &DocumentMut,
+    doc: &Value,
     force: bool,
 ) -> Result<usize, Box<dyn std::error::Error>> {
     if let Some(puzzle) = doc.get("puzzle") {
-        if let Some(table) = puzzle.as_table() {
-            let address = table
-                .get("address")
-                .and_then(|a| a.as_str())
-                .unwrap_or("")
-                .to_string();
+        let address = puzzle
+            .get("address")
+            .and_then(|a| a.get("value"))
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .to_string();
 
-            if fetch_and_cache_btc(client, &address, "gsmg", "gsmg", force).await? {
-                return Ok(1);
-            }
+        if fetch_and_cache_btc(client, &address, "gsmg", "gsmg", force).await? {
+            return Ok(1);
         }
     }
 
@@ -216,22 +283,21 @@ async fn fetch_and_cache_gsmg(
 }
 
 fn process_cached_gsmg(
-    doc: &mut DocumentMut,
+    doc: &mut Value,
     author_addresses: &HashSet<String>,
 ) -> Result<usize, Box<dyn std::error::Error>> {
     if let Some(puzzle) = doc.get_mut("puzzle") {
-        if let Some(table) = puzzle.as_table_mut() {
-            let address = table
-                .get("address")
-                .and_then(|a| a.as_str())
-                .unwrap_or("")
-                .to_string();
+        let address = puzzle
+            .get("address")
+            .and_then(|a| a.get("value"))
+            .and_then(|v| v.as_str())
+            .unwrap_or("")
+            .to_string();
 
-            println!("  Processing gsmg ({})", address);
+        println!("  Processing gsmg ({})", address);
 
-            if process_cached_btc(table, &address, "gsmg", author_addresses) {
-                return Ok(1);
-            }
+        if process_cached_btc(puzzle, &address, "gsmg", author_addresses) {
+            return Ok(1);
         }
     }
 
@@ -266,7 +332,7 @@ async fn fetch_and_cache_dcr(
 }
 
 fn process_cached_dcr(
-    table: &mut toml_edit::Table,
+    puzzle: &mut Value,
     address: &str,
     collection: &str,
     author_addresses: &HashSet<String>,
@@ -276,16 +342,17 @@ fn process_cached_dcr(
         None => return false,
     };
 
-    let status = table.get("status").and_then(|s| s.as_str()).unwrap_or("");
-    let existing = extract_existing_transactions(table);
-    let new_transactions = dcrdata::categorize_transactions(address, txs, author_addresses, status);
+    let status = puzzle
+        .get("status")
+        .and_then(|s| s.as_str())
+        .unwrap_or("")
+        .to_string();
+    let existing = extract_existing_transactions(puzzle);
+    let new_transactions = dcrdata::categorize_transactions(address, txs, author_addresses, &status);
     let merged = merge_transactions(existing, new_transactions);
 
     if !merged.is_empty() {
-        table.insert(
-            "transactions",
-            Item::Value(Value::Array(transactions_to_array(&merged))),
-        );
+        puzzle["transactions"] = transactions_to_array(&merged);
         return true;
     }
 
@@ -294,7 +361,7 @@ fn process_cached_dcr(
 
 async fn fetch_and_cache_collection(
     client: &reqwest::Client,
-    doc: &DocumentMut,
+    doc: &Value,
     collection: &str,
     etherscan_api_key: Option<&str>,
     force: bool,
@@ -302,25 +369,24 @@ async fn fetch_and_cache_collection(
     let mut count = 0;
 
     if let Some(puzzles) = doc.get("puzzles") {
-        if let Some(array) = puzzles.as_array_of_tables() {
+        if let Some(array) = puzzles.as_array() {
             let total = array.len();
-            for (idx, table) in array.iter().enumerate() {
-                let address = table
+            for (idx, puzzle) in array.iter().enumerate() {
+                let address = puzzle
                     .get("address")
-                    .and_then(|a| a.as_inline_table())
-                    .and_then(|t| t.get("value"))
+                    .and_then(|a| a.get("value"))
                     .and_then(|v| v.as_str())
-                    .or_else(|| table.get("address").and_then(|a| a.as_str()))
+                    .or_else(|| puzzle.get("address").and_then(|a| a.as_str()))
                     .unwrap_or("")
                     .to_string();
 
-                let name = table
+                let name = puzzle
                     .get("name")
                     .and_then(|n| n.as_str())
                     .unwrap_or("unknown")
                     .to_string();
 
-                let chain = table
+                let chain = puzzle
                     .get("chain")
                     .and_then(|c| c.as_str())
                     .unwrap_or("bitcoin");
@@ -360,32 +426,31 @@ async fn fetch_and_cache_collection(
 }
 
 fn process_cached_collection(
-    doc: &mut DocumentMut,
+    doc: &mut Value,
     author_addresses: &HashSet<String>,
     collection: &str,
 ) -> Result<usize, Box<dyn std::error::Error>> {
     let mut count = 0;
 
     if let Some(puzzles) = doc.get_mut("puzzles") {
-        if let Some(array) = puzzles.as_array_of_tables_mut() {
+        if let Some(array) = puzzles.as_array_mut() {
             let total = array.len();
-            for (idx, table) in array.iter_mut().enumerate() {
-                let address = table
+            for (idx, puzzle) in array.iter_mut().enumerate() {
+                let address = puzzle
                     .get("address")
-                    .and_then(|a| a.as_inline_table())
-                    .and_then(|t| t.get("value"))
+                    .and_then(|a| a.get("value"))
                     .and_then(|v| v.as_str())
-                    .or_else(|| table.get("address").and_then(|a| a.as_str()))
+                    .or_else(|| puzzle.get("address").and_then(|a| a.as_str()))
                     .unwrap_or("")
                     .to_string();
 
-                let name = table
+                let name = puzzle
                     .get("name")
                     .and_then(|n| n.as_str())
                     .unwrap_or("unknown")
                     .to_string();
 
-                let chain = table
+                let chain = puzzle
                     .get("chain")
                     .and_then(|c| c.as_str())
                     .unwrap_or("bitcoin");
@@ -400,13 +465,13 @@ fn process_cached_collection(
 
                 let processed = match chain {
                     "bitcoin" | "litecoin" => {
-                        process_cached_btc(table, &address, collection, author_addresses)
+                        process_cached_btc(puzzle, &address, collection, author_addresses)
                     }
                     "ethereum" => {
-                        process_cached_eth(table, &address, collection, author_addresses)
+                        process_cached_eth(puzzle, &address, collection, author_addresses)
                     }
                     "decred" => {
-                        process_cached_dcr(table, &address, collection, author_addresses)
+                        process_cached_dcr(puzzle, &address, collection, author_addresses)
                     }
                     _ => {
                         println!("    Unsupported chain: {}", chain);
@@ -486,7 +551,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let data_dir = Path::new("../data");
 
     for collection in &collections {
-        let filename = format!("{}.toml", collection);
+        let filename = format!("{}.jsonc", collection);
         let path = data_dir.join(&filename);
 
         if !path.exists() {
@@ -495,7 +560,8 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         }
 
         let content = std::fs::read_to_string(&path)?;
-        let mut doc: DocumentMut = content.parse()?;
+        let json_content = strip_jsonc_comments(&content);
+        let mut doc: Value = serde_json::from_str(&json_content)?;
         let author_addresses = extract_author_addresses(&doc);
 
         if author_addresses.is_empty() {
