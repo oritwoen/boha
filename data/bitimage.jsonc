@@ -20,6 +20,7 @@
         "kind": "p2wpkh",
         "hash160": "a7b3cbaa248820a495b4dadc1e9a9f0670960db6"
       },
+      "pubkey": { "value": "021209b131dfbd1efcfe15b1d1e92002653f5fc98e9ff6cb73a0d70153dbe58463", "format": "compressed" },
       "status": "solved",
       "prize": 0.00095133,
       "start_date": "2019-07-03 02:48:04",

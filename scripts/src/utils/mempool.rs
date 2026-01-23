@@ -20,6 +20,7 @@ pub struct MempoolStatus {
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct MempoolVin {
     pub prevout: Option<MempoolPrevout>,
+    pub scriptsig: Option<String>,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
