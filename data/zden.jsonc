@@ -157,6 +157,7 @@
         "kind": "p2pkh",
         "hash160": "06c84797d273a88bcbcf0a98fd675aeae0447b56"
       },
+      "pubkey": { "value": "042348aa53c41b59a87be13846d37160538e6e6addb254116dc40223fcf2925e013d1cbfd764193f9268122c0444038a0c798f540874d6f0b9b182b8ced6dc98eb", "format": "uncompressed" },
       "status": "solved",
       "prize": 0.0260414,
       "start_date": "2017-06-07 12:19:28",
@@ -257,6 +258,7 @@
         "kind": "p2pkh",
         "hash160": "06c84797d21a7c43dce76bf6f510114560d6a135"
       },
+      "pubkey": { "value": "04f3522614fabf280019a1c7005523808d4f08afa8084c483fe4e02b92a7ae587c264138073c19f1106b7670a23c4f4bb7e08b3cc75254f45b7cdbb958cf97abc3", "format": "uncompressed" },
       "status": "solved",
       "prize": 0.00140426,
       "start_date": "2021-02-07 23:57:58",
@@ -302,6 +304,7 @@
         "kind": "p2pkh",
         "hash160": "06c84797d328c065190a6768e20a84b7a17916c0"
       },
+      "pubkey": { "value": "04a7daaeb780428349a532386cbe4570c2765265099a5cabb6614abbbc16e0eed968f012d4e999a2726ec101402af57d4d99813d86ca6a1de7bf15ec6ff740ab6e", "format": "uncompressed" },
       "status": "solved",
       "prize": 0.0260414,
       "start_date": "2017-12-24 18:10:13",
@@ -335,6 +338,7 @@
         "kind": "p2pkh",
         "hash160": "75882f9639449778bb4cc2d242ed35dd2cca6f3e"
       },
+      "pubkey": { "value": "04bb16b0a88389b89e0b900f1509589fa7f03e18a4482967b87421c3ab5b6d44d2be549abdb95861b64430b3d6b4ee389d0bf7e5ad554442c5bd12ed1651cf4540", "format": "uncompressed" },
       "status": "solved",
       "prize": 0.00117578,
       "start_date": "2021-04-11 01:46:31",
@@ -368,6 +372,7 @@
         "kind": "p2pkh",
         "hash160": "06c84797d30988bc82a337117d02d7c4347fd35b"
       },
+      "pubkey": { "value": "04fc4f71ab4554b2ea1203b1cf6d0cfaf179213d7fa028be7dda5c183807792b15c5c0146f10be96bebf2fc1fb41637bd0b16d2d534e14b649da6ab7420e143b74", "format": "uncompressed" },
       "status": "solved",
       "prize": 0.01500245,
       "start_date": "2018-01-23 14:51:43",
@@ -407,6 +412,7 @@
         "kind": "p2pkh",
         "hash160": "06c84797d267472edfe262ab43b2d6844e8bac9b"
       },
+      "pubkey": { "value": "0448ececabf97b8b0b17c96d6908ee913192855f05040764776b2ba33de2c354d3149b187b8ff65f6b429ce363296766d61ef0c16261ad0bc1e40679c6b8571d2c", "format": "uncompressed" },
       "status": "solved",
       "prize": 0.192018,
       "start_date": "2016-08-06 12:05:26",
@@ -439,6 +445,7 @@
         "value": "0x5d663791e869ca70c71e0a5f4cfd707f596265aa",
         "kind": "standard"
       },
+      "pubkey": { "value": "04da1a5098d80ce66b4c9fd974b9d9164d57caf1263d834c961c89b117a412ece1703a3bb1d606d03c1c4ff9225b556c291c2c6fbd67968f451f472a827dc9e781", "format": "uncompressed" },
       "status": "solved",
       "prize": 6,
       "start_date": "2018-10-24 20:00:18",
@@ -471,6 +478,7 @@
         "value": "0x6b2560b34c7469c561a8fce581c88bfb8cce73b2",
         "kind": "standard"
       },
+      "pubkey": { "value": "04b2bb29c9cf6a1c7a048e02cecdd7bec9f4fb3d19e0a9b5c7d7785fb6b17a4d8b11ec437d972a8922838b3af1854f375278ee94758e5c8a4d699072bdd7581301", "format": "uncompressed" },
       "status": "solved",
       "prize": 3.1337,
       "start_date": "2018-04-16 22:39:45",
@@ -504,6 +512,7 @@
         "kind": "p2pkh",
         "hash160": "ab85f21bf9ca1126f3776f4686cf02737be7a2b7"
       },
+      "pubkey": { "value": "03bc34c725e24d6159f3e2d3c01d455cf5fd48b83a7ca5eb4c7155044ec728ff11", "format": "compressed" },
       "status": "solved",
       "prize": 230.8255,
       "start_date": "2017-05-10 05:46:11",
@@ -566,6 +575,7 @@
         "value": "DsRaAja82UvgnqYaBHYFuyCKURFX2rCyEJ8",
         "kind": "p2pkh"
       },
+      "pubkey": { "value": "02278753666ec31c29b755a39421017bd80744d728204da0f7ff452846112b618b", "format": "compressed" },
       "status": "solved",
       "prize": 460,
       "start_date": "2017-03-07 04:20:56",
