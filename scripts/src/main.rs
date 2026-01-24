@@ -82,7 +82,8 @@ async fn process_jsonc_file(
     println!("Processing: {}", path.display());
 
     let content = std::fs::read_to_string(path)?;
-    let mut doc: Value = serde_json::from_str(&content)?;
+    let mut doc: Value = jsonc_parser::parse_to_serde_value(&content, &Default::default())?
+        .ok_or_else(|| "Failed to parse JSONC")?;
 
     let addresses: Vec<(usize, String)> = {
         let puzzles = doc.get("puzzles")
@@ -97,10 +98,14 @@ async fn process_jsonc_file(
                 if has_start_date {
                     return None;
                 }
-                puzzle
-                    .get("address")
-                    .and_then(|a| a.as_str())
-                    .map(|addr| (idx, addr.to_string()))
+                
+                let address = match puzzle.get("address")? {
+                    Value::String(s) => s.clone(),
+                    Value::Object(obj) => obj.get("value")?.as_str()?.to_string(),
+                    _ => return None,
+                };
+                
+                Some((idx, address))
             })
             .collect()
     };

@@ -518,7 +518,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         println!("Processing: {}", path.display());
 
         let content = std::fs::read_to_string(&path)?;
-        let mut doc: Value = serde_json::from_str(&content)?;
+        let mut doc: Value = jsonc_parser::parse_to_serde_value(&content, &Default::default())?
+            .ok_or_else(|| "Failed to parse JSONC")?;
 
         let count = if recalculate {
             // Mode: recalculate from cache (like generate_solve_time)

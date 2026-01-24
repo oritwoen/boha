@@ -134,7 +134,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let jsonc_path = Path::new("../data/bitaps.jsonc");
         if jsonc_path.exists() {
             let content = std::fs::read_to_string(jsonc_path)?;
-            let mut value: serde_json::Value = serde_json::from_str(&content)?;
+            let mut value: serde_json::Value =
+                jsonc_parser::parse_to_serde_value(&content, &Default::default())?
+                    .ok_or_else(|| "Failed to parse JSONC")?;
 
             if let Some(puzzle) = value.get_mut("puzzle") {
                 puzzle["pubkey"] = serde_json::json!(&pubkey_hex);
