@@ -1,7 +1,8 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::Deserialize;
+use serde_json::Value;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
-use toml_edit::{DocumentMut, Item, Value};
 
 #[derive(Debug, Deserialize)]
 struct CachedTx {
@@ -23,11 +24,19 @@ struct TxVin {
 #[derive(Debug, Deserialize)]
 struct TxPrevout {
     scriptpubkey_address: Option<String>,
+    value: u64,
 }
 
 #[derive(Debug, Deserialize)]
 struct TxVout {
     scriptpubkey_address: Option<String>,
+}
+
+const DUST_THRESHOLD: u64 = 10_000;
+
+struct AddressTimestamps {
+    funding_time: Option<i64>,
+    claim_time: Option<i64>,
 }
 
 fn cache_path(collection: &str, address: &str) -> PathBuf {
@@ -43,6 +52,52 @@ fn load_from_cache(collection: &str, address: &str) -> Option<Vec<CachedTx>> {
         serde_json::from_str(&content).ok()
     } else {
         None
+    }
+}
+
+fn analyze_transactions(address: &str, txs: &[CachedTx]) -> AddressTimestamps {
+    let mut funding_time: Option<i64> = None;
+    let mut claim_time: Option<i64> = None;
+
+    for tx in txs {
+        let block_time = match tx.status.block_time {
+            Some(t) => t,
+            None => continue,
+        };
+
+        let is_funding = tx
+            .vout
+            .iter()
+            .any(|vout| vout.scriptpubkey_address.as_deref() == Some(address));
+
+        let amount_from_puzzle: u64 = tx
+            .vin
+            .iter()
+            .filter_map(|vin| vin.prevout.as_ref())
+            .filter(|p| p.scriptpubkey_address.as_deref() == Some(address))
+            .map(|p| p.value)
+            .sum();
+
+        let is_claim = amount_from_puzzle > DUST_THRESHOLD;
+
+        if is_funding {
+            funding_time = Some(match funding_time {
+                Some(existing) => existing.min(block_time),
+                None => block_time,
+            });
+        }
+
+        if is_claim {
+            claim_time = Some(match claim_time {
+                Some(existing) => existing.min(block_time),
+                None => block_time,
+            });
+        }
+    }
+
+    AddressTimestamps {
+        funding_time,
+        claim_time,
     }
 }
 
@@ -104,15 +159,14 @@ fn calculate_solve_time(start_date: &str, solve_date: &str) -> Option<u64> {
     Some((solve_ts - start_ts) as u64)
 }
 
-fn get_timestamp_from_transactions(table: &toml_edit::Table, tx_type: &str) -> Option<String> {
-    let transactions = table.get("transactions")?.as_array()?;
+fn get_timestamp_from_transactions(obj: &Value, tx_type: &str) -> Option<String> {
+    let transactions = obj.get("transactions")?.as_array()?;
 
     for item in transactions.iter() {
-        let inline = item.as_inline_table()?;
-        let item_type = inline.get("type")?.as_str()?;
+        let item_type = item.get("type")?.as_str()?;
 
         if item_type == tx_type {
-            if let Some(date) = inline.get("date").and_then(|d| d.as_str()) {
+            if let Some(date) = item.get("date").and_then(|d| d.as_str()) {
                 if has_time(date) {
                     return Some(date.to_string());
                 }
@@ -160,7 +214,7 @@ fn get_claim_timestamp_from_cache(collection: &str, address: &str) -> Option<Str
     None
 }
 
-fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
+fn process_puzzles_array(doc: &mut Value, collection: &str) -> usize {
     let mut count = 0;
 
     let puzzles = match doc.get_mut("puzzles") {
@@ -168,7 +222,7 @@ fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
         None => return 0,
     };
 
-    let array = match puzzles.as_array_of_tables_mut() {
+    let array = match puzzles.as_array_mut() {
         Some(a) => a,
         None => return 0,
     };
@@ -180,7 +234,7 @@ fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
             .unwrap_or("")
             .to_string();
 
-        let bits = table.get("bits").and_then(|b| b.as_integer());
+        let bits = table.get("bits").and_then(|b| b.as_i64());
         let name = table.get("name").and_then(|n| n.as_str());
         let id = bits
             .map(|b| b.to_string())
@@ -194,7 +248,7 @@ fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
 
                 if let Some(ts) = timestamp {
                     println!("  {} start_date: {} -> {}", id, start_date, ts);
-                    table.insert("start_date", Item::Value(Value::from(ts)));
+                    table["start_date"] = Value::String(ts);
                     count += 1;
                 } else {
                     eprintln!("  {} start_date: {} - no timestamp found!", id, start_date);
@@ -210,7 +264,7 @@ fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
 
                 if let Some(ts) = timestamp {
                     println!("  {} solve_date: {} -> {}", id, solve_date, ts);
-                    table.insert("solve_date", Item::Value(Value::from(ts)));
+                    table["solve_date"] = Value::String(ts);
                     count += 1;
                 } else {
                     eprintln!("  {} solve_date: {} - no timestamp found!", id, solve_date);
@@ -226,12 +280,12 @@ fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
                 if let Some(calculated) = calculate_solve_time(start_date, solve_date) {
                     let current = table
                         .get("solve_time")
-                        .and_then(|v| v.as_integer())
+                        .and_then(|v| v.as_i64())
                         .map(|v| v as u64);
 
                     if current != Some(calculated) {
                         println!("  {} solve_time: {:?} -> {}", id, current, calculated);
-                        table.insert("solve_time", Item::Value(Value::from(calculated as i64)));
+                        table["solve_time"] = Value::Number(calculated.into());
                         count += 1;
                     }
                 }
@@ -242,7 +296,7 @@ fn process_puzzles_array(doc: &mut DocumentMut, collection: &str) -> usize {
     count
 }
 
-fn process_single_puzzle(doc: &mut DocumentMut, collection: &str) -> usize {
+fn process_single_puzzle(doc: &mut Value, collection: &str) -> usize {
     let mut count = 0;
 
     let puzzle = match doc.get_mut("puzzle") {
@@ -250,25 +304,20 @@ fn process_single_puzzle(doc: &mut DocumentMut, collection: &str) -> usize {
         None => return 0,
     };
 
-    let table = match puzzle.as_table_mut() {
-        Some(t) => t,
-        None => return 0,
-    };
-
-    let address = table
+    let address = puzzle
         .get("address")
         .and_then(|a| a.as_str())
         .unwrap_or("")
         .to_string();
 
-    if let Some(start_date) = table.get("start_date").and_then(|d| d.as_str()) {
+    if let Some(start_date) = puzzle.get("start_date").and_then(|d| d.as_str()) {
         if !has_time(start_date) {
-            let timestamp = get_timestamp_from_transactions(table, "funding")
+            let timestamp = get_timestamp_from_transactions(puzzle, "funding")
                 .or_else(|| get_funding_timestamp_from_cache(collection, &address));
 
             if let Some(ts) = timestamp {
                 println!("  {} start_date: {} -> {}", collection, start_date, ts);
-                table.insert("start_date", Item::Value(Value::from(ts)));
+                puzzle["start_date"] = Value::String(ts);
                 count += 1;
             } else {
                 eprintln!(
@@ -279,15 +328,15 @@ fn process_single_puzzle(doc: &mut DocumentMut, collection: &str) -> usize {
         }
     }
 
-    if let Some(solve_date) = table.get("solve_date").and_then(|d| d.as_str()) {
+    if let Some(solve_date) = puzzle.get("solve_date").and_then(|d| d.as_str()) {
         if !has_time(solve_date) {
-            let timestamp = get_timestamp_from_transactions(table, "claim")
-                .or_else(|| get_timestamp_from_transactions(table, "sweep"))
+            let timestamp = get_timestamp_from_transactions(puzzle, "claim")
+                .or_else(|| get_timestamp_from_transactions(puzzle, "sweep"))
                 .or_else(|| get_claim_timestamp_from_cache(collection, &address));
 
             if let Some(ts) = timestamp {
                 println!("  {} solve_date: {} -> {}", collection, solve_date, ts);
-                table.insert("solve_date", Item::Value(Value::from(ts)));
+                puzzle["solve_date"] = Value::String(ts);
                 count += 1;
             } else {
                 eprintln!(
@@ -299,14 +348,14 @@ fn process_single_puzzle(doc: &mut DocumentMut, collection: &str) -> usize {
     }
 
     if let (Some(start_date), Some(solve_date)) = (
-        table.get("start_date").and_then(|d| d.as_str()),
-        table.get("solve_date").and_then(|d| d.as_str()),
+        puzzle.get("start_date").and_then(|d| d.as_str()),
+        puzzle.get("solve_date").and_then(|d| d.as_str()),
     ) {
         if has_time(start_date) && has_time(solve_date) {
             if let Some(calculated) = calculate_solve_time(start_date, solve_date) {
-                let current = table
+                let current = puzzle
                     .get("solve_time")
-                    .and_then(|v| v.as_integer())
+                    .and_then(|v| v.as_i64())
                     .map(|v| v as u64);
 
                 if current != Some(calculated) {
@@ -314,7 +363,7 @@ fn process_single_puzzle(doc: &mut DocumentMut, collection: &str) -> usize {
                         "  {} solve_time: {:?} -> {}",
                         collection, current, calculated
                     );
-                    table.insert("solve_time", Item::Value(Value::from(calculated as i64)));
+                    puzzle["solve_time"] = Value::Number(calculated.into());
                     count += 1;
                 }
             }
@@ -324,47 +373,191 @@ fn process_single_puzzle(doc: &mut DocumentMut, collection: &str) -> usize {
     count
 }
 
-fn process_toml_file(path: &Path, collection: &str) -> Result<(), Box<dyn std::error::Error>> {
-    println!("Processing: {}", path.display());
+fn load_all_timestamps_from_cache(
+    addresses: &[(String, String, String)],
+) -> HashMap<String, AddressTimestamps> {
+    let mut results = HashMap::new();
 
-    let content = std::fs::read_to_string(path)?;
-    let mut doc: DocumentMut = content.parse()?;
+    for (id, address, collection) in addresses {
+        print!("  Loading {}... ", id);
 
-    let count = if doc.get("puzzles").is_some() {
-        process_puzzles_array(&mut doc, collection)
-    } else if doc.get("puzzle").is_some() {
-        process_single_puzzle(&mut doc, collection)
-    } else {
-        0
-    };
-
-    if count > 0 {
-        std::fs::write(path, doc.to_string())?;
-        println!("  Updated {} date(s) with timestamps\n", count);
-    } else {
-        println!("  All dates already have timestamps\n");
+        match load_from_cache(collection, address) {
+            Some(txs) => {
+                let timestamps = analyze_transactions(address, &txs);
+                println!(
+                    "funding={:?}, claim={:?}",
+                    timestamps.funding_time, timestamps.claim_time
+                );
+                results.insert(address.clone(), timestamps);
+            }
+            None => {
+                println!("NO CACHE");
+            }
+        }
     }
 
-    Ok(())
+    results
+}
+
+fn collect_solved_puzzle_addresses(doc: &Value, collection: &str) -> Vec<(String, String, String)> {
+    let mut addresses = Vec::new();
+
+    if let Some(puzzles) = doc.get("puzzles").and_then(|p| p.as_array()) {
+        for table in puzzles.iter() {
+            if let Some(address) = table.get("address").and_then(|a| a.as_str()) {
+                if let Some(status) = table.get("status").and_then(|s| s.as_str()) {
+                    if matches!(status, "solved" | "claimed") {
+                        let bits = table.get("bits").and_then(|b| b.as_i64());
+                        let name = table.get("name").and_then(|n| n.as_str());
+                        let id = bits
+                            .map(|b| b.to_string())
+                            .or_else(|| name.map(|n| n.to_string()))
+                            .unwrap_or_else(|| address[..8.min(address.len())].to_string());
+                        addresses.push((id, address.to_string(), collection.to_string()));
+                    }
+                }
+            }
+        }
+    }
+
+    if let Some(puzzle) = doc.get("puzzle") {
+        if let Some(address) = puzzle.get("address").and_then(|a| a.as_str()) {
+            if let Some(status) = puzzle.get("status").and_then(|s| s.as_str()) {
+                if matches!(status, "solved" | "claimed") {
+                    addresses.push((
+                        "puzzle".to_string(),
+                        address.to_string(),
+                        collection.to_string(),
+                    ));
+                }
+            }
+        }
+    }
+
+    addresses
+}
+
+fn update_puzzles_from_cache(
+    doc: &mut Value,
+    timestamps: &HashMap<String, AddressTimestamps>,
+) -> usize {
+    let mut count = 0;
+
+    if let Some(puzzles) = doc.get_mut("puzzles").and_then(|p| p.as_array_mut()) {
+        for table in puzzles.iter_mut() {
+            if let Some(address) = table.get("address").and_then(|a| a.as_str()) {
+                if let Some(ts) = timestamps.get(address) {
+                    if let (Some(funding), Some(claim)) = (ts.funding_time, ts.claim_time) {
+                        let start_str = timestamp_to_datetime(funding);
+                        let solve_str = timestamp_to_datetime(claim);
+                        let solve_time = claim.saturating_sub(funding);
+
+                        table["start_date"] = Value::String(start_str);
+                        table["solve_date"] = Value::String(solve_str);
+                        table["solve_time"] = Value::Number(solve_time.into());
+                        count += 1;
+                    }
+                }
+            }
+        }
+    }
+
+    count
+}
+
+fn update_single_puzzle_from_cache(
+    doc: &mut Value,
+    timestamps: &HashMap<String, AddressTimestamps>,
+) -> usize {
+    if let Some(puzzle) = doc.get_mut("puzzle") {
+        if let Some(address) = puzzle.get("address").and_then(|a| a.as_str()) {
+            if let Some(ts) = timestamps.get(address) {
+                if let (Some(funding), Some(claim)) = (ts.funding_time, ts.claim_time) {
+                    let start_str = timestamp_to_datetime(funding);
+                    let solve_str = timestamp_to_datetime(claim);
+                    let solve_time = claim.saturating_sub(funding);
+
+                    puzzle["start_date"] = Value::String(start_str);
+                    puzzle["solve_date"] = Value::String(solve_str);
+                    puzzle["solve_time"] = Value::Number(solve_time.into());
+                    return 1;
+                }
+            }
+        }
+    }
+    0
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
 
-    let collections: Vec<&str> = if args.len() > 1 {
-        args[1..].iter().map(|s| s.as_str()).collect()
-    } else {
+    let recalculate = args.contains(&"--recalculate".to_string());
+
+    let collections: Vec<&str> = args
+        .iter()
+        .skip(1)
+        .filter(|s| !s.starts_with("--"))
+        .map(|s| s.as_str())
+        .collect::<Vec<_>>();
+
+    let collections = if collections.is_empty() {
         vec!["b1000", "gsmg", "hash_collision"]
+    } else {
+        collections
     };
 
     let data_dir = Path::new("../data");
 
     for collection in collections {
-        let path = data_dir.join(format!("{}.toml", collection));
-        if path.exists() {
-            process_toml_file(&path, collection)?;
-        } else {
+        let path = data_dir.join(format!("{}.jsonc", collection));
+        if !path.exists() {
             eprintln!("File not found: {}", path.display());
+            continue;
+        }
+
+        println!("Processing: {}", path.display());
+
+        let content = std::fs::read_to_string(&path)?;
+        let mut doc: Value = jsonc_parser::parse_to_serde_value(&content, &Default::default())?
+            .ok_or_else(|| "Failed to parse JSONC")?;
+
+        let count = if recalculate {
+            // Mode: recalculate from cache (like generate_solve_time)
+            println!("  Mode: RECALCULATE from cache");
+            let addresses = collect_solved_puzzle_addresses(&doc, collection);
+
+            if addresses.is_empty() {
+                println!("  No solved/claimed puzzles found");
+                0
+            } else {
+                println!("  Found {} solved/claimed puzzles", addresses.len());
+                let timestamps = load_all_timestamps_from_cache(&addresses);
+
+                if doc.get("puzzles").is_some() {
+                    update_puzzles_from_cache(&mut doc, &timestamps)
+                } else if doc.get("puzzle").is_some() {
+                    update_single_puzzle_from_cache(&mut doc, &timestamps)
+                } else {
+                    0
+                }
+            }
+        } else {
+            // Mode: incremental update (default, like original add_timestamps)
+            println!("  Mode: INCREMENTAL (only missing timestamps)");
+            if doc.get("puzzles").is_some() {
+                process_puzzles_array(&mut doc, collection)
+            } else if doc.get("puzzle").is_some() {
+                process_single_puzzle(&mut doc, collection)
+            } else {
+                0
+            }
+        };
+
+        if count > 0 {
+            std::fs::write(&path, serde_json::to_string_pretty(&doc)?)?;
+            println!("  Updated {} entries\n", count);
+        } else {
+            println!("  No updates made\n");
         }
     }
 

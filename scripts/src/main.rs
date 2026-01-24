@@ -1,8 +1,8 @@
 use chrono::{DateTime, TimeZone, Utc};
 use serde::Deserialize;
+use serde_json::Value;
 use std::path::Path;
 use std::time::Duration;
-use toml_edit::{DocumentMut, Item, Value};
 
 #[derive(Debug, Deserialize)]
 struct TxStatus {
@@ -58,47 +58,54 @@ async fn fetch_first_tx_date(
     }
 }
 
-fn update_toml_with_dates(
-    doc: &mut DocumentMut,
+fn update_jsonc_with_dates(
+    doc: &mut Value,
     dates: &[(usize, String)],
 ) {
     if let Some(puzzles) = doc.get_mut("puzzles") {
-        if let Some(array) = puzzles.as_array_of_tables_mut() {
+        if let Some(array) = puzzles.as_array_mut() {
             for (idx, date) in dates {
-                if let Some(table) = array.get_mut(*idx) {
-                    table.insert("start_date", Item::Value(Value::from(date.as_str())));
+                if let Some(puzzle) = array.get_mut(*idx) {
+                    if let Some(obj) = puzzle.as_object_mut() {
+                        obj.insert("start_date".to_string(), Value::String(date.clone()));
+                    }
                 }
             }
         }
     }
 }
 
-async fn process_toml_file(
+async fn process_jsonc_file(
     client: &reqwest::Client,
     path: &Path,
 ) -> Result<(), Box<dyn std::error::Error>> {
     println!("Processing: {}", path.display());
 
     let content = std::fs::read_to_string(path)?;
-    let mut doc: DocumentMut = content.parse()?;
+    let mut doc: Value = jsonc_parser::parse_to_serde_value(&content, &Default::default())?
+        .ok_or_else(|| "Failed to parse JSONC")?;
 
     let addresses: Vec<(usize, String)> = {
         let puzzles = doc.get("puzzles")
-            .and_then(|p| p.as_array_of_tables())
+            .and_then(|p| p.as_array())
             .ok_or("No puzzles array found")?;
 
         puzzles
             .iter()
             .enumerate()
-            .filter_map(|(idx, table)| {
-                let has_start_date = table.get("start_date").is_some();
+            .filter_map(|(idx, puzzle)| {
+                let has_start_date = puzzle.get("start_date").is_some();
                 if has_start_date {
                     return None;
                 }
-                table
-                    .get("address")
-                    .and_then(|a| a.as_str())
-                    .map(|addr| (idx, addr.to_string()))
+                
+                let address = match puzzle.get("address")? {
+                    Value::String(s) => s.clone(),
+                    Value::Object(obj) => obj.get("value")?.as_str()?.to_string(),
+                    _ => return None,
+                };
+                
+                Some((idx, address))
             })
             .collect()
     };
@@ -127,8 +134,8 @@ async fn process_toml_file(
     }
 
     if !dates_to_update.is_empty() {
-        update_toml_with_dates(&mut doc, &dates_to_update);
-        std::fs::write(path, doc.to_string())?;
+        update_jsonc_with_dates(&mut doc, &dates_to_update);
+        std::fs::write(path, serde_json::to_string_pretty(&doc)?)?;
         println!("  Updated {} entries", dates_to_update.len());
     }
 
@@ -144,12 +151,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let data_dir = Path::new("../data");
 
-    let files = ["b1000.toml", "hash_collision.toml"];
+    let files = ["b1000.jsonc", "hash_collision.jsonc"];
 
     for file in &files {
         let path = data_dir.join(file);
         if path.exists() {
-            process_toml_file(&client, &path).await?;
+            process_jsonc_file(&client, &path).await?;
         } else {
             eprintln!("File not found: {}", path.display());
         }

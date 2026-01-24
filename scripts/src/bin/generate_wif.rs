@@ -1,6 +1,6 @@
+use serde_json::{json, Value};
 use sha2::{Digest, Sha256};
 use std::path::Path;
-use toml_edit::{DocumentMut, Formatted, InlineTable, Item, Table, Value};
 
 fn sha256(data: &[u8]) -> [u8; 32] {
     let mut hasher = Sha256::new();
@@ -29,26 +29,13 @@ fn hex_to_wif(hex_key: &str, compressed: bool) -> Option<String> {
     Some(bs58::encode(data).into_string())
 }
 
-fn needs_wif(key_item: &Item) -> Option<String> {
-    let hex = match key_item {
-        Item::Value(Value::InlineTable(t)) => t.get("hex")?.as_str()?.to_string(),
-        Item::Table(t) => t.get("hex")?.as_str()?.to_string(),
-        _ => return None,
-    };
+fn needs_wif(key_item: &Value) -> Option<String> {
+    let hex = key_item.get("hex")?.as_str()?.to_string();
 
-    let has_decrypted = match key_item {
-        Item::Value(Value::InlineTable(t)) => t
-            .get("wif")
-            .and_then(|w| w.as_inline_table())
-            .and_then(|w| w.get("decrypted"))
-            .is_some(),
-        Item::Table(t) => t
-            .get("wif")
-            .and_then(|w| w.as_table())
-            .and_then(|w| w.get("decrypted"))
-            .is_some(),
-        _ => false,
-    };
+    let has_decrypted = key_item
+        .get("wif")
+        .and_then(|w| w.get("decrypted"))
+        .is_some();
 
     if has_decrypted {
         None
@@ -57,58 +44,32 @@ fn needs_wif(key_item: &Item) -> Option<String> {
     }
 }
 
-fn add_wif_to_inline_table(key_table: &mut InlineTable, wif: &str) {
-    if let Some(wif_item) = key_table.get_mut("wif") {
-        if let Some(wif_table) = wif_item.as_inline_table_mut() {
-            wif_table.insert("decrypted", Value::String(Formatted::new(wif.to_string())));
+fn add_wif_to_key(key_table: &mut Value, wif: &str) {
+    if let Some(wif_obj) = key_table.get_mut("wif") {
+        if wif_obj.is_object() {
+            wif_obj["decrypted"] = Value::String(wif.to_string());
             return;
         }
     }
 
-    let mut wif_table = InlineTable::new();
-    wif_table.insert("decrypted", Value::String(Formatted::new(wif.to_string())));
-    key_table.insert("wif", Value::InlineTable(wif_table));
-}
-
-fn add_wif_to_table(key_table: &mut Table, wif: &str) {
-    if let Some(wif_item) = key_table.get_mut("wif") {
-        if let Some(wif_section) = wif_item.as_table_mut() {
-            wif_section.insert(
-                "decrypted",
-                Item::Value(Value::String(Formatted::new(wif.to_string()))),
-            );
-            return;
-        }
+    // Create wif object if it doesn't exist
+    if !key_table.is_object() {
+        return;
     }
-
-    let mut wif_section = Table::new();
-    wif_section.insert(
-        "decrypted",
-        Item::Value(Value::String(Formatted::new(wif.to_string()))),
-    );
-    key_table.insert("wif", Item::Table(wif_section));
+    key_table["wif"] = json!({ "decrypted": wif });
 }
 
-fn update_puzzles_array(doc: &mut DocumentMut) -> usize {
+fn update_puzzles_array(doc: &mut Value) -> usize {
     let mut count = 0;
 
     if let Some(puzzles) = doc.get_mut("puzzles") {
-        if let Some(array) = puzzles.as_array_of_tables_mut() {
+        if let Some(array) = puzzles.as_array_mut() {
             for puzzle in array.iter_mut() {
                 if let Some(key_item) = puzzle.get_mut("key") {
                     if let Some(hex) = needs_wif(key_item) {
                         if let Some(wif) = hex_to_wif(&hex, true) {
-                            match key_item {
-                                Item::Value(Value::InlineTable(t)) => {
-                                    add_wif_to_inline_table(t, &wif);
-                                    count += 1;
-                                }
-                                Item::Table(t) => {
-                                    add_wif_to_table(t, &wif);
-                                    count += 1;
-                                }
-                                _ => {}
-                            }
+                            add_wif_to_key(key_item, &wif);
+                            count += 1;
                         }
                     }
                 }
@@ -119,24 +80,13 @@ fn update_puzzles_array(doc: &mut DocumentMut) -> usize {
     count
 }
 
-fn update_single_puzzle(doc: &mut DocumentMut) -> usize {
+fn update_single_puzzle(doc: &mut Value) -> usize {
     if let Some(puzzle) = doc.get_mut("puzzle") {
-        if let Some(puzzle_table) = puzzle.as_table_mut() {
-            if let Some(key_item) = puzzle_table.get_mut("key") {
-                if let Some(hex) = needs_wif(key_item) {
-                    if let Some(wif) = hex_to_wif(&hex, true) {
-                        match key_item {
-                            Item::Value(Value::InlineTable(t)) => {
-                                add_wif_to_inline_table(t, &wif);
-                                return 1;
-                            }
-                            Item::Table(t) => {
-                                add_wif_to_table(t, &wif);
-                                return 1;
-                            }
-                            _ => {}
-                        }
-                    }
+        if let Some(key_item) = puzzle.get_mut("key") {
+            if let Some(hex) = needs_wif(key_item) {
+                if let Some(wif) = hex_to_wif(&hex, true) {
+                    add_wif_to_key(key_item, &wif);
+                    return 1;
                 }
             }
         }
@@ -144,11 +94,12 @@ fn update_single_puzzle(doc: &mut DocumentMut) -> usize {
     0
 }
 
-fn process_toml_file(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
+fn process_jsonc_file(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     println!("Processing: {}", path.display());
 
     let content = std::fs::read_to_string(path)?;
-    let mut doc: DocumentMut = content.parse()?;
+    let mut doc: Value = jsonc_parser::parse_to_serde_value(&content, &Default::default())?
+        .ok_or_else(|| "Failed to parse JSONC")?;
 
     let count = if doc.get("puzzles").is_some() {
         update_puzzles_array(&mut doc)
@@ -160,7 +111,7 @@ fn process_toml_file(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
     };
 
     if count > 0 {
-        std::fs::write(path, doc.to_string())?;
+        std::fs::write(path, serde_json::to_string_pretty(&doc)?)?;
         println!("  Updated {} entries with wif.decrypted", count);
     } else {
         println!("  No updates needed");
@@ -173,19 +124,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let data_dir = Path::new("../data");
 
     let files = [
-        "b1000.toml",
-        "ballet.toml",
-        "zden.toml",
-        "bitimage.toml",
-        "gsmg.toml",
-        "bitaps.toml",
-        "hash_collision.toml",
+        "b1000.jsonc",
+        "ballet.jsonc",
+        "zden.jsonc",
+        "bitimage.jsonc",
+        "gsmg.jsonc",
+        "bitaps.jsonc",
+        "hash_collision.jsonc",
     ];
 
     for file in &files {
         let path = data_dir.join(file);
         if path.exists() {
-            process_toml_file(&path)?;
+            process_jsonc_file(&path)?;
         } else {
             eprintln!("File not found: {}", path.display());
         }
