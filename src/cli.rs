@@ -1908,7 +1908,15 @@ fn cmd_export(
     use std::collections::HashSet;
 
     // Valid collection names
-    const VALID_COLLECTIONS: &[&str] = &["b1000", "ballet", "bitaps", "bitimage", "gsmg", "hash_collision", "zden"];
+    const VALID_COLLECTIONS: &[&str] = &[
+        "b1000",
+        "ballet",
+        "bitaps",
+        "bitimage",
+        "gsmg",
+        "hash_collision",
+        "zden",
+    ];
 
     // Deduplicate and validate collection names
     let mut seen = HashSet::new();
@@ -1940,18 +1948,25 @@ fn cmd_export(
     let mut export_collections = Vec::new();
 
     for collection_name in collections_to_export {
-        let (name, author, puzzles): (&str, Option<&Author>, Vec<&Puzzle>) = match collection_name.as_str() {
-            "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
-            "ballet" => ("ballet", None, ballet::all().collect()),
-            "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
-            "bitimage" => ("bitimage", Some(bitimage::author()), bitimage::all().collect()),
-            "gsmg" => ("gsmg", Some(gsmg::author()), gsmg::all().collect()),
-            "hash_collision" => {
-                ("hash_collision", Some(hash_collision::author()), hash_collision::all().collect())
-            }
-            "zden" => ("zden", Some(zden::author()), zden::all().collect()),
-            _ => unreachable!(), // Already validated above
-        };
+        let (name, author, puzzles): (&str, Option<&Author>, Vec<&Puzzle>) =
+            match collection_name.as_str() {
+                "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
+                "ballet" => ("ballet", None, ballet::all().collect()),
+                "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
+                "bitimage" => (
+                    "bitimage",
+                    Some(bitimage::author()),
+                    bitimage::all().collect(),
+                ),
+                "gsmg" => ("gsmg", Some(gsmg::author()), gsmg::all().collect()),
+                "hash_collision" => (
+                    "hash_collision",
+                    Some(hash_collision::author()),
+                    hash_collision::all().collect(),
+                ),
+                "zden" => ("zden", Some(zden::author()), zden::all().collect()),
+                _ => unreachable!(), // Already validated above
+            };
 
         // Apply status filtering
         let filtered: Vec<_> = puzzles
@@ -1968,7 +1983,9 @@ fn cmd_export(
                     p.status == Status::Unsolved
                 } else {
                     // Only solved flag: include solved/claimed/swept
-                    p.status == Status::Solved || p.status == Status::Claimed || p.status == Status::Swept
+                    p.status == Status::Solved
+                        || p.status == Status::Claimed
+                        || p.status == Status::Swept
                 }
             })
             .collect();
