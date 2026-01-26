@@ -2,6 +2,7 @@ use boha::{
     b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat,
     Puzzle, Stats, Status, TransactionType,
 };
+use chrono::Utc;
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
 
@@ -127,6 +128,32 @@ enum Commands {
         #[arg(short, long)]
         quiet: bool,
     },
+
+    /// Export full puzzle database
+    Export {
+        /// Collections to export (default: all)
+        collections: Vec<String>,
+
+        /// Exclude author information
+        #[arg(long)]
+        no_authors: bool,
+
+        /// Exclude statistics
+        #[arg(long)]
+        no_stats: bool,
+
+        /// Force compact JSON output
+        #[arg(long)]
+        compact: bool,
+
+        /// Export only unsolved puzzles
+        #[arg(long)]
+        unsolved: bool,
+
+        /// Export only solved puzzles
+        #[arg(long)]
+        solved: bool,
+    },
 }
 
 #[derive(Tabled)]
@@ -178,6 +205,23 @@ struct SearchCsvRow {
     address: String,
     status: String,
     matched_fields: String, // semicolon-separated
+}
+
+#[derive(Serialize)]
+struct CollectionExport {
+    name: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    author: Option<&'static Author>,
+    puzzles: Vec<&'static Puzzle>,
+}
+
+#[derive(Serialize)]
+struct ExportData {
+    version: &'static str,
+    exported_at: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stats: Option<Stats>,
+    collections: Vec<CollectionExport>,
 }
 
 impl PuzzleTableRow {
@@ -1408,6 +1452,22 @@ fn run_sync(cli: Cli) {
             cli.output,
         ),
         Commands::Verify { id, all, quiet } => cmd_verify(id.as_deref(), all, quiet, cli.output),
+        Commands::Export {
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+        } => cmd_export(
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+            cli.output,
+        ),
     }
 }
 
@@ -1453,6 +1513,22 @@ fn run(cli: Cli) {
             cli.output,
         ),
         Commands::Verify { id, all, quiet } => cmd_verify(id.as_deref(), all, quiet, cli.output),
+        Commands::Export {
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+        } => cmd_export(
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+            cli.output,
+        ),
     }
 }
 
@@ -1815,5 +1891,75 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
 
     if failed_count > 0 {
         std::process::exit(3);
+    }
+}
+
+fn cmd_export(
+    collections: Vec<String>,
+    no_authors: bool,
+    no_stats: bool,
+    _compact: bool,
+    _unsolved: bool,
+    _solved: bool,
+    format: OutputFormat,
+) {
+    let collections_to_export = if collections.is_empty() {
+        vec!["b1000", "ballet", "bitaps", "bitimage", "gsmg", "hash_collision", "zden"]
+    } else {
+        collections.iter().map(|s| s.as_str()).collect()
+    };
+
+    let mut export_collections = Vec::new();
+
+    for collection_name in collections_to_export {
+        let (name, author, puzzles) = match collection_name {
+            "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
+            "ballet" => ("ballet", None, ballet::all().collect()),
+            "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
+            "bitimage" => ("bitimage", Some(bitimage::author()), bitimage::all().collect()),
+            "gsmg" => ("gsmg", Some(gsmg::author()), gsmg::all().collect()),
+            "hash_collision" | "peter_todd" => {
+                ("hash_collision", Some(hash_collision::author()), hash_collision::all().collect())
+            }
+            "zden" => ("zden", Some(zden::author()), zden::all().collect()),
+            _ => continue,
+        };
+
+        export_collections.push(CollectionExport {
+            name,
+            author: if no_authors { None } else { author },
+            puzzles,
+        });
+    }
+
+    let export_data = ExportData {
+        version: boha::version::FULL_VERSION,
+        exported_at: Utc::now().to_rfc3339(),
+        stats: if no_stats { None } else { Some(boha::stats()) },
+        collections: export_collections,
+    };
+
+    output_export(&export_data, format);
+}
+
+fn output_export(data: &ExportData, format: OutputFormat) {
+    match format {
+        OutputFormat::Table => {
+            eprintln!("Table format not supported for export. Use json, jsonl, yaml, or csv.");
+            std::process::exit(1);
+        }
+        OutputFormat::Json => {
+            println!("{}", serde_json::to_string_pretty(data).unwrap());
+        }
+        OutputFormat::Jsonl => {
+            println!("{}", serde_json::to_string(data).unwrap());
+        }
+        OutputFormat::Yaml => {
+            println!("{}", serde_yaml::to_string(data).unwrap());
+        }
+        OutputFormat::Csv => {
+            eprintln!("CSV format not supported for export. Use json, jsonl, or yaml.");
+            std::process::exit(1);
+        }
     }
 }
