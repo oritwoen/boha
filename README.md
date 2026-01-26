@@ -74,6 +74,13 @@ boha verify b1000/66
 boha verify --all
 boha verify --all --quiet; echo $?
 
+# Export full database (JSON/JSONL only)
+boha export
+boha export b1000 zden
+boha export --unsolved
+boha export -o jsonl | jq .
+boha export --compact
+
 # Output formats (default: table)
 boha -o json stats
 boha -o yaml show b1000/90
@@ -90,6 +97,8 @@ boha -o jsonl list b1000 --unsolved | jq .
 | `jsonl` | `-o jsonl` | JSON Lines (one object per line) |
 | `yaml` | `-o yaml` | YAML |
 | `csv` | `-o csv` | CSV with header |
+
+**Note:** `export` command supports JSON and JSONL only. Use `list` command for CSV/YAML output.
 
 ### Library
 
