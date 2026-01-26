@@ -148,11 +148,11 @@ enum Commands {
         compact: bool,
 
         /// Export only unsolved puzzles
-        #[arg(long)]
+        #[arg(long, conflicts_with = "solved")]
         unsolved: bool,
 
         /// Export only solved puzzles
-        #[arg(long)]
+        #[arg(long, conflicts_with = "unsolved")]
         solved: bool,
     },
 }
@@ -1900,9 +1900,9 @@ fn cmd_export(
     collections: Vec<String>,
     no_authors: bool,
     no_stats: bool,
-    _compact: bool,
-    _unsolved: bool,
-    _solved: bool,
+    compact: bool,
+    unsolved: bool,
+    solved: bool,
     format: OutputFormat,
 ) {
     use std::collections::HashSet;
@@ -1976,8 +1976,8 @@ fn cmd_export(
         // Apply status filtering
         let filtered: Vec<_> = puzzles
             .into_iter()
-            .filter(|p| !_unsolved || p.status == Status::Unsolved)
-            .filter(|p| !_solved || p.status == Status::Solved)
+            .filter(|p| !unsolved || p.status == Status::Unsolved)
+            .filter(|p| !solved || p.status == Status::Solved)
             .collect();
 
         export_collections.push(CollectionExport {
@@ -2027,7 +2027,7 @@ fn cmd_export(
         format
     };
 
-    output_export(&export_data, format, _compact);
+    output_export(&export_data, format, compact);
 }
 
 fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
