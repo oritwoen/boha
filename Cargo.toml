@@ -102,6 +102,10 @@ optional = true
 version = "0.4"
 optional = true
 
+[dependencies.chrono]
+version = "0.4"
+optional = true
+
 [build-dependencies]
 json-strip-comments = "3.1"
 serde = { version = "1", features = ["derive"] }
@@ -117,7 +121,7 @@ chrono = "0.4"
 
 [features]
 default = []
-cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv", "human-panic", "open", "k256", "bip39", "bip32", "tiny-keccak", "bech32", "blake-hash"]
+cli = ["clap", "tabled", "owo-colors", "serde_json", "serde_yaml", "csv", "human-panic", "open", "k256", "bip39", "bip32", "tiny-keccak", "bech32", "blake-hash", "chrono"]
 balance = ["reqwest", "tokio", "futures", "dotenvy"]
 
 [[bin]]
