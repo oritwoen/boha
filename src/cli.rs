@@ -1938,7 +1938,7 @@ fn cmd_export(
     let mut export_collections = Vec::new();
 
     for collection_name in collections_to_export {
-        let (name, author, puzzles) = match collection_name.as_str() {
+        let (name, author, puzzles): (&str, Option<&Author>, Vec<&Puzzle>) = match collection_name.as_str() {
             "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
             "ballet" => ("ballet", None, ballet::all().collect()),
             "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
@@ -1951,10 +1951,30 @@ fn cmd_export(
             _ => unreachable!(), // Already validated above
         };
 
+        // Apply status filtering
+        let filtered: Vec<_> = puzzles
+            .into_iter()
+            .filter(|p| {
+                if !_unsolved && !_solved {
+                    // Neither flag set: include all
+                    true
+                } else if _unsolved && _solved {
+                    // Both flags set: include all (OR logic)
+                    true
+                } else if _unsolved {
+                    // Only unsolved flag: include only unsolved
+                    p.status == Status::Unsolved
+                } else {
+                    // Only solved flag: include solved/claimed/swept
+                    p.status == Status::Solved || p.status == Status::Claimed || p.status == Status::Swept
+                }
+            })
+            .collect();
+
         export_collections.push(CollectionExport {
             name,
             author: if no_authors { None } else { author },
-            puzzles,
+            puzzles: filtered,
         });
     }
 
