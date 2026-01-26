@@ -272,6 +272,7 @@ struct RangeOutput {
 }
 
 #[derive(Serialize)]
+#[allow(dead_code)]
 struct BalanceOutput {
     address: String,
     chain: String,
