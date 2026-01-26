@@ -630,6 +630,141 @@ mod search {
             .stdout(predicate::str::diff("[]\n"));
     }
 }
+mod export {
+    use super::*;
+
+    #[test]
+    fn export_default() {
+        boha()
+            .args(["export", "-o", "json"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("version"));
+    }
+
+    #[test]
+    fn export_collection_filter() {
+        boha()
+            .args(["export", "-o", "json", "b1000"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000"))
+            .stdout(predicate::str::contains("\"name\":\"b1000\""));
+    }
+
+    #[test]
+    fn export_status_filter() {
+        boha()
+            .args(["export", "-o", "json", "--unsolved"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("version"));
+    }
+
+    #[test]
+    fn export_csv_error() {
+        boha()
+            .args(["export", "-o", "csv"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("not supported"))
+            .stderr(predicate::str::contains("boha list"));
+    }
+
+    #[test]
+    fn export_yaml_error() {
+        boha()
+            .args(["export", "-o", "yaml"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("not supported"))
+            .stderr(predicate::str::contains("boha list"));
+    }
+
+    #[test]
+    fn export_table_maps_to_json() {
+        boha()
+            .args(["export", "-o", "table"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("\"version\""));
+    }
+
+    #[test]
+    fn export_jsonl() {
+        boha()
+            .args(["export", "-o", "jsonl"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("\"id\""));
+    }
+
+    #[test]
+    fn export_compact() {
+        boha()
+            .args(["export", "-o", "json", "--compact"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("version"));
+    }
+
+    #[test]
+    fn export_no_authors() {
+        boha()
+            .args(["export", "-o", "json", "--no-authors"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("version"));
+    }
+
+    #[test]
+    fn export_no_stats() {
+        boha()
+            .args(["export", "-o", "json", "--no-stats"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("version"));
+    }
+
+    #[test]
+    fn export_solved_filter() {
+        boha()
+            .args(["export", "-o", "json", "--solved"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("version"));
+    }
+
+    #[test]
+    fn export_multiple_collections() {
+        boha()
+            .args(["export", "-o", "json", "b1000", "gsmg"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000"))
+            .stdout(predicate::str::contains("gsmg"));
+    }
+
+    #[test]
+    fn export_all_alias() {
+        boha()
+            .args(["export", "-o", "json", "all"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000"))
+            .stdout(predicate::str::contains("zden"));
+    }
+
+    #[test]
+    fn export_peter_todd_alias() {
+        boha()
+            .args(["export", "-o", "json", "peter_todd"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("hash_collision"));
+    }
+}
+
 mod verify {
     use super::*;
 

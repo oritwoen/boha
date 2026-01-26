@@ -2,8 +2,10 @@ use boha::{
     b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat,
     Puzzle, Stats, Status, TransactionType,
 };
+use chrono::Utc;
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
+use std::io::IsTerminal;
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
     match s.to_lowercase().as_str() {
@@ -127,6 +129,32 @@ enum Commands {
         #[arg(short, long)]
         quiet: bool,
     },
+
+    /// Export full puzzle database
+    Export {
+        /// Collections to export (default: all)
+        collections: Vec<String>,
+
+        /// Exclude author information
+        #[arg(long)]
+        no_authors: bool,
+
+        /// Exclude statistics
+        #[arg(long)]
+        no_stats: bool,
+
+        /// Force compact JSON output
+        #[arg(long)]
+        compact: bool,
+
+        /// Export only unsolved puzzles
+        #[arg(long, conflicts_with = "solved")]
+        unsolved: bool,
+
+        /// Export only solved puzzles
+        #[arg(long, conflicts_with = "unsolved")]
+        solved: bool,
+    },
 }
 
 #[derive(Tabled)]
@@ -180,6 +208,23 @@ struct SearchCsvRow {
     matched_fields: String, // semicolon-separated
 }
 
+#[derive(Serialize)]
+struct CollectionExport {
+    name: &'static str,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    author: Option<&'static Author>,
+    puzzles: Vec<&'static Puzzle>,
+}
+
+#[derive(Serialize)]
+struct ExportData {
+    version: &'static str,
+    exported_at: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    stats: Option<Stats>,
+    collections: Vec<CollectionExport>,
+}
+
 impl PuzzleTableRow {
     fn from_puzzle(p: &Puzzle, show_solve_time: bool) -> Self {
         let status = match p.status {
@@ -227,6 +272,7 @@ struct RangeOutput {
 }
 
 #[derive(Serialize)]
+#[allow(dead_code)]
 struct BalanceOutput {
     address: String,
     chain: String,
@@ -1408,6 +1454,22 @@ fn run_sync(cli: Cli) {
             cli.output,
         ),
         Commands::Verify { id, all, quiet } => cmd_verify(id.as_deref(), all, quiet, cli.output),
+        Commands::Export {
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+        } => cmd_export(
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+            cli.output,
+        ),
     }
 }
 
@@ -1453,6 +1515,22 @@ fn run(cli: Cli) {
             cli.output,
         ),
         Commands::Verify { id, all, quiet } => cmd_verify(id.as_deref(), all, quiet, cli.output),
+        Commands::Export {
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+        } => cmd_export(
+            collections,
+            no_authors,
+            no_stats,
+            compact,
+            unsolved,
+            solved,
+            cli.output,
+        ),
     }
 }
 
@@ -1815,5 +1893,172 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
 
     if failed_count > 0 {
         std::process::exit(3);
+    }
+}
+
+fn cmd_export(
+    collections: Vec<String>,
+    no_authors: bool,
+    no_stats: bool,
+    compact: bool,
+    unsolved: bool,
+    solved: bool,
+    format: OutputFormat,
+) {
+    use std::collections::HashSet;
+
+    const ALL_COLLECTIONS: &[&str] = &[
+        "b1000",
+        "ballet",
+        "bitaps",
+        "bitimage",
+        "gsmg",
+        "hash_collision",
+        "zden",
+    ];
+
+    let mut seen = HashSet::new();
+    let mut collections_to_export = Vec::new();
+
+    if collections.is_empty() {
+        collections_to_export = ALL_COLLECTIONS.iter().map(|s| s.to_string()).collect();
+    } else {
+        for collection in collections {
+            if collection == "all" {
+                collections_to_export = ALL_COLLECTIONS.iter().map(|s| s.to_string()).collect();
+                break;
+            }
+
+            let canonical = if collection == "peter_todd" {
+                "hash_collision".to_string()
+            } else {
+                collection
+            };
+
+            if !ALL_COLLECTIONS.contains(&canonical.as_str()) {
+                eprintln!(
+                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
+                    "Error:".red().bold(),
+                    canonical
+                );
+                std::process::exit(1);
+            }
+
+            if seen.insert(canonical.clone()) {
+                collections_to_export.push(canonical);
+            }
+        }
+    }
+
+    let mut export_collections = Vec::new();
+
+    for collection_name in collections_to_export {
+        let (name, author, puzzles): (&str, Option<&Author>, Vec<&Puzzle>) =
+            match collection_name.as_str() {
+                "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
+                "ballet" => ("ballet", Some(ballet::author()), ballet::all().collect()),
+                "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
+                "bitimage" => (
+                    "bitimage",
+                    Some(bitimage::author()),
+                    bitimage::all().collect(),
+                ),
+                "gsmg" => ("gsmg", Some(gsmg::author()), gsmg::all().collect()),
+                "hash_collision" => (
+                    "hash_collision",
+                    Some(hash_collision::author()),
+                    hash_collision::all().collect(),
+                ),
+                "zden" => ("zden", Some(zden::author()), zden::all().collect()),
+                _ => unreachable!(), // Already validated above
+            };
+
+        // Apply status filtering
+        let filtered: Vec<_> = puzzles
+            .into_iter()
+            .filter(|p| !unsolved || p.status == Status::Unsolved)
+            .filter(|p| !solved || p.status == Status::Solved)
+            .collect();
+
+        export_collections.push(CollectionExport {
+            name,
+            author: if no_authors { None } else { author },
+            puzzles: filtered,
+        });
+    }
+
+    let stats = if no_stats {
+        None
+    } else {
+        let mut stats = boha::Stats::default();
+        for collection in &export_collections {
+            for puzzle in &collection.puzzles {
+                stats.total += 1;
+                match puzzle.status {
+                    Status::Solved => stats.solved += 1,
+                    Status::Unsolved => stats.unsolved += 1,
+                    Status::Claimed => stats.claimed += 1,
+                    Status::Swept => stats.swept += 1,
+                }
+                if puzzle.has_pubkey() {
+                    stats.with_pubkey += 1;
+                }
+                if let Some(prize) = puzzle.prize {
+                    *stats.total_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+                    if puzzle.status == Status::Unsolved {
+                        *stats.unsolved_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+                    }
+                }
+            }
+        }
+        Some(stats)
+    };
+
+    let export_data = ExportData {
+        version: boha::version::FULL_VERSION,
+        exported_at: Utc::now().to_rfc3339(),
+        stats,
+        collections: export_collections,
+    };
+
+    let format = if matches!(format, OutputFormat::Table) {
+        OutputFormat::Json
+    } else {
+        format
+    };
+
+    output_export(&export_data, format, compact);
+}
+
+fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
+    match format {
+        OutputFormat::Table => {
+            eprintln!("Table format not supported for export. Use 'boha list' for table output.");
+            std::process::exit(1);
+        }
+        OutputFormat::Json => {
+            let use_pretty = !compact && std::io::stdout().is_terminal();
+            let json = if use_pretty {
+                serde_json::to_string_pretty(data).unwrap()
+            } else {
+                serde_json::to_string(data).unwrap()
+            };
+            println!("{}", json);
+        }
+        OutputFormat::Jsonl => {
+            for collection in &data.collections {
+                for puzzle in &collection.puzzles {
+                    println!("{}", serde_json::to_string(puzzle).unwrap());
+                }
+            }
+        }
+        OutputFormat::Yaml => {
+            eprintln!("YAML format not supported for export. Use 'boha list -o yaml' instead.");
+            std::process::exit(1);
+        }
+        OutputFormat::Csv => {
+            eprintln!("CSV format not supported for export. Use 'boha list -o csv' instead.");
+            std::process::exit(1);
+        }
     }
 }
