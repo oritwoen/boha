@@ -744,6 +744,25 @@ mod export {
             .stdout(predicate::str::contains("b1000"))
             .stdout(predicate::str::contains("gsmg"));
     }
+
+    #[test]
+    fn export_all_alias() {
+        boha()
+            .args(["export", "-o", "json", "all"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000"))
+            .stdout(predicate::str::contains("zden"));
+    }
+
+    #[test]
+    fn export_peter_todd_alias() {
+        boha()
+            .args(["export", "-o", "json", "peter_todd"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("hash_collision"));
+    }
 }
 
 mod verify {

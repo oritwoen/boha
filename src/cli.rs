@@ -1907,8 +1907,7 @@ fn cmd_export(
 ) {
     use std::collections::HashSet;
 
-    // Valid collection names
-    const VALID_COLLECTIONS: &[&str] = &[
+    const ALL_COLLECTIONS: &[&str] = &[
         "b1000",
         "ballet",
         "bitaps",
@@ -1918,29 +1917,35 @@ fn cmd_export(
         "zden",
     ];
 
-    // Deduplicate and validate collection names
     let mut seen = HashSet::new();
     let mut collections_to_export = Vec::new();
 
     if collections.is_empty() {
-        // If no collections specified, use all 7
-        collections_to_export = VALID_COLLECTIONS.iter().map(|s| s.to_string()).collect();
+        collections_to_export = ALL_COLLECTIONS.iter().map(|s| s.to_string()).collect();
     } else {
-        // Validate and deduplicate user-provided collections
         for collection in collections {
-            if !VALID_COLLECTIONS.contains(&collection.as_str()) {
+            if collection == "all" {
+                collections_to_export = ALL_COLLECTIONS.iter().map(|s| s.to_string()).collect();
+                break;
+            }
+
+            let canonical = if collection == "peter_todd" {
+                "hash_collision".to_string()
+            } else {
+                collection
+            };
+
+            if !ALL_COLLECTIONS.contains(&canonical.as_str()) {
                 eprintln!(
-                    "{} Unknown collection: {}. Valid collections: {}",
+                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
                     "Error:".red().bold(),
-                    collection,
-                    VALID_COLLECTIONS.join(", ")
+                    canonical
                 );
                 std::process::exit(1);
             }
 
-            // Only add if not already seen (deduplication)
-            if seen.insert(collection.clone()) {
-                collections_to_export.push(collection);
+            if seen.insert(canonical.clone()) {
+                collections_to_export.push(canonical);
             }
         }
     }
