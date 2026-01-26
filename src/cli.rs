@@ -2005,7 +2005,11 @@ fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
             println!("{}", json);
         }
         OutputFormat::Jsonl => {
-            println!("{}", serde_json::to_string(data).unwrap());
+            for collection in &data.collections {
+                for puzzle in &collection.puzzles {
+                    println!("{}", serde_json::to_string(puzzle).unwrap());
+                }
+            }
         }
         OutputFormat::Yaml => {
             println!("{}", serde_yaml::to_string(data).unwrap());
