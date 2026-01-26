@@ -682,13 +682,12 @@ mod export {
     }
 
     #[test]
-    fn export_table_error() {
+    fn export_table_maps_to_json() {
         boha()
             .args(["export", "-o", "table"])
             .assert()
-            .failure()
-            .stderr(predicate::str::contains("not supported"))
-            .stderr(predicate::str::contains("boha list"));
+            .success()
+            .stdout(predicate::str::contains("\"version\""));
     }
 
     #[test]

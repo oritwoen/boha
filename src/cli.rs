@@ -1951,7 +1951,7 @@ fn cmd_export(
         let (name, author, puzzles): (&str, Option<&Author>, Vec<&Puzzle>) =
             match collection_name.as_str() {
                 "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
-                "ballet" => ("ballet", None, ballet::all().collect()),
+                "ballet" => ("ballet", Some(ballet::author()), ballet::all().collect()),
                 "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
                 "bitimage" => (
                     "bitimage",
@@ -1971,23 +1971,8 @@ fn cmd_export(
         // Apply status filtering
         let filtered: Vec<_> = puzzles
             .into_iter()
-            .filter(|p| {
-                if !_unsolved && !_solved {
-                    // Neither flag set: include all
-                    true
-                } else if _unsolved && _solved {
-                    // Both flags set: include all (OR logic)
-                    true
-                } else if _unsolved {
-                    // Only unsolved flag: include only unsolved
-                    p.status == Status::Unsolved
-                } else {
-                    // Only solved flag: include solved/claimed/swept
-                    p.status == Status::Solved
-                        || p.status == Status::Claimed
-                        || p.status == Status::Swept
-                }
-            })
+            .filter(|p| !_unsolved || p.status == Status::Unsolved)
+            .filter(|p| !_solved || p.status == Status::Solved)
             .collect();
 
         export_collections.push(CollectionExport {
@@ -2002,6 +1987,12 @@ fn cmd_export(
         exported_at: Utc::now().to_rfc3339(),
         stats: if no_stats { None } else { Some(boha::stats()) },
         collections: export_collections,
+    };
+
+    let format = if matches!(format, OutputFormat::Table) {
+        OutputFormat::Json
+    } else {
+        format
     };
 
     output_export(&export_data, format, _compact);
