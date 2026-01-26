@@ -1987,10 +1987,37 @@ fn cmd_export(
         });
     }
 
+    let stats = if no_stats {
+        None
+    } else {
+        let mut stats = boha::Stats::default();
+        for collection in &export_collections {
+            for puzzle in &collection.puzzles {
+                stats.total += 1;
+                match puzzle.status {
+                    Status::Solved => stats.solved += 1,
+                    Status::Unsolved => stats.unsolved += 1,
+                    Status::Claimed => stats.claimed += 1,
+                    Status::Swept => stats.swept += 1,
+                }
+                if puzzle.has_pubkey() {
+                    stats.with_pubkey += 1;
+                }
+                if let Some(prize) = puzzle.prize {
+                    *stats.total_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+                    if puzzle.status == Status::Unsolved {
+                        *stats.unsolved_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+                    }
+                }
+            }
+        }
+        Some(stats)
+    };
+
     let export_data = ExportData {
         version: boha::version::FULL_VERSION,
         exported_at: Utc::now().to_rfc3339(),
-        stats: if no_stats { None } else { Some(boha::stats()) },
+        stats,
         collections: export_collections,
     };
 
