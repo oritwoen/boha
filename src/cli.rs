@@ -5,6 +5,7 @@ use boha::{
 use chrono::Utc;
 use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::HashMap;
+use std::io::IsTerminal;
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
     match s.to_lowercase().as_str() {
@@ -1985,17 +1986,23 @@ fn cmd_export(
         collections: export_collections,
     };
 
-    output_export(&export_data, format);
+    output_export(&export_data, format, _compact);
 }
 
-fn output_export(data: &ExportData, format: OutputFormat) {
+fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
     match format {
         OutputFormat::Table => {
             eprintln!("Table format not supported for export. Use json, jsonl, yaml, or csv.");
             std::process::exit(1);
         }
         OutputFormat::Json => {
-            println!("{}", serde_json::to_string_pretty(data).unwrap());
+            let use_pretty = !compact && std::io::stdout().is_terminal();
+            let json = if use_pretty {
+                serde_json::to_string_pretty(data).unwrap()
+            } else {
+                serde_json::to_string(data).unwrap()
+            };
+            println!("{}", json);
         }
         OutputFormat::Jsonl => {
             println!("{}", serde_json::to_string(data).unwrap());
