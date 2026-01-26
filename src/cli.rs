@@ -1903,26 +1903,52 @@ fn cmd_export(
     _solved: bool,
     format: OutputFormat,
 ) {
-    let collections_to_export = if collections.is_empty() {
-        vec!["b1000", "ballet", "bitaps", "bitimage", "gsmg", "hash_collision", "zden"]
+    use std::collections::HashSet;
+
+    // Valid collection names
+    const VALID_COLLECTIONS: &[&str] = &["b1000", "ballet", "bitaps", "bitimage", "gsmg", "hash_collision", "zden"];
+
+    // Deduplicate and validate collection names
+    let mut seen = HashSet::new();
+    let mut collections_to_export = Vec::new();
+
+    if collections.is_empty() {
+        // If no collections specified, use all 7
+        collections_to_export = VALID_COLLECTIONS.iter().map(|s| s.to_string()).collect();
     } else {
-        collections.iter().map(|s| s.as_str()).collect()
-    };
+        // Validate and deduplicate user-provided collections
+        for collection in collections {
+            if !VALID_COLLECTIONS.contains(&collection.as_str()) {
+                eprintln!(
+                    "{} Unknown collection: {}. Valid collections: {}",
+                    "Error:".red().bold(),
+                    collection,
+                    VALID_COLLECTIONS.join(", ")
+                );
+                std::process::exit(1);
+            }
+
+            // Only add if not already seen (deduplication)
+            if seen.insert(collection.clone()) {
+                collections_to_export.push(collection);
+            }
+        }
+    }
 
     let mut export_collections = Vec::new();
 
     for collection_name in collections_to_export {
-        let (name, author, puzzles) = match collection_name {
+        let (name, author, puzzles) = match collection_name.as_str() {
             "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
             "ballet" => ("ballet", None, ballet::all().collect()),
             "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
             "bitimage" => ("bitimage", Some(bitimage::author()), bitimage::all().collect()),
             "gsmg" => ("gsmg", Some(gsmg::author()), gsmg::all().collect()),
-            "hash_collision" | "peter_todd" => {
+            "hash_collision" => {
                 ("hash_collision", Some(hash_collision::author()), hash_collision::all().collect())
             }
             "zden" => ("zden", Some(zden::author()), zden::all().collect()),
-            _ => continue,
+            _ => unreachable!(), // Already validated above
         };
 
         export_collections.push(CollectionExport {
