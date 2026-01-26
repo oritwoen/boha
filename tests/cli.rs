@@ -667,7 +667,18 @@ mod export {
             .args(["export", "-o", "csv"])
             .assert()
             .failure()
-            .stderr(predicate::str::contains("not supported"));
+            .stderr(predicate::str::contains("not supported"))
+            .stderr(predicate::str::contains("boha list"));
+    }
+
+    #[test]
+    fn export_yaml_error() {
+        boha()
+            .args(["export", "-o", "yaml"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("not supported"))
+            .stderr(predicate::str::contains("boha list"));
     }
 
     #[test]
@@ -676,7 +687,8 @@ mod export {
             .args(["export", "-o", "table"])
             .assert()
             .failure()
-            .stderr(predicate::str::contains("not supported"));
+            .stderr(predicate::str::contains("not supported"))
+            .stderr(predicate::str::contains("boha list"));
     }
 
     #[test]

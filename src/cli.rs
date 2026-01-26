@@ -2010,7 +2010,7 @@ fn cmd_export(
 fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
     match format {
         OutputFormat::Table => {
-            eprintln!("Table format not supported for export. Use json, jsonl, yaml, or csv.");
+            eprintln!("Table format not supported for export. Use 'boha list' for table output.");
             std::process::exit(1);
         }
         OutputFormat::Json => {
@@ -2030,10 +2030,11 @@ fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
             }
         }
         OutputFormat::Yaml => {
-            println!("{}", serde_yaml::to_string(data).unwrap());
+            eprintln!("YAML format not supported for export. Use 'boha list -o yaml' instead.");
+            std::process::exit(1);
         }
         OutputFormat::Csv => {
-            eprintln!("CSV format not supported for export. Use json, jsonl, or yaml.");
+            eprintln!("CSV format not supported for export. Use 'boha list -o csv' instead.");
             std::process::exit(1);
         }
     }
