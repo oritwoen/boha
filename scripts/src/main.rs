@@ -5,6 +5,7 @@ use std::path::Path;
 use std::time::Duration;
 
 pub mod types;
+use types::{Collection, strip_jsonc_comments};
 
 #[derive(Debug, Deserialize)]
 struct TxStatus {
@@ -88,26 +89,21 @@ async fn process_jsonc_file(
         .ok_or_else(|| "Failed to parse JSONC")?;
 
     let addresses: Vec<(usize, String)> = {
-        let puzzles = doc.get("puzzles")
-            .and_then(|p| p.as_array())
+        let stripped = strip_jsonc_comments(&content);
+        let collection: Collection = serde_json::from_str(&stripped)?;
+        
+        let puzzles = collection.puzzles
             .ok_or("No puzzles array found")?;
 
         puzzles
             .iter()
             .enumerate()
             .filter_map(|(idx, puzzle)| {
-                let has_start_date = puzzle.get("start_date").is_some();
-                if has_start_date {
+                if puzzle.start_date.is_some() {
                     return None;
                 }
                 
-                let address = match puzzle.get("address")? {
-                    Value::String(s) => s.clone(),
-                    Value::Object(obj) => obj.get("value")?.as_str()?.to_string(),
-                    _ => return None,
-                };
-                
-                Some((idx, address))
+                Some((idx, puzzle.address.value.clone()))
             })
             .collect()
     };
