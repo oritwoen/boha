@@ -4,6 +4,8 @@ use serde_json::Value;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 
+use boha_scripts::types::{Address, Puzzle};
+
 #[derive(Debug, Deserialize)]
 struct CachedTx {
     status: TxStatus,
@@ -228,11 +230,28 @@ fn process_puzzles_array(doc: &mut Value, collection: &str) -> usize {
     };
 
     for table in array.iter_mut() {
-        let address = table
-            .get("address")
-            .and_then(|a| a.as_str())
-            .unwrap_or("")
-            .to_string();
+        // Deserialize to typed Puzzle to access address.value
+        let puzzle_json = serde_json::to_string(table).unwrap_or_default();
+        let puzzle: Puzzle = serde_json::from_str(&puzzle_json).unwrap_or_else(|_| Puzzle {
+            name: None,
+            chain: None,
+            address: Address {
+                value: String::new(),
+                kind: None,
+                hash160: None,
+                witness_program: None,
+                redeem_script: None,
+            },
+            status: String::new(),
+            pubkey: None,
+            key: None,
+            transactions: None,
+            prize: None,
+            start_date: None,
+            solve_date: None,
+        });
+
+        let address = puzzle.address.value.clone();
 
         let bits = table.get("bits").and_then(|b| b.as_i64());
         let name = table.get("name").and_then(|n| n.as_str());
@@ -304,11 +323,27 @@ fn process_single_puzzle(doc: &mut Value, collection: &str) -> usize {
         None => return 0,
     };
 
-    let address = puzzle
-        .get("address")
-        .and_then(|a| a.as_str())
-        .unwrap_or("")
-        .to_string();
+    let puzzle_json = serde_json::to_string(puzzle).unwrap_or_default();
+    let typed_puzzle: Puzzle = serde_json::from_str(&puzzle_json).unwrap_or_else(|_| Puzzle {
+        name: None,
+        chain: None,
+        address: Address {
+            value: String::new(),
+            kind: None,
+            hash160: None,
+            witness_program: None,
+            redeem_script: None,
+        },
+        status: String::new(),
+        pubkey: None,
+        key: None,
+        transactions: None,
+        prize: None,
+        start_date: None,
+        solve_date: None,
+    });
+
+    let address = typed_puzzle.address.value.clone();
 
     if let Some(start_date) = puzzle.get("start_date").and_then(|d| d.as_str()) {
         if !has_time(start_date) {
@@ -404,32 +439,31 @@ fn collect_solved_puzzle_addresses(doc: &Value, collection: &str) -> Vec<(String
 
     if let Some(puzzles) = doc.get("puzzles").and_then(|p| p.as_array()) {
         for table in puzzles.iter() {
-            if let Some(address) = table.get("address").and_then(|a| a.as_str()) {
-                if let Some(status) = table.get("status").and_then(|s| s.as_str()) {
-                    if matches!(status, "solved" | "claimed") {
-                        let bits = table.get("bits").and_then(|b| b.as_i64());
-                        let name = table.get("name").and_then(|n| n.as_str());
-                        let id = bits
-                            .map(|b| b.to_string())
-                            .or_else(|| name.map(|n| n.to_string()))
-                            .unwrap_or_else(|| address[..8.min(address.len())].to_string());
-                        addresses.push((id, address.to_string(), collection.to_string()));
-                    }
+            let puzzle_json = serde_json::to_string(table).unwrap_or_default();
+            if let Ok(puzzle) = serde_json::from_str::<Puzzle>(&puzzle_json) {
+                if matches!(puzzle.status.as_str(), "solved" | "claimed") {
+                    let bits = table.get("bits").and_then(|b| b.as_i64());
+                    let name = table.get("name").and_then(|n| n.as_str());
+                    let address = puzzle.address.value.clone();
+                    let id = bits
+                        .map(|b| b.to_string())
+                        .or_else(|| name.map(|n| n.to_string()))
+                        .unwrap_or_else(|| address[..8.min(address.len())].to_string());
+                    addresses.push((id, address, collection.to_string()));
                 }
             }
         }
     }
 
-    if let Some(puzzle) = doc.get("puzzle") {
-        if let Some(address) = puzzle.get("address").and_then(|a| a.as_str()) {
-            if let Some(status) = puzzle.get("status").and_then(|s| s.as_str()) {
-                if matches!(status, "solved" | "claimed") {
-                    addresses.push((
-                        "puzzle".to_string(),
-                        address.to_string(),
-                        collection.to_string(),
-                    ));
-                }
+    if let Some(puzzle_val) = doc.get("puzzle") {
+        let puzzle_json = serde_json::to_string(puzzle_val).unwrap_or_default();
+        if let Ok(puzzle) = serde_json::from_str::<Puzzle>(&puzzle_json) {
+            if matches!(puzzle.status.as_str(), "solved" | "claimed") {
+                addresses.push((
+                    "puzzle".to_string(),
+                    puzzle.address.value.clone(),
+                    collection.to_string(),
+                ));
             }
         }
     }
@@ -445,8 +479,9 @@ fn update_puzzles_from_cache(
 
     if let Some(puzzles) = doc.get_mut("puzzles").and_then(|p| p.as_array_mut()) {
         for table in puzzles.iter_mut() {
-            if let Some(address) = table.get("address").and_then(|a| a.as_str()) {
-                if let Some(ts) = timestamps.get(address) {
+            let puzzle_json = serde_json::to_string(&*table).unwrap_or_default();
+            if let Ok(puzzle) = serde_json::from_str::<Puzzle>(&puzzle_json) {
+                if let Some(ts) = timestamps.get(&puzzle.address.value) {
                     if let (Some(funding), Some(claim)) = (ts.funding_time, ts.claim_time) {
                         let start_str = timestamp_to_datetime(funding);
                         let solve_str = timestamp_to_datetime(claim);
@@ -470,8 +505,9 @@ fn update_single_puzzle_from_cache(
     timestamps: &HashMap<String, AddressTimestamps>,
 ) -> usize {
     if let Some(puzzle) = doc.get_mut("puzzle") {
-        if let Some(address) = puzzle.get("address").and_then(|a| a.as_str()) {
-            if let Some(ts) = timestamps.get(address) {
+        let puzzle_json = serde_json::to_string(&*puzzle).unwrap_or_default();
+        if let Ok(typed_puzzle) = serde_json::from_str::<Puzzle>(&puzzle_json) {
+            if let Some(ts) = timestamps.get(&typed_puzzle.address.value) {
                 if let (Some(funding), Some(claim)) = (ts.funding_time, ts.claim_time) {
                     let start_str = timestamp_to_datetime(funding);
                     let solve_str = timestamp_to_datetime(claim);
