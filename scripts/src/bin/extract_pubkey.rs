@@ -13,6 +13,7 @@ use serde::{de::DeserializeOwned, Deserialize, Serialize};
 use std::collections::HashMap;
 use std::path::Path;
 use std::time::Duration;
+use boha_scripts::types::{Collection, Puzzle, strip_jsonc_comments};
 
 const RATE_LIMIT_DELAY: Duration = Duration::from_millis(500);
 
@@ -94,50 +95,7 @@ struct EtherscanTxResult {
     s: String,
 }
 
-// ============================================================================
-// JSONC Types (for parsing puzzle data)
-// ============================================================================
 
-#[derive(Debug, Deserialize)]
-struct Collection {
-    puzzles: Option<Vec<Puzzle>>,
-    puzzle: Option<Puzzle>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct Puzzle {
-    name: Option<String>,
-    chain: Option<String>,
-    address: Address,
-    status: String,
-    pubkey: Option<Pubkey>,
-    transactions: Option<Vec<Transaction>>,
-    key: Option<PuzzleKey>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct PuzzleKey {
-    bits: Option<u32>,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct Address {
-    value: String,
-    kind: Option<String>,
-}
-
-#[derive(Debug, Clone, Deserialize, Serialize)]
-struct Pubkey {
-    value: String,
-    format: String,
-}
-
-#[derive(Debug, Clone, Deserialize)]
-struct Transaction {
-    #[serde(rename = "type")]
-    tx_type: String,
-    txid: String,
-}
 
 // ============================================================================
 // Pubkey Extraction
@@ -468,70 +426,6 @@ async fn fetch_eth_pubkey(
 // ============================================================================
 // JSONC File Processing
 // ============================================================================
-
-fn strip_jsonc_comments(content: &str) -> String {
-    let mut result = String::new();
-    let mut in_string = false;
-    let mut in_line_comment = false;
-    let mut in_block_comment = false;
-    let mut chars = content.chars().peekable();
-
-    while let Some(c) = chars.next() {
-        if in_line_comment {
-            if c == '\n' {
-                in_line_comment = false;
-                result.push(c);
-            }
-            continue;
-        }
-
-        if in_block_comment {
-            if c == '*' && chars.peek() == Some(&'/') {
-                chars.next();
-                in_block_comment = false;
-            }
-            continue;
-        }
-
-        if in_string {
-            result.push(c);
-            if c == '\\' {
-                if let Some(next) = chars.next() {
-                    result.push(next);
-                }
-            } else if c == '"' {
-                in_string = false;
-            }
-            continue;
-        }
-
-        if c == '"' {
-            in_string = true;
-            result.push(c);
-            continue;
-        }
-
-        if c == '/' {
-            match chars.peek() {
-                Some('/') => {
-                    chars.next();
-                    in_line_comment = true;
-                    continue;
-                }
-                Some('*') => {
-                    chars.next();
-                    in_block_comment = true;
-                    continue;
-                }
-                _ => {}
-            }
-        }
-
-        result.push(c);
-    }
-
-    result
-}
 
 fn update_jsonc_with_pubkey(
     content: &str,

@@ -2,6 +2,7 @@ mod utils {
     include!("../utils/mod.rs");
 }
 
+use boha_scripts::types::{Collection, strip_jsonc_comments};
 use serde_json::Value;
 use std::collections::HashSet;
 use std::path::Path;
@@ -66,69 +67,7 @@ async fn fetch_and_cache_eth(
     }
 }
 
-fn strip_jsonc_comments(content: &str) -> String {
-    let mut result = String::new();
-    let mut in_string = false;
-    let mut in_line_comment = false;
-    let mut in_block_comment = false;
-    let mut chars = content.chars().peekable();
 
-    while let Some(c) = chars.next() {
-        if in_line_comment {
-            if c == '\n' {
-                in_line_comment = false;
-                result.push(c);
-            }
-            continue;
-        }
-
-        if in_block_comment {
-            if c == '*' && chars.peek() == Some(&'/') {
-                chars.next();
-                in_block_comment = false;
-            }
-            continue;
-        }
-
-        if in_string {
-            result.push(c);
-            if c == '\\' {
-                if let Some(next) = chars.next() {
-                    result.push(next);
-                }
-            } else if c == '"' {
-                in_string = false;
-            }
-            continue;
-        }
-
-        if c == '"' {
-            in_string = true;
-            result.push(c);
-            continue;
-        }
-
-        if c == '/' {
-            match chars.peek() {
-                Some('/') => {
-                    chars.next();
-                    in_line_comment = true;
-                    continue;
-                }
-                Some('*') => {
-                    chars.next();
-                    in_block_comment = true;
-                    continue;
-                }
-                _ => {}
-            }
-        }
-
-        result.push(c);
-    }
-
-    result
-}
 
 fn process_cached_btc(
     puzzle: &mut Value,
@@ -189,34 +128,27 @@ fn process_cached_eth(
 
 async fn fetch_and_cache_b1000(
     client: &reqwest::Client,
-    doc: &Value,
+    collection: &Collection,
     filter_puzzle: Option<i64>,
     force: bool,
 ) -> Result<usize, Box<dyn std::error::Error>> {
     let mut count = 0;
 
-    if let Some(puzzles) = doc.get("puzzles") {
-        if let Some(array) = puzzles.as_array() {
-            for (idx, puzzle) in array.iter().enumerate() {
-                let bits = puzzle.get("key").and_then(|k| k.get("bits")).and_then(|b| b.as_i64()).unwrap_or(0);
+    if let Some(puzzles) = &collection.puzzles {
+        for (idx, puzzle) in puzzles.iter().enumerate() {
+            let bits = puzzle.key.as_ref().and_then(|k| k.bits).unwrap_or(0) as i64;
 
-                if let Some(filter) = filter_puzzle {
-                    if bits != filter {
-                        continue;
-                    }
+            if let Some(filter) = filter_puzzle {
+                if bits != filter {
+                    continue;
                 }
+            }
 
-                let address = puzzle
-                    .get("address")
-                    .and_then(|a| a.get("value"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("")
-                    .to_string();
+            let address = &puzzle.address.value;
 
-                print!("  [{}/256]", idx + 1);
-                if fetch_and_cache_btc(client, &address, "b1000", &bits.to_string(), force).await? {
-                    count += 1;
-                }
+            print!("  [{}/256]", idx + 1);
+            if fetch_and_cache_btc(client, address, "b1000", &bits.to_string(), force).await? {
+                count += 1;
             }
         }
     }
@@ -263,18 +195,13 @@ fn process_cached_b1000(
 
 async fn fetch_and_cache_gsmg(
     client: &reqwest::Client,
-    doc: &Value,
+    collection: &Collection,
     force: bool,
 ) -> Result<usize, Box<dyn std::error::Error>> {
-    if let Some(puzzle) = doc.get("puzzle") {
-        let address = puzzle
-            .get("address")
-            .and_then(|a| a.get("value"))
-            .and_then(|v| v.as_str())
-            .unwrap_or("")
-            .to_string();
+    if let Some(puzzle) = &collection.puzzle {
+        let address = &puzzle.address.value;
 
-        if fetch_and_cache_btc(client, &address, "gsmg", "gsmg", force).await? {
+        if fetch_and_cache_btc(client, address, "gsmg", "gsmg", force).await? {
             return Ok(1);
         }
     }
@@ -361,63 +288,54 @@ fn process_cached_dcr(
 
 async fn fetch_and_cache_collection(
     client: &reqwest::Client,
-    doc: &Value,
+    collection_data: &Collection,
     collection: &str,
     etherscan_api_key: Option<&str>,
     force: bool,
 ) -> Result<usize, Box<dyn std::error::Error>> {
     let mut count = 0;
 
-    if let Some(puzzles) = doc.get("puzzles") {
-        if let Some(array) = puzzles.as_array() {
-            let total = array.len();
-            for (idx, puzzle) in array.iter().enumerate() {
-                let address = puzzle
-                    .get("address")
-                    .and_then(|a| a.get("value"))
-                    .and_then(|v| v.as_str())
-                    .or_else(|| puzzle.get("address").and_then(|a| a.as_str()))
-                    .unwrap_or("")
-                    .to_string();
+    if let Some(puzzles) = &collection_data.puzzles {
+        let total = puzzles.len();
+        for (idx, puzzle) in puzzles.iter().enumerate() {
+            let address = &puzzle.address.value;
 
-                let name = puzzle
-                    .get("name")
-                    .and_then(|n| n.as_str())
-                    .unwrap_or("unknown")
-                    .to_string();
+            let name = puzzle
+                .name
+                .as_deref()
+                .unwrap_or("unknown");
 
-                let chain = puzzle
-                    .get("chain")
-                    .and_then(|c| c.as_str())
-                    .unwrap_or("bitcoin");
+            let chain = puzzle
+                .chain
+                .as_deref()
+                .unwrap_or("bitcoin");
 
-                print!("  [{}/{}]", idx + 1, total);
+            print!("  [{}/{}]", idx + 1, total);
 
-                let fetched = match chain {
-                    "bitcoin" | "litecoin" => {
-                        fetch_and_cache_btc(client, &address, collection, &name, force).await?
-                    }
-                    "ethereum" => {
-                        if let Some(api_key) = etherscan_api_key {
-                            fetch_and_cache_eth(client, &address, collection, &name, api_key, force)
-                                .await?
-                        } else {
-                            println!("    Skipping {} - no ETHERSCAN_API_KEY", name);
-                            false
-                        }
-                    }
-                    "decred" => {
-                        fetch_and_cache_dcr(client, &address, collection, &name, force).await?
-                    }
-                    _ => {
-                        println!("    Skipping {} - unsupported chain: {}", name, chain);
+            let fetched = match chain {
+                "bitcoin" | "litecoin" => {
+                    fetch_and_cache_btc(client, address, collection, name, force).await?
+                }
+                "ethereum" => {
+                    if let Some(api_key) = etherscan_api_key {
+                        fetch_and_cache_eth(client, address, collection, name, api_key, force)
+                            .await?
+                    } else {
+                        println!("    Skipping {} - no ETHERSCAN_API_KEY", name);
                         false
                     }
-                };
-
-                if fetched {
-                    count += 1;
                 }
+                "decred" => {
+                    fetch_and_cache_dcr(client, address, collection, name, force).await?
+                }
+                _ => {
+                    println!("    Skipping {} - unsupported chain: {}", name, chain);
+                    false
+                }
+            };
+
+            if fetched {
+                count += 1;
             }
         }
     }
@@ -440,7 +358,6 @@ fn process_cached_collection(
                     .get("address")
                     .and_then(|a| a.get("value"))
                     .and_then(|v| v.as_str())
-                    .or_else(|| puzzle.get("address").and_then(|a| a.as_str()))
                     .unwrap_or("")
                     .to_string();
 
@@ -562,6 +479,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
         let content = std::fs::read_to_string(&path)?;
         let json_content = strip_jsonc_comments(&content);
         let mut doc: Value = serde_json::from_str(&json_content)?;
+        let collection_data: Collection = serde_json::from_str(&json_content)?;
         let author_addresses = extract_author_addresses(&doc);
 
         if author_addresses.is_empty() {
@@ -576,12 +494,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             Mode::Fetch | Mode::Both => {
                 println!("Fetching: {}", collection);
                 let fetched = match collection.as_str() {
-                    "b1000" => fetch_and_cache_b1000(&client, &doc, filter_puzzle, force).await?,
-                    "gsmg" => fetch_and_cache_gsmg(&client, &doc, force).await?,
+                    "b1000" => fetch_and_cache_b1000(&client, &collection_data, filter_puzzle, force).await?,
+                    "gsmg" => fetch_and_cache_gsmg(&client, &collection_data, force).await?,
                     _ => {
                         fetch_and_cache_collection(
                             &client,
-                            &doc,
+                            &collection_data,
                             collection,
                             etherscan_api_key.as_deref(),
                             force,
