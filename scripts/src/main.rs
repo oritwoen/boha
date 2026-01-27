@@ -4,6 +4,8 @@ use serde_json::Value;
 use std::path::Path;
 use std::time::Duration;
 
+pub mod types;
+
 #[derive(Debug, Deserialize)]
 struct TxStatus {
     block_time: Option<i64>,
