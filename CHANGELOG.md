@@ -1,3 +1,22 @@
+## [0.15.0] - 2026-01-27
+
+### Features
+
+- *(cli)* Add search command (#94)
+- *(build)* Embed data version at build time (#97)
+- *(cli)* Add verify command (#98)
+- *(data)* Migrate from TOML to JSONC (#101)
+- Add pubkey validation for claimed puzzles (#103)
+- *(cli)* Add export command (#106)
+
+### Refactor
+
+- *(scripts)* Migrate from TOML to JSONC (#104)
+- *(scripts)* Unified typed address structs (#108)
+
+### Documentation
+
+- Standardize badges and add community section
 ## [0.14.0] - 2026-01-13
 
 ### Features
@@ -17,6 +36,10 @@
 ### Documentation
 
 - Update AGENTS.md metadata to current commit
+
+### Miscellaneous Tasks
+
+- *(release)* V0.14.0
 ## [0.13.0] - 2026-01-05
 
 ### Features
