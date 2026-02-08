@@ -184,6 +184,34 @@
           "amount": 499.98423607
         }
       ]
+    },
+    {
+      "name": "weave8",
+      "chain": "arweave",
+      "address": {
+        "value": "ayJQH1S6Fi52OEokLVi2tl5kr_y39LSfhJcNV0z9Ny4",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 400,
+      "start_date": "2020-01-08 11:19:09",
+      "solve_date": "2020-03-07 05:57:26",
+      "solve_time": 5078297,
+      "source_url": "https://mwgauw2twixdxh3fm6mywx7tvuxo442xtckttdbhpbctxz3em5fq.arweave.net/ZYwKW1OyLjufZWeZi1_zrS7uc1eYlTmMJ3hFO-dkZ0s",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "QC2WG7BkxHLnlREz6DsdoFm4wlmmSnwXYAPn9NWEvF4",
+          "date": "2020-01-08 11:19:09",
+          "amount": 400
+        },
+        {
+          "type": "claim",
+          "txid": "IyDIQkSbPFAe7Iunxr6A7Hwzt0QTbX6_NV8Vrn7L_5M",
+          "date": "2020-03-07 05:57:26",
+          "amount": 399.99999394
+        }
+      ]
     }
   ]
 }
