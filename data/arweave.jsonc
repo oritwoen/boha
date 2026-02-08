@@ -58,7 +58,7 @@
         "value": "4WDNiit5lNCZWgxGOK3tTJxS5dOwJjRmTqDnxOjMuWk",
         "kind": "standard"
       },
-      "status": "solved",
+      "status": "claimed",
       "prize": 1250,
       "start_date": "2019-05-24 06:23:05",
       "solve_date": "2019-05-24 17:51:23",
@@ -70,6 +70,12 @@
           "txid": "TUNZkBsDP7N0stBp8VCUU86sYhLgYSa6aiPCTJ2kDYU",
           "date": "2019-05-24 06:23:05",
           "amount": 250
+        },
+        {
+          "type": "funding",
+          "txid": "0lvvvE0Isy3TqmJwOhIWVidJNECLwdCI5L9vp1JLync",
+          "date": "2019-05-24 10:04:08",
+          "amount": 1000
         },
         {
           "type": "claim",
@@ -95,6 +101,18 @@
           "type": "funding",
           "txid": "hTB5Ouv5nY11pQiGFXCJQZxNOkVlgPAAJ9IYSRu8v0E",
           "date": "2019-05-25 13:07:33",
+          "amount": 250
+        },
+        {
+          "type": "funding",
+          "txid": "_Aa5au3qzhCSIPxj5RfLkF_eSUuxAcnqoWY3PeKTaRg",
+          "date": "2019-05-27 08:30:39",
+          "amount": 500
+        },
+        {
+          "type": "funding",
+          "txid": "7-sWojFc0sG3mTr34YGBGssYDvXjOPZf-xik8v1Ct24",
+          "date": "2019-08-28 14:09:38",
           "amount": 250
         }
       ]
