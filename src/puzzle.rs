@@ -14,15 +14,17 @@ pub enum Chain {
     Litecoin,
     Monero,
     Decred,
+    Arweave,
 }
 
 impl Chain {
-    pub const ALL: [Chain; 5] = [
+    pub const ALL: [Chain; 6] = [
         Chain::Bitcoin,
         Chain::Ethereum,
         Chain::Litecoin,
         Chain::Monero,
         Chain::Decred,
+        Chain::Arweave,
     ];
 
     /// Currency symbol (e.g., "BTC", "ETH").
@@ -33,6 +35,7 @@ impl Chain {
             Chain::Litecoin => "LTC",
             Chain::Monero => "XMR",
             Chain::Decred => "DCR",
+            Chain::Arweave => "AR",
         }
     }
 
@@ -44,6 +47,7 @@ impl Chain {
             Chain::Litecoin => "Litecoin",
             Chain::Monero => "Monero",
             Chain::Decred => "Decred",
+            Chain::Arweave => "Arweave",
         }
     }
 
@@ -54,6 +58,7 @@ impl Chain {
             Chain::Litecoin => format!("https://blockchair.com/litecoin/transaction/{}", txid),
             Chain::Monero => format!("https://xmrchain.net/tx/{}", txid),
             Chain::Decred => format!("https://dcrdata.decred.org/tx/{}", txid),
+            Chain::Arweave => format!("https://viewblock.io/arweave/tx/{}", txid),
         }
     }
 
@@ -65,10 +70,18 @@ impl Chain {
                     .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
         }
 
+        fn is_base64url_43(s: &str) -> bool {
+            s.len() == 43
+                && s.as_bytes()
+                    .iter()
+                    .all(|b| matches!(b, b'A'..=b'Z' | b'a'..=b'z' | b'0'..=b'9' | b'-' | b'_'))
+        }
+
         match self {
             Chain::Ethereum => txid.starts_with("0x") && txid.len() == 66 && is_hex64(&txid[2..]),
             // Current chains use hex-encoded 256-bit hashes.
             Chain::Bitcoin | Chain::Litecoin | Chain::Monero | Chain::Decred => is_hex64(txid),
+            Chain::Arweave => is_base64url_43(txid),
         }
     }
 }

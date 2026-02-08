@@ -1,3 +1,4 @@
+pub mod arweave;
 pub mod b1000;
 pub mod ballet;
 pub mod bitaps;

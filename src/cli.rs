@@ -1,6 +1,6 @@
 use boha::{
-    b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain, PubkeyFormat,
-    Puzzle, Stats, Status, TransactionType,
+    arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain,
+    PubkeyFormat, Puzzle, Stats, Status, TransactionType,
 };
 use chrono::Utc;
 use clap::{Parser, Subcommand, ValueEnum};
@@ -14,8 +14,9 @@ fn parse_chain(s: &str) -> Result<Chain, String> {
         "litecoin" | "ltc" => Ok(Chain::Litecoin),
         "monero" | "xmr" => Ok(Chain::Monero),
         "decred" | "dcr" => Ok(Chain::Decred),
+        "arweave" | "ar" => Ok(Chain::Arweave),
         _ => Err(format!(
-            "Unknown chain: {}. Use: bitcoin, ethereum, litecoin, monero, decred",
+            "Unknown chain: {}. Use: bitcoin, ethereum, litecoin, monero, decred, arweave",
             s
         )),
     }
@@ -1174,6 +1175,7 @@ fn cmd_search(
     }
 
     let puzzles: Vec<&'static Puzzle> = match collection {
+        Some("arweave") => arweave::all().collect(),
         Some("b1000") => b1000::all().collect(),
         Some("ballet") => ballet::all().collect(),
         Some("bitaps") => bitaps::all().collect(),
@@ -1184,7 +1186,7 @@ fn cmd_search(
         Some("all") | None => boha::all().collect(),
         Some(collection) => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
+                "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
                 "Error:".red().bold(),
                 collection
             );
@@ -1228,6 +1230,7 @@ fn cmd_list(
     format: OutputFormat,
 ) {
     let puzzles: Vec<&Puzzle> = match collection {
+        "arweave" => arweave::all().collect(),
         "b1000" => b1000::all().collect(),
         "ballet" => ballet::all().collect(),
         "bitaps" => bitaps::all().collect(),
@@ -1301,6 +1304,7 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
 
 fn cmd_author(collection: &str, format: OutputFormat) {
     let author = match collection {
+        "arweave" => arweave::author(),
         "b1000" => b1000::author(),
         "bitaps" => bitaps::author(),
         "bitimage" => bitimage::author(),
@@ -1309,7 +1313,7 @@ fn cmd_author(collection: &str, format: OutputFormat) {
         "zden" => zden::author(),
         _ => {
             eprintln!(
-                "{} Unknown collection: {}. Use: b1000, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden",
+                "{} Unknown collection: {}. Use: arweave, b1000, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden",
                 "Error:".red().bold(),
                 collection
             );
@@ -1623,6 +1627,9 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             Chain::Monero => Err(verify::VerifyError::UnsupportedChain(
                 "Monero verification not supported".to_string(),
             )),
+            Chain::Arweave => Err(verify::VerifyError::UnsupportedChain(
+                "Arweave verification not supported".to_string(),
+            )),
         }
     } else if let Some(ref wif_data) = key.wif {
         if let Some(wif) = wif_data.decrypted {
@@ -1782,6 +1789,10 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
                     skipped_count += 1;
                     continue;
                 }
+                Chain::Arweave => {
+                    skipped_count += 1;
+                    continue;
+                }
             }
         } else if let Some(ref wif_data) = key.wif {
             if let Some(wif) = wif_data.decrypted {
@@ -1920,6 +1931,7 @@ fn cmd_export(
     use std::collections::HashSet;
 
     const ALL_COLLECTIONS: &[&str] = &[
+        "arweave",
         "b1000",
         "ballet",
         "bitaps",
@@ -1949,7 +1961,7 @@ fn cmd_export(
 
             if !ALL_COLLECTIONS.contains(&canonical.as_str()) {
                 eprintln!(
-                    "{} Unknown collection: {}. Use: b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
+                    "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
                     "Error:".red().bold(),
                     canonical
                 );
@@ -1967,6 +1979,7 @@ fn cmd_export(
     for collection_name in collections_to_export {
         let (name, author, puzzles): (&str, Option<&Author>, Vec<&Puzzle>) =
             match collection_name.as_str() {
+                "arweave" => ("arweave", Some(arweave::author()), arweave::all().collect()),
                 "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
                 "ballet" => ("ballet", Some(ballet::author()), ballet::all().collect()),
                 "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
