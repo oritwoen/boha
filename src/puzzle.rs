@@ -56,6 +56,21 @@ impl Chain {
             Chain::Decred => format!("https://dcrdata.decred.org/tx/{}", txid),
         }
     }
+
+    pub fn is_valid_txid(&self, txid: &str) -> bool {
+        fn is_hex64(s: &str) -> bool {
+            s.len() == 64
+                && s.as_bytes()
+                    .iter()
+                    .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+        }
+
+        match self {
+            Chain::Ethereum => txid.starts_with("0x") && txid.len() == 66 && is_hex64(&txid[2..]),
+            // Current chains use hex-encoded 256-bit hashes.
+            Chain::Bitcoin | Chain::Litecoin | Chain::Monero | Chain::Decred => is_hex64(txid),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]

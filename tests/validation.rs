@@ -811,20 +811,15 @@ fn author_addresses_valid_format() {
 
 #[test]
 fn transaction_txid_format_valid() {
-    let hex64_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
-    let eth_regex = regex::Regex::new(r"^0x[0-9a-f]{64}$").unwrap();
-    // Common for chains using base64url txids (e.g., Arweave: 43 chars)
-    let base64url_43_regex = regex::Regex::new(r"^[A-Za-z0-9_-]{43}$").unwrap();
     for puzzle in boha::all() {
         for tx in puzzle.transactions {
             if let Some(txid) = tx.txid {
-                let valid = eth_regex.is_match(txid)
-                    || hex64_regex.is_match(txid)
-                    || base64url_43_regex.is_match(txid);
                 assert!(
-                    valid,
+                    puzzle.chain.is_valid_txid(txid),
                     "Invalid txid format for {:?} transaction in {}: {}",
-                    tx.tx_type, puzzle.id, txid
+                    tx.tx_type,
+                    puzzle.id,
+                    txid
                 );
             }
         }
