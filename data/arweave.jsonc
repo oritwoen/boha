@@ -1,0 +1,82 @@
+{
+  "$schema": "./schemas/collection.schema.json",
+  "author": {
+    "name": "Arweave",
+    "profiles": [
+      {
+        "name": "website",
+        "url": "https://www.arweave.org/"
+      }
+    ]
+  },
+  "metadata": {
+    "source_url": "https://www.arweave.org/"
+  },
+  "puzzles": [
+    {
+      "name": "weave1",
+      "chain": "arweave",
+      "address": {
+        "value": "PbdTDYikdddWfNFlDt2aZokALXKe1mJVSC9TALUBNv8",
+        "kind": "standard"
+      },
+      "status": "unsolved",
+      "prize": null,
+      "start_date": "2019-05-22 10:27:23",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "Yd0DrtrEzTg3K9HCxQY5fKgnng4S9ShH2WYmObFTLmo",
+          "date": "2019-05-22 10:27:23",
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "name": "weave2",
+      "chain": "arweave",
+      "address": {
+        "value": "4WDNiit5lNCZWgxGOK3tTJxS5dOwJjRmTqDnxOjMuWk",
+        "kind": "standard"
+      },
+      "status": "solved",
+      "prize": 1250,
+      "start_date": "2019-05-24 06:23:05",
+      "solve_date": "2019-05-24 17:51:23",
+      "solve_time": 41298,
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "TUNZkBsDP7N0stBp8VCUU86sYhLgYSa6aiPCTJ2kDYU",
+          "date": "2019-05-24 06:23:05",
+          "amount": 250
+        },
+        {
+          "type": "claim",
+          "txid": "NgecvZjHWx9GTi3SdIQnw8SwPQBmJ8BIOVrIvKCQnRY",
+          "date": "2019-05-24 17:51:23",
+          "amount": 1249.74967882
+        }
+      ]
+    },
+    {
+      "name": "weave3",
+      "chain": "arweave",
+      "address": {
+        "value": "wHP6OPG5GMF5dedo_CD8AAy6x8La-gfI5b5pk65Tx_0",
+        "kind": "standard"
+      },
+      "status": "unsolved",
+      "prize": 1000,
+      "start_date": "2019-05-25 13:07:33",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "hTB5Ouv5nY11pQiGFXCJQZxNOkVlgPAAJ9IYSRu8v0E",
+          "date": "2019-05-25 13:07:33",
+          "amount": 250
+        }
+      ]
+    }
+  ]
+}

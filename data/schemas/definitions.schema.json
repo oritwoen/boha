@@ -57,7 +57,7 @@
     },
     "chain": {
       "type": "string",
-      "enum": ["bitcoin", "ethereum", "litecoin", "monero", "decred"],
+      "enum": ["bitcoin", "ethereum", "litecoin", "monero", "decred", "arweave"],
       "description": "Blockchain network"
     },
     "pubkey": {

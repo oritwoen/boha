@@ -549,6 +549,37 @@ struct ZdenPuzzle {
 }
 
 #[derive(Debug, Deserialize)]
+struct ArweaveMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ArweaveFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<ArweaveMetadata>,
+    puzzles: Vec<ArweavePuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ArweavePuzzle {
+    name: String,
+    chain: String,
+    address: Address,
+    status: String,
+    prize: Option<f64>,
+    pubkey: Option<TomlPubkey>,
+    key: Option<TomlKey>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<String>,
+    assets: Option<TomlAssets>,
+}
+
+#[derive(Debug, Deserialize)]
 struct BitapsMetadata {
     source_url: Option<String>,
 }
@@ -1080,6 +1111,7 @@ fn generate_data_version(out_dir: &str) {
     let build_date = chrono::Utc::now().format("%Y-%m-%d").to_string();
 
     let data_files = [
+        "data/arweave.jsonc",
         "data/b1000.jsonc",
         "data/ballet.jsonc",
         "data/bitaps.jsonc",
@@ -1117,6 +1149,7 @@ pub const FULL_VERSION: &str = "{}";
 }
 
 fn main() {
+    println!("cargo:rerun-if-changed=data/arweave.jsonc");
     println!("cargo:rerun-if-changed=data/b1000.jsonc");
     println!("cargo:rerun-if-changed=data/hash_collision.jsonc");
     println!("cargo:rerun-if-changed=data/gsmg.jsonc");
@@ -1133,6 +1166,7 @@ fn main() {
     let solvers = load_solvers();
 
     generate_data_version(&out_dir);
+    generate_arweave(&out_dir, &solvers);
     generate_b1000(&out_dir, &solvers);
     generate_hash_collision(&out_dir, &solvers);
     generate_gsmg(&out_dir, &solvers);
@@ -2022,4 +2056,135 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write ballet_data.rs");
+}
+
+fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
+    let dest_path = Path::new(out_dir).join("arweave_data.rs");
+
+    let mut content =
+        fs::read_to_string("data/arweave.jsonc").expect("Failed to read data/arweave.jsonc");
+    strip(&mut content).expect("Failed to strip comments from arweave.jsonc");
+    let wrapped: WithSchema<ArweaveFile> =
+        serde_json::from_str(&content).expect("Failed to parse arweave.jsonc");
+    let data = wrapped.inner;
+
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        if puzzle.chain != "arweave" {
+            panic!(
+                "Invalid chain '{}' for puzzle arweave/{} (expected 'arweave')",
+                puzzle.chain, puzzle.name
+            );
+        }
+
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.8})", p),
+            None => "None".to_string(),
+        };
+
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
+        let hash160 = format_hash160(
+            &puzzle.address,
+            &puzzle.chain,
+            &format!("arweave/{}", puzzle.name),
+        );
+        let witness_program =
+            format_witness_program(&puzzle.address, &format!("arweave/{}", puzzle.name));
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+
+        let puzzle_id = format!("arweave/{}", puzzle.name);
+        let key = generate_key_code(&puzzle.key, &puzzle_id, &puzzle.address.value);
+        let pubkey = format_pubkey(&puzzle.pubkey, &puzzle.name);
+
+        let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
+        let assets = generate_assets_code(
+            &puzzle.assets,
+            "arweave",
+            &format!("arweave/{}", puzzle.name),
+        );
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "arweave/{}",
+        chain: Chain::Arweave,
+        address: Address {{
+            value: "{}",
+            chain: Chain::Arweave,
+            kind: "{}",
+            hash160: {},
+            witness_program: {},
+            redeem_script: {},
+        }},
+        status: {},
+        pubkey: {},
+        key: {},
+        prize: {},
+        start_date: {},
+        solve_date: {},
+        solve_time: {},
+        pre_genesis: false,
+        source_url: {},
+        transactions: {},
+        solver: {},
+        assets: {},
+    }},
+"#,
+            puzzle.name,
+            puzzle.address.value,
+            puzzle.address.kind,
+            hash160,
+            witness_program,
+            redeem_script,
+            status,
+            pubkey,
+            key,
+            prize,
+            start_date,
+            solve_date,
+            solve_time,
+            source_url,
+            transactions,
+            solver,
+            assets,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write arweave_data.rs");
 }

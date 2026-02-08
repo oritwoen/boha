@@ -1719,6 +1719,14 @@ fn claimed_puzzles_have_pubkey() {
             continue;
         }
 
+        // Non-UTXO chains may not reveal a pubkey when funds are moved.
+        if matches!(
+            puzzle.chain,
+            Chain::Ethereum | Chain::Monero | Chain::Arweave
+        ) {
+            continue;
+        }
+
         // Skip P2SH addresses (hash_collision puzzles use redeem_script instead)
         if puzzle.address.kind == "p2sh" {
             continue;
