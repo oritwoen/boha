@@ -2076,12 +2076,14 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
     output.push_str("static PUZZLES: &[Puzzle] = &[\n");
 
     for puzzle in &data.puzzles {
-        if puzzle.chain != "arweave" {
-            panic!(
-                "Invalid chain '{}' for puzzle arweave/{} (expected 'arweave')",
-                puzzle.chain, puzzle.name
-            );
-        }
+        let chain = match puzzle.chain.as_str() {
+            "arweave" => "Chain::Arweave",
+            "ethereum" => "Chain::Ethereum",
+            other => panic!(
+                "Invalid chain '{}' for puzzle arweave/{} (supported: arweave, ethereum)",
+                other, puzzle.name
+            ),
+        };
 
         let status = match puzzle.status.as_str() {
             "solved" => "Status::Solved",
@@ -2141,10 +2143,10 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
         output.push_str(&format!(
             r#"    Puzzle {{
         id: "arweave/{}",
-        chain: Chain::Arweave,
+        chain: {},
         address: Address {{
             value: "{}",
-            chain: Chain::Arweave,
+            chain: {},
             kind: "{}",
             hash160: {},
             witness_program: {},
@@ -2165,7 +2167,9 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
     }},
 "#,
             puzzle.name,
+            chain,
             puzzle.address.value,
+            chain,
             puzzle.address.kind,
             hash160,
             witness_program,
