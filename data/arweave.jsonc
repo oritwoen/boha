@@ -186,6 +186,46 @@
       ]
     },
     {
+      "name": "weave7",
+      "chain": "ethereum",
+      "address": {
+        "value": "0x13f968d3bb996f39838ade86109b8150ba890d7e",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 3,
+      "start_date": "2019-06-10 16:40:22",
+      "solve_date": "2023-09-18 09:00:11",
+      "solve_time": 134842789,
+      "source_url": "https://arweave.net/I9b6im2OKIZh44eMEquRvsISkfl189esaoDSLOO0G9Y",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "0xbf6dbe70baaa90dd90810ca9fc6e0012bf05419ae92aa7e1d17ecf892515071c",
+          "date": "2019-06-10 16:40:22",
+          "amount": 1
+        },
+        {
+          "type": "funding",
+          "txid": "0x7f892d644529d231dccfbaf5127634996fbbaf7cc7f4b4866d1c4a9e39bd2c6f",
+          "date": "2019-06-12 10:15:06",
+          "amount": 1
+        },
+        {
+          "type": "funding",
+          "txid": "0x7a06401c304248848bacdd596391745176888925ed09774aa28058de1148c723",
+          "date": "2019-06-12 15:49:55",
+          "amount": 1
+        },
+        {
+          "type": "claim",
+          "txid": "0xb62ae885191bd5ef9d822e2ab0c49ce6127e0efcea09fd42f1a4f552b14dc068",
+          "date": "2023-09-18 09:00:11",
+          "amount": 2.994808896749136
+        }
+      ]
+    },
+    {
       "name": "weave8",
       "chain": "arweave",
       "address": {
@@ -234,6 +274,26 @@
       ]
     },
     {
+      "name": "weave11",
+      "chain": "ethereum",
+      "address": {
+        "value": "0xff2142e98e09b5344994f9beb9c56c95506b9f17",
+        "kind": "standard"
+      },
+      "status": "unsolved",
+      "prize": 1,
+      "start_date": "2020-04-14 09:10:29",
+      "source_url": "https://arweave.net/CzITHnEIlkQw9SbaX5futCzFrKk1qe_NwvWnIBmP2fY",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "0x0d4738abf9d5c03c196eee4953feeb56ff06c385fa322bc9c76e105da38d7563",
+          "date": "2020-04-14 09:10:29",
+          "amount": 1
+        }
+      ]
+    },
+    {
       "name": "weave12",
       "chain": "arweave",
       "address": {
@@ -250,6 +310,34 @@
           "txid": "BregUvA5IRkePHvH6G5fL54ZI-L4JF2TfO7NyRj6U-Y",
           "date": "2020-04-14 09:17:16",
           "amount": 400
+        }
+      ]
+    },
+    {
+      "name": "weave13",
+      "chain": "ethereum",
+      "address": {
+        "value": "0x0a5c81f5bfb8ec2f47deff466a1a4e55b8fc9319",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 1,
+      "start_date": "2020-05-18 23:53:09",
+      "solve_date": "2020-05-23 01:26:15",
+      "solve_time": 351186,
+      "source_url": "https://arweave.net/icRlgZbXVq01wPrFdllafMvKXoQ6Kfo1mQMdmeyX514",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "0x7638cc1662742f6e3fa07e48d010744ae7c08c0a144d8efe8e8d961cee5a89ac",
+          "date": "2020-05-18 23:53:09",
+          "amount": 1
+        },
+        {
+          "type": "claim",
+          "txid": "0x489ee0b07653ca91c52b3201b795f55824529c1acbfadeb088b9493db78e136e",
+          "date": "2020-05-23 01:26:15",
+          "amount": 1
         }
       ]
     }
