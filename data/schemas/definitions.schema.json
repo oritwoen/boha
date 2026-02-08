@@ -93,6 +93,11 @@
             },
             {
               "type": "string",
+              "pattern": "^0x[0-9a-f]{64}$",
+              "description": "Ethereum transaction hash (0x-prefixed)"
+            },
+            {
+              "type": "string",
               "pattern": "^[a-f0-9]{64}$",
               "description": "Hex-encoded 256-bit hash"
             },
