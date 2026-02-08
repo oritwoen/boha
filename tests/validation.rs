@@ -1054,11 +1054,27 @@ fn solver_addresses_format_valid() {
         false
     }
 
+    fn is_valid_eth_address(addr: &str) -> bool {
+        let Some(rest) = addr.strip_prefix("0x") else {
+            return false;
+        };
+        rest.len() == 40 && rest.chars().all(|c| c.is_ascii_hexdigit())
+    }
+
+    fn is_valid_arweave_address(addr: &str) -> bool {
+        addr.len() == 43
+            && addr
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || c == '-' || c == '_')
+    }
+
     for puzzle in boha::all() {
         if let Some(solver) = &puzzle.solver {
             for addr in solver.addresses {
                 assert!(
-                    is_valid_btc_address(addr),
+                    is_valid_btc_address(addr)
+                        || is_valid_eth_address(addr)
+                        || is_valid_arweave_address(addr),
                     "Invalid solver address for {}: {}",
                     puzzle.id,
                     addr
@@ -1072,11 +1088,15 @@ fn solver_addresses_format_valid() {
 fn solver_has_at_least_one_address() {
     for puzzle in boha::all() {
         if let Some(solver) = &puzzle.solver {
-            assert!(
-                !solver.addresses.is_empty(),
-                "Solver for {} should have at least one address",
-                puzzle.id
-            );
+            // Some solvers are identified by name only; others by address only.
+            // Require at least one identifier.
+            if solver.name.is_none() {
+                assert!(
+                    !solver.addresses.is_empty(),
+                    "Solver for {} should have at least one address when name is missing",
+                    puzzle.id
+                );
+            }
         }
     }
 }

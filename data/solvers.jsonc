@@ -33,5 +33,25 @@
   "3MpeFYTuw": {
     "addresses": ["3MpeFYTuwfrxSnUXNmTnY3XTgvhPp5k7vF"],
     "profiles": []
+  },
+  "pogo": {
+    "name": "pogo",
+    "addresses": [],
+    "profiles": []
+  },
+  "arpox": {
+    "name": "arpox",
+    "addresses": [],
+    "profiles": []
+  },
+  "lia": {
+    "name": "lia",
+    "addresses": [],
+    "profiles": []
+  },
+  "lefevre": {
+    "name": "lefevre",
+    "addresses": [],
+    "profiles": []
   }
 }
