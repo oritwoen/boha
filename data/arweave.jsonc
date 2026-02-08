@@ -1,16 +1,20 @@
 {
   "$schema": "./schemas/collection.schema.json",
   "author": {
-    "name": "Arweave",
+    "name": "Tiamat",
     "profiles": [
       {
         "name": "website",
-        "url": "https://www.arweave.org/"
+        "url": "https://chronobot.io/"
+      },
+      {
+        "name": "twitter",
+        "url": "https://twitter.com/ArweaveP"
       }
     ]
   },
   "metadata": {
-    "source_url": "https://www.arweave.org/"
+    "source_url": "https://arweave.medium.com/community-spotlight-meeting-tiamat-e484655b25e0"
   },
   "puzzles": [
     {
