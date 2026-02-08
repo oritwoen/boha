@@ -98,6 +98,40 @@
           "amount": 250
         }
       ]
+    },
+    {
+      "name": "weave4",
+      "chain": "arweave",
+      "address": {
+        "value": "2pwE_LEzD0z6m_ENCDIta9YTBKXW9FFCURrx1yJoO7w",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 500,
+      "start_date": "2019-05-25 15:39:57",
+      "solve_date": "2019-11-10 10:25:40",
+      "solve_time": 14582743,
+      "source_url": "https://ojducxyzj2dirbt7xt2jod7dkwfqolxjre6tzp63fycuq5477vta.arweave.net/ckdBXxlOhoiGf7z0lw_jVYsHLumJPTy_2y4FSHef_WY#instructions",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "e06EdrRKRFA-ymkfaAa1hNcBBO0yWKrf-ON9p6JmWd0",
+          "date": "2019-05-25 15:39:57",
+          "amount": 250
+        },
+        {
+          "type": "funding",
+          "txid": "2UuC2087I_yNZ3Fc5bMUfjwPOAg2CEhLmQNuEDiRMjE",
+          "date": "2019-08-28 14:01:39",
+          "amount": 250
+        },
+        {
+          "type": "claim",
+          "txid": "oAg07abF6rlrbZfn7P4AT05XN0VIAB_0V8j4L-0-Vt4",
+          "date": "2019-11-10 10:25:40",
+          "amount": 499.99997828
+        }
+      ]
     }
   ]
 }
