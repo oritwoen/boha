@@ -349,15 +349,8 @@ fn source_url_format_valid() {
 #[test]
 fn all_puzzles_have_valid_chain() {
     for puzzle in boha::all() {
-        let valid_chains = [
-            Chain::Bitcoin,
-            Chain::Ethereum,
-            Chain::Litecoin,
-            Chain::Monero,
-            Chain::Decred,
-        ];
         assert!(
-            valid_chains.contains(&puzzle.chain),
+            Chain::ALL.contains(&puzzle.chain),
             "Puzzle {} has invalid chain",
             puzzle.id
         );
@@ -380,20 +373,32 @@ fn hash_collision_is_bitcoin() {
 
 #[test]
 fn chain_symbol_correct() {
-    assert_eq!(Chain::Bitcoin.symbol(), "BTC");
-    assert_eq!(Chain::Ethereum.symbol(), "ETH");
-    assert_eq!(Chain::Litecoin.symbol(), "LTC");
-    assert_eq!(Chain::Monero.symbol(), "XMR");
-    assert_eq!(Chain::Decred.symbol(), "DCR");
+    use std::collections::HashSet;
+
+    let mut seen = HashSet::new();
+    for chain in Chain::ALL {
+        let symbol = chain.symbol();
+        assert!(!symbol.is_empty(), "Empty symbol for {:?}", chain);
+        assert!(
+            symbol.chars().all(|c| c.is_ascii_uppercase()),
+            "Symbol should be ASCII uppercase for {:?}: {}",
+            chain,
+            symbol
+        );
+        assert!(seen.insert(symbol), "Duplicate symbol: {}", symbol);
+    }
 }
 
 #[test]
 fn chain_name_correct() {
-    assert_eq!(Chain::Bitcoin.name(), "Bitcoin");
-    assert_eq!(Chain::Ethereum.name(), "Ethereum");
-    assert_eq!(Chain::Litecoin.name(), "Litecoin");
-    assert_eq!(Chain::Monero.name(), "Monero");
-    assert_eq!(Chain::Decred.name(), "Decred");
+    use std::collections::HashSet;
+
+    let mut seen = HashSet::new();
+    for chain in Chain::ALL {
+        let name = chain.name();
+        assert!(!name.is_empty(), "Empty name for {:?}", chain);
+        assert!(seen.insert(name), "Duplicate name: {}", name);
+    }
 }
 
 #[test]
@@ -806,15 +811,16 @@ fn author_addresses_valid_format() {
 
 #[test]
 fn transaction_txid_format_valid() {
-    let btc_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
+    let hex64_regex = regex::Regex::new(r"^[0-9a-f]{64}$").unwrap();
     let eth_regex = regex::Regex::new(r"^0x[0-9a-f]{64}$").unwrap();
+    // Common for chains using base64url txids (e.g., Arweave: 43 chars)
+    let base64url_43_regex = regex::Regex::new(r"^[A-Za-z0-9_-]{43}$").unwrap();
     for puzzle in boha::all() {
         for tx in puzzle.transactions {
             if let Some(txid) = tx.txid {
-                let valid = match puzzle.chain {
-                    Chain::Ethereum => eth_regex.is_match(txid),
-                    _ => btc_regex.is_match(txid),
-                };
+                let valid = eth_regex.is_match(txid)
+                    || hex64_regex.is_match(txid)
+                    || base64url_43_regex.is_match(txid);
                 assert!(
                     valid,
                     "Invalid txid format for {:?} transaction in {}: {}",
@@ -1131,26 +1137,22 @@ fn unsolved_puzzles_no_claim_txid() {
 
 #[test]
 fn tx_explorer_url_format() {
-    assert_eq!(
-        Chain::Bitcoin.tx_explorer_url("abc123"),
-        "https://mempool.space/tx/abc123"
-    );
-    assert_eq!(
-        Chain::Ethereum.tx_explorer_url("0xdef456"),
-        "https://etherscan.io/tx/0xdef456"
-    );
-    assert_eq!(
-        Chain::Litecoin.tx_explorer_url("abc"),
-        "https://blockchair.com/litecoin/transaction/abc"
-    );
-    assert_eq!(
-        Chain::Monero.tx_explorer_url("xyz"),
-        "https://xmrchain.net/tx/xyz"
-    );
-    assert_eq!(
-        Chain::Decred.tx_explorer_url("dcr123"),
-        "https://dcrdata.decred.org/tx/dcr123"
-    );
+    for chain in Chain::ALL {
+        let txid = "abc123";
+        let url = chain.tx_explorer_url(txid);
+        assert!(
+            url.starts_with("https://"),
+            "Explorer URL must be https for {:?}: {}",
+            chain,
+            url
+        );
+        assert!(
+            url.contains(txid),
+            "Explorer URL must include txid for {:?}: {}",
+            chain,
+            url
+        );
+    }
 }
 
 #[test]

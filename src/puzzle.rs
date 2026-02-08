@@ -17,6 +17,14 @@ pub enum Chain {
 }
 
 impl Chain {
+    pub const ALL: [Chain; 5] = [
+        Chain::Bitcoin,
+        Chain::Ethereum,
+        Chain::Litecoin,
+        Chain::Monero,
+        Chain::Decred,
+    ];
+
     /// Currency symbol (e.g., "BTC", "ETH").
     pub fn symbol(&self) -> &'static str {
         match self {
