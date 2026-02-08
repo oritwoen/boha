@@ -87,9 +87,22 @@
           "description": "Transaction type"
         },
         "txid": {
-          "type": ["string", "null"],
-          "pattern": "^[a-f0-9]{64}$",
-          "description": "Transaction ID (256-bit hash)"
+          "oneOf": [
+            {
+              "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^[a-f0-9]{64}$",
+              "description": "Hex-encoded 256-bit hash"
+            },
+            {
+              "type": "string",
+              "pattern": "^[A-Za-z0-9_-]{43}$",
+              "description": "Base64url-encoded 32-byte id (e.g., Arweave txid)"
+            }
+          ],
+          "description": "Transaction ID"
         },
         "date": {
           "type": ["string", "null"],

@@ -4,7 +4,7 @@ use boha::{
 };
 use chrono::Utc;
 use clap::{Parser, Subcommand, ValueEnum};
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::io::IsTerminal;
 
 fn parse_chain(s: &str) -> Result<Chain, String> {
@@ -291,6 +291,8 @@ struct StatsCsvRow {
     claimed: usize,
     swept: usize,
     with_pubkey: usize,
+    total_prize_by_chain: String,
+    unsolved_prize_by_chain: String,
     total_prize_btc: f64,
     total_prize_eth: f64,
     total_prize_ltc: f64,
@@ -309,6 +311,14 @@ impl StatsCsvRow {
             *map.get(&chain).unwrap_or(&0.0)
         }
 
+        fn prize_map_json(map: &HashMap<Chain, f64>) -> String {
+            let mut out = BTreeMap::<String, f64>::new();
+            for (chain, amount) in map {
+                out.insert(chain.symbol().to_string(), *amount);
+            }
+            serde_json::to_string(&out).expect("serialize prize map")
+        }
+
         Self {
             total: stats.total,
             solved: stats.solved,
@@ -316,6 +326,8 @@ impl StatsCsvRow {
             claimed: stats.claimed,
             swept: stats.swept,
             with_pubkey: stats.with_pubkey,
+            total_prize_by_chain: prize_map_json(&stats.total_prize),
+            unsolved_prize_by_chain: prize_map_json(&stats.unsolved_prize),
             total_prize_btc: get_prize(&stats.total_prize, Chain::Bitcoin),
             total_prize_eth: get_prize(&stats.total_prize, Chain::Ethereum),
             total_prize_ltc: get_prize(&stats.total_prize, Chain::Litecoin),

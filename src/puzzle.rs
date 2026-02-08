@@ -17,6 +17,14 @@ pub enum Chain {
 }
 
 impl Chain {
+    pub const ALL: [Chain; 5] = [
+        Chain::Bitcoin,
+        Chain::Ethereum,
+        Chain::Litecoin,
+        Chain::Monero,
+        Chain::Decred,
+    ];
+
     /// Currency symbol (e.g., "BTC", "ETH").
     pub fn symbol(&self) -> &'static str {
         match self {
@@ -46,6 +54,21 @@ impl Chain {
             Chain::Litecoin => format!("https://blockchair.com/litecoin/transaction/{}", txid),
             Chain::Monero => format!("https://xmrchain.net/tx/{}", txid),
             Chain::Decred => format!("https://dcrdata.decred.org/tx/{}", txid),
+        }
+    }
+
+    pub fn is_valid_txid(&self, txid: &str) -> bool {
+        fn is_hex64(s: &str) -> bool {
+            s.len() == 64
+                && s.as_bytes()
+                    .iter()
+                    .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+        }
+
+        match self {
+            Chain::Ethereum => txid.starts_with("0x") && txid.len() == 66 && is_hex64(&txid[2..]),
+            // Current chains use hex-encoded 256-bit hashes.
+            Chain::Bitcoin | Chain::Litecoin | Chain::Monero | Chain::Decred => is_hex64(txid),
         }
     }
 }
