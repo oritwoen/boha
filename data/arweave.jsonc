@@ -30,6 +30,7 @@
       "solve_date": "2019-05-23 19:53:50",
       "solve_time": 120387,
       "source_url": "https://arweave.net/byT7l6tkFq8mzqshwmju8fVi1rp8H9mYanlxzsJ7RjQ#instructions",
+      "solver": "pogo",
       "transactions": [
         {
           "type": "funding",
@@ -64,6 +65,7 @@
       "solve_date": "2019-05-24 17:51:23",
       "solve_time": 41298,
       "source_url": "https://yvmqerqbjzui3g2lnze7qwkaocl3ikhavhuvl2vvcek4u7f3e2la.arweave.net/xVkCRgFOaI2bS25J-FlAcJe0KOCp6VXqtREVyny7JpY",
+      "solver": "pogo",
       "transactions": [
         {
           "type": "funding",
@@ -130,6 +132,7 @@
       "solve_date": "2019-11-10 10:25:40",
       "solve_time": 14582743,
       "source_url": "https://ojducxyzj2dirbt7xt2jod7dkwfqolxjre6tzp63fycuq5477vta.arweave.net/ckdBXxlOhoiGf7z0lw_jVYsHLumJPTy_2y4FSHef_WY#instructions",
+      "solver": "arpox",
       "transactions": [
         {
           "type": "funding",
@@ -238,6 +241,7 @@
       "solve_date": "2020-03-07 05:57:26",
       "solve_time": 5078297,
       "source_url": "https://mwgauw2twixdxh3fm6mywx7tvuxo442xtckttdbhpbctxz3em5fq.arweave.net/ZYwKW1OyLjufZWeZi1_zrS7uc1eYlTmMJ3hFO-dkZ0s",
+      "solver": "lia",
       "transactions": [
         {
           "type": "funding",
@@ -326,6 +330,7 @@
       "solve_date": "2020-05-23 01:26:15",
       "solve_time": 351186,
       "source_url": "https://arweave.net/icRlgZbXVq01wPrFdllafMvKXoQ6Kfo1mQMdmeyX514",
+      "solver": "lefevre",
       "transactions": [
         {
           "type": "funding",
