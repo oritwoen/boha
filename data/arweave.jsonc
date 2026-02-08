@@ -24,15 +24,30 @@
         "value": "PbdTDYikdddWfNFlDt2aZokALXKe1mJVSC9TALUBNv8",
         "kind": "standard"
       },
-      "status": "unsolved",
-      "prize": null,
+      "status": "claimed",
+      "prize": 1000,
       "start_date": "2019-05-22 10:27:23",
+      "solve_date": "2019-05-23 19:53:50",
+      "solve_time": 120387,
+      "source_url": "https://zorenx.medium.com/arweave-puzzle-series-puzzle-01-solved-59aa19a0ea2f",
       "transactions": [
         {
           "type": "funding",
           "txid": "Yd0DrtrEzTg3K9HCxQY5fKgnng4S9ShH2WYmObFTLmo",
           "date": "2019-05-22 10:27:23",
           "amount": 500
+        },
+        {
+          "type": "funding",
+          "txid": "KZac9xX660vJQmymsawId_pdM-oJjBYIlCSVE__Vq7w",
+          "date": "2019-05-23 15:13:40",
+          "amount": 500
+        },
+        {
+          "type": "claim",
+          "txid": "BYZEa-jS5pfY-dakErCemga4fkM-mjBDEONW0IzcYAs",
+          "date": "2019-05-23 19:53:50",
+          "amount": 999.99978588
         }
       ]
     },
