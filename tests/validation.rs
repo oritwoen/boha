@@ -1121,6 +1121,7 @@ fn solver_profiles_valid_url() {
 fn author_profiles_valid_url() {
     let authors = [
         boha::b1000::author(),
+        boha::arweave::author(),
         boha::zden::author(),
         boha::hash_collision::author(),
         boha::gsmg::author(),

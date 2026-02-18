@@ -299,11 +299,13 @@ struct StatsCsvRow {
     total_prize_ltc: f64,
     total_prize_xmr: f64,
     total_prize_dcr: f64,
+    total_prize_ar: f64,
     unsolved_prize_btc: f64,
     unsolved_prize_eth: f64,
     unsolved_prize_ltc: f64,
     unsolved_prize_xmr: f64,
     unsolved_prize_dcr: f64,
+    unsolved_prize_ar: f64,
 }
 
 impl StatsCsvRow {
@@ -334,11 +336,13 @@ impl StatsCsvRow {
             total_prize_ltc: get_prize(&stats.total_prize, Chain::Litecoin),
             total_prize_xmr: get_prize(&stats.total_prize, Chain::Monero),
             total_prize_dcr: get_prize(&stats.total_prize, Chain::Decred),
+            total_prize_ar: get_prize(&stats.total_prize, Chain::Arweave),
             unsolved_prize_btc: get_prize(&stats.unsolved_prize, Chain::Bitcoin),
             unsolved_prize_eth: get_prize(&stats.unsolved_prize, Chain::Ethereum),
             unsolved_prize_ltc: get_prize(&stats.unsolved_prize, Chain::Litecoin),
             unsolved_prize_xmr: get_prize(&stats.unsolved_prize, Chain::Monero),
             unsolved_prize_dcr: get_prize(&stats.unsolved_prize, Chain::Decred),
+            unsolved_prize_ar: get_prize(&stats.unsolved_prize, Chain::Arweave),
         }
     }
 }
