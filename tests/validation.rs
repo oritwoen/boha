@@ -1178,15 +1178,15 @@ fn zden_count() {
 
 #[test]
 fn zden_get_by_name() {
-    let level1 = zden::get("Level 1").unwrap();
+    let level1 = zden::get("level_1").unwrap();
     assert_eq!(level1.address.value, "1cryptommoqPHVNHuxVQG3bzujnRJYB1D");
     assert_eq!(level1.status, Status::Solved);
     assert_eq!(level1.chain, Chain::Bitcoin);
 
-    let xixoio = zden::get("XIXOIO").unwrap();
+    let xixoio = zden::get("xixoio").unwrap();
     assert_eq!(xixoio.chain, Chain::Ethereum);
 
-    let ltc = zden::get("Litecoin SegWit").unwrap();
+    let ltc = zden::get("litecoin_segwit").unwrap();
     assert_eq!(ltc.chain, Chain::Litecoin);
 }
 
@@ -1235,9 +1235,9 @@ fn zden_eth_dcr_no_hash160() {
 
 #[test]
 fn universal_get_works_with_zden() {
-    assert!(boha::get("zden/Level 1").is_ok());
-    assert!(boha::get("zden/XIXOIO").is_ok());
-    assert!(boha::get("zden/Litecoin SegWit").is_ok());
+    assert!(boha::get("zden/level_1").is_ok());
+    assert!(boha::get("zden/xixoio").is_ok());
+    assert!(boha::get("zden/litecoin_segwit").is_ok());
 }
 
 #[test]
