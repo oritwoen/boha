@@ -11,7 +11,7 @@ pub mod version {
     include!(concat!(env!("OUT_DIR"), "/data_version.rs"));
 }
 
-pub use collections::{b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden};
+pub use collections::{arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden};
 pub use puzzle::{
     Address, Assets, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase,
     Profile, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status,
@@ -47,6 +47,7 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
     }
 
     match parts[0] {
+        "arweave" => arweave::get(parts[1]),
         "b1000" => {
             let num: u32 = parts[1]
                 .parse()
@@ -62,7 +63,8 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
 }
 
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
-    b1000::all()
+    arweave::all()
+        .chain(b1000::all())
         .chain(ballet::all())
         .chain(bitaps::all())
         .chain(bitimage::all())

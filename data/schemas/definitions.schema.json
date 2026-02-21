@@ -57,7 +57,7 @@
     },
     "chain": {
       "type": "string",
-      "enum": ["bitcoin", "ethereum", "litecoin", "monero", "decred"],
+      "enum": ["bitcoin", "ethereum", "litecoin", "monero", "decred", "arweave"],
       "description": "Blockchain network"
     },
     "pubkey": {
@@ -90,6 +90,11 @@
           "oneOf": [
             {
               "type": "null"
+            },
+            {
+              "type": "string",
+              "pattern": "^0x[0-9a-f]{64}$",
+              "description": "Ethereum transaction hash (0x-prefixed)"
             },
             {
               "type": "string",

@@ -1,0 +1,350 @@
+{
+  "$schema": "./schemas/collection.schema.json",
+  "author": {
+    "name": "Tiamat",
+    "profiles": [
+      {
+        "name": "website",
+        "url": "https://chronobot.io/"
+      },
+      {
+        "name": "twitter",
+        "url": "https://twitter.com/ArweaveP"
+      }
+    ]
+  },
+  "metadata": {
+    "source_url": "https://arweave.medium.com/community-spotlight-meeting-tiamat-e484655b25e0"
+  },
+  "puzzles": [
+    {
+      "name": "weave1",
+      "chain": "arweave",
+      "address": {
+        "value": "PbdTDYikdddWfNFlDt2aZokALXKe1mJVSC9TALUBNv8",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 1000,
+      "start_date": "2019-05-22 10:27:23",
+      "solve_date": "2019-05-23 19:53:50",
+      "solve_time": 120387,
+      "source_url": "https://arweave.net/byT7l6tkFq8mzqshwmju8fVi1rp8H9mYanlxzsJ7RjQ#instructions",
+      "solver": "pogo",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "Yd0DrtrEzTg3K9HCxQY5fKgnng4S9ShH2WYmObFTLmo",
+          "date": "2019-05-22 10:27:23",
+          "amount": 500
+        },
+        {
+          "type": "funding",
+          "txid": "KZac9xX660vJQmymsawId_pdM-oJjBYIlCSVE__Vq7w",
+          "date": "2019-05-23 15:13:40",
+          "amount": 500
+        },
+        {
+          "type": "claim",
+          "txid": "BYZEa-jS5pfY-dakErCemga4fkM-mjBDEONW0IzcYAs",
+          "date": "2019-05-23 19:53:50",
+          "amount": 999.99978588
+        }
+      ]
+    },
+    {
+      "name": "weave2",
+      "chain": "arweave",
+      "address": {
+        "value": "4WDNiit5lNCZWgxGOK3tTJxS5dOwJjRmTqDnxOjMuWk",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 1250,
+      "start_date": "2019-05-24 06:23:05",
+      "solve_date": "2019-05-24 17:51:23",
+      "solve_time": 41298,
+      "source_url": "https://yvmqerqbjzui3g2lnze7qwkaocl3ikhavhuvl2vvcek4u7f3e2la.arweave.net/xVkCRgFOaI2bS25J-FlAcJe0KOCp6VXqtREVyny7JpY",
+      "solver": "pogo",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "TUNZkBsDP7N0stBp8VCUU86sYhLgYSa6aiPCTJ2kDYU",
+          "date": "2019-05-24 06:23:05",
+          "amount": 250
+        },
+        {
+          "type": "funding",
+          "txid": "0lvvvE0Isy3TqmJwOhIWVidJNECLwdCI5L9vp1JLync",
+          "date": "2019-05-24 10:04:08",
+          "amount": 1000
+        },
+        {
+          "type": "claim",
+          "txid": "NgecvZjHWx9GTi3SdIQnw8SwPQBmJ8BIOVrIvKCQnRY",
+          "date": "2019-05-24 17:51:23",
+          "amount": 1249.74967882
+        }
+      ]
+    },
+    {
+      "name": "weave3",
+      "chain": "arweave",
+      "address": {
+        "value": "wHP6OPG5GMF5dedo_CD8AAy6x8La-gfI5b5pk65Tx_0",
+        "kind": "standard"
+      },
+      "status": "unsolved",
+      "prize": 1000,
+      "start_date": "2019-05-25 13:07:33",
+      "source_url": "https://ur42unm2jhdm.arweave.net/VLJIGuTJewofKx8ad4JYQs93nEuGnkgjrIt_Sd2QPYw",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "hTB5Ouv5nY11pQiGFXCJQZxNOkVlgPAAJ9IYSRu8v0E",
+          "date": "2019-05-25 13:07:33",
+          "amount": 250
+        },
+        {
+          "type": "funding",
+          "txid": "_Aa5au3qzhCSIPxj5RfLkF_eSUuxAcnqoWY3PeKTaRg",
+          "date": "2019-05-27 08:30:39",
+          "amount": 500
+        },
+        {
+          "type": "funding",
+          "txid": "7-sWojFc0sG3mTr34YGBGssYDvXjOPZf-xik8v1Ct24",
+          "date": "2019-08-28 14:09:38",
+          "amount": 250
+        }
+      ]
+    },
+    {
+      "name": "weave4",
+      "chain": "arweave",
+      "address": {
+        "value": "2pwE_LEzD0z6m_ENCDIta9YTBKXW9FFCURrx1yJoO7w",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 500,
+      "start_date": "2019-05-25 15:39:57",
+      "solve_date": "2019-11-10 10:25:40",
+      "solve_time": 14582743,
+      "source_url": "https://ojducxyzj2dirbt7xt2jod7dkwfqolxjre6tzp63fycuq5477vta.arweave.net/ckdBXxlOhoiGf7z0lw_jVYsHLumJPTy_2y4FSHef_WY#instructions",
+      "solver": "arpox",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "e06EdrRKRFA-ymkfaAa1hNcBBO0yWKrf-ON9p6JmWd0",
+          "date": "2019-05-25 15:39:57",
+          "amount": 250
+        },
+        {
+          "type": "funding",
+          "txid": "2UuC2087I_yNZ3Fc5bMUfjwPOAg2CEhLmQNuEDiRMjE",
+          "date": "2019-08-28 14:01:39",
+          "amount": 250
+        },
+        {
+          "type": "claim",
+          "txid": "oAg07abF6rlrbZfn7P4AT05XN0VIAB_0V8j4L-0-Vt4",
+          "date": "2019-11-10 10:25:40",
+          "amount": 499.99997828
+        }
+      ]
+    },
+    {
+      "name": "weave5",
+      "chain": "arweave",
+      "address": {
+        "value": "G2BaxD9phYHJ55VaEY-aX28FtQCKLORMMQSc74IaqYg",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 500,
+      "start_date": "2019-05-25 15:45:15",
+      "solve_date": "2023-09-03 16:38:10",
+      "solve_time": 134959975,
+      "source_url": "https://arweave.net/H3NuKVKHTAkb5MqTUbyY77UqiqgExrnTBgc2uKiXq00#instructions",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "H7PEY8brbrdhiz3EMDjEcVIiTI1EUcQYyO2B8TACPMI",
+          "date": "2019-05-25 15:45:15",
+          "amount": 250
+        },
+        {
+          "type": "funding",
+          "txid": "lRzGOduxfmyb7X1gz9Q_sMJpjy0LgM7vP2izY72TIN8",
+          "date": "2019-06-03 06:45:40",
+          "amount": 250
+        },
+        {
+          "type": "claim",
+          "txid": "ymccg1q8qOyRlF-P9lASjgjl6_2FLiaTbdJ2Tn9HmZQ",
+          "date": "2023-09-03 16:38:10",
+          "amount": 499.98423607
+        }
+      ]
+    },
+    {
+      "name": "weave7",
+      "chain": "ethereum",
+      "address": {
+        "value": "0x13f968d3bb996f39838ade86109b8150ba890d7e",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 3,
+      "start_date": "2019-06-10 16:40:22",
+      "solve_date": "2023-09-18 09:00:11",
+      "solve_time": 134842789,
+      "source_url": "https://arweave.net/I9b6im2OKIZh44eMEquRvsISkfl189esaoDSLOO0G9Y",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "0xbf6dbe70baaa90dd90810ca9fc6e0012bf05419ae92aa7e1d17ecf892515071c",
+          "date": "2019-06-10 16:40:22",
+          "amount": 1
+        },
+        {
+          "type": "funding",
+          "txid": "0x7f892d644529d231dccfbaf5127634996fbbaf7cc7f4b4866d1c4a9e39bd2c6f",
+          "date": "2019-06-12 10:15:06",
+          "amount": 1
+        },
+        {
+          "type": "funding",
+          "txid": "0x7a06401c304248848bacdd596391745176888925ed09774aa28058de1148c723",
+          "date": "2019-06-12 15:49:55",
+          "amount": 1
+        },
+        {
+          "type": "claim",
+          "txid": "0xb62ae885191bd5ef9d822e2ab0c49ce6127e0efcea09fd42f1a4f552b14dc068",
+          "date": "2023-09-18 09:00:11",
+          "amount": 2.994808896749136
+        }
+      ]
+    },
+    {
+      "name": "weave8",
+      "chain": "arweave",
+      "address": {
+        "value": "ayJQH1S6Fi52OEokLVi2tl5kr_y39LSfhJcNV0z9Ny4",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 400,
+      "start_date": "2020-01-08 11:19:09",
+      "solve_date": "2020-03-07 05:57:26",
+      "solve_time": 5078297,
+      "source_url": "https://mwgauw2twixdxh3fm6mywx7tvuxo442xtckttdbhpbctxz3em5fq.arweave.net/ZYwKW1OyLjufZWeZi1_zrS7uc1eYlTmMJ3hFO-dkZ0s",
+      "solver": "lia",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "QC2WG7BkxHLnlREz6DsdoFm4wlmmSnwXYAPn9NWEvF4",
+          "date": "2020-01-08 11:19:09",
+          "amount": 400
+        },
+        {
+          "type": "claim",
+          "txid": "IyDIQkSbPFAe7Iunxr6A7Hwzt0QTbX6_NV8Vrn7L_5M",
+          "date": "2020-03-07 05:57:26",
+          "amount": 399.99999394
+        }
+      ]
+    },
+    {
+      "name": "weave10",
+      "chain": "arweave",
+      "address": {
+        "value": "bkjJGw3NLxs8OAyRxgTL-QFpiB3lBJqZ76kDhWdB-Rs",
+        "kind": "standard"
+      },
+      "status": "unsolved",
+      "prize": 500,
+      "start_date": "2020-04-14 09:17:16",
+      "source_url": "https://arweave.net/1fLPMP_smP6ipdIYbYUAZtFPwO4crdYr4kMVf5uTivg",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "uurk6fxEsygKJmr-fJyC-3sPneslNV3ZtUx0fZxZAG0",
+          "date": "2020-04-14 09:17:16",
+          "amount": 500
+        }
+      ]
+    },
+    {
+      "name": "weave11",
+      "chain": "ethereum",
+      "address": {
+        "value": "0xff2142e98e09b5344994f9beb9c56c95506b9f17",
+        "kind": "standard"
+      },
+      "status": "unsolved",
+      "prize": 1,
+      "start_date": "2020-04-14 09:10:29",
+      "source_url": "https://arweave.net/CzITHnEIlkQw9SbaX5futCzFrKk1qe_NwvWnIBmP2fY",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "0x0d4738abf9d5c03c196eee4953feeb56ff06c385fa322bc9c76e105da38d7563",
+          "date": "2020-04-14 09:10:29",
+          "amount": 1
+        }
+      ]
+    },
+    {
+      "name": "weave12",
+      "chain": "arweave",
+      "address": {
+        "value": "XRGEfkMbCMHeTY9mZI9Lh6hf8EmA8RstmBFUjDm40fg",
+        "kind": "standard"
+      },
+      "status": "unsolved",
+      "prize": 400,
+      "start_date": "2020-04-14 09:17:16",
+      "source_url": "https://arweave.net/gymumAAsxGlzqPL5HzoEB8Xryu61o174j7vHwx21Qoo",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "BregUvA5IRkePHvH6G5fL54ZI-L4JF2TfO7NyRj6U-Y",
+          "date": "2020-04-14 09:17:16",
+          "amount": 400
+        }
+      ]
+    },
+    {
+      "name": "weave13",
+      "chain": "ethereum",
+      "address": {
+        "value": "0x0a5c81f5bfb8ec2f47deff466a1a4e55b8fc9319",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 1,
+      "start_date": "2020-05-18 23:53:09",
+      "solve_date": "2020-05-23 01:26:15",
+      "solve_time": 351186,
+      "source_url": "https://arweave.net/icRlgZbXVq01wPrFdllafMvKXoQ6Kfo1mQMdmeyX514",
+      "solver": "lefevre",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "0x7638cc1662742f6e3fa07e48d010744ae7c08c0a144d8efe8e8d961cee5a89ac",
+          "date": "2020-05-18 23:53:09",
+          "amount": 1
+        },
+        {
+          "type": "claim",
+          "txid": "0x489ee0b07653ca91c52b3201b795f55824529c1acbfadeb088b9493db78e136e",
+          "date": "2020-05-23 01:26:15",
+          "amount": 1
+        }
+      ]
+    }
+  ]
+}
