@@ -107,7 +107,8 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "Puzzle name/identifier"
+          "pattern": "^[a-zA-Z0-9_]+$",
+          "description": "Puzzle name/identifier (alphanumeric and underscores only, no spaces)"
         },
         "chain": {
           "$ref": "./definitions.schema.json#/$defs/chain"

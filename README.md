@@ -61,7 +61,7 @@ boha show gsmg
 boha show hash_collision/sha256
 
 # Show puzzle and open asset in browser
-boha show zden/Level\ 4 --open
+boha show zden/level_4 --open
 
 # Get key range
 boha range 90
@@ -125,13 +125,13 @@ let unsolved: Vec<_> = b1000::all()
 
 let gsmg_puzzle = gsmg::get();
 let sha256 = hash_collision::get("sha256").unwrap();
-let level1 = zden::get("Level 1").unwrap();
+let level1 = zden::get("level_1").unwrap();
 
 let puzzle = boha::get("b1000/90").unwrap();
 let puzzle = boha::get("gsmg").unwrap();
 let puzzle = boha::get("bitaps").unwrap();
 let puzzle = boha::get("bitimage/kitten").unwrap();
-let puzzle = boha::get("zden/Level 1").unwrap();
+let puzzle = boha::get("zden/level_1").unwrap();
 
 // Access puzzle assets (images, hints)
 if let Some(path) = puzzle.asset_path() {
@@ -255,8 +255,8 @@ assets/
 Access via library:
 
 ```rust
-let puzzle = zden::get("Level 4").unwrap();
-println!("{}", puzzle.asset_path().unwrap());  // assets/zden/level-4/puzzle.png
+let puzzle = zden::get("level_4").unwrap();
+println!("{}", puzzle.asset_path().unwrap());  // assets/zden/level_4/puzzle.png
 println!("{}", puzzle.asset_url().unwrap());   // https://raw.githubusercontent.com/...
 ```
 

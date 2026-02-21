@@ -559,7 +559,7 @@ mod search {
             .assert()
             .success()
             .stdout(predicate::str::contains("zden/"))
-            .stdout(predicate::str::contains("Level"))
+            .stdout(predicate::str::contains("level_"))
             .stdout(predicate::str::contains("b1000/").not())
             .stdout(predicate::str::contains("hash_collision/").not());
     }

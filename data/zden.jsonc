@@ -15,7 +15,7 @@
   },
   "puzzles": [
     {
-      "name": "Level 1",
+      "name": "level_1",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptommoqPHVNHuxVQG3bzujnRJYB1D",
@@ -64,7 +64,7 @@
       }
     },
     {
-      "name": "Level 2",
+      "name": "level_2",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptoTuax4qeedzVC35eYf4c16v4reJ",
@@ -107,7 +107,7 @@
       }
     },
     {
-      "name": "Level 3",
+      "name": "level_3",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptoJzomVVJUSys8Qv1gKPCXFoZy1U",
@@ -150,7 +150,7 @@
       }
     },
     {
-      "name": "Level 4",
+      "name": "level_4",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptoRMRnj7Q9fgToxTRvejLnx3QRPq",
@@ -183,7 +183,7 @@
       }
     },
     {
-      "name": "Level 5",
+      "name": "level_5",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptoGeCRiTzVgxBQcKFFjSVydN1GW7",
@@ -226,7 +226,7 @@
       }
     },
     {
-      "name": "Level HALV",
+      "name": "level_halv",
       "chain": "bitcoin",
       "address": {
         "value": "1crypto24HCr178iMcKd5iUi5D4rsg1nK",
@@ -251,7 +251,7 @@
       }
     },
     {
-      "name": "Level SFX",
+      "name": "level_sfx",
       "chain": "bitcoin",
       "address": {
         "value": "1crypto92aYKxdzD6VSAKwpEJnXcA2s9t",
@@ -297,7 +297,7 @@
       }
     },
     {
-      "name": "Level XM17",
+      "name": "level_xm17",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptozWJAE7UzDZF1eSgsT7mVjUsu7g",
@@ -331,7 +331,7 @@
       }
     },
     {
-      "name": "1BiTCoiN WHiTe PaPeR",
+      "name": "1bitcoin_white_paper",
       "chain": "bitcoin",
       "address": {
         "value": "1BiTCoiNsuFnkCFGkv6AGgwWxN31GUwY6W",
@@ -365,7 +365,7 @@
       }
     },
     {
-      "name": "Demobit 2018",
+      "name": "demobit_2018",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptotnptVK1ZbpZFyEqcR5EVp5hjfk",
@@ -405,7 +405,7 @@
       }
     },
     {
-      "name": "Nethemba",
+      "name": "nethemba",
       "chain": "bitcoin",
       "address": {
         "value": "1cryptoP5yMdKcz1bjzUqnbs3LsasVRX6",
@@ -439,7 +439,7 @@
       }
     },
     {
-      "name": "XIXOIO",
+      "name": "xixoio",
       "chain": "ethereum",
       "address": {
         "value": "0x5d663791e869ca70c71e0a5f4cfd707f596265aa",
@@ -472,7 +472,7 @@
       }
     },
     {
-      "name": "Codex Protocol",
+      "name": "codex_protocol",
       "chain": "ethereum",
       "address": {
         "value": "0x6b2560b34c7469c561a8fce581c88bfb8cce73b2",
@@ -505,7 +505,7 @@
       }
     },
     {
-      "name": "Litecoin SegWit",
+      "name": "litecoin_segwit",
       "chain": "litecoin",
       "address": {
         "value": "LartGjF6UjmvmF1JXBhFf5wtM9uZX7LzeS",
@@ -569,7 +569,7 @@
       }
     },
     {
-      "name": "Decred Janus",
+      "name": "decred_janus",
       "chain": "decred",
       "address": {
         "value": "DsRaAja82UvgnqYaBHYFuyCKURFX2rCyEJ8",
