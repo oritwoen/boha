@@ -31,14 +31,14 @@ cargo install boha --features cli,balance
 
 ```toml
 [dependencies]
-boha = "0.15"
+boha = "0.16"
 ```
 
 With balance fetching:
 
 ```toml
 [dependencies]
-boha = { version = "0.15", features = ["balance"] }
+boha = { version = "0.16", features = ["balance"] }
 ```
 
 ## Usage

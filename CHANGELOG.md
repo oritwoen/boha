@@ -1,3 +1,13 @@
+## [0.16.0] - 2026-02-21
+
+### Features
+
+- *(arweave)* Add Arweave collection (#111)
+
+### Refactor
+
+- *(chain)* Multichain prep (#109)
+- *(zden)* Normalize names to snake_case (#114)
 ## [0.15.0] - 2026-01-27
 
 ### Features
@@ -17,6 +27,10 @@
 ### Documentation
 
 - Standardize badges and add community section
+
+### Miscellaneous Tasks
+
+- *(release)* V0.15.0
 ## [0.14.0] - 2026-01-13
 
 ### Features
