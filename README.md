@@ -7,10 +7,6 @@
 
 Crypto bounties, puzzles and challenges data library.
 
-## Community
-
-- [Bitcointalk](https://bitcointalk.org/index.php?topic=5570614) - Discussion thread
-
 ## Installation
 
 ### CLI
