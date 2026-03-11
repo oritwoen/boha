@@ -1310,6 +1310,7 @@ fn cmd_author(collection: &str, format: OutputFormat) {
     let author = match collection {
         "arweave" => arweave::author(),
         "b1000" => b1000::author(),
+        "ballet" => ballet::author(),
         "bitaps" => bitaps::author(),
         "bitimage" => bitimage::author(),
         "gsmg" => gsmg::author(),
@@ -1317,7 +1318,7 @@ fn cmd_author(collection: &str, format: OutputFormat) {
         "zden" => zden::author(),
         _ => {
             eprintln!(
-                "{} Unknown collection: {}. Use: arweave, b1000, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden",
+                "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden",
                 "Error:".red().bold(),
                 collection
             );
