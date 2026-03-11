@@ -522,4 +522,11 @@ mod tests {
         assert!(!Status::Claimed.is_active());
         assert!(!Status::Swept.is_active());
     }
+
+    #[test]
+    fn test_into_puzzle_num_i32() {
+        assert_eq!((-1i32).into_puzzle_num(), None);
+        assert_eq!(0i32.into_puzzle_num(), None);
+        assert_eq!(1i32.into_puzzle_num(), Some(1));
+    }
 }
