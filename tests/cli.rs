@@ -93,6 +93,7 @@ mod list {
             .assert()
             .success()
             .stdout(predicate::str::contains("ballet/"))
+            .stdout(predicate::str::contains("b1000/").not())
             .stdout(predicate::str::contains("AA007448"));
     }
 
@@ -587,7 +588,13 @@ mod search {
     #[test]
     fn collection_filter_ballet() {
         boha()
-            .args(["search", "--collection", "ballet", "AA00"])
+            .args(["search", "00"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000/"));
+
+        boha()
+            .args(["search", "--collection", "ballet", "00"])
             .assert()
             .success()
             .stdout(predicate::str::contains("ballet/"))
