@@ -87,6 +87,17 @@ mod list {
     }
 
     #[test]
+    fn ballet_collection() {
+        boha()
+            .args(["list", "ballet"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("ballet/"))
+            .stdout(predicate::str::contains("b1000/").not())
+            .stdout(predicate::str::contains("AA007448"));
+    }
+
+    #[test]
     fn gsmg_collection() {
         boha()
             .args(["list", "gsmg"])
@@ -288,6 +299,16 @@ mod author {
             .success()
             .stdout(predicate::str::contains("GSMG.io"))
             .stdout(predicate::str::contains("https://gsmg.io/puzzle"));
+    }
+
+    #[test]
+    fn ballet_author() {
+        boha()
+            .args(["author", "ballet"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("Bobby Lee"))
+            .stdout(predicate::str::contains("https://x.com/bobbyclee"));
     }
 
     #[test]
@@ -562,6 +583,22 @@ mod search {
             .stdout(predicate::str::contains("level_"))
             .stdout(predicate::str::contains("b1000/").not())
             .stdout(predicate::str::contains("hash_collision/").not());
+    }
+
+    #[test]
+    fn collection_filter_ballet() {
+        boha()
+            .args(["search", "00"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000/"));
+
+        boha()
+            .args(["search", "--collection", "ballet", "00"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("ballet/"))
+            .stdout(predicate::str::contains("b1000/").not());
     }
 
     #[test]
