@@ -1617,7 +1617,10 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             let output = VerifyOutput {
                 id: id.to_string(),
                 verified: false,
-                private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(|s| s.to_string())),
+                private_key: puzzle
+                    .key
+                    .as_ref()
+                    .and_then(|k| k.hex.map(|s| s.to_string())),
                 expected_address: puzzle.address.value.to_string(),
                 derived_address: None,
                 error: Some(e.to_string()),
@@ -1697,9 +1700,11 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
                     error: None,
                 });
             }
-            Err(verify::VerifyError::NoPrivateKey
+            Err(
+                verify::VerifyError::NoPrivateKey
                 | verify::VerifyError::InvalidKey(_)
-                | verify::VerifyError::UnsupportedChain(_)) => {
+                | verify::VerifyError::UnsupportedChain(_),
+            ) => {
                 skipped_count += 1;
                 continue;
             }
@@ -1708,7 +1713,10 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
                 results.push(VerifyOutput {
                     id: puzzle.id.to_string(),
                     verified: false,
-                    private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(|s| s.to_string())),
+                    private_key: puzzle
+                        .key
+                        .as_ref()
+                        .and_then(|k| k.hex.map(|s| s.to_string())),
                     expected_address: puzzle.address.value.to_string(),
                     derived_address: None,
                     error: Some(e.to_string()),
