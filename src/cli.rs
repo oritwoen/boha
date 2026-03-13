@@ -7,20 +7,6 @@ use clap::{Parser, Subcommand, ValueEnum};
 use std::collections::{BTreeMap, HashMap};
 use std::io::IsTerminal;
 
-fn parse_chain(s: &str) -> Result<Chain, String> {
-    match s.to_lowercase().as_str() {
-        "bitcoin" | "btc" => Ok(Chain::Bitcoin),
-        "ethereum" | "eth" => Ok(Chain::Ethereum),
-        "litecoin" | "ltc" => Ok(Chain::Litecoin),
-        "monero" | "xmr" => Ok(Chain::Monero),
-        "decred" | "dcr" => Ok(Chain::Decred),
-        "arweave" | "ar" => Ok(Chain::Arweave),
-        _ => Err(format!(
-            "Unknown chain: {}. Use: bitcoin, ethereum, litecoin, monero, decred, arweave",
-            s
-        )),
-    }
-}
 use owo_colors::OwoColorize;
 use serde::Serialize;
 use tabled::{settings::Style, Table, Tabled};
@@ -67,7 +53,7 @@ enum Commands {
         #[arg(long, name = "with-transactions")]
         with_transactions: bool,
 
-        #[arg(long, value_parser = parse_chain)]
+        #[arg(long)]
         chain: Option<Chain>,
     },
 

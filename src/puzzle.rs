@@ -3,7 +3,9 @@
 use num_bigint::BigUint;
 use num_traits::One;
 use serde::Serialize;
+use std::fmt;
 use std::ops::RangeInclusive;
+use std::str::FromStr;
 
 /// Blockchain network for a puzzle.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -86,6 +88,38 @@ impl Chain {
     }
 }
 
+impl fmt::Display for Chain {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Chain::Bitcoin => "bitcoin",
+            Chain::Ethereum => "ethereum",
+            Chain::Litecoin => "litecoin",
+            Chain::Monero => "monero",
+            Chain::Decred => "decred",
+            Chain::Arweave => "arweave",
+        })
+    }
+}
+
+impl FromStr for Chain {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "bitcoin" | "btc" => Ok(Chain::Bitcoin),
+            "ethereum" | "eth" => Ok(Chain::Ethereum),
+            "litecoin" | "ltc" => Ok(Chain::Litecoin),
+            "monero" | "xmr" => Ok(Chain::Monero),
+            "decred" | "dcr" => Ok(Chain::Decred),
+            "arweave" | "ar" => Ok(Chain::Arweave),
+            _ => Err(format!(
+                "unknown chain: '{}'. expected: bitcoin, ethereum, litecoin, monero, decred, arweave (or symbol: btc, eth, ltc, xmr, dcr, ar)",
+                s
+            )),
+        }
+    }
+}
+
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Status {
@@ -117,6 +151,34 @@ pub struct Transaction {
 impl Status {
     pub fn is_active(&self) -> bool {
         matches!(self, Status::Unsolved)
+    }
+}
+
+impl fmt::Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Status::Solved => "solved",
+            Status::Unsolved => "unsolved",
+            Status::Claimed => "claimed",
+            Status::Swept => "swept",
+        })
+    }
+}
+
+impl FromStr for Status {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "solved" => Ok(Status::Solved),
+            "unsolved" => Ok(Status::Unsolved),
+            "claimed" => Ok(Status::Claimed),
+            "swept" => Ok(Status::Swept),
+            _ => Err(format!(
+                "unknown status: '{}'. expected: solved, unsolved, claimed, swept",
+                s
+            )),
+        }
     }
 }
 
@@ -521,5 +583,68 @@ mod tests {
         assert!(!Status::Solved.is_active());
         assert!(!Status::Claimed.is_active());
         assert!(!Status::Swept.is_active());
+    }
+
+    #[test]
+    fn chain_display_matches_serde() {
+        assert_eq!(Chain::Bitcoin.to_string(), "bitcoin");
+        assert_eq!(Chain::Ethereum.to_string(), "ethereum");
+        assert_eq!(Chain::Litecoin.to_string(), "litecoin");
+        assert_eq!(Chain::Monero.to_string(), "monero");
+        assert_eq!(Chain::Decred.to_string(), "decred");
+        assert_eq!(Chain::Arweave.to_string(), "arweave");
+    }
+
+    #[test]
+    fn chain_fromstr_by_name() {
+        assert_eq!("bitcoin".parse::<Chain>().unwrap(), Chain::Bitcoin);
+        assert_eq!("Bitcoin".parse::<Chain>().unwrap(), Chain::Bitcoin);
+        assert_eq!("ETHEREUM".parse::<Chain>().unwrap(), Chain::Ethereum);
+    }
+
+    #[test]
+    fn chain_fromstr_by_symbol() {
+        assert_eq!("btc".parse::<Chain>().unwrap(), Chain::Bitcoin);
+        assert_eq!("ETH".parse::<Chain>().unwrap(), Chain::Ethereum);
+        assert_eq!("ltc".parse::<Chain>().unwrap(), Chain::Litecoin);
+        assert_eq!("xmr".parse::<Chain>().unwrap(), Chain::Monero);
+        assert_eq!("dcr".parse::<Chain>().unwrap(), Chain::Decred);
+        assert_eq!("ar".parse::<Chain>().unwrap(), Chain::Arweave);
+    }
+
+    #[test]
+    fn chain_fromstr_invalid() {
+        assert!("dogecoin".parse::<Chain>().is_err());
+        assert!("".parse::<Chain>().is_err());
+    }
+
+    #[test]
+    fn status_display_matches_serde() {
+        assert_eq!(Status::Solved.to_string(), "solved");
+        assert_eq!(Status::Unsolved.to_string(), "unsolved");
+        assert_eq!(Status::Claimed.to_string(), "claimed");
+        assert_eq!(Status::Swept.to_string(), "swept");
+    }
+
+    #[test]
+    fn status_fromstr() {
+        assert_eq!("solved".parse::<Status>().unwrap(), Status::Solved);
+        assert_eq!("Unsolved".parse::<Status>().unwrap(), Status::Unsolved);
+        assert_eq!("CLAIMED".parse::<Status>().unwrap(), Status::Claimed);
+        assert_eq!("swept".parse::<Status>().unwrap(), Status::Swept);
+    }
+
+    #[test]
+    fn status_fromstr_invalid() {
+        assert!("pending".parse::<Status>().is_err());
+        assert!("".parse::<Status>().is_err());
+    }
+
+    #[test]
+    fn chain_roundtrip() {
+        for chain in Chain::ALL {
+            let s = chain.to_string();
+            assert_eq!(s.parse::<Chain>().unwrap(), chain);
+        }
     }
 }
