@@ -1592,102 +1592,33 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
         }
     };
 
-    if puzzle.key.is_none() {
-        if !quiet {
-            eprintln!("Error: Puzzle '{}' has no private key", id);
-        }
-        std::process::exit(2);
-    }
-
-    let key = puzzle.key.as_ref().unwrap();
-    let expected_address = &puzzle.address.value;
-
-    let result = if let Some(hex) = key.hex {
-        match puzzle.chain {
-            Chain::Bitcoin => {
-                let pubkey_format = puzzle
-                    .pubkey
-                    .as_ref()
-                    .map(|p| p.format)
-                    .unwrap_or(PubkeyFormat::Compressed);
-                verify::verify_bitcoin_address(hex, expected_address, pubkey_format)
-            }
-            Chain::Ethereum => verify::verify_ethereum_address(hex, expected_address),
-            Chain::Litecoin => {
-                let pubkey_format = puzzle
-                    .pubkey
-                    .as_ref()
-                    .map(|p| p.format)
-                    .unwrap_or(PubkeyFormat::Compressed);
-                verify::verify_litecoin_address(hex, expected_address, pubkey_format)
-            }
-            Chain::Decred => {
-                let pubkey_format = puzzle
-                    .pubkey
-                    .as_ref()
-                    .map(|p| p.format)
-                    .unwrap_or(PubkeyFormat::Compressed);
-                verify::verify_decred_address(hex, expected_address, pubkey_format)
-            }
-            Chain::Monero => Err(verify::VerifyError::UnsupportedChain(
-                "Monero verification not supported".to_string(),
-            )),
-            Chain::Arweave => Err(verify::VerifyError::UnsupportedChain(
-                "Arweave verification not supported".to_string(),
-            )),
-        }
-    } else if let Some(ref wif_data) = key.wif {
-        if let Some(wif) = wif_data.decrypted {
-            verify::verify_wif(wif, expected_address)
-        } else {
-            if !quiet {
-                eprintln!("Error: WIF is encrypted, cannot verify without passphrase");
-            }
-            std::process::exit(2);
-        }
-    } else if let Some(ref seed) = key.seed {
-        if let Some(phrase) = seed.phrase {
-            if let Some(path) = seed.path {
-                let pubkey_format = puzzle
-                    .pubkey
-                    .as_ref()
-                    .map(|p| p.format)
-                    .unwrap_or(PubkeyFormat::Compressed);
-                verify::verify_seed(phrase, path, expected_address, pubkey_format)
-            } else {
-                if !quiet {
-                    eprintln!("Error: Seed has no derivation path");
-                }
-                std::process::exit(2);
-            }
-        } else {
-            if !quiet {
-                eprintln!("Error: Seed has no mnemonic phrase");
-            }
-            std::process::exit(2);
-        }
-    } else {
-        if !quiet {
-            eprintln!("Error: Puzzle '{}' has no private key", id);
-        }
-        std::process::exit(2);
-    };
-
-    let output = match result {
-        Ok(derived) => VerifyOutput {
-            id: id.to_string(),
+    let output = match verify::verify_puzzle(puzzle) {
+        Ok(result) => VerifyOutput {
+            id: result.id,
             verified: true,
-            private_key: key.hex.map(|s| s.to_string()),
-            expected_address: expected_address.to_string(),
-            derived_address: Some(derived),
+            private_key: result.private_key,
+            expected_address: result.expected_address,
+            derived_address: result.derived_address,
             error: None,
         },
+        Err(verify::VerifyError::NoPrivateKey) => {
+            if !quiet {
+                eprintln!("Error: Puzzle '{}' has no private key", id);
+            }
+            std::process::exit(2);
+        }
+        Err(verify::VerifyError::InvalidKey(ref msg)) => {
+            if !quiet {
+                eprintln!("Error: {}", msg);
+            }
+            std::process::exit(2);
+        }
         Err(e) => {
             let output = VerifyOutput {
                 id: id.to_string(),
                 verified: false,
-                private_key: key.hex.map(|s| s.to_string()),
-                expected_address: expected_address.to_string(),
+                private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(|s| s.to_string())),
+                expected_address: puzzle.address.value.to_string(),
                 derived_address: None,
                 error: Some(e.to_string()),
             };
@@ -1754,106 +1685,36 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
     let mut skipped_count = 0;
 
     for puzzle in boha::all() {
-        if puzzle.key.is_none() {
-            skipped_count += 1;
-            continue;
-        }
-
-        let key = puzzle.key.as_ref().unwrap();
-        let expected_address = &puzzle.address.value;
-        let id = puzzle.id;
-
-        let result = if let Some(hex) = key.hex {
-            match puzzle.chain {
-                Chain::Bitcoin => {
-                    let pubkey_format = puzzle
-                        .pubkey
-                        .as_ref()
-                        .map(|p| p.format)
-                        .unwrap_or(PubkeyFormat::Compressed);
-                    verify::verify_bitcoin_address(hex, expected_address, pubkey_format)
-                }
-                Chain::Ethereum => verify::verify_ethereum_address(hex, expected_address),
-                Chain::Litecoin => {
-                    let pubkey_format = puzzle
-                        .pubkey
-                        .as_ref()
-                        .map(|p| p.format)
-                        .unwrap_or(PubkeyFormat::Compressed);
-                    verify::verify_litecoin_address(hex, expected_address, pubkey_format)
-                }
-                Chain::Decred => {
-                    let pubkey_format = puzzle
-                        .pubkey
-                        .as_ref()
-                        .map(|p| p.format)
-                        .unwrap_or(PubkeyFormat::Compressed);
-                    verify::verify_decred_address(hex, expected_address, pubkey_format)
-                }
-                Chain::Monero => {
-                    skipped_count += 1;
-                    continue;
-                }
-                Chain::Arweave => {
-                    skipped_count += 1;
-                    continue;
-                }
-            }
-        } else if let Some(ref wif_data) = key.wif {
-            if let Some(wif) = wif_data.decrypted {
-                verify::verify_wif(wif, expected_address)
-            } else {
-                skipped_count += 1;
-                continue;
-            }
-        } else if let Some(ref seed) = key.seed {
-            if let Some(phrase) = seed.phrase {
-                if let Some(path) = seed.path {
-                    let pubkey_format = puzzle
-                        .pubkey
-                        .as_ref()
-                        .map(|p| p.format)
-                        .unwrap_or(PubkeyFormat::Compressed);
-                    verify::verify_seed(phrase, path, expected_address, pubkey_format)
-                } else {
-                    skipped_count += 1;
-                    continue;
-                }
-            } else {
-                skipped_count += 1;
-                continue;
-            }
-        } else {
-            skipped_count += 1;
-            continue;
-        };
-
-        let output = match result {
-            Ok(derived) => {
+        match verify::verify_puzzle(puzzle) {
+            Ok(result) => {
                 verified_count += 1;
-                VerifyOutput {
-                    id: id.to_string(),
+                results.push(VerifyOutput {
+                    id: result.id,
                     verified: true,
-                    private_key: key.hex.map(|s| s.to_string()),
-                    expected_address: expected_address.to_string(),
-                    derived_address: Some(derived),
+                    private_key: result.private_key,
+                    expected_address: result.expected_address,
+                    derived_address: result.derived_address,
                     error: None,
-                }
+                });
+            }
+            Err(verify::VerifyError::NoPrivateKey
+                | verify::VerifyError::InvalidKey(_)
+                | verify::VerifyError::UnsupportedChain(_)) => {
+                skipped_count += 1;
+                continue;
             }
             Err(e) => {
                 failed_count += 1;
-                VerifyOutput {
-                    id: id.to_string(),
+                results.push(VerifyOutput {
+                    id: puzzle.id.to_string(),
                     verified: false,
-                    private_key: key.hex.map(|s| s.to_string()),
-                    expected_address: expected_address.to_string(),
+                    private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(|s| s.to_string())),
+                    expected_address: puzzle.address.value.to_string(),
                     derived_address: None,
                     error: Some(e.to_string()),
-                }
+                });
             }
-        };
-
-        results.push(output);
+        }
     }
 
     if !quiet {
