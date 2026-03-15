@@ -750,7 +750,12 @@ mod tests {
             (Chain::Arweave, "vh-NTHVvlKZqRxc8LyyTNok65yQ55a_PJ1zWLb9G2JI", "https://viewblock.io/arweave/address/vh-NTHVvlKZqRxc8LyyTNok65yQ55a_PJ1zWLb9G2JI"),
         ];
         for (chain, addr, expected) in cases {
-            assert_eq!(chain.address_explorer_url(addr), *expected, "failed for {:?}", chain);
+            assert_eq!(
+                chain.address_explorer_url(addr),
+                *expected,
+                "failed for {:?}",
+                chain
+            );
         }
     }
 
