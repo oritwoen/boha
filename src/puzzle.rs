@@ -535,7 +535,8 @@ impl Puzzle {
     }
 
     pub fn explorer_url(&self) -> String {
-        self.chain.address_explorer_url(self.address.value)
+        debug_assert_eq!(self.chain, self.address.chain);
+        self.address.chain.address_explorer_url(self.address.value)
     }
 
     pub fn key_range(&self) -> Option<RangeInclusive<u128>> {
@@ -739,18 +740,24 @@ mod tests {
     }
 
     #[test]
-    fn test_address_explorer_url() {
-        assert_eq!(
-            Chain::Bitcoin.address_explorer_url("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"),
-            "https://mempool.space/address/1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
-        );
-        assert_eq!(
-            Chain::Ethereum.address_explorer_url("0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"),
-            "https://etherscan.io/address/0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"
-        );
-        assert_eq!(
-            Chain::Litecoin.address_explorer_url("LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ"),
-            "https://blockchair.com/litecoin/address/LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ"
-        );
+    fn test_address_explorer_url_all_chains() {
+        let cases: &[(Chain, &str, &str)] = &[
+            (Chain::Bitcoin, "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", "https://mempool.space/address/1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"),
+            (Chain::Ethereum, "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae", "https://etherscan.io/address/0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"),
+            (Chain::Litecoin, "LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ", "https://blockchair.com/litecoin/address/LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ"),
+            (Chain::Monero, "44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A", "https://xmrchain.net/search?value=44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A"),
+            (Chain::Decred, "DsUZxxoHJSty8DCfwfartwTYbuhmVct7tJu", "https://dcrdata.decred.org/address/DsUZxxoHJSty8DCfwfartwTYbuhmVct7tJu"),
+            (Chain::Arweave, "vh-NTHVvlKZqRxc8LyyTNok65yQ55a_PJ1zWLb9G2JI", "https://viewblock.io/arweave/address/vh-NTHVvlKZqRxc8LyyTNok65yQ55a_PJ1zWLb9G2JI"),
+        ];
+        for (chain, addr, expected) in cases {
+            assert_eq!(chain.address_explorer_url(addr), *expected, "failed for {:?}", chain);
+        }
+    }
+
+    #[test]
+    fn test_puzzle_explorer_url_delegates() {
+        let puzzle = crate::b1000::get(1).expect("puzzle b1000/1 should exist");
+        let expected = puzzle.chain.address_explorer_url(puzzle.address.value);
+        assert_eq!(puzzle.explorer_url(), expected);
     }
 }
