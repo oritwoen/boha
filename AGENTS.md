@@ -1,12 +1,11 @@
 # BOHA - Project Knowledge Base
 
-**Generated:** 2026-01-06
-**Commit:** 8da7366
+**Updated:** 2026-03-15
 **Branch:** main
 
 ## OVERVIEW
 
-Rust library + CLI for crypto puzzle/bounty data. Build-time JSONC→Rust codegen with JSON Schema validation. Seven collections: b1000 (256 puzzles), ballet (3 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), zden (15 visual puzzles).
+Rust library + CLI for crypto puzzle/bounty data. Build-time JSONC→Rust codegen with JSON Schema validation. Eight collections: arweave (11 bounties), b1000 (256 puzzles), ballet (3 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), zden (15 visual puzzles).
 
 ## STRUCTURE
 
@@ -16,10 +15,11 @@ boha/
 │   ├── lib.rs              # Library entry: get(), all(), stats()
 │   ├── cli.rs              # CLI binary (--features cli) - NOT main.rs
 │   ├── puzzle.rs           # Puzzle, Address, Key, Status, Chain, Profile structs
-│   ├── balance.rs          # Multi-chain async balance fetch
-│   └── collections/        # Seven collection modules with generated data
+│   ├── balance.rs          # Multi-chain async balance fetch (BTC/LTC/ETH)
+│   ├── verify.rs           # Cryptographic key→address verification (--features cli)
+│   └── collections/        # Eight collection modules with generated data
 ├── data/
-│   ├── *.jsonc             # Source of truth (b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden)
+│   ├── *.jsonc             # Source of truth (arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden)
 │   ├── solvers.jsonc       # Solver definitions (referenced by ID in puzzle files)
 │   ├── schemas/            # JSON Schema files for validation
 │   └── cache/              # API response cache for scripts
@@ -27,7 +27,8 @@ boha/
 ├── build.rs                # JSONC→Rust codegen
 └── tests/
     ├── validation.rs       # Data validation tests
-    └── cli.rs              # CLI integration tests
+    ├── cli.rs              # CLI integration tests
+    └── author_lineage.rs   # Funding source and author metadata tests
 ```
 
 ## WHERE TO LOOK
@@ -46,14 +47,14 @@ boha/
 
 | Symbol | Type | Location | Role |
 |--------|------|----------|------|
-| `get(id)` | fn | lib.rs:29 | Universal puzzle lookup by ID |
-| `all()` | fn | lib.rs:56 | Iterator over all puzzles |
-| `stats()` | fn | lib.rs:77 | Aggregate statistics |
+| `get(id)` | fn | lib.rs:36 | Universal puzzle lookup by ID |
+| `all()` | fn | lib.rs:65 | Iterator over all puzzles |
+| `stats()` | fn | lib.rs:88 | Aggregate statistics |
 | `Puzzle` | struct | puzzle.rs | Core data type (16 fields) |
 | `Address` | struct | puzzle.rs | value, chain, kind, hash160, witness_program |
 | `Key` | struct | puzzle.rs | hex, wif, seed, bits, shares |
 | `Status` | enum | puzzle.rs | Solved/Unsolved/Claimed/Swept |
-| `Chain` | enum | puzzle.rs | Bitcoin/Ethereum/Litecoin/Monero/Decred |
+| `Chain` | enum | puzzle.rs | Bitcoin/Ethereum/Litecoin/Monero/Decred/Arweave |
 | `Seed` | struct | puzzle.rs | BIP39: phrase, path, xpub, entropy |
 | `Shares` | struct | puzzle.rs | SSSS: threshold, total, shares[] |
 | `Profile` | struct | puzzle.rs | Social/web profile: name, url |
@@ -81,7 +82,7 @@ data/schemas/       ──editor──>    (JSON Schema validation & autocomplet
 | Feature | Adds | Key deps |
 |---------|------|----------|
 | `cli` | Binary at `src/cli.rs`, output formats | clap, tabled, owo-colors, human-panic |
-| `balance` | Multi-chain async fetch (BTC/ETH/DCR) | reqwest, tokio |
+| `balance` | Multi-chain async fetch (BTC/LTC/ETH) | reqwest, tokio |
 
 ## CONVENTIONS
 
@@ -100,23 +101,26 @@ data/schemas/       ──editor──>    (JSON Schema validation & autocomplet
 ## COMMANDS
 
 ```bash
-just test          # cargo test --all-features
-just build         # cargo build --release --features cli,balance
-just clippy        # cargo clippy --all-features -- -D warnings
-just release X.Y.Z # Full release workflow
+cargo test --all-features                    # all tests (254 passed, 15 ignored)
+cargo test --all-features -- test_name       # single test
+cargo build --release --features cli,balance # release build
+cargo clippy --all-features -- -D warnings   # lint
+cargo fmt --check                            # format check
 
-# CLI
+# CLI dev
 cargo run --features cli -- stats
 cargo run --features cli -- list b1000 --unsolved
 cargo run --features cli -- show b1000/90
-cargo run --features cli -- balance b1000/71
+cargo run --features cli,balance -- balance b1000/71
+cargo run --features cli -- verify --all --quiet
 ```
 
 ## TESTING
 
-Data-driven validation (160 tests total):
+Data-driven validation (254 tests, 3 test files):
 - **validation.rs**: Cryptographic checks (h160, script_hash), range validation, format checks
 - **cli.rs**: Integration tests via assert_cmd
+- **author_lineage.rs**: Funding source tracking and author metadata
 
 ## NOTES
 
@@ -127,4 +131,5 @@ Data-driven validation (160 tests total):
 - bitimage: Keys derived from files using SHA256(Base64(file)) as BIP39 entropy
 - hash_collision: Peter Todd's P2SH bounties for finding hash collisions
 - zden: Visual puzzles - keys encoded in images/animations
-- Balances: mempool.space (BTC), Etherscan (ETH), dcrdata (DCR)
+- arweave: Tiamat's bounties on Arweave blockchain (chronobot.io)
+- Balances: mempool.space (BTC/LTC), Etherscan (ETH)
