@@ -1599,15 +1599,21 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             }
             std::process::exit(2);
         }
-        Err(verify::VerifyError::UnverifiableKey(ref msg)) => {
+        Err(verify::VerifyError::UnverifiableKey(ref msg))
+        | Err(verify::VerifyError::UnsupportedChain(ref msg)) => {
+            let output = VerifyOutput {
+                id: id.to_string(),
+                verified: false,
+                private_key: puzzle
+                    .key
+                    .as_ref()
+                    .and_then(|k| k.hex.map(|s| s.to_string())),
+                expected_address: puzzle.address.value.to_string(),
+                derived_address: None,
+                error: Some(msg.to_string()),
+            };
             if !quiet {
-                eprintln!("Error: {}", msg);
-            }
-            std::process::exit(2);
-        }
-        Err(verify::VerifyError::UnsupportedChain(ref msg)) => {
-            if !quiet {
-                eprintln!("Error: {}", msg);
+                output_verify(&output, format);
             }
             std::process::exit(2);
         }
