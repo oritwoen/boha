@@ -99,12 +99,12 @@ pub fn verify_puzzle(puzzle: &Puzzle) -> Result<VerifyResult, VerifyError> {
             .ok_or_else(|| VerifyError::UnverifiableKey("WIF is encrypted".to_string()))?;
         verify_wif(wif, expected_address)?
     } else if let Some(ref seed) = key.seed {
-        let phrase = seed
-            .phrase
-            .ok_or_else(|| VerifyError::UnverifiableKey("Seed has no mnemonic phrase".to_string()))?;
-        let path = seed
-            .path
-            .ok_or_else(|| VerifyError::UnverifiableKey("Seed has no derivation path".to_string()))?;
+        let phrase = seed.phrase.ok_or_else(|| {
+            VerifyError::UnverifiableKey("Seed has no mnemonic phrase".to_string())
+        })?;
+        let path = seed.path.ok_or_else(|| {
+            VerifyError::UnverifiableKey("Seed has no derivation path".to_string())
+        })?;
         verify_seed(phrase, path, expected_address, pubkey_format)?
     } else {
         return Err(VerifyError::NoPrivateKey);
