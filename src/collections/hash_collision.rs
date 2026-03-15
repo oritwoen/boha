@@ -30,7 +30,9 @@ pub fn all() -> impl Iterator<Item = &'static Puzzle> {
 }
 
 pub fn solved() -> impl Iterator<Item = &'static Puzzle> {
-    PUZZLES.iter().filter(|p| p.status == Status::Solved)
+    PUZZLES
+        .iter()
+        .filter(|p| matches!(p.status, Status::Solved | Status::Claimed))
 }
 
 pub fn unsolved() -> impl Iterator<Item = &'static Puzzle> {
