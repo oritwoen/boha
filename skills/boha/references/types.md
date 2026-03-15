@@ -19,7 +19,6 @@ pub struct Puzzle {
     pub transactions: &'static [Transaction],
     pub solver: Option<Solver>,
     pub assets: Option<Assets>,
-    pub entropy: Option<Entropy>,
 }
 ```
 
@@ -51,7 +50,6 @@ puzzle.asset_path() -> Option<String>
 puzzle.asset_url() -> Option<String>
 puzzle.explorer_url() -> String
 puzzle.solve_time_formatted() -> Option<String>
-puzzle.solver_name() -> Option<&str>
 ```
 
 ## Address
@@ -111,8 +109,8 @@ Both `Chain` and `Status` implement `Display` and `FromStr`.
 
 ```rust
 pub struct Transaction {
-    pub r#type: TransactionType,       // Funding, Increase, Decrease, Sweep, Claim, PubkeyReveal
-    pub txid: &'static str,
+    pub tx_type: TransactionType,      // Funding, Increase, Decrease, Sweep, Claim, PubkeyReveal
+    pub txid: Option<&'static str>,
     pub date: Option<&'static str>,
     pub amount: Option<f64>,
 }
@@ -120,15 +118,17 @@ pub struct Transaction {
 
 ## Collection API
 
-Each collection module exports:
+Most collection modules export:
 
 ```rust
 pub fn author() -> &'static Author
-pub fn get(key) -> Result<&'static Puzzle>
+pub fn get(key) -> Result<&'static Puzzle>  // key type varies per collection
 pub fn all() -> impl Iterator<Item = &'static Puzzle>
 pub fn solved() -> impl Iterator<Item = &'static Puzzle>
 pub fn unsolved() -> impl Iterator<Item = &'static Puzzle>
 pub fn count() -> usize
 ```
 
-Some collections also have `with_pubkey()`, `solved_count()`, `unsolved_count()`.
+Exceptions: `gsmg::get()` and `bitaps::get()` take no argument and return `&'static Puzzle` directly (not Result). These two modules also don't have `solved()` or `unsolved()`.
+
+b1000 additionally has `with_pubkey()`, `solved_count()`, `unsolved_count()`.

@@ -99,7 +99,7 @@ boha export --no-authors --no-stats    # skip metadata
 
 ## Output Formats
 
-Global flag `-o` works with all commands except `export` (JSON/JSONL only).
+Global flag `-o` works with all commands. `export` only accepts `json` and `jsonl` formats.
 
 ```bash
 boha -o json show b1000/90

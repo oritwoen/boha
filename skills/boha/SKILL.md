@@ -71,11 +71,14 @@ let addr_url = p.explorer_url();
 ```rust
 use boha::balance;
 
-let bal = balance::fetch("1A1zP1...", boha::Chain::Bitcoin).await.unwrap();
-println!("{} sats confirmed, {:.8} BTC total", bal.confirmed, bal.total_btc());
+#[tokio::main]
+async fn main() {
+    let bal = balance::fetch("1A1zP1...", boha::Chain::Bitcoin).await.unwrap();
+    println!("{} sats confirmed, {:.8} BTC total", bal.confirmed, bal.total_btc());
+}
 ```
 
-Supports Bitcoin, Litecoin (mempool.space) and Ethereum (Etherscan).
+Supports Bitcoin (mempool.space), Litecoin (litecoinspace.org) and Ethereum (Etherscan).
 
 ## Key Data Types
 
