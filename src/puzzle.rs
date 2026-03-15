@@ -773,6 +773,9 @@ mod tests {
     fn chain_name() {
         assert_eq!(Chain::Bitcoin.name(), "Bitcoin");
         assert_eq!(Chain::Ethereum.name(), "Ethereum");
+        assert_eq!(Chain::Litecoin.name(), "Litecoin");
+        assert_eq!(Chain::Monero.name(), "Monero");
+        assert_eq!(Chain::Decred.name(), "Decred");
         assert_eq!(Chain::Arweave.name(), "Arweave");
     }
 
