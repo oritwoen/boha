@@ -718,6 +718,12 @@ mod tests {
     }
 
     #[test]
+    fn ethereum_txid_rejects_non_hex() {
+        let txid = "0xg1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(!Chain::Ethereum.is_valid_txid(txid));
+    }
+
+    #[test]
     fn valid_arweave_txid() {
         let txid = "hKMMPNh_emBf8v_at1tFzNYACisyMQNcKzeeE1QE9p8";
         assert!(Chain::Arweave.is_valid_txid(txid));
