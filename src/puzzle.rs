@@ -67,7 +67,7 @@ impl Chain {
             s.len() == 64
                 && s.as_bytes()
                     .iter()
-                    .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f' | b'A'..=b'F'))
+                    .all(|b: &u8| b.is_ascii_hexdigit())
         }
 
         fn is_base64url_43(s: &str) -> bool {
