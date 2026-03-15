@@ -62,6 +62,17 @@ impl Chain {
         }
     }
 
+    pub fn address_explorer_url(&self, address: &str) -> String {
+        match self {
+            Chain::Bitcoin => format!("https://mempool.space/address/{}", address),
+            Chain::Ethereum => format!("https://etherscan.io/address/{}", address),
+            Chain::Litecoin => format!("https://blockchair.com/litecoin/address/{}", address),
+            Chain::Monero => format!("https://xmrchain.net/search?value={}", address),
+            Chain::Decred => format!("https://dcrdata.decred.org/address/{}", address),
+            Chain::Arweave => format!("https://viewblock.io/arweave/address/{}", address),
+        }
+    }
+
     pub fn is_valid_txid(&self, txid: &str) -> bool {
         fn is_hex64(s: &str) -> bool {
             s.len() == 64
@@ -464,6 +475,10 @@ impl Puzzle {
             .map(|p| format!("https://raw.githubusercontent.com/oritwoen/boha/main/{}", p))
     }
 
+    pub fn explorer_url(&self) -> String {
+        self.chain.address_explorer_url(self.address.value)
+    }
+
     pub fn key_range(&self) -> Option<RangeInclusive<u128>> {
         self.key.and_then(|k| k.range())
     }
@@ -570,5 +585,21 @@ mod tests {
     fn format_duration_all_units() {
         let duration = 365 * 86400 + 30 * 86400 + 86400 + 3600 + 60;
         assert_eq!(format_duration_human_readable(duration), "1y 1mo 1d 1h 1m");
+    }
+
+    #[test]
+    fn test_address_explorer_url() {
+        assert_eq!(
+            Chain::Bitcoin.address_explorer_url("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"),
+            "https://mempool.space/address/1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"
+        );
+        assert_eq!(
+            Chain::Ethereum.address_explorer_url("0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"),
+            "https://etherscan.io/address/0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"
+        );
+        assert_eq!(
+            Chain::Litecoin.address_explorer_url("LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ"),
+            "https://blockchair.com/litecoin/address/LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ"
+        );
     }
 }
