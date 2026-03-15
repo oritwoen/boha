@@ -744,9 +744,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 .map(|a| format!(" ({:.8} {})", a, p.chain.symbol()))
                 .unwrap_or_default();
             let date_str = tx.date.unwrap_or("-");
-            let txid_str = tx
-                .txid
-                .map_or_else(|| "-".to_string(), truncate_txid);
+            let txid_str = tx.txid.map_or_else(|| "-".to_string(), truncate_txid);
             rows.push(KeyValueRow {
                 field: format!("  {}", format_transaction_type(tx.tx_type)),
                 value: format!("{} {}{}", txid_str, date_str, amount_str),
@@ -1338,9 +1336,10 @@ fn print_author_table(author: &Author) {
 
     rows.push(KeyValueRow {
         field: "Name".to_string(),
-        value: author
-            .name
-            .map_or_else(|| "Anonymous".dimmed().to_string(), |n| n.bright_white().to_string()),
+        value: author.name.map_or_else(
+            || "Anonymous".dimmed().to_string(),
+            |n| n.bright_white().to_string(),
+        ),
     });
 
     if !author.addresses.is_empty() {
@@ -1595,15 +1594,14 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             }
             std::process::exit(2);
         }
-        Err(verify::VerifyError::UnverifiableKey(ref msg)
-        | verify::VerifyError::UnsupportedChain(ref msg)) => {
+        Err(
+            verify::VerifyError::UnverifiableKey(ref msg)
+            | verify::VerifyError::UnsupportedChain(ref msg),
+        ) => {
             let output = VerifyOutput {
                 id: id.to_string(),
                 verified: false,
-                private_key: puzzle
-                    .key
-                    .as_ref()
-                    .and_then(|k| k.hex.map(str::to_string)),
+                private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(str::to_string)),
                 expected_address: puzzle.address.value.to_string(),
                 derived_address: None,
                 error: Some(msg.clone()),
@@ -1617,10 +1615,7 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             let output = VerifyOutput {
                 id: id.to_string(),
                 verified: false,
-                private_key: puzzle
-                    .key
-                    .as_ref()
-                    .and_then(|k| k.hex.map(str::to_string)),
+                private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(str::to_string)),
                 expected_address: puzzle.address.value.to_string(),
                 derived_address: None,
                 error: Some(e.to_string()),
@@ -1712,10 +1707,7 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
                 results.push(VerifyOutput {
                     id: puzzle.id.to_string(),
                     verified: false,
-                    private_key: puzzle
-                        .key
-                        .as_ref()
-                        .and_then(|k| k.hex.map(str::to_string)),
+                    private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(str::to_string)),
                     expected_address: puzzle.address.value.to_string(),
                     derived_address: None,
                     error: Some(e.to_string()),
@@ -1757,10 +1749,7 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
                                 "  {} {} - {}",
                                 "✗".red().bold(),
                                 result.id.cyan(),
-                                result
-                                    .error
-                                    .as_deref()
-                                    .unwrap_or("Unknown error")
+                                result.error.as_deref().unwrap_or("Unknown error")
                             );
                         }
                     }

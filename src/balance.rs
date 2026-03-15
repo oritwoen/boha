@@ -86,8 +86,8 @@ async fn fetch_mempool_compatible(address: &str, base_url: &str) -> Result<Balan
         .json()
         .await?;
 
-    let confirmed =
-        u128::from(response.chain_stats.funded_txo_sum) - u128::from(response.chain_stats.spent_txo_sum);
+    let confirmed = u128::from(response.chain_stats.funded_txo_sum)
+        - u128::from(response.chain_stats.spent_txo_sum);
     let unconfirmed = i128::from(response.mempool_stats.funded_txo_sum)
         - i128::from(response.mempool_stats.spent_txo_sum);
 
