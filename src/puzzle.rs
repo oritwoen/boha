@@ -66,10 +66,7 @@ impl Chain {
 
     pub fn is_valid_txid(&self, txid: &str) -> bool {
         fn is_hex64(s: &str) -> bool {
-            s.len() == 64
-                && s.as_bytes()
-                    .iter()
-                    .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+            s.len() == 64 && s.as_bytes().iter().all(|b: &u8| b.is_ascii_hexdigit())
         }
 
         fn is_base64url_43(s: &str) -> bool {
@@ -653,6 +650,32 @@ mod tests {
         assert_eq!((-1i32).into_puzzle_num(), None);
         assert_eq!(0i32.into_puzzle_num(), None);
         assert_eq!(1i32.into_puzzle_num(), Some(1));
+    }
+
+    #[test]
+    fn test_is_valid_txid_accepts_mixed_case_hex() {
+        let lower = "a3b5c7d9e1f20000000000000000000000000000000000000000000000000001";
+        let upper = "A3B5C7D9E1F20000000000000000000000000000000000000000000000000001";
+        let mixed = "a3B5c7D9e1F20000000000000000000000000000000000000000000000000001";
+
+        assert!(Chain::Bitcoin.is_valid_txid(lower));
+        assert!(Chain::Bitcoin.is_valid_txid(upper));
+        assert!(Chain::Bitcoin.is_valid_txid(mixed));
+    }
+
+    #[test]
+    fn test_is_valid_txid_ethereum_mixed_case() {
+        let txid = "0xA3b5C7d9E1f20000000000000000000000000000000000000000000000000001";
+        assert!(Chain::Ethereum.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn test_is_valid_txid_rejects_invalid() {
+        assert!(!Chain::Bitcoin.is_valid_txid("too_short"));
+        assert!(!Chain::Bitcoin
+            .is_valid_txid("g3b5c7d9e1f20000000000000000000000000000000000000000000000000001"));
+        assert!(!Chain::Ethereum
+            .is_valid_txid("a3b5c7d9e1f20000000000000000000000000000000000000000000000000001"));
     }
 
     #[test]
