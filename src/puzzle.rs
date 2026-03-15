@@ -578,7 +578,10 @@ mod tests {
     #[test]
     fn format_duration_years_and_months() {
         let one_year_two_months = 365 * 86400 + 2 * 30 * 86400;
-        assert_eq!(format_duration_human_readable(one_year_two_months), "1y 2mo");
+        assert_eq!(
+            format_duration_human_readable(one_year_two_months),
+            "1y 2mo"
+        );
     }
 
     #[test]
