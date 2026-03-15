@@ -69,8 +69,8 @@ struct EtherscanResponse {
     result: String,
 }
 
-async fn fetch_btc(address: &str) -> Result<Balance, BalanceError> {
-    let url = format!("https://mempool.space/api/address/{}", address);
+async fn fetch_mempool_compatible(address: &str, base_url: &str) -> Result<Balance, BalanceError> {
+    let url = format!("{}/api/address/{}", base_url, address);
 
     let response: MempoolAddressResponse = reqwest::get(&url)
         .await?
@@ -94,6 +94,10 @@ async fn fetch_btc(address: &str) -> Result<Balance, BalanceError> {
         confirmed,
         unconfirmed,
     })
+}
+
+async fn fetch_btc(address: &str) -> Result<Balance, BalanceError> {
+    fetch_mempool_compatible(address, "https://mempool.space").await
 }
 
 async fn fetch_eth(address: &str) -> Result<Balance, BalanceError> {
@@ -133,30 +137,7 @@ async fn fetch_eth(address: &str) -> Result<Balance, BalanceError> {
 }
 
 async fn fetch_ltc(address: &str) -> Result<Balance, BalanceError> {
-    let url = format!("https://litecoinspace.org/api/address/{}", address);
-
-    let response: MempoolAddressResponse = reqwest::get(&url)
-        .await?
-        .error_for_status()
-        .map_err(|e| {
-            if e.status() == Some(reqwest::StatusCode::BAD_REQUEST) {
-                BalanceError::InvalidAddress(address.to_string())
-            } else {
-                BalanceError::Request(e)
-            }
-        })?
-        .json()
-        .await?;
-
-    let confirmed =
-        response.chain_stats.funded_txo_sum as u128 - response.chain_stats.spent_txo_sum as u128;
-    let unconfirmed = response.mempool_stats.funded_txo_sum as i128
-        - response.mempool_stats.spent_txo_sum as i128;
-
-    Ok(Balance {
-        confirmed,
-        unconfirmed,
-    })
+    fetch_mempool_compatible(address, "https://litecoinspace.org").await
 }
 
 pub async fn fetch(address: &str, chain: Chain) -> Result<Balance, BalanceError> {
