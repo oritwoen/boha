@@ -733,6 +733,8 @@ mod tests {
     fn arweave_txid_rejects_wrong_length() {
         assert!(!Chain::Arweave.is_valid_txid("too_short"));
         assert!(!Chain::Arweave.is_valid_txid(""));
+        let too_long = "a".repeat(44);
+        assert!(!Chain::Arweave.is_valid_txid(&too_long));
     }
 
     #[test]
