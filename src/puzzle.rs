@@ -529,4 +529,74 @@ mod tests {
         assert_eq!(0i32.into_puzzle_num(), None);
         assert_eq!(1i32.into_puzzle_num(), Some(1));
     }
+
+    #[test]
+    fn valid_bitcoin_txid() {
+        let txid = "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(Chain::Bitcoin.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn bitcoin_txid_rejects_uppercase_hex() {
+        let txid = "A1075DB55D416D3CA199F55B6084E2115B9345E16C5CF302FC80E9D5FBF5D48D";
+        assert!(!Chain::Bitcoin.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn bitcoin_txid_rejects_wrong_length() {
+        assert!(!Chain::Bitcoin.is_valid_txid("abcd"));
+        assert!(!Chain::Bitcoin.is_valid_txid(""));
+        let too_long = "a".repeat(65);
+        assert!(!Chain::Bitcoin.is_valid_txid(&too_long));
+    }
+
+    #[test]
+    fn bitcoin_txid_rejects_non_hex() {
+        let txid = "g1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(!Chain::Bitcoin.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn valid_ethereum_txid() {
+        let txid = "0xa1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(Chain::Ethereum.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn ethereum_txid_requires_0x_prefix() {
+        let txid = "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(!Chain::Ethereum.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn ethereum_txid_rejects_wrong_length() {
+        assert!(!Chain::Ethereum.is_valid_txid("0xabcd"));
+        assert!(!Chain::Ethereum.is_valid_txid("0x"));
+    }
+
+    #[test]
+    fn valid_arweave_txid() {
+        let txid = "hKMMPNh_emBf8v_at1tFzNYACisyMQNcKzeeE1QE9p8";
+        assert!(Chain::Arweave.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn arweave_txid_rejects_wrong_length() {
+        assert!(!Chain::Arweave.is_valid_txid("too_short"));
+        assert!(!Chain::Arweave.is_valid_txid(""));
+    }
+
+    #[test]
+    fn arweave_txid_rejects_invalid_chars() {
+        let txid = "hKMMPNh_emBf8v_at1tFzNYACisyMQNc!@#$%^&*()+=";
+        assert!(!Chain::Arweave.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn litecoin_and_decred_share_bitcoin_format() {
+        let txid = "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(Chain::Litecoin.is_valid_txid(txid));
+        assert!(Chain::Decred.is_valid_txid(txid));
+        assert!(Chain::Monero.is_valid_txid(txid));
+    }
 }
