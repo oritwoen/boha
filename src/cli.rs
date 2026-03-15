@@ -1599,6 +1599,18 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             }
             std::process::exit(2);
         }
+        Err(verify::VerifyError::UnverifiableKey(ref msg)) => {
+            if !quiet {
+                eprintln!("Error: {}", msg);
+            }
+            std::process::exit(2);
+        }
+        Err(verify::VerifyError::UnsupportedChain(ref msg)) => {
+            if !quiet {
+                eprintln!("Error: {}", msg);
+            }
+            std::process::exit(2);
+        }
         Err(e) => {
             let output = VerifyOutput {
                 id: id.to_string(),
@@ -1688,7 +1700,7 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
             }
             Err(
                 verify::VerifyError::NoPrivateKey
-                | verify::VerifyError::InvalidKey(_)
+                | verify::VerifyError::UnverifiableKey(_)
                 | verify::VerifyError::UnsupportedChain(_),
             ) => {
                 skipped_count += 1;

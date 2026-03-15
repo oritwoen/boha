@@ -37,6 +37,9 @@ pub enum VerifyError {
     #[error("Invalid private key format: {0}")]
     InvalidKey(String),
 
+    #[error("Key not verifiable: {0}")]
+    UnverifiableKey(String),
+
     #[error("Address derivation failed: {0}")]
     DerivationFailed(String),
 
@@ -87,20 +90,21 @@ pub fn verify_puzzle(puzzle: &Puzzle) -> Result<VerifyResult, VerifyError> {
         .map(|p| p.format)
         .unwrap_or(PubkeyFormat::Compressed);
 
-    let derived = if let Some(hex) = key.hex {
-        verify_hex_by_chain(hex, expected_address, puzzle.chain, pubkey_format)?
+    let (derived, hex_key) = if let Some(hex) = key.hex {
+        let addr = verify_hex_by_chain(hex, expected_address, puzzle.chain, pubkey_format)?;
+        (addr, hex.to_string())
     } else if let Some(ref wif_data) = key.wif {
         let wif = wif_data
             .decrypted
-            .ok_or_else(|| VerifyError::InvalidKey("WIF is encrypted".to_string()))?;
+            .ok_or_else(|| VerifyError::UnverifiableKey("WIF is encrypted".to_string()))?;
         verify_wif(wif, expected_address)?
     } else if let Some(ref seed) = key.seed {
         let phrase = seed
             .phrase
-            .ok_or_else(|| VerifyError::InvalidKey("Seed has no mnemonic phrase".to_string()))?;
+            .ok_or_else(|| VerifyError::UnverifiableKey("Seed has no mnemonic phrase".to_string()))?;
         let path = seed
             .path
-            .ok_or_else(|| VerifyError::InvalidKey("Seed has no derivation path".to_string()))?;
+            .ok_or_else(|| VerifyError::UnverifiableKey("Seed has no derivation path".to_string()))?;
         verify_seed(phrase, path, expected_address, pubkey_format)?
     } else {
         return Err(VerifyError::NoPrivateKey);
@@ -109,7 +113,7 @@ pub fn verify_puzzle(puzzle: &Puzzle) -> Result<VerifyResult, VerifyError> {
     Ok(VerifyResult {
         id: puzzle.id.to_string(),
         verified: true,
-        private_key: key.hex.map(|s| s.to_string()),
+        private_key: Some(hex_key),
         expected_address: expected_address.to_string(),
         derived_address: Some(derived),
         error: None,
@@ -435,7 +439,7 @@ pub fn verify_decred_address(
 /// Supports:
 /// - Compressed WIF (K/L prefix, 52 chars)
 /// - Uncompressed WIF (5 prefix, 51 chars)
-pub fn verify_wif(wif: &str, expected_address: &str) -> Result<String, VerifyError> {
+pub fn verify_wif(wif: &str, expected_address: &str) -> Result<(String, String), VerifyError> {
     let decoded = bs58::decode(wif)
         .into_vec()
         .map_err(|e| VerifyError::InvalidKey(format!("Invalid base58: {}", e)))?;
@@ -482,7 +486,8 @@ pub fn verify_wif(wif: &str, expected_address: &str) -> Result<String, VerifyErr
         PubkeyFormat::Uncompressed
     };
 
-    verify_bitcoin_address(&hex_key, expected_address, pubkey_format)
+    let derived = verify_bitcoin_address(&hex_key, expected_address, pubkey_format)?;
+    Ok((derived, hex_key))
 }
 
 /// Verify seed phrase derivation and address.
@@ -497,7 +502,7 @@ pub fn verify_seed(
     path: &str,
     expected_address: &str,
     pubkey_format: PubkeyFormat,
-) -> Result<String, VerifyError> {
+) -> Result<(String, String), VerifyError> {
     use bip32::{DerivationPath, XPrv};
     use bip39::Mnemonic;
     use std::str::FromStr;
@@ -516,5 +521,6 @@ pub fn verify_seed(
     let private_key_bytes = xprv.private_key().to_bytes();
     let hex_key = hex::encode(private_key_bytes);
 
-    verify_bitcoin_address(&hex_key, expected_address, pubkey_format)
+    let derived = verify_bitcoin_address(&hex_key, expected_address, pubkey_format)?;
+    Ok((derived, hex_key))
 }
