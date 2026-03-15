@@ -797,6 +797,73 @@ mod tests {
     }
 
     #[test]
+    fn tx_explorer_url_bitcoin() {
+        let url = Chain::Bitcoin.tx_explorer_url("abc123");
+        assert_eq!(url, "https://mempool.space/tx/abc123");
+    }
+
+    #[test]
+    fn tx_explorer_url_ethereum() {
+        let url = Chain::Ethereum.tx_explorer_url("0xabc");
+        assert_eq!(url, "https://etherscan.io/tx/0xabc");
+    }
+
+    #[test]
+    fn tx_explorer_url_litecoin() {
+        let url = Chain::Litecoin.tx_explorer_url("abc");
+        assert_eq!(url, "https://blockchair.com/litecoin/transaction/abc");
+    }
+
+    #[test]
+    fn tx_explorer_url_monero() {
+        let url = Chain::Monero.tx_explorer_url("abc");
+        assert_eq!(url, "https://xmrchain.net/tx/abc");
+    }
+
+    #[test]
+    fn tx_explorer_url_decred() {
+        let url = Chain::Decred.tx_explorer_url("abc");
+        assert_eq!(url, "https://dcrdata.decred.org/tx/abc");
+    }
+
+    #[test]
+    fn tx_explorer_url_arweave() {
+        let url = Chain::Arweave.tx_explorer_url("abc");
+        assert_eq!(url, "https://viewblock.io/arweave/tx/abc");
+    }
+
+    #[test]
+    fn chain_symbol() {
+        assert_eq!(Chain::Bitcoin.symbol(), "BTC");
+        assert_eq!(Chain::Ethereum.symbol(), "ETH");
+        assert_eq!(Chain::Litecoin.symbol(), "LTC");
+        assert_eq!(Chain::Monero.symbol(), "XMR");
+        assert_eq!(Chain::Decred.symbol(), "DCR");
+        assert_eq!(Chain::Arweave.symbol(), "AR");
+    }
+
+    #[test]
+    fn chain_name() {
+        assert_eq!(Chain::Bitcoin.name(), "Bitcoin");
+        assert_eq!(Chain::Ethereum.name(), "Ethereum");
+        assert_eq!(Chain::Litecoin.name(), "Litecoin");
+        assert_eq!(Chain::Monero.name(), "Monero");
+        assert_eq!(Chain::Decred.name(), "Decred");
+        assert_eq!(Chain::Arweave.name(), "Arweave");
+    }
+
+    #[test]
+    fn chain_all_contains_every_variant() {
+        assert_eq!(Chain::ALL.len(), 6);
+        assert!(Chain::ALL.contains(&Chain::Bitcoin));
+        assert!(Chain::ALL.contains(&Chain::Ethereum));
+        assert!(Chain::ALL.contains(&Chain::Litecoin));
+        assert!(Chain::ALL.contains(&Chain::Monero));
+        assert!(Chain::ALL.contains(&Chain::Decred));
+        assert!(Chain::ALL.contains(&Chain::Arweave));
+    }
+
+    #[test]
     fn test_address_explorer_url_all_chains() {
         let cases: &[(Chain, &str, &str)] = &[
             (Chain::Bitcoin, "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", "https://mempool.space/address/1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"),
