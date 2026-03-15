@@ -64,7 +64,8 @@ impl VerifyResult {
     }
 
     /// Create a failed verification result.
-    pub fn failure(id: String, address: String, error: &VerifyError) -> Self {
+    #[allow(clippy::needless_pass_by_value)]
+    pub fn failure(id: String, address: String, error: VerifyError) -> Self {
         Self {
             id,
             verified: false,
