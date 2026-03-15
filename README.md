@@ -309,6 +309,8 @@ npx skilld add boha
 |------|-------------|
 | [vuke](https://github.com/oritwoen/vuke) | Research tool for studying vulnerable Bitcoin key generation practices. Analyze solved puzzles for weak patterns. |
 | [vgen](https://github.com/oritwoen/vgen) | Bitcoin vanity address generator with regex pattern matching and GPU acceleration. |
+| [vusi](https://github.com/oritwoen/vusi) | ECDSA signature vulnerability analysis - nonce reuse, polynonce, biased nonces, lattice/HNP attacks. |
+| [kangaroo](https://github.com/oritwoen/kangaroo) | Pollard's Kangaroo ECDLP solver for secp256k1 using Vulkan/Metal/DX12 compute. |
 
 ## License
 
