@@ -64,10 +64,7 @@ impl Chain {
 
     pub fn is_valid_txid(&self, txid: &str) -> bool {
         fn is_hex64(s: &str) -> bool {
-            s.len() == 64
-                && s.as_bytes()
-                    .iter()
-                    .all(|b: &u8| b.is_ascii_hexdigit())
+            s.len() == 64 && s.as_bytes().iter().all(|b: &u8| b.is_ascii_hexdigit())
         }
 
         fn is_base64url_43(s: &str) -> bool {
