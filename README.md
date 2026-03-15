@@ -59,6 +59,10 @@ boha show hash_collision/sha256
 # Show puzzle and open asset in browser
 boha show zden/level_4 --open
 
+# Show collection author
+boha author b1000
+boha author zden
+
 # Get key range
 boha range 90
 
@@ -99,7 +103,7 @@ boha -o jsonl list b1000 --unsolved | jq .
 ### Library
 
 ```rust
-use boha::{b1000, bitaps, gsmg, hash_collision, zden, Status};
+use boha::{arweave, b1000, ballet, bitaps, gsmg, hash_collision, zden, Status};
 
 let p90 = b1000::get(90).unwrap();
 println!("Address: {}", p90.address.value);
@@ -158,7 +162,7 @@ async fn main() {
 | Feature | Description |
 |---------|-------------|
 | `cli` | Command-line interface |
-| `balance` | Blockchain balance fetching via mempool.space API |
+| `balance` | Blockchain balance fetching (mempool.space for BTC/LTC, Etherscan for ETH) |
 
 ## Collections
 
@@ -209,6 +213,24 @@ Originally 5 BTC, prize halves with each Bitcoin halving.
 | Decred | 1 | 0 | 1 |
 
 **Unsolved:** Level 5, Level HALV
+
+### arweave
+
+[Tiamat's Arweave Bounties](https://arweave.medium.com/community-spotlight-meeting-tiamat-e484655b25e0) - Cryptographic puzzles on the Arweave blockchain, created by Tiamat (chronobot.io).
+
+| Status | Count |
+|--------|-------|
+| Claimed | 7 |
+| Unsolved | 4 |
+
+### ballet
+
+[Bobby Lee's Ballet Crypto Puzzles](https://x.com/bobbyclee/status/1289004702122643456) - Physical Bitcoin notes (Ballet wallets) with BIP38-encrypted private keys. Solve by cracking the passphrase printed on the card.
+
+| Status | Count |
+|--------|-------|
+| Solved | 1 |
+| Unsolved | 2 |
 
 ### bitaps
 
