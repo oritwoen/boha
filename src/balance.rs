@@ -33,6 +33,14 @@ impl Balance {
         self.total() as f64 / 100_000_000.0
     }
 
+    pub fn confirmed_ltc(&self) -> f64 {
+        self.confirmed as f64 / 100_000_000.0
+    }
+
+    pub fn total_ltc(&self) -> f64 {
+        self.total() as f64 / 100_000_000.0
+    }
+
     pub fn confirmed_eth(&self) -> f64 {
         self.confirmed as f64 / 1e18
     }
@@ -61,8 +69,8 @@ struct EtherscanResponse {
     result: String,
 }
 
-async fn fetch_btc(address: &str) -> Result<Balance, BalanceError> {
-    let url = format!("https://mempool.space/api/address/{}", address);
+async fn fetch_mempool_compatible(address: &str, base_url: &str) -> Result<Balance, BalanceError> {
+    let url = format!("{}/api/address/{}", base_url, address);
 
     let response: MempoolAddressResponse = reqwest::get(&url)
         .await?
@@ -86,6 +94,10 @@ async fn fetch_btc(address: &str) -> Result<Balance, BalanceError> {
         confirmed,
         unconfirmed,
     })
+}
+
+async fn fetch_btc(address: &str) -> Result<Balance, BalanceError> {
+    fetch_mempool_compatible(address, "https://mempool.space").await
 }
 
 async fn fetch_eth(address: &str) -> Result<Balance, BalanceError> {
@@ -124,10 +136,15 @@ async fn fetch_eth(address: &str) -> Result<Balance, BalanceError> {
     })
 }
 
+async fn fetch_ltc(address: &str) -> Result<Balance, BalanceError> {
+    fetch_mempool_compatible(address, "https://litecoinspace.org").await
+}
+
 pub async fn fetch(address: &str, chain: Chain) -> Result<Balance, BalanceError> {
     match chain {
         Chain::Bitcoin => fetch_btc(address).await,
         Chain::Ethereum => fetch_eth(address).await,
+        Chain::Litecoin => fetch_ltc(address).await,
         _ => Err(BalanceError::UnsupportedChain(chain.name().to_string())),
     }
 }
@@ -258,10 +275,28 @@ mod tests {
         assert!(result.is_ok());
     }
 
+    #[test]
+    fn test_balance_ltc_conversion() {
+        let balance = Balance {
+            confirmed: 100_000_000,
+            unconfirmed: 0,
+        };
+
+        assert_eq!(balance.confirmed_ltc(), 1.0);
+        assert_eq!(balance.total_ltc(), 1.0);
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn test_fetch_ltc_known_address() {
+        let result = fetch("LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ", Chain::Litecoin).await;
+        assert!(result.is_ok());
+    }
+
     #[tokio::test]
     #[ignore]
     async fn test_fetch_unsupported_chain() {
-        let result = fetch("some_address", Chain::Litecoin).await;
+        let result = fetch("some_address", Chain::Monero).await;
         assert!(matches!(result, Err(BalanceError::UnsupportedChain(_))));
     }
 }

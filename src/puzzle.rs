@@ -669,7 +669,13 @@ mod tests {
     }
 
     #[test]
-    fn test_is_valid_txid_accepts_mixed_case_hex() {
+    fn valid_bitcoin_txid() {
+        let txid = "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(Chain::Bitcoin.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn bitcoin_txid_accepts_mixed_case_hex() {
         let lower = "a3b5c7d9e1f20000000000000000000000000000000000000000000000000001";
         let upper = "A3B5C7D9E1F20000000000000000000000000000000000000000000000000001";
         let mixed = "a3B5c7D9e1F20000000000000000000000000000000000000000000000000001";
@@ -680,18 +686,69 @@ mod tests {
     }
 
     #[test]
-    fn test_is_valid_txid_ethereum_mixed_case() {
-        let txid = "0xA3b5C7d9E1f20000000000000000000000000000000000000000000000000001";
+    fn bitcoin_txid_rejects_wrong_length() {
+        assert!(!Chain::Bitcoin.is_valid_txid("abcd"));
+        assert!(!Chain::Bitcoin.is_valid_txid(""));
+        let too_long = "a".repeat(65);
+        assert!(!Chain::Bitcoin.is_valid_txid(&too_long));
+    }
+
+    #[test]
+    fn bitcoin_txid_rejects_non_hex() {
+        let txid = "g1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(!Chain::Bitcoin.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn valid_ethereum_txid() {
+        let txid = "0xa1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
         assert!(Chain::Ethereum.is_valid_txid(txid));
     }
 
     #[test]
-    fn test_is_valid_txid_rejects_invalid() {
-        assert!(!Chain::Bitcoin.is_valid_txid("too_short"));
-        assert!(!Chain::Bitcoin
-            .is_valid_txid("g3b5c7d9e1f20000000000000000000000000000000000000000000000000001"));
-        assert!(!Chain::Ethereum
-            .is_valid_txid("a3b5c7d9e1f20000000000000000000000000000000000000000000000000001"));
+    fn ethereum_txid_requires_0x_prefix() {
+        let txid = "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(!Chain::Ethereum.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn ethereum_txid_rejects_wrong_length() {
+        assert!(!Chain::Ethereum.is_valid_txid("0xabcd"));
+        assert!(!Chain::Ethereum.is_valid_txid("0x"));
+    }
+
+    #[test]
+    fn ethereum_txid_rejects_non_hex() {
+        let txid = "0xg1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(!Chain::Ethereum.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn valid_arweave_txid() {
+        let txid = "hKMMPNh_emBf8v_at1tFzNYACisyMQNcKzeeE1QE9p8";
+        assert!(Chain::Arweave.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn arweave_txid_rejects_wrong_length() {
+        assert!(!Chain::Arweave.is_valid_txid("too_short"));
+        assert!(!Chain::Arweave.is_valid_txid(""));
+        let too_long = "a".repeat(44);
+        assert!(!Chain::Arweave.is_valid_txid(&too_long));
+    }
+
+    #[test]
+    fn arweave_txid_rejects_invalid_chars() {
+        let txid = "hKMMPNh_emBf8v_at1tFzNYACisyMQNcKzeeE1QE9p!";
+        assert!(!Chain::Arweave.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn litecoin_decred_and_monero_share_bitcoin_format() {
+        let txid = "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
+        assert!(Chain::Litecoin.is_valid_txid(txid));
+        assert!(Chain::Decred.is_valid_txid(txid));
+        assert!(Chain::Monero.is_valid_txid(txid));
     }
 
     #[test]

@@ -1370,6 +1370,7 @@ async fn cmd_balance(id: &str, format: OutputFormat) {
             Ok(bal) => {
                 let (confirmed_display, total_display) = match puzzle.chain {
                     Chain::Ethereum => (bal.confirmed_eth(), bal.total_eth()),
+                    Chain::Litecoin => (bal.confirmed_ltc(), bal.total_ltc()),
                     _ => (bal.confirmed_btc(), bal.total_btc()),
                 };
                 let output = BalanceOutput {
