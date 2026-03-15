@@ -737,12 +737,12 @@ mod tests {
 
     #[test]
     fn arweave_txid_rejects_invalid_chars() {
-        let txid = "hKMMPNh_emBf8v_at1tFzNYACisyMQNc!@#$%^&*()+=";
+        let txid = "hKMMPNh_emBf8v_at1tFzNYACisyMQNcKzeeE1QE9p!";
         assert!(!Chain::Arweave.is_valid_txid(txid));
     }
 
     #[test]
-    fn litecoin_and_decred_share_bitcoin_format() {
+    fn litecoin_decred_and_monero_share_bitcoin_format() {
         let txid = "a1075db55d416d3ca199f55b6084e2115b9345e16c5cf302fc80e9d5fbf5d48d";
         assert!(Chain::Litecoin.is_valid_txid(txid));
         assert!(Chain::Decred.is_valid_txid(txid));
