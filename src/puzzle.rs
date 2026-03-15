@@ -3,7 +3,9 @@
 use num_bigint::BigUint;
 use num_traits::One;
 use serde::Serialize;
+use std::fmt;
 use std::ops::RangeInclusive;
+use std::str::FromStr;
 
 /// Blockchain network for a puzzle.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -62,12 +64,20 @@ impl Chain {
         }
     }
 
+    pub fn address_explorer_url(&self, address: &str) -> String {
+        match self {
+            Chain::Bitcoin => format!("https://mempool.space/address/{}", address),
+            Chain::Ethereum => format!("https://etherscan.io/address/{}", address),
+            Chain::Litecoin => format!("https://blockchair.com/litecoin/address/{}", address),
+            Chain::Monero => format!("https://xmrchain.net/search?value={}", address),
+            Chain::Decred => format!("https://dcrdata.decred.org/address/{}", address),
+            Chain::Arweave => format!("https://viewblock.io/arweave/address/{}", address),
+        }
+    }
+
     pub fn is_valid_txid(&self, txid: &str) -> bool {
         fn is_hex64(s: &str) -> bool {
-            s.len() == 64
-                && s.as_bytes()
-                    .iter()
-                    .all(|b| matches!(b, b'0'..=b'9' | b'a'..=b'f'))
+            s.len() == 64 && s.as_bytes().iter().all(|b: &u8| b.is_ascii_hexdigit())
         }
 
         fn is_base64url_43(s: &str) -> bool {
@@ -82,6 +92,38 @@ impl Chain {
             // Current chains use hex-encoded 256-bit hashes.
             Chain::Bitcoin | Chain::Litecoin | Chain::Monero | Chain::Decred => is_hex64(txid),
             Chain::Arweave => is_base64url_43(txid),
+        }
+    }
+}
+
+impl fmt::Display for Chain {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Chain::Bitcoin => "bitcoin",
+            Chain::Ethereum => "ethereum",
+            Chain::Litecoin => "litecoin",
+            Chain::Monero => "monero",
+            Chain::Decred => "decred",
+            Chain::Arweave => "arweave",
+        })
+    }
+}
+
+impl FromStr for Chain {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "bitcoin" | "btc" => Ok(Chain::Bitcoin),
+            "ethereum" | "eth" => Ok(Chain::Ethereum),
+            "litecoin" | "ltc" => Ok(Chain::Litecoin),
+            "monero" | "xmr" => Ok(Chain::Monero),
+            "decred" | "dcr" => Ok(Chain::Decred),
+            "arweave" | "ar" => Ok(Chain::Arweave),
+            _ => Err(format!(
+                "unknown chain: '{}'. expected: bitcoin, ethereum, litecoin, monero, decred, arweave (or symbol: btc, eth, ltc, xmr, dcr, ar)",
+                s
+            )),
         }
     }
 }
@@ -117,6 +159,34 @@ pub struct Transaction {
 impl Status {
     pub fn is_active(&self) -> bool {
         matches!(self, Status::Unsolved)
+    }
+}
+
+impl fmt::Display for Status {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(match self {
+            Status::Solved => "solved",
+            Status::Unsolved => "unsolved",
+            Status::Claimed => "claimed",
+            Status::Swept => "swept",
+        })
+    }
+}
+
+impl FromStr for Status {
+    type Err = String;
+
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s.to_lowercase().as_str() {
+            "solved" => Ok(Status::Solved),
+            "unsolved" => Ok(Status::Unsolved),
+            "claimed" => Ok(Status::Claimed),
+            "swept" => Ok(Status::Swept),
+            _ => Err(format!(
+                "unknown status: '{}'. expected: solved, unsolved, claimed, swept",
+                s
+            )),
+        }
     }
 }
 
@@ -464,6 +534,11 @@ impl Puzzle {
             .map(|p| format!("https://raw.githubusercontent.com/oritwoen/boha/main/{}", p))
     }
 
+    pub fn explorer_url(&self) -> String {
+        debug_assert_eq!(self.chain, self.address.chain);
+        self.address.chain.address_explorer_url(self.address.value)
+    }
+
     pub fn key_range(&self) -> Option<RangeInclusive<u128>> {
         self.key.and_then(|k| k.range())
     }
@@ -524,6 +599,69 @@ mod tests {
     }
 
     #[test]
+    fn chain_display_matches_serde() {
+        assert_eq!(Chain::Bitcoin.to_string(), "bitcoin");
+        assert_eq!(Chain::Ethereum.to_string(), "ethereum");
+        assert_eq!(Chain::Litecoin.to_string(), "litecoin");
+        assert_eq!(Chain::Monero.to_string(), "monero");
+        assert_eq!(Chain::Decred.to_string(), "decred");
+        assert_eq!(Chain::Arweave.to_string(), "arweave");
+    }
+
+    #[test]
+    fn chain_fromstr_by_name() {
+        assert_eq!("bitcoin".parse::<Chain>().unwrap(), Chain::Bitcoin);
+        assert_eq!("Bitcoin".parse::<Chain>().unwrap(), Chain::Bitcoin);
+        assert_eq!("ETHEREUM".parse::<Chain>().unwrap(), Chain::Ethereum);
+    }
+
+    #[test]
+    fn chain_fromstr_by_symbol() {
+        assert_eq!("btc".parse::<Chain>().unwrap(), Chain::Bitcoin);
+        assert_eq!("ETH".parse::<Chain>().unwrap(), Chain::Ethereum);
+        assert_eq!("ltc".parse::<Chain>().unwrap(), Chain::Litecoin);
+        assert_eq!("xmr".parse::<Chain>().unwrap(), Chain::Monero);
+        assert_eq!("dcr".parse::<Chain>().unwrap(), Chain::Decred);
+        assert_eq!("ar".parse::<Chain>().unwrap(), Chain::Arweave);
+    }
+
+    #[test]
+    fn chain_fromstr_invalid() {
+        assert!("dogecoin".parse::<Chain>().is_err());
+        assert!("".parse::<Chain>().is_err());
+    }
+
+    #[test]
+    fn status_display_matches_serde() {
+        assert_eq!(Status::Solved.to_string(), "solved");
+        assert_eq!(Status::Unsolved.to_string(), "unsolved");
+        assert_eq!(Status::Claimed.to_string(), "claimed");
+        assert_eq!(Status::Swept.to_string(), "swept");
+    }
+
+    #[test]
+    fn status_fromstr() {
+        assert_eq!("solved".parse::<Status>().unwrap(), Status::Solved);
+        assert_eq!("Unsolved".parse::<Status>().unwrap(), Status::Unsolved);
+        assert_eq!("CLAIMED".parse::<Status>().unwrap(), Status::Claimed);
+        assert_eq!("swept".parse::<Status>().unwrap(), Status::Swept);
+    }
+
+    #[test]
+    fn status_fromstr_invalid() {
+        assert!("pending".parse::<Status>().is_err());
+        assert!("".parse::<Status>().is_err());
+    }
+
+    #[test]
+    fn chain_roundtrip() {
+        for chain in Chain::ALL {
+            let s = chain.to_string();
+            assert_eq!(s.parse::<Chain>().unwrap(), chain);
+        }
+    }
+
+    #[test]
     fn test_into_puzzle_num_i32() {
         assert_eq!((-1i32).into_puzzle_num(), None);
         assert_eq!(0i32.into_puzzle_num(), None);
@@ -537,9 +675,14 @@ mod tests {
     }
 
     #[test]
-    fn bitcoin_txid_rejects_uppercase_hex() {
-        let txid = "A1075DB55D416D3CA199F55B6084E2115B9345E16C5CF302FC80E9D5FBF5D48D";
-        assert!(!Chain::Bitcoin.is_valid_txid(txid));
+    fn bitcoin_txid_accepts_mixed_case_hex() {
+        let lower = "a3b5c7d9e1f20000000000000000000000000000000000000000000000000001";
+        let upper = "A3B5C7D9E1F20000000000000000000000000000000000000000000000000001";
+        let mixed = "a3B5c7D9e1F20000000000000000000000000000000000000000000000000001";
+
+        assert!(Chain::Bitcoin.is_valid_txid(lower));
+        assert!(Chain::Bitcoin.is_valid_txid(upper));
+        assert!(Chain::Bitcoin.is_valid_txid(mixed));
     }
 
     #[test]
@@ -598,5 +741,77 @@ mod tests {
         assert!(Chain::Litecoin.is_valid_txid(txid));
         assert!(Chain::Decred.is_valid_txid(txid));
         assert!(Chain::Monero.is_valid_txid(txid));
+    }
+
+    #[test]
+    fn format_duration_zero_seconds() {
+        assert_eq!(format_duration_human_readable(0), "0s");
+    }
+
+    #[test]
+    fn format_duration_under_minute() {
+        assert_eq!(format_duration_human_readable(45), "45s");
+    }
+
+    #[test]
+    fn format_duration_exact_minute() {
+        assert_eq!(format_duration_human_readable(60), "1m");
+    }
+
+    #[test]
+    fn format_duration_hours_and_minutes() {
+        assert_eq!(format_duration_human_readable(3661), "1h 1m");
+    }
+
+    #[test]
+    fn format_duration_days() {
+        assert_eq!(format_duration_human_readable(86400), "1d");
+    }
+
+    #[test]
+    fn format_duration_months() {
+        assert_eq!(format_duration_human_readable(30 * 86400), "1mo");
+    }
+
+    #[test]
+    fn format_duration_years_and_months() {
+        let one_year_two_months = 365 * 86400 + 2 * 30 * 86400;
+        assert_eq!(
+            format_duration_human_readable(one_year_two_months),
+            "1y 2mo"
+        );
+    }
+
+    #[test]
+    fn format_duration_all_units() {
+        let duration = 365 * 86400 + 30 * 86400 + 86400 + 3600 + 60;
+        assert_eq!(format_duration_human_readable(duration), "1y 1mo 1d 1h 1m");
+    }
+
+    #[test]
+    fn test_address_explorer_url_all_chains() {
+        let cases: &[(Chain, &str, &str)] = &[
+            (Chain::Bitcoin, "1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa", "https://mempool.space/address/1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa"),
+            (Chain::Ethereum, "0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae", "https://etherscan.io/address/0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae"),
+            (Chain::Litecoin, "LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ", "https://blockchair.com/litecoin/address/LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ"),
+            (Chain::Monero, "44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A", "https://xmrchain.net/search?value=44AFFq5kSiGBoZ4NMDwYtN18obc8AemS33DBLWs3H7otXft3XjrpDtQGv7SqSsaBYBb98uNbr2VBBEt7f2wfn3RVGQBEP3A"),
+            (Chain::Decred, "DsUZxxoHJSty8DCfwfartwTYbuhmVct7tJu", "https://dcrdata.decred.org/address/DsUZxxoHJSty8DCfwfartwTYbuhmVct7tJu"),
+            (Chain::Arweave, "vh-NTHVvlKZqRxc8LyyTNok65yQ55a_PJ1zWLb9G2JI", "https://viewblock.io/arweave/address/vh-NTHVvlKZqRxc8LyyTNok65yQ55a_PJ1zWLb9G2JI"),
+        ];
+        for (chain, addr, expected) in cases {
+            assert_eq!(
+                chain.address_explorer_url(addr),
+                *expected,
+                "failed for {:?}",
+                chain
+            );
+        }
+    }
+
+    #[test]
+    fn test_puzzle_explorer_url_delegates() {
+        let puzzle = crate::b1000::get(1).expect("puzzle b1000/1 should exist");
+        let expected = puzzle.chain.address_explorer_url(puzzle.address.value);
+        assert_eq!(puzzle.explorer_url(), expected);
     }
 }

@@ -3,7 +3,7 @@
 //! This module provides functions to verify that a puzzle's private key
 //! correctly derives its stored address across multiple blockchains.
 
-use crate::{PubkeyFormat, Puzzle};
+use crate::{Chain, PubkeyFormat, Puzzle};
 use k256::ecdsa::SigningKey;
 use k256::elliptic_curve::sec1::ToEncodedPoint;
 use k256::PublicKey;
@@ -36,6 +36,9 @@ pub enum VerifyError {
 
     #[error("Invalid private key format: {0}")]
     InvalidKey(String),
+
+    #[error("Key not verifiable: {0}")]
+    UnverifiableKey(String),
 
     #[error("Address derivation failed: {0}")]
     DerivationFailed(String),
@@ -75,12 +78,65 @@ impl VerifyResult {
 
 /// Verify a puzzle's private key derives its address.
 ///
-/// This is a placeholder that will be implemented in subsequent tasks.
-pub fn verify_puzzle(_puzzle: &Puzzle) -> Result<VerifyResult, VerifyError> {
-    // Placeholder - will be implemented in Task 2-5
-    Err(VerifyError::DerivationFailed(
-        "Not yet implemented".to_string(),
-    ))
+/// Dispatches to the appropriate chain-specific verification based on the
+/// puzzle's key type (hex, WIF, or seed phrase) and blockchain.
+pub fn verify_puzzle(puzzle: &Puzzle) -> Result<VerifyResult, VerifyError> {
+    let key = puzzle.key.as_ref().ok_or(VerifyError::NoPrivateKey)?;
+    let expected_address = puzzle.address.value;
+
+    let pubkey_format = puzzle
+        .pubkey
+        .as_ref()
+        .map(|p| p.format)
+        .unwrap_or(PubkeyFormat::Compressed);
+
+    let (derived, hex_key) = if let Some(hex) = key.hex {
+        let addr = verify_hex_by_chain(hex, expected_address, puzzle.chain, pubkey_format)?;
+        (addr, hex.to_string())
+    } else if let Some(ref wif_data) = key.wif {
+        let wif = wif_data
+            .decrypted
+            .ok_or_else(|| VerifyError::UnverifiableKey("WIF is encrypted".to_string()))?;
+        verify_wif(wif, expected_address)?
+    } else if let Some(ref seed) = key.seed {
+        let phrase = seed.phrase.ok_or_else(|| {
+            VerifyError::UnverifiableKey("Seed has no mnemonic phrase".to_string())
+        })?;
+        let path = seed.path.ok_or_else(|| {
+            VerifyError::UnverifiableKey("Seed has no derivation path".to_string())
+        })?;
+        verify_seed(phrase, path, expected_address, pubkey_format)?
+    } else {
+        return Err(VerifyError::NoPrivateKey);
+    };
+
+    Ok(VerifyResult {
+        id: puzzle.id.to_string(),
+        verified: true,
+        private_key: Some(hex_key),
+        expected_address: expected_address.to_string(),
+        derived_address: Some(derived),
+        error: None,
+    })
+}
+
+/// Dispatch hex key verification to the appropriate chain.
+fn verify_hex_by_chain(
+    hex_key: &str,
+    expected_address: &str,
+    chain: Chain,
+    pubkey_format: PubkeyFormat,
+) -> Result<String, VerifyError> {
+    match chain {
+        Chain::Bitcoin => verify_bitcoin_address(hex_key, expected_address, pubkey_format),
+        Chain::Ethereum => verify_ethereum_address(hex_key, expected_address),
+        Chain::Litecoin => verify_litecoin_address(hex_key, expected_address, pubkey_format),
+        Chain::Decred => verify_decred_address(hex_key, expected_address, pubkey_format),
+        chain => Err(VerifyError::UnsupportedChain(format!(
+            "{} verification not supported",
+            chain.name()
+        ))),
+    }
 }
 
 fn sha256(data: &[u8]) -> [u8; 32] {
@@ -383,7 +439,7 @@ pub fn verify_decred_address(
 /// Supports:
 /// - Compressed WIF (K/L prefix, 52 chars)
 /// - Uncompressed WIF (5 prefix, 51 chars)
-pub fn verify_wif(wif: &str, expected_address: &str) -> Result<String, VerifyError> {
+pub fn verify_wif(wif: &str, expected_address: &str) -> Result<(String, String), VerifyError> {
     let decoded = bs58::decode(wif)
         .into_vec()
         .map_err(|e| VerifyError::InvalidKey(format!("Invalid base58: {}", e)))?;
@@ -430,7 +486,8 @@ pub fn verify_wif(wif: &str, expected_address: &str) -> Result<String, VerifyErr
         PubkeyFormat::Uncompressed
     };
 
-    verify_bitcoin_address(&hex_key, expected_address, pubkey_format)
+    let derived = verify_bitcoin_address(&hex_key, expected_address, pubkey_format)?;
+    Ok((derived, hex_key))
 }
 
 /// Verify seed phrase derivation and address.
@@ -445,7 +502,7 @@ pub fn verify_seed(
     path: &str,
     expected_address: &str,
     pubkey_format: PubkeyFormat,
-) -> Result<String, VerifyError> {
+) -> Result<(String, String), VerifyError> {
     use bip32::{DerivationPath, XPrv};
     use bip39::Mnemonic;
     use std::str::FromStr;
@@ -464,5 +521,6 @@ pub fn verify_seed(
     let private_key_bytes = xprv.private_key().to_bytes();
     let hex_key = hex::encode(private_key_bytes);
 
-    verify_bitcoin_address(&hex_key, expected_address, pubkey_format)
+    let derived = verify_bitcoin_address(&hex_key, expected_address, pubkey_format)?;
+    Ok((derived, hex_key))
 }
