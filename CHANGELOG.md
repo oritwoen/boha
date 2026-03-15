@@ -1,3 +1,38 @@
+## [0.17.0] - 2026-03-15
+
+### Features
+
+- Add Display and FromStr for Chain and Status (#122)
+- *(verify)* Implement verify_puzzle with chain dispatch (#123)
+- Add Chain::address_explorer_url and Puzzle::explorer_url (#129)
+- *(hash_collision)* Add solved() iterator (#126)
+- *(balance)* Add Litecoin balance fetching (#127)
+- *(skills)* Add agent skills (#133)
+
+### Bug Fixes
+
+- *(cli)* Support ballet in author command (#120)
+- Use PUZZLES.len() instead of hardcoded count() (#124)
+- Accept mixed-case hex in Chain::is_valid_txid (#125)
+
+### Documentation
+
+- Add vusi and kangaroo to related tools
+
+### Testing
+
+- I32 IntoPuzzleNum edge cases (#121)
+- Cover format_duration_human_readable edge cases
+- Cover Chain::is_valid_txid across all formats (#128)
+- Cover Chain methods (explorer URLs, symbol, name, ALL) (#130)
+
+### Miscellaneous Tasks
+
+- Remove community section from README.md
+- Add PR lint caller
+- Update README.md
+- Update AGENTS.md
+- Add clippy config (#135)
 ## [0.16.0] - 2026-02-21
 
 ### Features
@@ -8,6 +43,10 @@
 
 - *(chain)* Multichain prep (#109)
 - *(zden)* Normalize names to snake_case (#114)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.16.0
 ## [0.15.0] - 2026-01-27
 
 ### Features
