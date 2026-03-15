@@ -278,6 +278,31 @@ println!("{}", puzzle.asset_path().unwrap());  // assets/zden/level_4/puzzle.png
 println!("{}", puzzle.asset_url().unwrap());   // https://raw.githubusercontent.com/...
 ```
 
+## Agent Skills
+
+This project includes [agent skills](https://skills.sh/) that teach AI coding agents how to use boha.
+
+### Static skills
+
+Curated by the project author:
+
+```bash
+npx skills add oritwoen/boha
+```
+
+| Skill | Description |
+|-------|-------------|
+| `boha` | Rust library API for querying crypto puzzle and bounty data across six blockchains |
+| `boha-cli` | CLI for browsing, searching, verifying and exporting puzzle data |
+
+### Dynamic skills
+
+Auto-generated from live docs, issues, and releases using [skilld](https://github.com/harlan-zw/skilld):
+
+```bash
+npx skilld add boha
+```
+
 ## Related Tools
 
 | Tool | Description |
