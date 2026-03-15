@@ -9,6 +9,31 @@ repository = "https://github.com/oritwoen/boha"
 keywords = ["bitcoin", "puzzle", "bounty", "cryptocurrency"]
 categories = ["data-structures", "cryptography"]
 exclude = ["assets/"]
+rust-version = "1.85.0"
+
+[lints.rust]
+unsafe_code = "forbid"
+
+[lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "warn", priority = -1 }
+nursery = { level = "warn", priority = -1 }
+cast_possible_truncation = "allow"
+cast_precision_loss = "allow"
+cast_sign_loss = "allow"
+missing_errors_doc = "allow"
+missing_panics_doc = "allow"
+module_name_repetitions = "allow"
+must_use_candidate = "allow"
+unreadable_literal = "allow"
+struct_field_names = "allow"
+uninlined_format_args = "allow"
+use_self = "allow"
+doc_markdown = "allow"
+missing_const_for_fn = "allow"
+too_many_lines = "allow"
+fn_params_excessive_bools = "allow"
+option_if_let_else = "allow"
 
 [dependencies]
 bs58 = "0.5"

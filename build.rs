@@ -1,3 +1,15 @@
+#![allow(
+    clippy::uninlined_format_args,
+    clippy::option_if_let_else,
+    clippy::format_push_string,
+    clippy::too_many_lines,
+    clippy::manual_let_else,
+    clippy::manual_assert,
+    clippy::ref_option,
+    clippy::map_unwrap_or,
+    clippy::unnested_or_patterns
+)]
+
 use bip38::Decrypt;
 use json_strip_comments::strip;
 use k256::ecdsa::SigningKey;
