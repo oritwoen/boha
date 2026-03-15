@@ -834,7 +834,7 @@ mod verify {
 
 #[cfg(test)]
 mod verify_bitcoin {
-    use boha::verify::{verify_bitcoin_address, VerifyError};
+    use boha::verify::verify_bitcoin_address;
     use boha::PubkeyFormat;
 
     #[test]
@@ -975,7 +975,8 @@ mod verify_wif {
             "WIF verification should succeed: {:?}",
             result
         );
-        assert_eq!(result.unwrap(), expected);
+        let (derived, _hex) = result.unwrap();
+        assert_eq!(derived, expected);
     }
 
     #[test]
@@ -990,7 +991,8 @@ mod verify_wif {
             "WIF verification should succeed: {:?}",
             result
         );
-        assert_eq!(result.unwrap(), expected);
+        let (derived, _hex) = result.unwrap();
+        assert_eq!(derived, expected);
     }
 
     #[test]
@@ -1041,7 +1043,8 @@ mod verify_seed {
             "Seed verification should succeed: {:?}",
             result
         );
-        assert_eq!(result.unwrap(), expected);
+        let (derived, _hex) = result.unwrap();
+        assert_eq!(derived, expected);
     }
 
     #[test]
@@ -1057,7 +1060,8 @@ mod verify_seed {
             "Seed verification with SegWit path should succeed: {:?}",
             result
         );
-        assert_eq!(result.unwrap(), expected);
+        let (derived, _hex) = result.unwrap();
+        assert_eq!(derived, expected);
     }
 
     #[test]
