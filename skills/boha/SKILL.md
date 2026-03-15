@@ -14,8 +14,9 @@ Rust library for crypto bounties, puzzles and challenges data. Eight collections
 [dependencies]
 boha = "0.16"
 
-# With async balance fetching
+# With async balance fetching (requires tokio runtime)
 boha = { version = "0.16", features = ["balance"] }
+tokio = { version = "1", features = ["full"] }
 ```
 
 ## Puzzle ID Format
