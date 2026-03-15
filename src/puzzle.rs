@@ -550,11 +550,9 @@ mod tests {
     #[test]
     fn test_is_valid_txid_rejects_invalid() {
         assert!(!Chain::Bitcoin.is_valid_txid("too_short"));
-        assert!(!Chain::Bitcoin.is_valid_txid(
-            "g3b5c7d9e1f20000000000000000000000000000000000000000000000000001"
-        ));
-        assert!(!Chain::Ethereum.is_valid_txid(
-            "a3b5c7d9e1f20000000000000000000000000000000000000000000000000001"
-        ));
+        assert!(!Chain::Bitcoin
+            .is_valid_txid("g3b5c7d9e1f20000000000000000000000000000000000000000000000000001"));
+        assert!(!Chain::Ethereum
+            .is_valid_txid("a3b5c7d9e1f20000000000000000000000000000000000000000000000000001"));
     }
 }
