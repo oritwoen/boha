@@ -529,4 +529,46 @@ mod tests {
         assert_eq!(0i32.into_puzzle_num(), None);
         assert_eq!(1i32.into_puzzle_num(), Some(1));
     }
+
+    #[test]
+    fn format_duration_zero_seconds() {
+        assert_eq!(format_duration_human_readable(0), "0s");
+    }
+
+    #[test]
+    fn format_duration_under_minute() {
+        assert_eq!(format_duration_human_readable(45), "45s");
+    }
+
+    #[test]
+    fn format_duration_exact_minute() {
+        assert_eq!(format_duration_human_readable(60), "1m");
+    }
+
+    #[test]
+    fn format_duration_hours_and_minutes() {
+        assert_eq!(format_duration_human_readable(3661), "1h 1m");
+    }
+
+    #[test]
+    fn format_duration_days() {
+        assert_eq!(format_duration_human_readable(86400), "1d");
+    }
+
+    #[test]
+    fn format_duration_months() {
+        assert_eq!(format_duration_human_readable(30 * 86400), "1mo");
+    }
+
+    #[test]
+    fn format_duration_years_and_months() {
+        let one_year_two_months = 365 * 86400 + 2 * 30 * 86400;
+        assert_eq!(format_duration_human_readable(one_year_two_months), "1y 2mo");
+    }
+
+    #[test]
+    fn format_duration_all_units() {
+        let duration = 365 * 86400 + 30 * 86400 + 86400 + 3600 + 60;
+        assert_eq!(format_duration_human_readable(duration), "1y 1mo 1d 1h 1m");
+    }
 }
