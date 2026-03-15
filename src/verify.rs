@@ -64,6 +64,7 @@ impl VerifyResult {
     }
 
     /// Create a failed verification result.
+    #[allow(clippy::needless_pass_by_value)]
     pub fn failure(id: String, address: String, error: VerifyError) -> Self {
         Self {
             id,
@@ -87,8 +88,7 @@ pub fn verify_puzzle(puzzle: &Puzzle) -> Result<VerifyResult, VerifyError> {
     let pubkey_format = puzzle
         .pubkey
         .as_ref()
-        .map(|p| p.format)
-        .unwrap_or(PubkeyFormat::Compressed);
+        .map_or(PubkeyFormat::Compressed, |p| p.format);
 
     let (derived, hex_key) = if let Some(hex) = key.hex {
         let addr = verify_hex_by_chain(hex, expected_address, puzzle.chain, pubkey_format)?;

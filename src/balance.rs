@@ -21,6 +21,7 @@ pub struct Balance {
 }
 
 impl Balance {
+    #[allow(clippy::cast_possible_wrap)]
     pub fn total(&self) -> i128 {
         self.confirmed as i128 + self.unconfirmed
     }
@@ -85,10 +86,10 @@ async fn fetch_mempool_compatible(address: &str, base_url: &str) -> Result<Balan
         .json()
         .await?;
 
-    let confirmed =
-        response.chain_stats.funded_txo_sum as u128 - response.chain_stats.spent_txo_sum as u128;
-    let unconfirmed = response.mempool_stats.funded_txo_sum as i128
-        - response.mempool_stats.spent_txo_sum as i128;
+    let confirmed = u128::from(response.chain_stats.funded_txo_sum)
+        - u128::from(response.chain_stats.spent_txo_sum);
+    let unconfirmed = i128::from(response.mempool_stats.funded_txo_sum)
+        - i128::from(response.mempool_stats.spent_txo_sum);
 
     Ok(Balance {
         confirmed,

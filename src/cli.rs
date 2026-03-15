@@ -220,9 +220,10 @@ impl PuzzleTableRow {
             Status::Claimed => "claimed".cyan().to_string(),
             Status::Swept => "swept".red().to_string(),
         };
-        let prize = p.prize.map_or("-".dimmed().to_string(), |v| {
-            format!("{:.4} {}", v, p.chain.symbol())
-        });
+        let prize = p.prize.map_or_else(
+            || "-".dimmed().to_string(),
+            |v| format!("{:.4} {}", v, p.chain.symbol()),
+        );
         let solve_time = if show_solve_time {
             p.solve_time_formatted()
                 .unwrap_or_else(|| "-".dimmed().to_string())
@@ -478,7 +479,7 @@ fn truncate_txid(txid: &str) -> String {
 fn section(title: &str) -> KeyValueRow {
     KeyValueRow {
         field: format!("▸ {}", title).cyan().bold().to_string(),
-        value: "".to_string(),
+        value: String::new(),
     }
 }
 
@@ -743,10 +744,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                 .map(|a| format!(" ({:.8} {})", a, p.chain.symbol()))
                 .unwrap_or_default();
             let date_str = tx.date.unwrap_or("-");
-            let txid_str = tx
-                .txid
-                .map(truncate_txid)
-                .unwrap_or_else(|| "-".to_string());
+            let txid_str = tx.txid.map_or_else(|| "-".to_string(), truncate_txid);
             rows.push(KeyValueRow {
                 field: format!("  {}", format_transaction_type(tx.tx_type)),
                 value: format!("{} {}{}", txid_str, date_str, amount_str),
@@ -935,8 +933,7 @@ fn puzzle_matches(
         puzzle
             .id
             .split_once('/')
-            .map(|(_, rest)| rest)
-            .unwrap_or(puzzle.id)
+            .map_or(puzzle.id, |(_, rest)| rest)
     };
 
     if let Some(position) = matches_in(id_haystack) {
@@ -1171,7 +1168,7 @@ fn cmd_search(
         Some("bitaps") => bitaps::all().collect(),
         Some("bitimage") => bitimage::all().collect(),
         Some("gsmg") => gsmg::all().collect(),
-        Some("hash_collision") | Some("peter_todd") => hash_collision::all().collect(),
+        Some("hash_collision" | "peter_todd") => hash_collision::all().collect(),
         Some("zden") => zden::all().collect(),
         Some("all") | None => boha::all().collect(),
         Some(collection) => {
@@ -1258,7 +1255,7 @@ fn cmd_show(id: &str, show_transactions: bool, open_asset: bool, format: OutputF
                     );
                 }
             }
-            output_puzzle(puzzle, show_transactions, format)
+            output_puzzle(puzzle, show_transactions, format);
         }
         Err(e) => {
             eprintln!("{} {}", "Error:".red().bold(), e);
@@ -1339,10 +1336,10 @@ fn print_author_table(author: &Author) {
 
     rows.push(KeyValueRow {
         field: "Name".to_string(),
-        value: author
-            .name
-            .map(|n| n.bright_white().to_string())
-            .unwrap_or_else(|| "Anonymous".dimmed().to_string()),
+        value: author.name.map_or_else(
+            || "Anonymous".dimmed().to_string(),
+            |n| n.bright_white().to_string(),
+        ),
     });
 
     if !author.addresses.is_empty() {
@@ -1569,14 +1566,11 @@ fn cmd_verify(id: Option<&str>, all: bool, quiet: bool, format: OutputFormat) {
 fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
     use boha::verify;
 
-    let puzzle = match boha::get(id) {
-        Ok(p) => p,
-        Err(_) => {
-            if !quiet {
-                eprintln!("Error: Puzzle '{}' not found", id);
-            }
-            std::process::exit(1);
+    let Ok(puzzle) = boha::get(id) else {
+        if !quiet {
+            eprintln!("Error: Puzzle '{}' not found", id);
         }
+        std::process::exit(1);
     };
 
     let output = match verify::verify_puzzle(puzzle) {
@@ -1600,18 +1594,17 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             }
             std::process::exit(2);
         }
-        Err(verify::VerifyError::UnverifiableKey(ref msg))
-        | Err(verify::VerifyError::UnsupportedChain(ref msg)) => {
+        Err(
+            verify::VerifyError::UnverifiableKey(ref msg)
+            | verify::VerifyError::UnsupportedChain(ref msg),
+        ) => {
             let output = VerifyOutput {
                 id: id.to_string(),
                 verified: false,
-                private_key: puzzle
-                    .key
-                    .as_ref()
-                    .and_then(|k| k.hex.map(|s| s.to_string())),
+                private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(str::to_string)),
                 expected_address: puzzle.address.value.to_string(),
                 derived_address: None,
-                error: Some(msg.to_string()),
+                error: Some(msg.clone()),
             };
             if !quiet {
                 output_verify(&output, format);
@@ -1622,10 +1615,7 @@ fn cmd_verify_single(id: &str, quiet: bool, format: OutputFormat) {
             let output = VerifyOutput {
                 id: id.to_string(),
                 verified: false,
-                private_key: puzzle
-                    .key
-                    .as_ref()
-                    .and_then(|k| k.hex.map(|s| s.to_string())),
+                private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(str::to_string)),
                 expected_address: puzzle.address.value.to_string(),
                 derived_address: None,
                 error: Some(e.to_string()),
@@ -1711,17 +1701,13 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
                 | verify::VerifyError::UnsupportedChain(_),
             ) => {
                 skipped_count += 1;
-                continue;
             }
             Err(e) => {
                 failed_count += 1;
                 results.push(VerifyOutput {
                     id: puzzle.id.to_string(),
                     verified: false,
-                    private_key: puzzle
-                        .key
-                        .as_ref()
-                        .and_then(|k| k.hex.map(|s| s.to_string())),
+                    private_key: puzzle.key.as_ref().and_then(|k| k.hex.map(str::to_string)),
                     expected_address: puzzle.address.value.to_string(),
                     derived_address: None,
                     error: Some(e.to_string()),
@@ -1763,10 +1749,7 @@ fn cmd_verify_all(quiet: bool, format: OutputFormat) {
                                 "  {} {} - {}",
                                 "✗".red().bold(),
                                 result.id.cyan(),
-                                result
-                                    .error
-                                    .as_ref()
-                                    .unwrap_or(&"Unknown error".to_string())
+                                result.error.as_deref().unwrap_or("Unknown error")
                             );
                         }
                     }
@@ -1821,14 +1804,15 @@ fn cmd_export(
     ];
 
     let mut seen = HashSet::new();
+    #[allow(clippy::useless_let_if_seq)]
     let mut collections_to_export = Vec::new();
 
     if collections.is_empty() {
-        collections_to_export = ALL_COLLECTIONS.iter().map(|s| s.to_string()).collect();
+        collections_to_export = ALL_COLLECTIONS.iter().map(ToString::to_string).collect();
     } else {
         for collection in collections {
             if collection == "all" {
-                collections_to_export = ALL_COLLECTIONS.iter().map(|s| s.to_string()).collect();
+                collections_to_export = ALL_COLLECTIONS.iter().map(ToString::to_string).collect();
                 break;
             }
 
