@@ -38,5 +38,5 @@ pub fn unsolved() -> impl Iterator<Item = &'static Puzzle> {
 }
 
 pub const fn count() -> usize {
-    6
+    PUZZLES.len()
 }
