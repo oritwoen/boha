@@ -70,6 +70,18 @@ struct EtherscanResponse {
     result: String,
 }
 
+#[derive(Deserialize)]
+struct DcrdataAddressTotalsResponse {
+    dcr_unspent: f64,
+}
+
+fn is_invalid_address_status(status: Option<reqwest::StatusCode>) -> bool {
+    matches!(
+        status,
+        Some(reqwest::StatusCode::BAD_REQUEST | reqwest::StatusCode::UNPROCESSABLE_ENTITY)
+    )
+}
+
 async fn fetch_mempool_compatible(address: &str, base_url: &str) -> Result<Balance, BalanceError> {
     let url = format!("{}/api/address/{}", base_url, address);
 
@@ -77,7 +89,7 @@ async fn fetch_mempool_compatible(address: &str, base_url: &str) -> Result<Balan
         .await?
         .error_for_status()
         .map_err(|e| {
-            if e.status() == Some(reqwest::StatusCode::BAD_REQUEST) {
+            if is_invalid_address_status(e.status()) {
                 BalanceError::InvalidAddress(address.to_string())
             } else {
                 BalanceError::Request(e)
@@ -141,11 +153,36 @@ async fn fetch_ltc(address: &str) -> Result<Balance, BalanceError> {
     fetch_mempool_compatible(address, "https://litecoinspace.org").await
 }
 
+async fn fetch_dcr(address: &str) -> Result<Balance, BalanceError> {
+    let url = format!("https://dcrdata.decred.org/api/address/{}/totals", address);
+
+    let response: DcrdataAddressTotalsResponse = reqwest::get(&url)
+        .await?
+        .error_for_status()
+        .map_err(|e| {
+            if is_invalid_address_status(e.status()) {
+                BalanceError::InvalidAddress(address.to_string())
+            } else {
+                BalanceError::Request(e)
+            }
+        })?
+        .json()
+        .await?;
+
+    let confirmed = (response.dcr_unspent * 100_000_000.0).round() as u128;
+
+    Ok(Balance {
+        confirmed,
+        unconfirmed: 0,
+    })
+}
+
 pub async fn fetch(address: &str, chain: Chain) -> Result<Balance, BalanceError> {
     match chain {
         Chain::Bitcoin => fetch_btc(address).await,
         Chain::Ethereum => fetch_eth(address).await,
         Chain::Litecoin => fetch_ltc(address).await,
+        Chain::Decred => fetch_dcr(address).await,
         _ => Err(BalanceError::UnsupportedChain(chain.name().to_string())),
     }
 }
@@ -292,6 +329,20 @@ mod tests {
     async fn test_fetch_ltc_known_address() {
         let result = fetch("LVuDpNCSSj6pQ7t9Pv6d6sUkLKoqDEVUnJ", Chain::Litecoin).await;
         assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn test_fetch_dcr_known_address() {
+        let result = fetch("DsRaAja82UvgnqYaBHYFuyCKURFX2rCyEJ8", Chain::Decred).await;
+        assert!(result.is_ok());
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn test_fetch_dcr_invalid_address_returns_error() {
+        let result = fetch("invalid_address_xyz", Chain::Decred).await;
+        assert!(matches!(result, Err(BalanceError::InvalidAddress(_))));
     }
 
     #[tokio::test]
