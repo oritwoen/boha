@@ -1823,12 +1823,20 @@ fn cmd_export(
     output_export(&export_data, format, compact);
 }
 
-fn collection_help(include_all: bool) -> &'static str {
+fn collection_help(include_all: bool) -> String {
+    let mut names: Vec<_> = Collection::ALL
+        .iter()
+        .map(|collection| match collection {
+            Collection::HashCollision => "hash_collision (peter_todd)",
+            _ => collection.name(),
+        })
+        .collect();
+
     if include_all {
-        "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all"
-    } else {
-        "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden"
+        names.push("all");
     }
+
+    names.join(", ")
 }
 
 fn collection_or_exit(name: &str, include_all: bool) -> Collection {
@@ -1875,5 +1883,22 @@ fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
             eprintln!("CSV format not supported for export. Use 'boha list -o csv' instead.");
             std::process::exit(1);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn collection_help_lists_registry_names() {
+        assert_eq!(
+            collection_help(false),
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden"
+        );
+        assert_eq!(
+            collection_help(true),
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all"
+        );
     }
 }

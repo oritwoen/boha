@@ -124,9 +124,21 @@ impl Collection {
                 b1000::get(num)
             }
             Self::Ballet => ballet::get(name),
-            Self::Bitaps => Ok(bitaps::get()),
+            Self::Bitaps => {
+                if name.is_empty() {
+                    Ok(bitaps::get())
+                } else {
+                    Err(Error::NotFound(format!("{}/{}", self.name(), name)))
+                }
+            }
             Self::Bitimage => bitimage::get(name),
-            Self::Gsmg => Ok(gsmg::get()),
+            Self::Gsmg => {
+                if name.is_empty() {
+                    Ok(gsmg::get())
+                } else {
+                    Err(Error::NotFound(format!("{}/{}", self.name(), name)))
+                }
+            }
             Self::HashCollision => hash_collision::get(name),
             Self::Zden => zden::get(name),
         }
@@ -146,9 +158,13 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
         return Err(Error::NotFound(id.to_string()));
     }
 
-    Collection::parse(parts[0])
-        .map_err(|_| Error::NotFound(id.to_string()))?
-        .get(parts[1])
+    let collection = Collection::parse(parts[0]).map_err(|_| Error::NotFound(id.to_string()))?;
+
+    if matches!(collection, Collection::Gsmg | Collection::Bitaps) {
+        return Err(Error::NotFound(id.to_string()));
+    }
+
+    collection.get(parts[1])
 }
 
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
@@ -235,5 +251,37 @@ mod tests {
             Collection::parse("b1000").unwrap().get("66").unwrap().id,
             "b1000/66"
         );
+    }
+
+    #[test]
+    fn collection_get_rejects_singleton_suffixes() {
+        assert!(matches!(
+            Collection::parse("gsmg").unwrap().get("extra"),
+            Err(Error::NotFound(id)) if id == "gsmg/extra"
+        ));
+        assert!(matches!(
+            Collection::parse("bitaps").unwrap().get("extra"),
+            Err(Error::NotFound(id)) if id == "bitaps/extra"
+        ));
+    }
+
+    #[test]
+    fn global_get_rejects_singleton_slash_ids() {
+        assert!(matches!(
+            get("gsmg/extra"),
+            Err(Error::NotFound(id)) if id == "gsmg/extra"
+        ));
+        assert!(matches!(
+            get("bitaps/extra"),
+            Err(Error::NotFound(id)) if id == "bitaps/extra"
+        ));
+        assert!(matches!(
+            get("gsmg/"),
+            Err(Error::NotFound(id)) if id == "gsmg/"
+        ));
+        assert!(matches!(
+            get("bitaps/"),
+            Err(Error::NotFound(id)) if id == "bitaps/"
+        ));
     }
 }
