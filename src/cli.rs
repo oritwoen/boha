@@ -940,69 +940,59 @@ fn puzzle_matches(
         record_match("id", position, 0);
     }
 
-    if !case_sensitive {
-        if let Some(position) = matches_in(puzzle.address.value) {
-            record_match("address.value", position, 1);
+    if let Some(position) = matches_in(puzzle.address.value) {
+        record_match("address.value", position, 1);
+    }
+
+    if let Some(hash160) = puzzle.address.hash160 {
+        if let Some(position) = matches_in(hash160) {
+            record_match("address.hash160", position, 2);
         }
     }
 
-    if !case_sensitive {
-        if let Some(hash160) = puzzle.address.hash160 {
-            if let Some(position) = matches_in(hash160) {
-                record_match("address.hash160", position, 2);
-            }
+    if let Some(witness_program) = puzzle.address.witness_program {
+        if let Some(position) = matches_in(witness_program) {
+            record_match("address.witness_program", position, 3);
         }
     }
 
-    if !case_sensitive {
-        if let Some(witness_program) = puzzle.address.witness_program {
-            if let Some(position) = matches_in(witness_program) {
-                record_match("address.witness_program", position, 3);
-            }
+    if let Some(pubkey) = puzzle.pubkey {
+        if let Some(position) = matches_in(pubkey.value) {
+            record_match("pubkey.value", position, 4);
         }
     }
 
-    if !case_sensitive {
-        if let Some(pubkey) = puzzle.pubkey {
-            if let Some(position) = matches_in(pubkey.value) {
-                record_match("pubkey.value", position, 4);
+    if let Some(key) = puzzle.key {
+        if let Some(hex) = key.hex {
+            if let Some(position) = matches_in(hex) {
+                record_match("key.hex", position, 5);
             }
         }
-    }
 
-    if !case_sensitive {
-        if let Some(key) = puzzle.key {
-            if let Some(hex) = key.hex {
-                if let Some(position) = matches_in(hex) {
-                    record_match("key.hex", position, 5);
+        if let Some(wif) = key.wif {
+            if let Some(encrypted) = wif.encrypted {
+                if let Some(position) = matches_in(encrypted) {
+                    record_match("key.wif.encrypted", position, 6);
                 }
             }
-
-            if let Some(wif) = key.wif {
-                if let Some(encrypted) = wif.encrypted {
-                    if let Some(position) = matches_in(encrypted) {
-                        record_match("key.wif.encrypted", position, 6);
-                    }
-                }
-                if let Some(decrypted) = wif.decrypted {
-                    if let Some(position) = matches_in(decrypted) {
-                        record_match("key.wif.decrypted", position, 7);
-                    }
+            if let Some(decrypted) = wif.decrypted {
+                if let Some(position) = matches_in(decrypted) {
+                    record_match("key.wif.decrypted", position, 7);
                 }
             }
+        }
 
-            if let Some(seed) = key.seed {
-                if let Some(phrase) = seed.phrase {
-                    if let Some(position) = matches_in(phrase) {
-                        record_match("key.seed.phrase", position, 8);
-                    }
+        if let Some(seed) = key.seed {
+            if let Some(phrase) = seed.phrase {
+                if let Some(position) = matches_in(phrase) {
+                    record_match("key.seed.phrase", position, 8);
                 }
             }
+        }
 
-            if let Some(mini) = key.mini {
-                if let Some(position) = matches_in(mini) {
-                    record_match("key.mini", position, 9);
-                }
+        if let Some(mini) = key.mini {
+            if let Some(position) = matches_in(mini) {
+                record_match("key.mini", position, 9);
             }
         }
     }
@@ -1014,23 +1004,19 @@ fn puzzle_matches(
             }
         }
 
-        if !case_sensitive {
-            for addr in solver.addresses {
-                if let Some(position) = matches_in(addr) {
-                    record_match("solver.addresses", position, 11);
-                    break;
-                }
+        for addr in solver.addresses {
+            if let Some(position) = matches_in(addr) {
+                record_match("solver.addresses", position, 11);
+                break;
             }
         }
     }
 
-    if !case_sensitive {
-        for tx in puzzle.transactions {
-            if let Some(txid) = tx.txid {
-                if let Some(position) = matches_in(txid) {
-                    record_match("transactions.txid", position, 12);
-                    break;
-                }
+    for tx in puzzle.transactions {
+        if let Some(txid) = tx.txid {
+            if let Some(position) = matches_in(txid) {
+                record_match("transactions.txid", position, 12);
+                break;
             }
         }
     }
