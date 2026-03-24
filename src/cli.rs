@@ -1225,7 +1225,15 @@ fn cmd_list(
         "gsmg" => gsmg::all().collect(),
         "hash_collision" | "peter_todd" => hash_collision::all().collect(),
         "zden" => zden::all().collect(),
-        _ => boha::all().collect(),
+        "all" => boha::all().collect(),
+        _ => {
+            eprintln!(
+                "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
+                "Error:".red().bold(),
+                collection
+            );
+            std::process::exit(1);
+        }
     };
 
     let filtered: Vec<_> = puzzles

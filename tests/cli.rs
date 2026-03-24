@@ -164,6 +164,16 @@ mod list {
             .stdout(predicate::str::contains("\"id\": \"gsmg\""))
             .stdout(predicate::str::contains("\"address\":"));
     }
+
+    #[test]
+    fn unknown_collection_error() {
+        boha()
+            .args(["list", "unknown"])
+            .assert()
+            .failure()
+            .stderr(predicate::str::contains("Error:"))
+            .stderr(predicate::str::contains("Unknown collection"));
+    }
 }
 
 mod show {
