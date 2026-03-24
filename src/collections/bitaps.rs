@@ -16,8 +16,12 @@ pub fn get() -> &'static Puzzle {
     &PUZZLE
 }
 
+pub fn slice() -> &'static [Puzzle] {
+    std::slice::from_ref(&PUZZLE)
+}
+
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
-    std::iter::once(&PUZZLE)
+    slice().iter()
 }
 
 pub const fn count() -> usize {

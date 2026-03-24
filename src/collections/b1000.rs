@@ -26,8 +26,12 @@ pub fn get(key: impl IntoPuzzleNum) -> Result<&'static Puzzle> {
         .ok_or_else(|| Error::NotFound(format!("b1000/{}", number)))
 }
 
+pub fn slice() -> &'static [Puzzle] {
+    PUZZLES
+}
+
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
-    PUZZLES.iter()
+    slice().iter()
 }
 
 pub fn solved() -> impl Iterator<Item = &'static Puzzle> {
