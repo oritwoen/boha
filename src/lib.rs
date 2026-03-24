@@ -154,7 +154,7 @@ pub fn get(id: &str) -> Result<&'static Puzzle> {
     }
 
     let parts: Vec<&str> = id.split('/').collect();
-    if parts.len() < 2 {
+    if parts.len() != 2 {
         return Err(Error::NotFound(id.to_string()));
     }
 
@@ -282,6 +282,18 @@ mod tests {
         assert!(matches!(
             get("bitaps/"),
             Err(Error::NotFound(id)) if id == "bitaps/"
+        ));
+    }
+
+    #[test]
+    fn global_get_rejects_extra_path_segments() {
+        assert!(matches!(
+            get("b1000/66/extra"),
+            Err(Error::NotFound(id)) if id == "b1000/66/extra"
+        ));
+        assert!(matches!(
+            get("hash_collision/sha256/extra"),
+            Err(Error::NotFound(id)) if id == "hash_collision/sha256/extra"
         ));
     }
 }
