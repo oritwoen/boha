@@ -568,7 +568,7 @@ mod search {
     #[test]
     fn case_sensitive_no_match() {
         boha()
-            .args(["search", "--case-sensitive", "GSMG"])
+            .args(["search", "--case-sensitive", "gSmg"])
             .assert()
             .failure()
             .stderr(predicate::str::contains("No puzzles found"));
@@ -581,6 +581,18 @@ mod search {
             .assert()
             .success()
             .stdout(predicate::str::contains("gsmg"));
+    }
+
+    #[test]
+    fn case_sensitive_address_match() {
+        boha()
+            .args(["search", "--case-sensitive", "1BgGZ"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("b1000/1"))
+            .stdout(predicate::str::contains(
+                "1BgGZ9tcN4rm9KBzDn7KprQz87SZ26SAMH",
+            ));
     }
 
     #[test]
