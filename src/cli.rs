@@ -1025,6 +1025,12 @@ fn puzzle_matches(
         record_match("chain.symbol", position, 14);
     }
 
+    if let Some(currency) = puzzle.currency {
+        if let Some(position) = matches_in(currency) {
+            record_match("currency", position, 15);
+        }
+    }
+
     if matched_fields.is_empty() {
         return None;
     }

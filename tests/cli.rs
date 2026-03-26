@@ -717,6 +717,16 @@ mod search {
             .stdout(predicate::str::contains("chain.symbol"))
             .stdout(predicate::str::contains("arweave/"));
     }
+
+    #[test]
+    fn currency_field_search() {
+        boha()
+            .args(["-o", "json", "search", "DAI"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("currency"))
+            .stdout(predicate::str::contains("arweave/weave9"));
+    }
 }
 mod export {
     use super::*;
