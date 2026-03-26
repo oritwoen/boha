@@ -737,7 +737,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         for tx in p.transactions {
             let amount_str = tx
                 .amount
-                .map(|a| format!(" ({:.8} {})", a, p.chain.symbol()))
+                .map(|a| format!(" ({:.8} {})", a, p.currency()))
                 .unwrap_or_default();
             let date_str = tx.date.unwrap_or("-");
             let txid_str = tx.txid.map_or_else(|| "-".to_string(), truncate_txid);
