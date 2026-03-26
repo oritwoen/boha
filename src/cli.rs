@@ -1317,6 +1317,7 @@ async fn cmd_balance(id: &str, format: OutputFormat) {
                     Chain::Ethereum => (bal.confirmed_eth(), bal.total_eth()),
                     Chain::Litecoin => (bal.confirmed_ltc(), bal.total_ltc()),
                     Chain::Decred => (bal.confirmed_dcr(), bal.total_dcr()),
+                    Chain::Arweave => (bal.confirmed_ar(), bal.total_ar()),
                     _ => (bal.confirmed_btc(), bal.total_btc()),
                 };
                 let output = BalanceOutput {

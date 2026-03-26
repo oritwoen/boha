@@ -57,6 +57,14 @@ impl Balance {
     pub fn total_dcr(&self) -> f64 {
         self.total() as f64 / 100_000_000.0
     }
+
+    pub fn confirmed_ar(&self) -> f64 {
+        self.confirmed as f64 / 1_000_000_000_000.0
+    }
+
+    pub fn total_ar(&self) -> f64 {
+        self.total() as f64 / 1_000_000_000_000.0
+    }
 }
 
 #[derive(Deserialize)]
@@ -191,13 +199,41 @@ async fn fetch_dcr(address: &str) -> Result<Balance, BalanceError> {
     })
 }
 
+async fn fetch_ar(address: &str) -> Result<Balance, BalanceError> {
+    let url = format!("https://arweave.net/wallet/{}/balance", address);
+
+    let text = reqwest::get(&url)
+        .await?
+        .error_for_status()
+        .map_err(|e| {
+            if is_invalid_address_status(e.status()) {
+                BalanceError::InvalidAddress(address.to_string())
+            } else {
+                BalanceError::Request(e)
+            }
+        })?
+        .text()
+        .await?;
+
+    let winston: u128 = text
+        .trim()
+        .parse()
+        .map_err(|_| BalanceError::Api(format!("Failed to parse Arweave balance: {}", text)))?;
+
+    Ok(Balance {
+        confirmed: winston,
+        unconfirmed: 0,
+    })
+}
+
 pub async fn fetch(address: &str, chain: Chain) -> Result<Balance, BalanceError> {
     match chain {
         Chain::Bitcoin => fetch_btc(address).await,
         Chain::Ethereum => fetch_eth(address).await,
         Chain::Litecoin => fetch_ltc(address).await,
         Chain::Decred => fetch_dcr(address).await,
-        _ => Err(BalanceError::UnsupportedChain(chain.name().to_string())),
+        Chain::Arweave => fetch_ar(address).await,
+        Chain::Monero => Err(BalanceError::UnsupportedChain(chain.name().to_string())),
     }
 }
 
@@ -357,6 +393,28 @@ mod tests {
     async fn test_fetch_dcr_invalid_address_returns_error() {
         let result = fetch("invalid_address_xyz", Chain::Decred).await;
         assert!(matches!(result, Err(BalanceError::InvalidAddress(_))));
+    }
+
+    #[test]
+    fn test_balance_ar_conversion() {
+        let balance = Balance {
+            confirmed: 1_000_000_000_000,
+            unconfirmed: 0,
+        };
+
+        assert_eq!(balance.confirmed_ar(), 1.0);
+        assert_eq!(balance.total_ar(), 1.0);
+    }
+
+    #[tokio::test]
+    #[ignore]
+    async fn test_fetch_ar_known_address() {
+        let result = fetch(
+            "PbdTDYikdddWfNFlDt2aZokALXKe1mJVSC9TALUBNv8",
+            Chain::Arweave,
+        )
+        .await;
+        assert!(result.is_ok());
     }
 
     #[tokio::test]
