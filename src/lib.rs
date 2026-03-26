@@ -179,8 +179,8 @@ pub struct Stats {
     pub claimed: usize,
     pub swept: usize,
     pub with_pubkey: usize,
-    pub total_prize: HashMap<Chain, f64>,
-    pub unsolved_prize: HashMap<Chain, f64>,
+    pub total_prize: HashMap<String, f64>,
+    pub unsolved_prize: HashMap<String, f64>,
 }
 
 pub fn stats() -> Stats {
@@ -198,9 +198,10 @@ pub fn stats() -> Stats {
             stats.with_pubkey += 1;
         }
         if let Some(prize) = puzzle.prize {
-            *stats.total_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+            let currency = puzzle.currency().to_string();
+            *stats.total_prize.entry(currency.clone()).or_insert(0.0) += prize;
             if puzzle.status == Status::Unsolved {
-                *stats.unsolved_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+                *stats.unsolved_prize.entry(currency).or_insert(0.0) += prize;
             }
         }
     }

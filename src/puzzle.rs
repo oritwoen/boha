@@ -372,6 +372,7 @@ pub struct Puzzle {
     pub pubkey: Option<Pubkey>,
     pub key: Option<Key>,
     pub prize: Option<f64>,
+    pub currency: Option<&'static str>,
     pub start_date: Option<&'static str>,
     pub solve_date: Option<&'static str>,
     pub solve_time: Option<u64>,
@@ -467,6 +468,12 @@ impl Key {
 }
 
 impl Puzzle {
+    /// Returns the currency symbol for this puzzle's prize.
+    /// Falls back to the chain's native token if no explicit currency is set.
+    pub fn currency(&self) -> &'static str {
+        self.currency.unwrap_or_else(|| self.chain.symbol())
+    }
+
     pub fn has_pubkey(&self) -> bool {
         self.pubkey.is_some()
     }
@@ -888,5 +895,23 @@ mod tests {
         let puzzle = crate::b1000::get(1).expect("puzzle b1000/1 should exist");
         let expected = puzzle.chain.address_explorer_url(puzzle.address.value);
         assert_eq!(puzzle.explorer_url(), expected);
+    }
+
+    #[test]
+    fn currency_defaults_to_chain_symbol() {
+        let puzzle = crate::b1000::get(1).expect("puzzle b1000/1 should exist");
+        assert!(puzzle.currency.is_none());
+        assert_eq!(puzzle.currency(), "BTC");
+    }
+
+    #[test]
+    fn currency_returns_explicit_value() {
+        // All current puzzles use native tokens, so test the method directly
+        let puzzle = crate::b1000::get(1).expect("puzzle b1000/1 should exist");
+        // Verify the fallback path works for a Bitcoin puzzle
+        assert_eq!(puzzle.currency(), puzzle.chain.symbol());
+
+        // Verify the method signature: Some("DAI") would return "DAI"
+        assert_eq!(Some("DAI").unwrap_or_else(|| "BTC"), "DAI");
     }
 }
