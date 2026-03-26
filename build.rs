@@ -458,6 +458,7 @@ struct Btc1000File {
 struct Btc1000Puzzle {
     address: Address,
     prize: Option<f64>,
+    currency: Option<String>,
     status: String,
     #[allow(dead_code)]
     has_pubkey: Option<bool>,
@@ -492,6 +493,7 @@ struct HashCollisionPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    currency: Option<String>,
     start_date: Option<String>,
     solve_date: Option<String>,
     solve_time: Option<u64>,
@@ -518,6 +520,7 @@ struct GsmgPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    currency: Option<String>,
     pubkey: Option<TomlPubkey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -548,6 +551,7 @@ struct ZdenPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    currency: Option<String>,
     pubkey: Option<TomlPubkey>,
     key: Option<TomlKey>,
     start_date: Option<String>,
@@ -579,6 +583,7 @@ struct ArweavePuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    currency: Option<String>,
     pubkey: Option<TomlPubkey>,
     key: Option<TomlKey>,
     start_date: Option<String>,
@@ -620,6 +625,7 @@ struct BitimagePuzzle {
     pubkey: Option<TomlPubkey>,
     status: String,
     prize: Option<f64>,
+    currency: Option<String>,
     key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -645,6 +651,7 @@ struct BalletPuzzle {
     pubkey: Option<TomlPubkey>,
     status: String,
     prize: Option<f64>,
+    currency: Option<String>,
     key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
@@ -668,6 +675,7 @@ struct BitapsPuzzle {
     address: Address,
     status: String,
     prize: Option<f64>,
+    currency: Option<String>,
     pubkey: Option<TomlPubkey>,
     key: Option<TomlKey>,
     start_date: Option<String>,
@@ -1249,6 +1257,12 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             None => "None".to_string(),
         };
 
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
+
         let start_date = match &puzzle.start_date {
             Some(d) => format!("Some(\"{}\")", d),
             None => "None".to_string(),
@@ -1294,6 +1308,7 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         pubkey: {},
         key: {},
         prize: {},
+        currency: {},
         start_date: {},
         solve_date: {},
         solve_time: {},
@@ -1314,6 +1329,7 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             pubkey,
             key,
             prize,
+            currency,
             start_date,
             solve_date,
             solve_time,
@@ -1358,6 +1374,12 @@ fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefini
             Some(p) => format!("Some({:.6})", p),
             None => "None".to_string(),
         };
+
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
 
         let start_date = match &puzzle.start_date {
             Some(d) => format!("Some(\"{}\")", d),
@@ -1409,6 +1431,7 @@ fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefini
         pubkey: None,
         key: None,
         prize: {},
+        currency: {},
         start_date: {},
         solve_date: {},
         solve_time: {},
@@ -1427,6 +1450,7 @@ fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefini
             redeem_script,
             status,
             prize,
+            currency,
             start_date,
             solve_date,
             solve_time,
@@ -1474,6 +1498,12 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         Some(p) => format!("Some({:.8})", p),
         None => "None".to_string(),
     };
+
+    let currency = puzzle
+        .currency
+        .as_ref()
+        .map(|c| format!("Some(\"{}\")", c))
+        .unwrap_or_else(|| "None".to_string());
 
     let start_date = match &puzzle.start_date {
         Some(d) => format!("Some(\"{}\")", d),
@@ -1526,6 +1556,7 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     pubkey: {},
     key: None,
     prize: {},
+    currency: {},
     start_date: {},
     solve_date: {},
     solve_time: {},
@@ -1544,6 +1575,7 @@ fn generate_gsmg(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         status,
         pubkey,
         prize,
+        currency,
         start_date,
         solve_date,
         solve_time,
@@ -1607,6 +1639,12 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             None => "None".to_string(),
         };
 
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
+
         let start_date = match &puzzle.start_date {
             Some(d) => format!("Some(\"{}\")", d),
             None => "None".to_string(),
@@ -1662,6 +1700,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         pubkey: {},
         key: {},
         prize: {},
+        currency: {},
         start_date: {},
         solve_date: {},
         solve_time: {},
@@ -1684,6 +1723,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             pubkey,
             key,
             prize,
+            currency,
             start_date,
             solve_date,
             solve_time,
@@ -1732,6 +1772,12 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         Some(p) => format!("Some({:.8})", p),
         None => "None".to_string(),
     };
+
+    let currency = puzzle
+        .currency
+        .as_ref()
+        .map(|c| format!("Some(\"{}\")", c))
+        .unwrap_or_else(|| "None".to_string());
 
     let start_date = match &puzzle.start_date {
         Some(d) => format!("Some(\"{}\")", d),
@@ -1784,6 +1830,7 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     pubkey: {},
     key: {},
     prize: {},
+    currency: {},
     start_date: {},
     solve_date: {},
     solve_time: {},
@@ -1803,6 +1850,7 @@ fn generate_bitaps(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         pubkey,
         key,
         prize,
+        currency,
         start_date,
         solve_date,
         solve_time,
@@ -1843,6 +1891,12 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
             Some(p) => format!("Some({:.8})", p),
             None => "None".to_string(),
         };
+
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
 
         let start_date = match &puzzle.start_date {
             Some(d) => format!("Some(\"{}\")", d),
@@ -1902,6 +1956,7 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
          pubkey: {},
          key: {},
          prize: {},
+         currency: {},
          start_date: {},
          solve_date: {},
          solve_time: {},
@@ -1922,6 +1977,7 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
             pubkey,
             key,
             prize,
+            currency,
             start_date,
             solve_date,
             solve_time,
@@ -1979,6 +2035,12 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             None => "None".to_string(),
         };
 
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
+
         let start_date = match &puzzle.start_date {
             Some(d) => format!("Some(\"{}\")", d),
             None => "None".to_string(),
@@ -2035,6 +2097,7 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         pubkey: {},
         key: {},
         prize: {},
+        currency: {},
         start_date: {},
         solve_date: {},
         solve_time: {},
@@ -2055,6 +2118,7 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             pubkey,
             key,
             prize,
+            currency,
             start_date,
             solve_date,
             solve_time,
@@ -2108,6 +2172,12 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
             Some(p) => format!("Some({:.8})", p),
             None => "None".to_string(),
         };
+
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
 
         let start_date = match &puzzle.start_date {
             Some(d) => format!("Some(\"{}\")", d),
@@ -2168,6 +2238,7 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
         pubkey: {},
         key: {},
         prize: {},
+        currency: {},
         start_date: {},
         solve_date: {},
         solve_time: {},
@@ -2190,6 +2261,7 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
             pubkey,
             key,
             prize,
+            currency,
             start_date,
             solve_date,
             solve_time,

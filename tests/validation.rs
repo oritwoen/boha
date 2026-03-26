@@ -207,11 +207,7 @@ fn stats_are_reasonable() {
     assert!(stats.solved > 60);
     assert!(stats.unsolved > 50);
     assert!(stats.swept > 90);
-    let total_btc = stats
-        .total_prize
-        .get(&Chain::Bitcoin)
-        .copied()
-        .unwrap_or(0.0);
+    let total_btc = stats.total_prize.get("BTC").copied().unwrap_or(0.0);
     assert!(total_btc > 100.0);
 }
 

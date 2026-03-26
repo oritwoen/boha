@@ -121,7 +121,11 @@
         },
         "prize": {
           "type": ["number", "null"],
-          "description": "Prize amount in native currency"
+          "description": "Prize amount in native currency (or currency specified by 'currency' field)"
+        },
+        "currency": {
+          "type": ["string", "null"],
+          "description": "Prize currency symbol when different from chain's native token (e.g., 'dai' for ERC-20 DAI on Ethereum). Defaults to chain's native token if absent."
         },
         "pubkey": {
           "$ref": "./definitions.schema.json#/$defs/pubkey"

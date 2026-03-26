@@ -296,15 +296,12 @@ struct StatsCsvRow {
 
 impl StatsCsvRow {
     fn from_stats(stats: &Stats) -> Self {
-        fn get_prize(map: &HashMap<Chain, f64>, chain: Chain) -> f64 {
-            *map.get(&chain).unwrap_or(&0.0)
+        fn get_prize(map: &HashMap<String, f64>, symbol: &str) -> f64 {
+            *map.get(symbol).unwrap_or(&0.0)
         }
 
-        fn prize_map_json(map: &HashMap<Chain, f64>) -> String {
-            let mut out = BTreeMap::<String, f64>::new();
-            for (chain, amount) in map {
-                out.insert(chain.symbol().to_string(), *amount);
-            }
+        fn prize_map_json(map: &HashMap<String, f64>) -> String {
+            let out: BTreeMap<&String, &f64> = map.iter().collect();
             serde_json::to_string(&out).expect("serialize prize map")
         }
 
@@ -317,18 +314,18 @@ impl StatsCsvRow {
             with_pubkey: stats.with_pubkey,
             total_prize_by_chain: prize_map_json(&stats.total_prize),
             unsolved_prize_by_chain: prize_map_json(&stats.unsolved_prize),
-            total_prize_btc: get_prize(&stats.total_prize, Chain::Bitcoin),
-            total_prize_eth: get_prize(&stats.total_prize, Chain::Ethereum),
-            total_prize_ltc: get_prize(&stats.total_prize, Chain::Litecoin),
-            total_prize_xmr: get_prize(&stats.total_prize, Chain::Monero),
-            total_prize_dcr: get_prize(&stats.total_prize, Chain::Decred),
-            total_prize_ar: get_prize(&stats.total_prize, Chain::Arweave),
-            unsolved_prize_btc: get_prize(&stats.unsolved_prize, Chain::Bitcoin),
-            unsolved_prize_eth: get_prize(&stats.unsolved_prize, Chain::Ethereum),
-            unsolved_prize_ltc: get_prize(&stats.unsolved_prize, Chain::Litecoin),
-            unsolved_prize_xmr: get_prize(&stats.unsolved_prize, Chain::Monero),
-            unsolved_prize_dcr: get_prize(&stats.unsolved_prize, Chain::Decred),
-            unsolved_prize_ar: get_prize(&stats.unsolved_prize, Chain::Arweave),
+            total_prize_btc: get_prize(&stats.total_prize, "BTC"),
+            total_prize_eth: get_prize(&stats.total_prize, "ETH"),
+            total_prize_ltc: get_prize(&stats.total_prize, "LTC"),
+            total_prize_xmr: get_prize(&stats.total_prize, "XMR"),
+            total_prize_dcr: get_prize(&stats.total_prize, "DCR"),
+            total_prize_ar: get_prize(&stats.total_prize, "AR"),
+            unsolved_prize_btc: get_prize(&stats.unsolved_prize, "BTC"),
+            unsolved_prize_eth: get_prize(&stats.unsolved_prize, "ETH"),
+            unsolved_prize_ltc: get_prize(&stats.unsolved_prize, "LTC"),
+            unsolved_prize_xmr: get_prize(&stats.unsolved_prize, "XMR"),
+            unsolved_prize_dcr: get_prize(&stats.unsolved_prize, "DCR"),
+            unsolved_prize_ar: get_prize(&stats.unsolved_prize, "AR"),
         }
     }
 }
@@ -784,19 +781,19 @@ fn print_stats_table(stats: &Stats) {
     ];
 
     let mut total_prizes: Vec<_> = stats.total_prize.iter().collect();
-    total_prizes.sort_by_key(|(chain, _)| chain.symbol());
-    for (chain, amount) in total_prizes {
+    total_prizes.sort_by_key(|(symbol, _)| symbol.as_str());
+    for (symbol, amount) in total_prizes {
         rows.push(KeyValueRow {
-            field: format!("Total {}", chain.symbol()),
+            field: format!("Total {}", symbol),
             value: format!("{:.2}", amount),
         });
     }
 
     let mut unsolved_prizes: Vec<_> = stats.unsolved_prize.iter().collect();
-    unsolved_prizes.sort_by_key(|(chain, _)| chain.symbol());
-    for (chain, amount) in unsolved_prizes {
+    unsolved_prizes.sort_by_key(|(symbol, _)| symbol.as_str());
+    for (symbol, amount) in unsolved_prizes {
         rows.push(KeyValueRow {
-            field: format!("Unsolved {}", chain.symbol()),
+            field: format!("Unsolved {}", symbol),
             value: format!("{:.2}", amount).bright_yellow().to_string(),
         });
     }
@@ -1802,9 +1799,10 @@ fn cmd_export(
                     stats.with_pubkey += 1;
                 }
                 if let Some(prize) = puzzle.prize {
-                    *stats.total_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+                    let currency = puzzle.currency().to_string();
+                    *stats.total_prize.entry(currency.clone()).or_insert(0.0) += prize;
                     if puzzle.status == Status::Unsolved {
-                        *stats.unsolved_prize.entry(puzzle.chain).or_insert(0.0) += prize;
+                        *stats.unsolved_prize.entry(currency).or_insert(0.0) += prize;
                     }
                 }
             }
