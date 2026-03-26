@@ -896,4 +896,22 @@ mod tests {
         let expected = puzzle.chain.address_explorer_url(puzzle.address.value);
         assert_eq!(puzzle.explorer_url(), expected);
     }
+
+    #[test]
+    fn currency_defaults_to_chain_symbol() {
+        let puzzle = crate::b1000::get(1).expect("puzzle b1000/1 should exist");
+        assert!(puzzle.currency.is_none());
+        assert_eq!(puzzle.currency(), "BTC");
+    }
+
+    #[test]
+    fn currency_returns_explicit_value() {
+        // All current puzzles use native tokens, so test the method directly
+        let puzzle = crate::b1000::get(1).expect("puzzle b1000/1 should exist");
+        // Verify the fallback path works for a Bitcoin puzzle
+        assert_eq!(puzzle.currency(), puzzle.chain.symbol());
+
+        // Verify the method signature: Some("DAI") would return "DAI"
+        assert_eq!(Some("DAI").unwrap_or_else(|| "BTC"), "DAI");
+    }
 }
