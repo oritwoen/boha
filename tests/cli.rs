@@ -688,6 +688,35 @@ mod search {
             .success()
             .stdout(predicate::str::diff("[]\n"));
     }
+
+    #[test]
+    fn chain_symbol_search() {
+        boha()
+            .args(["-o", "json", "search", "BTC"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("chain.symbol"))
+            .stdout(predicate::str::contains("b1000/"));
+    }
+
+    #[test]
+    fn chain_symbol_case_insensitive() {
+        boha()
+            .args(["-o", "json", "search", "btc"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("chain.symbol"));
+    }
+
+    #[test]
+    fn chain_symbol_ar() {
+        boha()
+            .args(["-o", "json", "search", "--collection", "arweave", "AR"])
+            .assert()
+            .success()
+            .stdout(predicate::str::contains("chain.symbol"))
+            .stdout(predicate::str::contains("arweave/"));
+    }
 }
 mod export {
     use super::*;

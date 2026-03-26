@@ -1024,6 +1024,10 @@ fn puzzle_matches(
         record_match("chain", position, 13);
     }
 
+    if let Some(position) = matches_in(puzzle.chain.symbol()) {
+        record_match("chain.symbol", position, 14);
+    }
+
     if matched_fields.is_empty() {
         return None;
     }
