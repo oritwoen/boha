@@ -25,8 +25,12 @@ pub fn get(name: &str) -> Result<&'static Puzzle> {
         .ok_or(Error::NotFound(search_id))
 }
 
+pub fn slice() -> &'static [Puzzle] {
+    PUZZLES
+}
+
 pub fn all() -> impl Iterator<Item = &'static Puzzle> {
-    PUZZLES.iter()
+    slice().iter()
 }
 
 pub fn solved() -> impl Iterator<Item = &'static Puzzle> {
