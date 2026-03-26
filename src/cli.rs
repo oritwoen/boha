@@ -1,6 +1,5 @@
 use boha::{
-    arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden, Author, Chain,
-    PubkeyFormat, Puzzle, Stats, Status, TransactionType,
+    b1000, Author, Chain, Collection, PubkeyFormat, Puzzle, Stats, Status, TransactionType,
 };
 use chrono::Utc;
 use clap::{Parser, Subcommand, ValueEnum};
@@ -1148,23 +1147,8 @@ fn cmd_search(
     }
 
     let puzzles: Vec<&'static Puzzle> = match collection {
-        Some("arweave") => arweave::all().collect(),
-        Some("b1000") => b1000::all().collect(),
-        Some("ballet") => ballet::all().collect(),
-        Some("bitaps") => bitaps::all().collect(),
-        Some("bitimage") => bitimage::all().collect(),
-        Some("gsmg") => gsmg::all().collect(),
-        Some("hash_collision" | "peter_todd") => hash_collision::all().collect(),
-        Some("zden") => zden::all().collect(),
         Some("all") | None => boha::all().collect(),
-        Some(collection) => {
-            eprintln!(
-                "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
-                "Error:".red().bold(),
-                collection
-            );
-            std::process::exit(1);
-        }
+        Some(collection) => collection_or_exit(collection, true).all().collect(),
     };
 
     let mut results: Vec<SearchResult> = puzzles
@@ -1202,24 +1186,10 @@ fn cmd_list(
     chain_filter: Option<Chain>,
     format: OutputFormat,
 ) {
-    let puzzles: Vec<&Puzzle> = match collection {
-        "arweave" => arweave::all().collect(),
-        "b1000" => b1000::all().collect(),
-        "ballet" => ballet::all().collect(),
-        "bitaps" => bitaps::all().collect(),
-        "bitimage" => bitimage::all().collect(),
-        "gsmg" => gsmg::all().collect(),
-        "hash_collision" | "peter_todd" => hash_collision::all().collect(),
-        "zden" => zden::all().collect(),
-        "all" => boha::all().collect(),
-        _ => {
-            eprintln!(
-                "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
-                "Error:".red().bold(),
-                collection
-            );
-            std::process::exit(1);
-        }
+    let puzzles: Vec<&Puzzle> = if collection == "all" {
+        boha::all().collect()
+    } else {
+        collection_or_exit(collection, true).all().collect()
     };
 
     let filtered: Vec<_> = puzzles
@@ -1284,24 +1254,7 @@ fn cmd_range(puzzle_number: u32, format: OutputFormat) {
 }
 
 fn cmd_author(collection: &str, format: OutputFormat) {
-    let author = match collection {
-        "arweave" => arweave::author(),
-        "b1000" => b1000::author(),
-        "ballet" => ballet::author(),
-        "bitaps" => bitaps::author(),
-        "bitimage" => bitimage::author(),
-        "gsmg" => gsmg::author(),
-        "hash_collision" | "peter_todd" => hash_collision::author(),
-        "zden" => zden::author(),
-        _ => {
-            eprintln!(
-                "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden",
-                "Error:".red().bold(),
-                collection
-            );
-            std::process::exit(1);
-        }
-    };
+    let author = collection_or_exit(collection, false).author();
     output_author(author, format);
 }
 
@@ -1786,46 +1739,22 @@ fn cmd_export(
 ) {
     use std::collections::HashSet;
 
-    const ALL_COLLECTIONS: &[&str] = &[
-        "arweave",
-        "b1000",
-        "ballet",
-        "bitaps",
-        "bitimage",
-        "gsmg",
-        "hash_collision",
-        "zden",
-    ];
-
     let mut seen = HashSet::new();
     #[allow(clippy::useless_let_if_seq)]
     let mut collections_to_export = Vec::new();
 
     if collections.is_empty() {
-        collections_to_export = ALL_COLLECTIONS.iter().map(ToString::to_string).collect();
+        collections_to_export = Collection::ALL.to_vec();
     } else {
         for collection in collections {
             if collection == "all" {
-                collections_to_export = ALL_COLLECTIONS.iter().map(ToString::to_string).collect();
+                collections_to_export = Collection::ALL.to_vec();
                 break;
             }
 
-            let canonical = if collection == "peter_todd" {
-                "hash_collision".to_string()
-            } else {
-                collection
-            };
+            let canonical = collection_or_exit(&collection, true);
 
-            if !ALL_COLLECTIONS.contains(&canonical.as_str()) {
-                eprintln!(
-                    "{} Unknown collection: {}. Use: arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all",
-                    "Error:".red().bold(),
-                    canonical
-                );
-                std::process::exit(1);
-            }
-
-            if seen.insert(canonical.clone()) {
+            if seen.insert(canonical.name()) {
                 collections_to_export.push(canonical);
             }
         }
@@ -1833,31 +1762,13 @@ fn cmd_export(
 
     let mut export_collections = Vec::new();
 
-    for collection_name in collections_to_export {
-        let (name, author, puzzles): (&str, Option<&Author>, Vec<&Puzzle>) =
-            match collection_name.as_str() {
-                "arweave" => ("arweave", Some(arweave::author()), arweave::all().collect()),
-                "b1000" => ("b1000", Some(b1000::author()), b1000::all().collect()),
-                "ballet" => ("ballet", Some(ballet::author()), ballet::all().collect()),
-                "bitaps" => ("bitaps", Some(bitaps::author()), bitaps::all().collect()),
-                "bitimage" => (
-                    "bitimage",
-                    Some(bitimage::author()),
-                    bitimage::all().collect(),
-                ),
-                "gsmg" => ("gsmg", Some(gsmg::author()), gsmg::all().collect()),
-                "hash_collision" => (
-                    "hash_collision",
-                    Some(hash_collision::author()),
-                    hash_collision::all().collect(),
-                ),
-                "zden" => ("zden", Some(zden::author()), zden::all().collect()),
-                _ => unreachable!(), // Already validated above
-            };
+    for collection in collections_to_export {
+        let name = collection.name();
+        let author = Some(collection.author());
 
         // Apply status filtering
-        let filtered: Vec<_> = puzzles
-            .into_iter()
+        let filtered: Vec<_> = collection
+            .all()
             .filter(|p| !unsolved || p.status == Status::Unsolved)
             .filter(|p| !solved || p.status == Status::Solved)
             .collect();
@@ -1912,6 +1823,36 @@ fn cmd_export(
     output_export(&export_data, format, compact);
 }
 
+fn collection_help(include_all: bool) -> String {
+    let mut names: Vec<_> = Collection::ALL
+        .iter()
+        .map(|collection| match collection {
+            Collection::HashCollision => "hash_collision (peter_todd)",
+            _ => collection.name(),
+        })
+        .collect();
+
+    if include_all {
+        names.push("all");
+    }
+
+    names.join(", ")
+}
+
+fn collection_or_exit(name: &str, include_all: bool) -> Collection {
+    if let Ok(collection) = Collection::parse(name) {
+        collection
+    } else {
+        eprintln!(
+            "{} Unknown collection: {}. Use: {}",
+            "Error:".red().bold(),
+            name,
+            collection_help(include_all)
+        );
+        std::process::exit(1);
+    }
+}
+
 fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
     match format {
         OutputFormat::Table => {
@@ -1942,5 +1883,22 @@ fn output_export(data: &ExportData, format: OutputFormat, compact: bool) {
             eprintln!("CSV format not supported for export. Use 'boha list -o csv' instead.");
             std::process::exit(1);
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn collection_help_lists_registry_names() {
+        assert_eq!(
+            collection_help(false),
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden"
+        );
+        assert_eq!(
+            collection_help(true),
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all"
+        );
     }
 }
