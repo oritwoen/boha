@@ -221,7 +221,7 @@ impl PuzzleTableRow {
         };
         let prize = p.prize.map_or_else(
             || "-".dimmed().to_string(),
-            |v| format!("{:.4} {}", v, p.chain.symbol()),
+            |v| format!("{:.4} {}", v, p.currency()),
         );
         let solve_time = if show_solve_time {
             p.solve_time_formatted()
@@ -505,7 +505,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
     if let Some(prize) = p.prize {
         rows.push(KeyValueRow {
             field: "Prize".to_string(),
-            value: format!("{} {}", prize, p.chain.symbol())
+            value: format!("{} {}", prize, p.currency())
                 .bright_green()
                 .to_string(),
         });
