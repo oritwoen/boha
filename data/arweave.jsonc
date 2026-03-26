@@ -258,6 +258,35 @@
       ]
     },
     {
+      "name": "weave9",
+      "chain": "ethereum",
+      "address": {
+        "value": "0x6f85d220c70abb69a1205b96b566c1ed5d9c3831",
+        "kind": "standard"
+      },
+      "status": "claimed",
+      "prize": 100,
+      "currency": "DAI",
+      "start_date": "2020-01-08 11:15:41",
+      "solve_date": "2020-06-08 06:36:33",
+      "solve_time": 13116052,
+      "source_url": "https://arweave.net/1--NRFY3naNwTlxBSRjzDPNUq-Cn1yLG2RmgGHZem9c",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "0x3f2a623857ca0378d14075256d7def3ec5cfffa435a05c3bbd7cbc14e5587ae8",
+          "date": "2020-01-08 11:15:41",
+          "amount": 100
+        },
+        {
+          "type": "claim",
+          "txid": "0x91968c60519866e1a982177ffca22d60520904e53ae6d11814fbc501ad0289bd",
+          "date": "2020-06-08 06:36:33",
+          "amount": 100
+        }
+      ]
+    },
+    {
       "name": "weave10",
       "chain": "arweave",
       "address": {
