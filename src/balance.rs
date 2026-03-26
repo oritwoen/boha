@@ -49,6 +49,14 @@ impl Balance {
     pub fn total_eth(&self) -> f64 {
         self.total() as f64 / 1e18
     }
+
+    pub fn confirmed_dcr(&self) -> f64 {
+        self.confirmed as f64 / 100_000_000.0
+    }
+
+    pub fn total_dcr(&self) -> f64 {
+        self.total() as f64 / 100_000_000.0
+    }
 }
 
 #[derive(Deserialize)]
@@ -169,7 +177,13 @@ async fn fetch_dcr(address: &str) -> Result<Balance, BalanceError> {
         .json()
         .await?;
 
-    let confirmed = (response.dcr_unspent * 100_000_000.0).round() as u128;
+    let atoms = (response.dcr_unspent * 100_000_000.0).round();
+    if atoms < 0.0 {
+        return Err(BalanceError::Api(
+            "Unexpected negative balance from dcrdata".into(),
+        ));
+    }
+    let confirmed = atoms as u128;
 
     Ok(Balance {
         confirmed,
