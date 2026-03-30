@@ -11,7 +11,7 @@ pub mod version {
     include!(concat!(env!("OUT_DIR"), "/data_version.rs"));
 }
 
-pub use collections::{arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, zden};
+pub use collections::{arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, warp, zden};
 pub use puzzle::{
     Address, Assets, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase,
     Profile, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status,
@@ -42,11 +42,12 @@ pub enum Collection {
     Bitimage,
     Gsmg,
     HashCollision,
+    Warp,
     Zden,
 }
 
 impl Collection {
-    pub const ALL: [Self; 8] = [
+    pub const ALL: [Self; 9] = [
         Self::Arweave,
         Self::B1000,
         Self::Ballet,
@@ -54,6 +55,7 @@ impl Collection {
         Self::Bitimage,
         Self::Gsmg,
         Self::HashCollision,
+        Self::Warp,
         Self::Zden,
     ];
 
@@ -66,6 +68,7 @@ impl Collection {
             Self::Bitimage => "bitimage",
             Self::Gsmg => "gsmg",
             Self::HashCollision => "hash_collision",
+            Self::Warp => "warp",
             Self::Zden => "zden",
         }
     }
@@ -79,6 +82,7 @@ impl Collection {
             "bitimage" => Ok(Self::Bitimage),
             "gsmg" => Ok(Self::Gsmg),
             "hash_collision" | "peter_todd" => Ok(Self::HashCollision),
+            "warp" | "warpwallet" => Ok(Self::Warp),
             "zden" => Ok(Self::Zden),
             _ => Err(Error::InvalidCollection(name.to_string())),
         }
@@ -93,6 +97,7 @@ impl Collection {
             Self::Bitimage => bitimage::slice(),
             Self::Gsmg => gsmg::slice(),
             Self::HashCollision => hash_collision::slice(),
+            Self::Warp => warp::slice(),
             Self::Zden => zden::slice(),
         }
     }
@@ -110,6 +115,7 @@ impl Collection {
             Self::Bitimage => bitimage::author(),
             Self::Gsmg => gsmg::author(),
             Self::HashCollision => hash_collision::author(),
+            Self::Warp => warp::author(),
             Self::Zden => zden::author(),
         }
     }
@@ -140,6 +146,7 @@ impl Collection {
                 }
             }
             Self::HashCollision => hash_collision::get(name),
+            Self::Warp => warp::get(name),
             Self::Zden => zden::get(name),
         }
     }
@@ -178,6 +185,7 @@ pub struct Stats {
     pub unsolved: usize,
     pub claimed: usize,
     pub swept: usize,
+    pub expired: usize,
     pub with_pubkey: usize,
     pub total_prize: HashMap<String, f64>,
     pub unsolved_prize: HashMap<String, f64>,
@@ -193,6 +201,7 @@ pub fn stats() -> Stats {
             Status::Unsolved => stats.unsolved += 1,
             Status::Claimed => stats.claimed += 1,
             Status::Swept => stats.swept += 1,
+            Status::Expired => stats.expired += 1,
         }
         if puzzle.has_pubkey() {
             stats.with_pubkey += 1;

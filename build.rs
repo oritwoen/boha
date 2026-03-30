@@ -504,6 +504,35 @@ struct HashCollisionPuzzle {
 }
 
 #[derive(Debug, Deserialize)]
+struct WarpMetadata {
+    source_url: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
+struct WarpFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<WarpMetadata>,
+    puzzles: Vec<WarpPuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct WarpPuzzle {
+    name: String,
+    address: Address,
+    status: String,
+    prize: Option<f64>,
+    currency: Option<String>,
+    pubkey: Option<TomlPubkey>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<String>,
+}
+
+#[derive(Debug, Deserialize)]
 struct GsmgMetadata {
     source_url: Option<String>,
 }
@@ -1139,6 +1168,7 @@ fn generate_data_version(out_dir: &str) {
         "data/gsmg.jsonc",
         "data/hash_collision.jsonc",
         "data/solvers.jsonc",
+        "data/warp.jsonc",
         "data/zden.jsonc",
     ];
 
@@ -1173,6 +1203,7 @@ fn main() {
     println!("cargo:rerun-if-changed=data/b1000.jsonc");
     println!("cargo:rerun-if-changed=data/hash_collision.jsonc");
     println!("cargo:rerun-if-changed=data/gsmg.jsonc");
+    println!("cargo:rerun-if-changed=data/warp.jsonc");
     println!("cargo:rerun-if-changed=data/zden.jsonc");
     println!("cargo:rerun-if-changed=data/bitaps.jsonc");
     println!("cargo:rerun-if-changed=data/bitimage.jsonc");
@@ -1194,6 +1225,7 @@ fn main() {
     generate_bitaps(&out_dir, &solvers);
     generate_bitimage(&out_dir, &solvers);
     generate_ballet(&out_dir, &solvers);
+    generate_warp(&out_dir, &solvers);
 }
 
 fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
@@ -1244,6 +1276,7 @@ fn generate_b1000(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
             "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
             _ => "Status::Unsolved",
         };
 
@@ -1367,6 +1400,7 @@ fn generate_hash_collision(out_dir: &str, solvers: &HashMap<String, SolverDefini
             "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
             "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
             _ => "Status::Unsolved",
         };
 
@@ -1631,6 +1665,7 @@ fn generate_zden(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
             "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
             _ => "Status::Unsolved",
         };
 
@@ -1884,6 +1919,7 @@ fn generate_bitimage(out_dir: &str, solvers: &HashMap<String, SolverDefinition>)
             "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
             "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
             _ => "Status::Unsolved",
         };
 
@@ -2027,6 +2063,7 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
             "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
             _ => "Status::Unsolved",
         };
 
@@ -2165,6 +2202,7 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
             "solved" => "Status::Solved",
             "claimed" => "Status::Claimed",
             "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
             _ => "Status::Unsolved",
         };
 
@@ -2275,4 +2313,131 @@ fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) 
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write arweave_data.rs");
+}
+
+fn generate_warp(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
+    let dest_path = Path::new(out_dir).join("warp_data.rs");
+
+    let mut content =
+        fs::read_to_string("data/warp.jsonc").expect("Failed to read data/warp.jsonc");
+    strip(&mut content).expect("Failed to strip comments from warp.jsonc");
+    let wrapped: WithSchema<WarpFile> =
+        serde_json::from_str(&content).expect("Failed to parse warp.jsonc");
+    let data = wrapped.inner;
+
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        let puzzle_id = format!("warp/{}", puzzle.name);
+
+        validate_pubkey_for_claimed_puzzles(
+            &puzzle_id,
+            &puzzle.status,
+            &puzzle.transactions,
+            &puzzle.address.kind,
+            &puzzle.pubkey,
+        );
+
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.6})", p),
+            None => "None".to_string(),
+        };
+
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
+
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
+        let hash160 = format_hash160(&puzzle.address, "bitcoin", &puzzle_id);
+        let witness_program = format_witness_program(&puzzle.address, &puzzle_id);
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+        let pubkey = format_pubkey(&puzzle.pubkey, &puzzle_id);
+        let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "warp/{}",
+        chain: Chain::Bitcoin,
+        address: Address {{
+            value: "{}",
+            chain: Chain::Bitcoin,
+            kind: "{}",
+            hash160: {},
+            witness_program: {},
+            redeem_script: {},
+        }},
+        status: {},
+        pubkey: {},
+        key: None,
+        prize: {},
+        currency: {},
+        start_date: {},
+        solve_date: {},
+        solve_time: {},
+        pre_genesis: false,
+        source_url: {},
+        transactions: {},
+        solver: {},
+        assets: None,
+    }},
+"#,
+            puzzle.name,
+            puzzle.address.value,
+            puzzle.address.kind,
+            hash160,
+            witness_program,
+            redeem_script,
+            status,
+            pubkey,
+            prize,
+            currency,
+            start_date,
+            solve_date,
+            solve_time,
+            source_url,
+            transactions,
+            solver,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write warp_data.rs");
 }

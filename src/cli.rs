@@ -218,6 +218,7 @@ impl PuzzleTableRow {
             Status::Unsolved => "unsolved".yellow().to_string(),
             Status::Claimed => "claimed".cyan().to_string(),
             Status::Swept => "swept".red().to_string(),
+            Status::Expired => "expired".dimmed().to_string(),
         };
         let prize = p.prize.map_or_else(
             || "-".dimmed().to_string(),
@@ -485,6 +486,7 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
         Status::Unsolved => "Unsolved".yellow().to_string(),
         Status::Claimed => "Claimed".cyan().to_string(),
         Status::Swept => "Swept".red().to_string(),
+        Status::Expired => "Expired".dimmed().to_string(),
     };
 
     let mut rows = vec![
@@ -1068,6 +1070,7 @@ fn output_search_results(results: &[SearchResult], format: OutputFormat, query: 
                         Status::Unsolved => "unsolved".yellow().to_string(),
                         Status::Claimed => "claimed".cyan().to_string(),
                         Status::Swept => "swept".red().to_string(),
+                        Status::Expired => "expired".dimmed().to_string(),
                     };
 
                     SearchTableRow {
@@ -1121,6 +1124,7 @@ fn output_search_results(results: &[SearchResult], format: OutputFormat, query: 
                         Status::Unsolved => "unsolved",
                         Status::Claimed => "claimed",
                         Status::Swept => "swept",
+                        Status::Expired => "expired",
                     };
 
                     wtr.serialize(SearchCsvRow {
@@ -1801,6 +1805,7 @@ fn cmd_export(
                     Status::Unsolved => stats.unsolved += 1,
                     Status::Claimed => stats.claimed += 1,
                     Status::Swept => stats.swept += 1,
+                    Status::Expired => stats.expired += 1,
                 }
                 if puzzle.has_pubkey() {
                     stats.with_pubkey += 1;
@@ -1838,6 +1843,7 @@ fn collection_help(include_all: bool) -> String {
         .iter()
         .map(|collection| match collection {
             Collection::HashCollision => "hash_collision (peter_todd)",
+            Collection::Warp => "warp (warpwallet)",
             _ => collection.name(),
         })
         .collect();
@@ -1904,11 +1910,11 @@ mod tests {
     fn collection_help_lists_registry_names() {
         assert_eq!(
             collection_help(false),
-            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden"
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), warp (warpwallet), zden"
         );
         assert_eq!(
             collection_help(true),
-            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), zden, all"
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), warp (warpwallet), zden, all"
         );
     }
 }
