@@ -5,4 +5,5 @@ pub mod bitaps;
 pub mod bitimage;
 pub mod gsmg;
 pub mod hash_collision;
+pub mod warp;
 pub mod zden;

@@ -1,0 +1,199 @@
+{
+  "$schema": "./schemas/collection.schema.json",
+  "author": {
+    "name": "Keybase",
+    "profiles": [
+      {
+        "name": "github",
+        "url": "https://github.com/keybase/warpwallet"
+      },
+      {
+        "name": "twitter",
+        "url": "https://twitter.com/maxtaco"
+      },
+      {
+        "name": "twitter",
+        "url": "https://twitter.com/malgorithms"
+      }
+    ]
+  },
+  "metadata": {
+    "source_url": "https://keybase.io/warp"
+  },
+  "puzzles": [
+    {
+      // Challenge 1: 2 random alphanumeric characters, unsalted
+      "name": "challenge_1",
+      "address": {
+        "value": "1JKb1617p68H5MPkoNaMtaJCqKDU3h8qSn",
+        "kind": "p2pkh",
+        "hash160": "bdfe0236c752bbf8610b47c57b8c8592230dc575"
+      },
+      "pubkey": { "value": "045f751d820a69524eb71d48ddc6a231ba019b1461f58b0266cbbec617f9e80c6e573582b37014ce7ba7eaf9031265c5f022d8cb286f2194344f207eaa44bb51af", "format": "uncompressed" },
+      "status": "solved",
+      "prize": 0.1,
+      "start_date": "2013-11-19 20:12:25",
+      "solve_date": "2013-11-20 03:52:13",
+      "solve_time": 27588,
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "66e4f6fdf399ce95804347fc4bdbd9e35de7d4044e2cfcb3b51d44db9522f00b",
+          "date": "2013-11-19 20:12:25",
+          "amount": 0.1
+        },
+        {
+          "type": "claim",
+          "txid": "1384234046c03e8dfcb868aa68b82df29078dcdda01e243fe006e4e0793b8cd8",
+          "date": "2013-11-20 03:52:13",
+          "amount": 0.1
+        }
+      ]
+    },
+    {
+      // Challenge 2: 3 random alphanumeric characters, unsalted
+      "name": "challenge_2",
+      "address": {
+        "value": "1NMjXhB2DW8pbGvd64o9DiqwCF8BTAkJKu",
+        "kind": "p2pkh",
+        "hash160": "ea4676574baeba82db43e26421f4113bc389d513"
+      },
+      "pubkey": { "value": "040ccffff6759ce8bbf62061fa5f57758fc8cca98719de8dfc43da1103ee9b25632323b540ab4692d17db0839865b19ae194b2a553e28442035483925b8c710c1a", "format": "uncompressed" },
+      "status": "solved",
+      "prize": 0.25,
+      "start_date": "2013-11-19 20:12:25",
+      "solve_date": "2013-11-20 04:40:30",
+      "solve_time": 30485,
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "e2a23dc3a745a853caf6be317b75912b6f85a618a25602de67708e12894babdf",
+          "date": "2013-11-19 20:12:25",
+          "amount": 0.25
+        },
+        {
+          "type": "claim",
+          "txid": "60c1b66664cb4ba5135acaa34e38bb1cff077355d9aefe2ab5e7e2af8b7df328",
+          "date": "2013-11-20 04:40:30",
+          "amount": 0.25
+        }
+      ]
+    },
+    {
+      // Challenge 3: two Bitcoin subreddit usernames separated by a space, unsalted
+      "name": "challenge_3",
+      "address": {
+        "value": "1FpxSs3tsvV8knTgRv2885bE1GyPq1QrvH",
+        "kind": "p2pkh",
+        "hash160": "a2a3985813e2b921ba5bcbf838f2160e5ded078b"
+      },
+      "pubkey": { "value": "04cdf27fe2598b7df25c002f268a7984642b206a54a077e04d8ff8032b0aa2e8b2a8dae0a9f2011f214d9eb57f0c7977fa378bd5ddcb21c90f5311549b5418b199", "format": "uncompressed" },
+      "status": "solved",
+      "prize": 0.5,
+      "start_date": "2013-11-19 20:12:25",
+      "solve_date": "2013-11-27 15:04:25",
+      "solve_time": 672720,
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "35f2a2e601277156a9cfc0e02f92d184918714b1bea3a75bcc82d9f6bea848ea",
+          "date": "2013-11-19 20:12:25",
+          "amount": 0.5
+        },
+        {
+          "type": "claim",
+          "txid": "de0253a758588a5079516299b633d55372ed5ae171ca4688a2f6f0c471ff93ad",
+          "date": "2013-11-27 15:04:25",
+          "amount": 0.5
+        }
+      ]
+    },
+    {
+      // Challenge 4: HN top 100 karma username with 2 chars dropped, unsalted
+      "name": "challenge_4",
+      "address": {
+        "value": "1GXXH7FbY7nCJDRc72SMyYykgtEUi5GxfR",
+        "kind": "p2pkh",
+        "hash160": "aa4fa3e2be1fbf59edd4bc3702a08f715251e823"
+      },
+      "pubkey": { "value": "048bf325a507144fafb185fedaeb0e8440eb062e40fe30fad92d88fee42bc9ba199eab8ce1b044f55bd8fc9c71fcef4f291ef8e41add26d63de4be09238d6ef007", "format": "uncompressed" },
+      "status": "solved",
+      "prize": 1.0,
+      "start_date": "2013-11-19 20:12:25",
+      "solve_date": "2013-11-20 01:23:39",
+      "solve_time": 18674,
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "f17e84dce6c193690b07e8ea220e90370246d8deb846707dc11d032c688b43fd",
+          "date": "2013-11-19 20:12:25",
+          "amount": 1.0
+        },
+        {
+          "type": "claim",
+          "txid": "921bf858098acb6a8ad4d4184fc7654e68cc2e2f4f6ebe7c59cec4e8540e1b12",
+          "date": "2013-11-20 01:23:39",
+          "amount": 1.0
+        }
+      ]
+    },
+    {
+      // The WarpWallet Challenge 1: 8 random alphanumeric characters, unsalted
+      // Answer: 'PuACRv0R' — expired Feb 1, 2016, reclaimed by Keybase
+      "name": "warp_challenge_1",
+      "address": {
+        "value": "1AdU3EcimMFN7JLJtceSyrmFYE3gF5ZnGj",
+        "kind": "p2pkh",
+        "hash160": "699ead63fb2da9733786d47e4cd62609a33d7bb6"
+      },
+      "pubkey": { "value": "041c133e9f41e13c3c31b78fca62355cfcb9f38493d0d9b0449a93401e791de1e0a0e0dc4a37800b64005b4fa85c620e3207fda131f75ce7b7662f74be86a455b0", "format": "uncompressed" },
+      "status": "expired",
+      "prize": 20.0,
+      "start_date": "2013-11-19 20:12:25",
+      "solve_date": "2016-01-31 01:19:41",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "d99ef316fb267491a5f34f8ce35c5083df1a643a850f6b23470263d6e07a2b6b",
+          "date": "2013-11-19 20:12:25",
+          "amount": 10.0
+        },
+        {
+          "type": "claim",
+          "txid": "a96d09a4de56f144e95dd2184edd4e53a6beaec9887d14eb63a25aa8e1e456c9",
+          "date": "2016-01-31 01:19:41",
+          "amount": 10.001116
+        }
+      ]
+    },
+    {
+      // The WarpWallet Challenge 2: 8 alphanumeric characters, salted with 'a@b.c'
+      // Expired Jan 1, 2018, reclaimed by Keybase
+      "name": "warp_challenge_2",
+      "address": {
+        "value": "1MkupVKiCik9iyfnLrJoZLx9RH4rkF3hnA",
+        "kind": "p2pkh",
+        "hash160": "e3b07e2fc4ea14b903c11aee122f7fec19e4a621"
+      },
+      "pubkey": { "value": "0403a696da2c6243816c8a7c1d98756c8d56e74ac54a79d35ed7c3a9a9eb84d9be11ac016eb926fda6cb58322ac4b6a505fd52c258d70d5e49eac99b1e96a696c1", "format": "uncompressed" },
+      "status": "expired",
+      "prize": 20.0,
+      "start_date": "2016-02-01 15:19:33",
+      "solve_date": "2018-01-03 03:14:39",
+      "transactions": [
+        {
+          "type": "funding",
+          "txid": "e12fee70d2b0b308129b9b12d6f95be25617fc4f98c56900034ce466b3113074",
+          "date": "2016-02-01 15:19:33",
+          "amount": 10.0
+        },
+        {
+          "type": "claim",
+          "txid": "25d23cf88188258001830a7b7c45fd7c9f43be16ce8f75088810360c55ee9f17",
+          "date": "2018-01-03 03:14:39",
+          "amount": 10.0005164
+        }
+      ]
+    }
+  ]
+}

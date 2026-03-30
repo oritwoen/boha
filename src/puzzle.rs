@@ -135,6 +135,7 @@ pub enum Status {
     Unsolved,
     Claimed,
     Swept,
+    Expired,
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, Serialize)]
@@ -169,6 +170,7 @@ impl fmt::Display for Status {
             Status::Unsolved => "unsolved",
             Status::Claimed => "claimed",
             Status::Swept => "swept",
+            Status::Expired => "expired",
         })
     }
 }
@@ -182,8 +184,9 @@ impl FromStr for Status {
             "unsolved" => Ok(Status::Unsolved),
             "claimed" => Ok(Status::Claimed),
             "swept" => Ok(Status::Swept),
+            "expired" => Ok(Status::Expired),
             _ => Err(format!(
-                "unknown status: '{}'. expected: solved, unsolved, claimed, swept",
+                "unknown status: '{}'. expected: solved, unsolved, claimed, swept, expired",
                 s
             )),
         }

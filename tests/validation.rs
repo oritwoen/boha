@@ -677,10 +677,13 @@ fn solved_puzzles_with_dates_have_solve_time() {
 #[test]
 fn unsolved_puzzles_no_solve_time() {
     for puzzle in boha::all() {
-        if matches!(puzzle.status, Status::Unsolved | Status::Swept) {
+        if matches!(
+            puzzle.status,
+            Status::Unsolved | Status::Swept | Status::Expired
+        ) {
             assert!(
                 puzzle.solve_time.is_none(),
-                "Unsolved/swept puzzle {} should not have solve_time",
+                "Unsolved/swept/expired puzzle {} should not have solve_time",
                 puzzle.id
             );
         }
@@ -912,6 +915,23 @@ fn claimed_puzzles_have_claim_transaction() {
 }
 
 #[test]
+fn expired_puzzles_have_claim_transaction() {
+    for puzzle in boha::all() {
+        if puzzle.status == Status::Expired {
+            let has_claim = puzzle
+                .transactions
+                .iter()
+                .any(|t| t.tx_type == TransactionType::Claim);
+            assert!(
+                has_claim,
+                "Expired puzzle {} missing claim transaction",
+                puzzle.id
+            );
+        }
+    }
+}
+
+#[test]
 fn swept_puzzles_have_sweep_transaction() {
     for puzzle in boha::all() {
         if puzzle.status == Status::Swept {
@@ -988,7 +1008,7 @@ fn solve_date_matches_claim_transaction() {
         }
         if !matches!(
             puzzle.status,
-            Status::Solved | Status::Claimed | Status::Swept
+            Status::Solved | Status::Claimed | Status::Swept | Status::Expired
         ) {
             continue;
         }
@@ -1011,10 +1031,13 @@ fn solve_date_matches_claim_transaction() {
 #[test]
 fn unsolved_puzzles_no_solver() {
     for puzzle in boha::all() {
-        if matches!(puzzle.status, Status::Unsolved | Status::Swept) {
+        if matches!(
+            puzzle.status,
+            Status::Unsolved | Status::Swept | Status::Expired
+        ) {
             assert!(
                 puzzle.solver.is_none(),
-                "Unsolved/swept puzzle {} should not have solver",
+                "Unsolved/swept/expired puzzle {} should not have solver",
                 puzzle.id
             );
         }
