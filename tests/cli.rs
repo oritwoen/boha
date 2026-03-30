@@ -1131,13 +1131,31 @@ mod verify_seed {
         // Same mnemonic but passphrase changes the derived seed entirely
         let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
         let path = "m/44'/0'/0'/0/0";
-        let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
+
+        // Verify passphrase produces a different address than empty passphrase
+        let no_pass = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
+        let result = verify_seed(phrase, path, no_pass, PubkeyFormat::Compressed, "TREZOR");
+        assert!(
+            result.is_err(),
+            "TREZOR passphrase should derive a different address than empty passphrase"
+        );
+    }
+
+    #[test]
+    fn verify_seed_with_passphrase_derives_correct_address() {
+        // BIP39 "abandon...about" with passphrase "TREZOR" at m/44'/0'/0'/0/0
+        let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        let path = "m/44'/0'/0'/0/0";
+        let expected = "1PEha8dk5Me5J1rZWpgqSt5F4BroTBLS5y";
 
         let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed, "TREZOR");
         assert!(
-            result.is_err(),
-            "Passphrase should derive a different address"
+            result.is_ok(),
+            "Should verify correctly with TREZOR passphrase: {:?}",
+            result
         );
+        let (derived, _hex) = result.unwrap();
+        assert_eq!(derived, expected);
     }
 
     #[test]
