@@ -1,3 +1,24 @@
+## [0.18.0] - 2026-03-30
+
+### Features
+
+- *(puzzle)* Add currency field for non-native token prizes (#143)
+- *(balance)* Add Arweave balance fetching (#144)
+- *(arweave)* Add weave9 puzzle (100 DAI on Ethereum) (#145)
+- *(warp)* Add WarpWallet challenge collection (#149)
+
+### Bug Fixes
+
+- *(cli)* Reject unknown collections in list (#137)
+- *(search)* Honor case-sensitive fields (#139)
+- *(search)* Match chain symbols (BTC, LTC, XMR, DCR) (#142)
+- *(balance)* Add Decred support (#140)
+- *(search)* Include currency field in search results (#146)
+- *(verify)* Pass BIP39 passphrase to seed derivation (#147)
+
+### Refactor
+
+- *(collection)* Centralize dispatch registry (#141)
 ## [0.17.0] - 2026-03-15
 
 ### Features
@@ -33,6 +54,7 @@
 - Update README.md
 - Update AGENTS.md
 - Add clippy config (#135)
+- *(release)* V0.17.0
 ## [0.16.0] - 2026-02-21
 
 ### Features
