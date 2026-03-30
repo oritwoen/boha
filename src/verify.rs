@@ -3,7 +3,7 @@
 //! This module provides functions to verify that a puzzle's private key
 //! correctly derives its stored address across multiple blockchains.
 
-use crate::{Chain, PubkeyFormat, Puzzle};
+use crate::{Chain, Passphrase, PubkeyFormat, Puzzle};
 use k256::ecdsa::SigningKey;
 use k256::elliptic_curve::sec1::ToEncodedPoint;
 use k256::PublicKey;
@@ -105,7 +105,16 @@ pub fn verify_puzzle(puzzle: &Puzzle) -> Result<VerifyResult, VerifyError> {
         let path = seed.path.ok_or_else(|| {
             VerifyError::UnverifiableKey("Seed has no derivation path".to_string())
         })?;
-        verify_seed(phrase, path, expected_address, pubkey_format)?
+        let passphrase = match seed.entropy.as_ref().and_then(|e| e.passphrase) {
+            Some(Passphrase::Required) => {
+                return Err(VerifyError::UnverifiableKey(
+                    "Seed requires unknown passphrase".to_string(),
+                ))
+            }
+            Some(Passphrase::Known(p)) => p,
+            None => "",
+        };
+        verify_seed(phrase, path, expected_address, pubkey_format, passphrase)?
     } else {
         return Err(VerifyError::NoPrivateKey);
     };
@@ -502,6 +511,7 @@ pub fn verify_seed(
     path: &str,
     expected_address: &str,
     pubkey_format: PubkeyFormat,
+    passphrase: &str,
 ) -> Result<(String, String), VerifyError> {
     use bip32::{DerivationPath, XPrv};
     use bip39::Mnemonic;
@@ -510,7 +520,7 @@ pub fn verify_seed(
     let mnemonic = Mnemonic::parse_normalized(phrase)
         .map_err(|e| VerifyError::InvalidKey(format!("Invalid mnemonic: {}", e)))?;
 
-    let seed = mnemonic.to_seed("");
+    let seed = mnemonic.to_seed(passphrase);
 
     let derivation_path = DerivationPath::from_str(path)
         .map_err(|e| VerifyError::InvalidKey(format!("Invalid derivation path: {}", e)))?;
