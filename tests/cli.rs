@@ -1098,7 +1098,7 @@ mod verify_seed {
         let path = "m/44'/0'/0'/0/0";
         let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
 
-        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed, "");
         assert!(
             result.is_ok(),
             "Seed verification should succeed: {:?}",
@@ -1115,7 +1115,7 @@ mod verify_seed {
         let path = "m/84'/0'/0'/0/0";
         let expected = "bc1qcr8te4kr609gcawutmrza0j4xv80jy8z306fyu";
 
-        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed, "");
         assert!(
             result.is_ok(),
             "Seed verification with SegWit path should succeed: {:?}",
@@ -1126,12 +1126,27 @@ mod verify_seed {
     }
 
     #[test]
+    fn verify_seed_with_passphrase() {
+        // BIP39 test vector with passphrase "TREZOR"
+        // Same mnemonic but passphrase changes the derived seed entirely
+        let phrase = "abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon abandon about";
+        let path = "m/44'/0'/0'/0/0";
+        let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
+
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed, "TREZOR");
+        assert!(
+            result.is_err(),
+            "Passphrase should derive a different address"
+        );
+    }
+
+    #[test]
     fn verify_seed_invalid_phrase() {
         let phrase = "invalid mnemonic phrase that is not valid";
         let path = "m/44'/0'/0'/0/0";
         let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
 
-        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed, "");
         assert!(result.is_err(), "Should fail with invalid mnemonic");
     }
 
@@ -1141,7 +1156,7 @@ mod verify_seed {
         let path = "invalid/path/format";
         let expected = "1LqBGSKuX5yYUonjxT5qGfpUsXKYYWeabA";
 
-        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed);
+        let result = verify_seed(phrase, path, expected, PubkeyFormat::Compressed, "");
         assert!(result.is_err(), "Should fail with invalid derivation path");
     }
 }
