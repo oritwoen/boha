@@ -6,6 +6,8 @@ metadata:
   version: "0.18.0"
 ---
 
+# boha-cli
+
 CLI for browsing crypto bounties, puzzles and challenges. Nine collections across six blockchains. Install with `cargo install boha --features cli,balance` or `paru -S boha` on Arch.
 
 ## Puzzle ID Format
