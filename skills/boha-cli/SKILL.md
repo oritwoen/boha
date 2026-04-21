@@ -3,10 +3,12 @@ name: boha-cli
 description: Use the boha CLI to browse, search, verify and export crypto puzzle data. Trigger when running boha commands, scripting puzzle lookups, piping puzzle data to other tools, or checking balances from the terminal. Do not use for Rust library integration - see boha skill instead.
 metadata:
   author: oritwoen
-  version: "0.16.0"
+  version: "0.18.0"
 ---
 
-CLI for browsing crypto bounties, puzzles and challenges. Eight collections across six blockchains. Install with `cargo install boha --features cli,balance` or `paru -S boha` on Arch.
+# boha-cli
+
+CLI for browsing crypto bounties, puzzles and challenges. Nine collections across six blockchains. Install with `cargo install boha --features cli,balance` or `paru -S boha` on Arch.
 
 ## Puzzle ID Format
 
@@ -21,6 +23,7 @@ IDs follow `collection/identifier` pattern. Two exceptions (`gsmg`, `bitaps`) ha
 | bitimage | `bitimage/kitten` | Name string |
 | gsmg | `gsmg` | Single puzzle, no slash |
 | hash_collision | `hash_collision/sha256` | sha1, sha256, ripemd160, hash160, hash256, op_abs |
+| warp | `warp/challenge_1` | challenge_1-4, warp_challenge_1-2 |
 | zden | `zden/level_1` | snake_case level names |
 
 ## Commands

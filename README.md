@@ -69,6 +69,10 @@ boha range 90
 # Check balance (requires --features balance)
 boha balance b1000/71
 
+# Search puzzles by ID, address, chain, or currency
+boha search sha256
+boha search kitten --collection bitimage
+
 # Verify private key derives correct address
 boha verify b1000/66
 boha verify --all
@@ -103,7 +107,7 @@ boha -o jsonl list b1000 --unsolved | jq .
 ### Library
 
 ```rust
-use boha::{arweave, b1000, ballet, bitaps, gsmg, hash_collision, zden, Status};
+use boha::{arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, warp, zden, Status};
 
 let p90 = b1000::get(90).unwrap();
 println!("Address: {}", p90.address.value);
@@ -124,13 +128,16 @@ let unsolved: Vec<_> = b1000::all()
     .collect();
 
 let gsmg_puzzle = gsmg::get();
+let kitten = bitimage::get("kitten").unwrap();
 let sha256 = hash_collision::get("sha256").unwrap();
+let warp_challenge = warp::get("challenge_1").unwrap();
 let level1 = zden::get("level_1").unwrap();
 
 let puzzle = boha::get("b1000/90").unwrap();
 let puzzle = boha::get("gsmg").unwrap();
 let puzzle = boha::get("bitaps").unwrap();
 let puzzle = boha::get("bitimage/kitten").unwrap();
+let puzzle = boha::get("warp/challenge_1").unwrap();
 let puzzle = boha::get("zden/level_1").unwrap();
 
 // Access puzzle assets (images, hints)
@@ -150,8 +157,8 @@ use boha::{b1000, balance};
 #[tokio::main]
 async fn main() {
     let puzzle = b1000::get(71).unwrap();
-    let bal = balance::fetch(puzzle.address.value).await.unwrap();
-    
+    let bal = balance::fetch(puzzle.address.value, puzzle.chain).await.unwrap();
+
     println!("Confirmed: {} sats", bal.confirmed);
     println!("Total: {:.8} BTC", bal.total_btc());
 }
@@ -162,7 +169,7 @@ async fn main() {
 | Feature | Description |
 |---------|-------------|
 | `cli` | Command-line interface |
-| `balance` | Blockchain balance fetching (mempool.space for BTC/LTC, Etherscan for ETH) |
+| `balance` | Blockchain balance fetching (BTC via mempool.space, LTC via litecoinspace.org, ETH via Etherscan, DCR via dcrdata, AR via arweave.net) |
 
 ## Collections
 
@@ -252,6 +259,17 @@ Two of three required shares are published. Goal: break the SSSS scheme or find 
 | kitten_passphrase | Yes | ⏳ Unsolved | ~0.01 BTC |
 
 Both puzzles use the same source file (Antonopoulos kitten tweet). The passphrase puzzle requires an unknown BIP39 passphrase.
+
+### warp
+
+[Keybase WarpWallet challenges](https://keybase.io/warp) - Brainwallet challenges published to show how quickly weak WarpWallet passphrases get cracked.
+
+| Status | Count |
+|--------|-------|
+| Solved | 4 |
+| Expired | 2 |
+
+Includes the original four November 2013 challenges plus two later WarpWallet-specific challenge rounds reclaimed by Keybase after expiry.
 
 ## Data
 
