@@ -3,19 +3,19 @@ name: boha
 description: Use boha as a Rust library for crypto puzzle and bounty data. Trigger when code imports `boha`, references Bitcoin puzzle transactions, hash collision bounties, or needs programmatic access to crypto challenge collections. Do not use for CLI usage - see boha-cli skill instead.
 metadata:
   author: oritwoen
-  version: "0.16.0"
+  version: "0.18.0"
 ---
 
-Rust library for crypto bounties, puzzles and challenges data. Eight collections across six blockchains (Bitcoin, Ethereum, Litecoin, Monero, Decred, Arweave). All data embedded at compile time as `&'static` references.
+Rust library for crypto bounties, puzzles and challenges data. Nine collections across six blockchains (Bitcoin, Ethereum, Litecoin, Monero, Decred, Arweave). All data embedded at compile time as `&'static` references.
 
 ## Install
 
 ```toml
 [dependencies]
-boha = "0.16"
+boha = "0.18"
 
 # With async balance fetching (requires tokio runtime)
-boha = { version = "0.16", features = ["balance"] }
+boha = { version = "0.18", features = ["balance"] }
 tokio = { version = "1", features = ["full"] }
 ```
 
@@ -32,6 +32,7 @@ IDs follow `collection/identifier` pattern. Two exceptions have no slash.
 | bitimage | `bitimage/kitten` | Name string |
 | gsmg | `gsmg` | Single puzzle, no slash |
 | hash_collision | `hash_collision/sha256` | sha1, sha256, ripemd160, hash160, hash256, op_abs |
+| warp | `warp/challenge_1` | challenge_1-4, warp_challenge_1-2 |
 | zden | `zden/level_1` | snake_case level names |
 
 ## API
@@ -79,7 +80,7 @@ async fn main() {
 }
 ```
 
-Supports Bitcoin (mempool.space), Litecoin (litecoinspace.org) and Ethereum (Etherscan).
+Supports Bitcoin (mempool.space), Litecoin (litecoinspace.org), Ethereum (Etherscan), Decred (dcrdata) and Arweave (arweave.net).
 
 ## Key Data Types
 

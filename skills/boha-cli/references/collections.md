@@ -58,6 +58,15 @@ let p = hash_collision::get("sha256").unwrap();
 let p = boha::get("peter_todd/sha256").unwrap();  // alias works
 ```
 
+## warp
+
+Keybase WarpWallet challenges. 6 puzzles total - 4 solved, 2 expired and later reclaimed by Keybase.
+
+```rust
+let p = warp::get("challenge_1").unwrap();
+let p = boha::get("warp/challenge_1").unwrap();
+```
+
 ## zden
 
 Visual crypto puzzles by Zden. Private keys encoded in images, animations, visual patterns. 15 puzzles across Bitcoin, Ethereum, Litecoin, Decred. 2 unsolved (level_5, level_halv).
