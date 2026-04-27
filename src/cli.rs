@@ -159,7 +159,6 @@ struct PuzzleTableRow {
     solve_time: String,
 }
 
-#[allow(dead_code)]
 #[derive(Serialize)]
 struct SearchResult {
     #[serde(flatten)]
@@ -169,7 +168,6 @@ struct SearchResult {
     relevance_score: usize,
 }
 
-#[allow(dead_code)]
 #[derive(Tabled)]
 struct SearchTableRow {
     #[tabled(rename = "ID")]
@@ -184,7 +182,6 @@ struct SearchTableRow {
     matched: String,
 }
 
-#[allow(dead_code)]
 #[derive(Serialize)]
 struct SearchCsvRow {
     id: String,
@@ -259,8 +256,8 @@ struct RangeOutput {
     pubkey: Option<String>,
 }
 
+#[cfg(feature = "balance")]
 #[derive(Serialize)]
-#[allow(dead_code)]
 struct BalanceOutput {
     address: String,
     chain: String,
@@ -884,7 +881,6 @@ fn print_balance_table(balance: &BalanceOutput) {
     println!("{}", table);
 }
 
-#[allow(dead_code)]
 fn puzzle_matches(
     puzzle: &Puzzle,
     query: &str,
@@ -1053,7 +1049,6 @@ fn puzzle_matches(
     Some((matched_fields, score))
 }
 
-#[allow(dead_code)]
 fn output_search_results(results: &[SearchResult], format: OutputFormat, query: &str) {
     match format {
         OutputFormat::Table => {
@@ -1143,7 +1138,6 @@ fn output_search_results(results: &[SearchResult], format: OutputFormat, query: 
     }
 }
 
-#[allow(dead_code)]
 fn cmd_search(
     query: &str,
     exact: bool,
