@@ -58,6 +58,15 @@ let p = hash_collision::get("sha256").unwrap();
 let p = boha::get("peter_todd/sha256").unwrap();  // alias works
 ```
 
+## rushwallet
+
+Dmitri Kryptokov / Kryptokit's RushWallet brainwallet contest (Sept 2014). 30 P2PKH targets, derivation `sha256(passphrase)` → uncompressed key. 27 solved (passphrases recovered from contest videos / OCR / morse audio carrier), 3 still without a known passphrase (#13, #26, #30). All 30 contest UTXOs were funded by `1GShq18eb4V6uBtqgwxkmuPTUHCtyBcNYA`.
+
+```rust
+let p = rushwallet::get("9").unwrap();
+let phrase = p.key.and_then(|k| k.wif).and_then(|w| w.passphrase);
+```
+
 ## warp
 
 Keybase WarpWallet challenges. 6 puzzles total - 4 solved, 2 expired and later reclaimed by Keybase.

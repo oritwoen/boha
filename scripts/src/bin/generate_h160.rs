@@ -90,7 +90,7 @@ fn process_jsonc_file(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let data_dir = Path::new("../data");
 
-    let files = ["b1000.jsonc", "gsmg.jsonc"];
+    let files = ["b1000.jsonc", "gsmg.jsonc", "rushwallet.jsonc"];
 
     for file in &files {
         let path = data_dir.join(file);

@@ -1904,11 +1904,11 @@ mod tests {
     fn collection_help_lists_registry_names() {
         assert_eq!(
             collection_help(false),
-            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), warp (warpwallet), zden"
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), rushwallet, warp (warpwallet), zden"
         );
         assert_eq!(
             collection_help(true),
-            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), warp (warpwallet), zden, all"
+            "arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision (peter_todd), rushwallet, warp (warpwallet), zden, all"
         );
     }
 }

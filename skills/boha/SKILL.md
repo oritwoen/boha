@@ -6,7 +6,7 @@ metadata:
   version: "0.18.0"
 ---
 
-Rust library for crypto bounties, puzzles and challenges data. Nine collections across six blockchains (Bitcoin, Ethereum, Litecoin, Monero, Decred, Arweave). All data embedded at compile time as `&'static` references.
+Rust library for crypto bounties, puzzles and challenges data. Ten collections across six blockchains (Bitcoin, Ethereum, Litecoin, Monero, Decred, Arweave). All data embedded at compile time as `&'static` references.
 
 ## Install
 
@@ -32,6 +32,7 @@ IDs follow `collection/identifier` pattern. Two exceptions have no slash.
 | bitimage | `bitimage/kitten` | Name string |
 | gsmg | `gsmg` | Single puzzle, no slash |
 | hash_collision | `hash_collision/sha256` | sha1, sha256, ripemd160, hash160, hash256, op_abs |
+| rushwallet | `rushwallet/9` | Number 1-30 (RushWallet 2014 brainwallet contest) |
 | warp | `warp/challenge_1` | challenge_1-4, warp_challenge_1-2 |
 | zden | `zden/level_1` | snake_case level names |
 

@@ -131,6 +131,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "gsmg.jsonc",
         "bitaps.jsonc",
         "hash_collision.jsonc",
+        "rushwallet.jsonc",
     ];
 
     for file in &files {

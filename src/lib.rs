@@ -11,7 +11,9 @@ pub mod version {
     include!(concat!(env!("OUT_DIR"), "/data_version.rs"));
 }
 
-pub use collections::{arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, warp, zden};
+pub use collections::{
+    arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, rushwallet, warp, zden,
+};
 pub use puzzle::{
     Address, Assets, Author, Chain, Entropy, EntropySource, IntoPuzzleNum, Key, Passphrase,
     Profile, Pubkey, PubkeyFormat, Puzzle, RedeemScript, Seed, Share, Shares, Solver, Status,
@@ -42,12 +44,13 @@ pub enum Collection {
     Bitimage,
     Gsmg,
     HashCollision,
+    Rushwallet,
     Warp,
     Zden,
 }
 
 impl Collection {
-    pub const ALL: [Self; 9] = [
+    pub const ALL: [Self; 10] = [
         Self::Arweave,
         Self::B1000,
         Self::Ballet,
@@ -55,6 +58,7 @@ impl Collection {
         Self::Bitimage,
         Self::Gsmg,
         Self::HashCollision,
+        Self::Rushwallet,
         Self::Warp,
         Self::Zden,
     ];
@@ -68,6 +72,7 @@ impl Collection {
             Self::Bitimage => "bitimage",
             Self::Gsmg => "gsmg",
             Self::HashCollision => "hash_collision",
+            Self::Rushwallet => "rushwallet",
             Self::Warp => "warp",
             Self::Zden => "zden",
         }
@@ -82,6 +87,7 @@ impl Collection {
             "bitimage" => Ok(Self::Bitimage),
             "gsmg" => Ok(Self::Gsmg),
             "hash_collision" | "peter_todd" => Ok(Self::HashCollision),
+            "rushwallet" => Ok(Self::Rushwallet),
             "warp" | "warpwallet" => Ok(Self::Warp),
             "zden" => Ok(Self::Zden),
             _ => Err(Error::InvalidCollection(name.to_string())),
@@ -97,6 +103,7 @@ impl Collection {
             Self::Bitimage => bitimage::slice(),
             Self::Gsmg => gsmg::slice(),
             Self::HashCollision => hash_collision::slice(),
+            Self::Rushwallet => rushwallet::slice(),
             Self::Warp => warp::slice(),
             Self::Zden => zden::slice(),
         }
@@ -115,6 +122,7 @@ impl Collection {
             Self::Bitimage => bitimage::author(),
             Self::Gsmg => gsmg::author(),
             Self::HashCollision => hash_collision::author(),
+            Self::Rushwallet => rushwallet::author(),
             Self::Warp => warp::author(),
             Self::Zden => zden::author(),
         }
@@ -146,6 +154,7 @@ impl Collection {
                 }
             }
             Self::HashCollision => hash_collision::get(name),
+            Self::Rushwallet => rushwallet::get(name),
             Self::Warp => warp::get(name),
             Self::Zden => zden::get(name),
         }
