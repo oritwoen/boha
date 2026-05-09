@@ -38,8 +38,7 @@
         "hex": "20f5df9cba8251e90a66d3aa1ca2849b12eaca135abb837671ac4a2bc2014e2b",
         "wif": {
           "decrypted": "5J4oWdwA5mSCP4GVWF237zgYK4h1csD2PfrmK3uh3YcRFSWZ2H1",
-          "passphrase": "Je",
-          "salt": ""
+          "passphrase": "Je"
         }
       },
       "status": "solved",
@@ -78,8 +77,7 @@
         "hex": "3a302179184a58ab6267a80fc9b30dba6ead1bf42ec84d8477f21f12f6640570",
         "wif": {
           "decrypted": "5JFuv6B2NakNBAdH4aUAsbrNipwA4jZCHfZdXpHdjEpm5YPRNAT",
-          "passphrase": "hvW",
-          "salt": ""
+          "passphrase": "hvW"
         }
       },
       "status": "solved",
@@ -118,8 +116,7 @@
         "hex": "71a1cd20b19496fedbf6ea6184e604f25f4875c8107243793fc630dad177dcb5",
         "wif": {
           "decrypted": "5JgLACMfjpYt7ccG5SqJ5DMtrR8Zibe82PqQtEKjHQFeMkapixe",
-          "passphrase": "LsDmT CrashLogic",
-          "salt": ""
+          "passphrase": "LsDmT CrashLogic"
         }
       },
       "status": "solved",
@@ -158,8 +155,7 @@
         "hex": "8c7a26059ad4db5c774e944a1a8438f60a6de7456ca3a868ab010efddae532e5",
         "wif": {
           "decrypted": "5Jt9t5tBrh1Mi1LC3s6EXCCk8S81nNX7kga3xr1B2HECGioPy2r",
-          "passphrase": "petecoper",
-          "salt": ""
+          "passphrase": "petecoper"
         }
       },
       "status": "solved",
@@ -199,8 +195,7 @@
         "hex": "a5117f7ea870b4b606f4c1877829f00dc744000605aa6571ae1695f9a8f638ef",
         "wif": {
           "decrypted": "5K4z2kZZxxMZ4Tp6F8gqRTdcTezKdZSxVmRWtPthtDCtNbo4qnB",
-          "passphrase": "PuACRv0R",
-          "salt": ""
+          "passphrase": "PuACRv0R"
         }
       },
       "status": "expired",
