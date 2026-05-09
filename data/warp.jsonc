@@ -18,18 +18,30 @@
     ]
   },
   "metadata": {
-    "source_url": "https://keybase.io/warp"
+    "source_url": "https://keybase.io/warp",
+    "derivation": "scrypt(N=2^18, r=8, p=1, dkLen=32) XOR pbkdf2(HMAC-SHA256, c=2^16, dkLen=32) over (passphrase || 0x01, salt || 0x01) and (..||0x02, ..||0x02) -> uncompressed P2PKH",
+    "reference_implementation": "https://github.com/keybase/warpwallet"
   },
   "puzzles": [
     {
       // Challenge 1: 2 random alphanumeric characters, unsalted
       "name": "challenge_1",
+      "hint": "2 random alphanumeric characters, such as 'X9'",
+      "salt": "",
       "address": {
         "value": "1JKb1617p68H5MPkoNaMtaJCqKDU3h8qSn",
         "kind": "p2pkh",
         "hash160": "bdfe0236c752bbf8610b47c57b8c8592230dc575"
       },
       "pubkey": { "value": "045f751d820a69524eb71d48ddc6a231ba019b1461f58b0266cbbec617f9e80c6e573582b37014ce7ba7eaf9031265c5f022d8cb286f2194344f207eaa44bb51af", "format": "uncompressed" },
+      "key": {
+        "bits": 256,
+        "hex": "20f5df9cba8251e90a66d3aa1ca2849b12eaca135abb837671ac4a2bc2014e2b",
+        "wif": {
+          "decrypted": "5J4oWdwA5mSCP4GVWF237zgYK4h1csD2PfrmK3uh3YcRFSWZ2H1",
+          "passphrase": "Je"
+        }
+      },
       "status": "solved",
       "prize": 0.1,
       "start_date": "2013-11-19 20:12:25",
@@ -52,13 +64,24 @@
     },
     {
       // Challenge 2: 3 random alphanumeric characters, unsalted
+      // Passphrase 'hvW' re-derived locally by aei 2026-05-07 via brute force (see ~/.aei/wiki/entities/puzzles/warp/challenge-2.md)
       "name": "challenge_2",
+      "hint": "3 random alphanumeric characters, such as 'Xa2'",
+      "salt": "",
       "address": {
         "value": "1NMjXhB2DW8pbGvd64o9DiqwCF8BTAkJKu",
         "kind": "p2pkh",
         "hash160": "ea4676574baeba82db43e26421f4113bc389d513"
       },
       "pubkey": { "value": "040ccffff6759ce8bbf62061fa5f57758fc8cca98719de8dfc43da1103ee9b25632323b540ab4692d17db0839865b19ae194b2a553e28442035483925b8c710c1a", "format": "uncompressed" },
+      "key": {
+        "bits": 256,
+        "hex": "3a302179184a58ab6267a80fc9b30dba6ead1bf42ec84d8477f21f12f6640570",
+        "wif": {
+          "decrypted": "5JFuv6B2NakNBAdH4aUAsbrNipwA4jZCHfZdXpHdjEpm5YPRNAT",
+          "passphrase": "hvW"
+        }
+      },
       "status": "solved",
       "prize": 0.25,
       "start_date": "2013-11-19 20:12:25",
@@ -81,13 +104,24 @@
     },
     {
       // Challenge 3: two Bitcoin subreddit usernames separated by a space, unsalted
+      // Solve writeup: https://www.reddit.com/r/Bitcoin/comments/1rla6w/after_8_days_of_bruteforcing_the_rbitcoin/
       "name": "challenge_3",
+      "hint": "two Bitcoin-subreddit usernames separated by a space",
+      "salt": "",
       "address": {
         "value": "1FpxSs3tsvV8knTgRv2885bE1GyPq1QrvH",
         "kind": "p2pkh",
         "hash160": "a2a3985813e2b921ba5bcbf838f2160e5ded078b"
       },
       "pubkey": { "value": "04cdf27fe2598b7df25c002f268a7984642b206a54a077e04d8ff8032b0aa2e8b2a8dae0a9f2011f214d9eb57f0c7977fa378bd5ddcb21c90f5311549b5418b199", "format": "uncompressed" },
+      "key": {
+        "bits": 256,
+        "hex": "71a1cd20b19496fedbf6ea6184e604f25f4875c8107243793fc630dad177dcb5",
+        "wif": {
+          "decrypted": "5JgLACMfjpYt7ccG5SqJ5DMtrR8Zibe82PqQtEKjHQFeMkapixe",
+          "passphrase": "LsDmT CrashLogic"
+        }
+      },
       "status": "solved",
       "prize": 0.5,
       "start_date": "2013-11-19 20:12:25",
@@ -110,13 +144,24 @@
     },
     {
       // Challenge 4: HN top 100 karma username with 2 chars dropped, unsalted
+      // Solve writeup: https://news.ycombinator.com/item?id=6765801; wordlist: https://keybase.io/warp/hacker_news_100.txt
       "name": "challenge_4",
+      "hint": "username of someone in the HN top-100 karma list as of 2013-11-19, with 2 chars dropped",
+      "salt": "",
       "address": {
         "value": "1GXXH7FbY7nCJDRc72SMyYykgtEUi5GxfR",
         "kind": "p2pkh",
         "hash160": "aa4fa3e2be1fbf59edd4bc3702a08f715251e823"
       },
       "pubkey": { "value": "048bf325a507144fafb185fedaeb0e8440eb062e40fe30fad92d88fee42bc9ba199eab8ce1b044f55bd8fc9c71fcef4f291ef8e41add26d63de4be09238d6ef007", "format": "uncompressed" },
+      "key": {
+        "bits": 256,
+        "hex": "8c7a26059ad4db5c774e944a1a8438f60a6de7456ca3a868ab010efddae532e5",
+        "wif": {
+          "decrypted": "5Jt9t5tBrh1Mi1LC3s6EXCCk8S81nNX7kga3xr1B2HECGioPy2r",
+          "passphrase": "petecoper"
+        }
+      },
       "status": "solved",
       "prize": 1.0,
       "start_date": "2013-11-19 20:12:25",
@@ -139,14 +184,25 @@
     },
     {
       // The WarpWallet Challenge 1: 8 random alphanumeric characters, unsalted
-      // Answer: 'PuACRv0R' — expired Feb 1, 2016, reclaimed by Keybase
+      // Answer: 'PuACRv0R' — expired Feb 1, 2016, reclaimed by Keybase (passphrase disclosed post-expiry)
       "name": "warp_challenge_1",
+      "hint": "8 alphanumeric chars, unsalted",
+      "salt": "",
+      "prize_split": "10 BTC public + 10 BTC private (reserved for off-chain transfer to winner)",
       "address": {
         "value": "1AdU3EcimMFN7JLJtceSyrmFYE3gF5ZnGj",
         "kind": "p2pkh",
         "hash160": "699ead63fb2da9733786d47e4cd62609a33d7bb6"
       },
       "pubkey": { "value": "041c133e9f41e13c3c31b78fca62355cfcb9f38493d0d9b0449a93401e791de1e0a0e0dc4a37800b64005b4fa85c620e3207fda131f75ce7b7662f74be86a455b0", "format": "uncompressed" },
+      "key": {
+        "bits": 256,
+        "hex": "a5117f7ea870b4b606f4c1877829f00dc744000605aa6571ae1695f9a8f638ef",
+        "wif": {
+          "decrypted": "5K4z2kZZxxMZ4Tp6F8gqRTdcTezKdZSxVmRWtPthtDCtNbo4qnB",
+          "passphrase": "PuACRv0R"
+        }
+      },
       "status": "expired",
       "prize": 20.0,
       "start_date": "2013-11-19 20:12:25",
@@ -168,14 +224,26 @@
     },
     {
       // The WarpWallet Challenge 2: 8 alphanumeric characters, salted with 'a@b.c'
-      // Expired Jan 1, 2018, reclaimed by Keybase
+      // Expired Jan 1, 2018, reclaimed by Keybase. Passphrase 'HY4r0uWn' disclosed post-expiry via README of github.com/nachowski/warpwallet_cracker (commit 34ff075, 2018-05-02).
+      // Salt was Cloudflare-obfuscated on the original page (data-cfemail=3e5f7e5c105d -> XOR with 0x3e -> 'a@b.c').
       "name": "warp_challenge_2",
+      "hint": "8 alphanumeric chars, salted with a@b.c",
+      "salt": "a@b.c",
+      "prize_split": "10 BTC public + 10 BTC private",
       "address": {
         "value": "1MkupVKiCik9iyfnLrJoZLx9RH4rkF3hnA",
         "kind": "p2pkh",
         "hash160": "e3b07e2fc4ea14b903c11aee122f7fec19e4a621"
       },
       "pubkey": { "value": "0403a696da2c6243816c8a7c1d98756c8d56e74ac54a79d35ed7c3a9a9eb84d9be11ac016eb926fda6cb58322ac4b6a505fd52c258d70d5e49eac99b1e96a696c1", "format": "uncompressed" },
+      "key": {
+        "bits": 256,
+        "hex": "1d0482346095f6cb5791b0d8f2c8d0b6c10f8245d20ecd03933779344ced5025",
+        "wif": {
+          "decrypted": "5J34oCttqfswmkGnX5NWrU19xkZPNu4a2bRJHW2UdiAU7QpTSsN",
+          "passphrase": "HY4r0uWn"
+        }
+      },
       "status": "expired",
       "prize": 20.0,
       "start_date": "2016-02-01 15:19:33",

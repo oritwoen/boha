@@ -523,6 +523,7 @@ struct WarpPuzzle {
     prize: Option<f64>,
     currency: Option<String>,
     pubkey: Option<TomlPubkey>,
+    key: Option<TomlKey>,
     start_date: Option<String>,
     solve_date: Option<String>,
     solve_time: Option<u64>,
@@ -2388,6 +2389,7 @@ fn generate_warp(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         let witness_program = format_witness_program(&puzzle.address, &puzzle_id);
         let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
         let pubkey = format_pubkey(&puzzle.pubkey, &puzzle_id);
+        let key = generate_key_code(&puzzle.key, &puzzle_id, &puzzle.address.value);
         let transactions = generate_transactions_code(&puzzle.transactions);
         let solver = generate_solver_code(&puzzle.solver, solvers);
 
@@ -2405,7 +2407,7 @@ fn generate_warp(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
         }},
         status: {},
         pubkey: {},
-        key: None,
+        key: {},
         prize: {},
         currency: {},
         start_date: {},
@@ -2426,6 +2428,7 @@ fn generate_warp(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
             redeem_script,
             status,
             pubkey,
+            key,
             prize,
             currency,
             start_date,
