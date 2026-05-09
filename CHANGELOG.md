@@ -1,3 +1,16 @@
+## [0.18.1] - 2026-05-09
+
+### Features
+
+- *(warp)* Backfill keys + passphrases + KDF salt + schema fixes (#153)
+
+### Documentation
+
+- Fix README and skill drift (#151)
+
+### Miscellaneous Tasks
+
+- *(cli)* Remove unused #[allow(dead_code)] annotations
 ## [0.18.0] - 2026-03-30
 
 ### Features
@@ -19,6 +32,10 @@
 ### Refactor
 
 - *(collection)* Centralize dispatch registry (#141)
+
+### Miscellaneous Tasks
+
+- *(release)* V0.18.0
 ## [0.17.0] - 2026-03-15
 
 ### Features
