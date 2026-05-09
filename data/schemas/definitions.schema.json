@@ -204,7 +204,11 @@
         },
         "passphrase": {
           "type": ["string", "null"],
-          "description": "Passphrase for BIP38 decryption"
+          "description": "Passphrase for BIP38 decryption, or input passphrase for brainwallet-style KDF (rushwallet, warpwallet)"
+        },
+        "salt": {
+          "type": ["string", "null"],
+          "description": "KDF salt for brainwallet-style derivations (e.g. WarpWallet email salt). Empty string means unsalted; null means not applicable."
         }
       },
       "additionalProperties": true

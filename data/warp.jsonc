@@ -27,7 +27,6 @@
       // Challenge 1: 2 random alphanumeric characters, unsalted
       "name": "challenge_1",
       "hint": "2 random alphanumeric characters, such as 'X9'",
-      "salt": "",
       "address": {
         "value": "1JKb1617p68H5MPkoNaMtaJCqKDU3h8qSn",
         "kind": "p2pkh",
@@ -39,7 +38,8 @@
         "hex": "20f5df9cba8251e90a66d3aa1ca2849b12eaca135abb837671ac4a2bc2014e2b",
         "wif": {
           "decrypted": "5J4oWdwA5mSCP4GVWF237zgYK4h1csD2PfrmK3uh3YcRFSWZ2H1",
-          "passphrase": "Je"
+          "passphrase": "Je",
+          "salt": ""
         }
       },
       "status": "solved",
@@ -67,7 +67,6 @@
       // Passphrase 'hvW' re-derived locally by aei 2026-05-07 via brute force (see ~/.aei/wiki/entities/puzzles/warp/challenge-2.md)
       "name": "challenge_2",
       "hint": "3 random alphanumeric characters, such as 'Xa2'",
-      "salt": "",
       "address": {
         "value": "1NMjXhB2DW8pbGvd64o9DiqwCF8BTAkJKu",
         "kind": "p2pkh",
@@ -79,7 +78,8 @@
         "hex": "3a302179184a58ab6267a80fc9b30dba6ead1bf42ec84d8477f21f12f6640570",
         "wif": {
           "decrypted": "5JFuv6B2NakNBAdH4aUAsbrNipwA4jZCHfZdXpHdjEpm5YPRNAT",
-          "passphrase": "hvW"
+          "passphrase": "hvW",
+          "salt": ""
         }
       },
       "status": "solved",
@@ -107,7 +107,6 @@
       // Solve writeup: https://www.reddit.com/r/Bitcoin/comments/1rla6w/after_8_days_of_bruteforcing_the_rbitcoin/
       "name": "challenge_3",
       "hint": "two Bitcoin-subreddit usernames separated by a space",
-      "salt": "",
       "address": {
         "value": "1FpxSs3tsvV8knTgRv2885bE1GyPq1QrvH",
         "kind": "p2pkh",
@@ -119,7 +118,8 @@
         "hex": "71a1cd20b19496fedbf6ea6184e604f25f4875c8107243793fc630dad177dcb5",
         "wif": {
           "decrypted": "5JgLACMfjpYt7ccG5SqJ5DMtrR8Zibe82PqQtEKjHQFeMkapixe",
-          "passphrase": "LsDmT CrashLogic"
+          "passphrase": "LsDmT CrashLogic",
+          "salt": ""
         }
       },
       "status": "solved",
@@ -147,7 +147,6 @@
       // Solve writeup: https://news.ycombinator.com/item?id=6765801; wordlist: https://keybase.io/warp/hacker_news_100.txt
       "name": "challenge_4",
       "hint": "username of someone in the HN top-100 karma list as of 2013-11-19, with 2 chars dropped",
-      "salt": "",
       "address": {
         "value": "1GXXH7FbY7nCJDRc72SMyYykgtEUi5GxfR",
         "kind": "p2pkh",
@@ -159,7 +158,8 @@
         "hex": "8c7a26059ad4db5c774e944a1a8438f60a6de7456ca3a868ab010efddae532e5",
         "wif": {
           "decrypted": "5Jt9t5tBrh1Mi1LC3s6EXCCk8S81nNX7kga3xr1B2HECGioPy2r",
-          "passphrase": "petecoper"
+          "passphrase": "petecoper",
+          "salt": ""
         }
       },
       "status": "solved",
@@ -187,7 +187,6 @@
       // Answer: 'PuACRv0R' — expired Feb 1, 2016, reclaimed by Keybase (passphrase disclosed post-expiry)
       "name": "warp_challenge_1",
       "hint": "8 alphanumeric chars, unsalted",
-      "salt": "",
       "prize_split": "10 BTC public + 10 BTC private (reserved for off-chain transfer to winner)",
       "address": {
         "value": "1AdU3EcimMFN7JLJtceSyrmFYE3gF5ZnGj",
@@ -200,7 +199,8 @@
         "hex": "a5117f7ea870b4b606f4c1877829f00dc744000605aa6571ae1695f9a8f638ef",
         "wif": {
           "decrypted": "5K4z2kZZxxMZ4Tp6F8gqRTdcTezKdZSxVmRWtPthtDCtNbo4qnB",
-          "passphrase": "PuACRv0R"
+          "passphrase": "PuACRv0R",
+          "salt": ""
         }
       },
       "status": "expired",
@@ -228,7 +228,6 @@
       // Salt was Cloudflare-obfuscated on the original page (data-cfemail=3e5f7e5c105d -> XOR with 0x3e -> 'a@b.c').
       "name": "warp_challenge_2",
       "hint": "8 alphanumeric chars, salted with a@b.c",
-      "salt": "a@b.c",
       "prize_split": "10 BTC public + 10 BTC private",
       "address": {
         "value": "1MkupVKiCik9iyfnLrJoZLx9RH4rkF3hnA",
@@ -241,7 +240,8 @@
         "hex": "1d0482346095f6cb5791b0d8f2c8d0b6c10f8245d20ecd03933779344ced5025",
         "wif": {
           "decrypted": "5J34oCttqfswmkGnX5NWrU19xkZPNu4a2bRJHW2UdiAU7QpTSsN",
-          "passphrase": "HY4r0uWn"
+          "passphrase": "HY4r0uWn",
+          "salt": "a@b.c"
         }
       },
       "status": "expired",
