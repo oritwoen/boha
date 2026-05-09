@@ -183,7 +183,7 @@
       // Answer: 'PuACRv0R' — expired Feb 1, 2016, reclaimed by Keybase (passphrase disclosed post-expiry)
       "name": "warp_challenge_1",
       "hint": "8 alphanumeric chars, unsalted",
-      "prize_split": "10 BTC public + 10 BTC private (reserved for off-chain transfer to winner)",
+      "prize_split": { "public": 10.0, "private": 10.0 },
       "address": {
         "value": "1AdU3EcimMFN7JLJtceSyrmFYE3gF5ZnGj",
         "kind": "p2pkh",
@@ -223,7 +223,7 @@
       // Salt was Cloudflare-obfuscated on the original page (data-cfemail=3e5f7e5c105d -> XOR with 0x3e -> 'a@b.c').
       "name": "warp_challenge_2",
       "hint": "8 alphanumeric chars, salted with a@b.c",
-      "prize_split": "10 BTC public + 10 BTC private",
+      "prize_split": { "public": 10.0, "private": 10.0 },
       "address": {
         "value": "1MkupVKiCik9iyfnLrJoZLx9RH4rkF3hnA",
         "kind": "p2pkh",
