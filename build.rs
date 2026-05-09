@@ -421,6 +421,7 @@ struct TomlWif {
     encrypted: Option<String>,
     decrypted: Option<String>,
     passphrase: Option<String>,
+    salt: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -953,9 +954,13 @@ fn generate_wif_code(wif: &Option<TomlWif>, puzzle_id: &str, expected_address: &
                 Some(p) => format!("Some(\"{}\")", p),
                 None => "None".to_string(),
             };
+            let salt = match &w.salt {
+                Some(s) => format!("Some(\"{}\")", s),
+                None => "None".to_string(),
+            };
             format!(
-                "Some(Wif {{ encrypted: {}, decrypted: {}, passphrase: {} }})",
-                encrypted, decrypted, passphrase
+                "Some(Wif {{ encrypted: {}, decrypted: {}, passphrase: {}, salt: {} }})",
+                encrypted, decrypted, passphrase, salt
             )
         }
         None => "None".to_string(),
@@ -997,6 +1002,7 @@ fn generate_key_code_required(key: &TomlKey, puzzle_id: &str, expected_address: 
             encrypted: None,
             decrypted: None,
             passphrase: None,
+            salt: None,
         });
         wif_with_derived.decrypted = derived_decrypted;
         generate_wif_code(&Some(wif_with_derived), puzzle_id, expected_address)

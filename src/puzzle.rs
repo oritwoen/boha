@@ -286,8 +286,10 @@ pub struct Wif {
     pub encrypted: Option<&'static str>,
     /// Decrypted/standard WIF (starts with 5, K, L)
     pub decrypted: Option<&'static str>,
-    /// BIP38 passphrase for decryption
+    /// BIP38 passphrase, or input passphrase for brainwallet-style KDF (rushwallet, warpwallet)
     pub passphrase: Option<&'static str>,
+    /// KDF salt for brainwallet-style derivations (e.g. WarpWallet email salt)
+    pub salt: Option<&'static str>,
 }
 
 /// Private key in various representations.

@@ -587,6 +587,12 @@ fn print_puzzle_detail_table(p: &Puzzle, show_transactions: bool) {
                         value: passphrase.to_string().bright_red().to_string(),
                     });
                 }
+                if let Some(salt) = wif.salt {
+                    rows.push(KeyValueRow {
+                        field: "  Salt".to_string(),
+                        value: salt.to_string().bright_red().to_string(),
+                    });
+                }
             }
             if let Some(seed) = &key.seed {
                 if let Some(phrase) = seed.phrase {
@@ -972,6 +978,16 @@ fn puzzle_matches(
             if let Some(decrypted) = wif.decrypted {
                 if let Some(position) = matches_in(decrypted) {
                     record_match("key.wif.decrypted", position, 7);
+                }
+            }
+            if let Some(passphrase) = wif.passphrase {
+                if let Some(position) = matches_in(passphrase) {
+                    record_match("key.wif.passphrase", position, 7);
+                }
+            }
+            if let Some(salt) = wif.salt {
+                if let Some(position) = matches_in(salt) {
+                    record_match("key.wif.salt", position, 7);
                 }
             }
         }
