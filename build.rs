@@ -715,6 +715,8 @@ struct BalletMetadata {
 #[derive(Debug, Deserialize)]
 struct RushwalletMetadata {
     source_url: Option<String>,
+    solved_count: Option<usize>,
+    total_puzzles: Option<usize>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -2288,6 +2290,38 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     fs::write(&dest_path, output).expect("Failed to write ballet_data.rs");
 }
 
+fn validate_rushwallet_metadata(data: &RushwalletFile) {
+    let metadata = data
+        .metadata
+        .as_ref()
+        .expect("rushwallet metadata block is required");
+
+    let total_puzzles = metadata
+        .total_puzzles
+        .expect("rushwallet metadata.total_puzzles is required");
+    assert_eq!(
+        total_puzzles,
+        data.puzzles.len(),
+        "rushwallet metadata total_puzzles={} does not match actual puzzle count={}",
+        total_puzzles,
+        data.puzzles.len()
+    );
+
+    let solved_count = metadata
+        .solved_count
+        .expect("rushwallet metadata.solved_count is required");
+    let actual_solved = data
+        .puzzles
+        .iter()
+        .filter(|puzzle| puzzle.status == "solved")
+        .count();
+    assert_eq!(
+        solved_count, actual_solved,
+        "rushwallet metadata solved_count={} does not match actual solved count={}",
+        solved_count, actual_solved
+    );
+}
+
 fn generate_rushwallet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     let dest_path = Path::new(out_dir).join("rushwallet_data.rs");
 
@@ -2299,6 +2333,7 @@ fn generate_rushwallet(out_dir: &str, solvers: &HashMap<String, SolverDefinition
     let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+    validate_rushwallet_metadata(&data);
 
     for puzzle in &data.puzzles {
         let puzzle_id = format!("rushwallet/{}", puzzle.name);
