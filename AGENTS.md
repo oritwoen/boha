@@ -17,9 +17,9 @@ boha/
 │   ├── puzzle.rs           # Puzzle, Address, Key, Status, Chain, Profile structs
 │   ├── balance.rs          # Multi-chain async balance fetch (BTC/LTC/ETH)
 │   ├── verify.rs           # Cryptographic key→address verification (--features cli)
-│   └── collections/        # Nine collection modules with generated data
+│   └── collections/        # Ten collection modules with generated data
 ├── data/
-│   ├── *.jsonc             # Source of truth (arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, warp, zden)
+│   ├── *.jsonc             # Source of truth (arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, rushwallet, warp, zden)
 │   ├── solvers.jsonc       # Solver definitions (referenced by ID in puzzle files)
 │   ├── schemas/            # JSON Schema files for validation
 │   └── cache/              # API response cache for scripts

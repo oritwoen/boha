@@ -33,6 +33,78 @@ struct WithSchema<T> {
     inner: T,
 }
 
+fn rewrite_schema_refs(value: &mut serde_json::Value) {
+    match value {
+        serde_json::Value::Object(map) => {
+            if let Some(serde_json::Value::String(reference)) = map.get_mut("$ref") {
+                if let Some(fragment) = reference.strip_prefix("./definitions.schema.json#") {
+                    *reference = format!("#{fragment}");
+                }
+            }
+            for child in map.values_mut() {
+                rewrite_schema_refs(child);
+            }
+        }
+        serde_json::Value::Array(items) => {
+            for child in items {
+                rewrite_schema_refs(child);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn validate_collection_schema(value: &serde_json::Value, data_path: &str) {
+    let mut schema: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string("data/schemas/collection.schema.json")
+            .expect("Failed to read data/schemas/collection.schema.json"),
+    )
+    .expect("Failed to parse data/schemas/collection.schema.json");
+    let definitions: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string("data/schemas/definitions.schema.json")
+            .expect("Failed to read data/schemas/definitions.schema.json"),
+    )
+    .expect("Failed to parse data/schemas/definitions.schema.json");
+
+    let schema_defs = schema
+        .get_mut("$defs")
+        .and_then(serde_json::Value::as_object_mut)
+        .expect("collection.schema.json must define $defs");
+    let shared_defs = definitions
+        .get("$defs")
+        .and_then(serde_json::Value::as_object)
+        .expect("definitions.schema.json must define $defs");
+    for (key, definition) in shared_defs {
+        schema_defs.insert(key.clone(), definition.clone());
+    }
+    rewrite_schema_refs(&mut schema);
+
+    let validator =
+        jsonschema::validator_for(&schema).expect("Failed to compile collection schema");
+    let errors: Vec<String> = validator
+        .iter_errors(value)
+        .map(|error| format!("{}: {}", error.instance_path(), error))
+        .collect();
+    if !errors.is_empty() {
+        panic!(
+            "{} failed data/schemas/collection.schema.json validation:\n{}",
+            data_path,
+            errors.join("\n")
+        );
+    }
+}
+
+fn parse_validated_collection<T>(content: &str, data_path: &str) -> WithSchema<T>
+where
+    T: for<'de> Deserialize<'de>,
+{
+    let value: serde_json::Value = serde_json::from_str(content)
+        .unwrap_or_else(|err| panic!("Failed to parse {data_path}: {err}"));
+    validate_collection_schema(&value, data_path);
+    serde_json::from_value(value)
+        .unwrap_or_else(|err| panic!("Failed to deserialize {data_path}: {err}"))
+}
+
 fn bits_from_private_key(private_key: &str) -> Option<u16> {
     let bytes = hex::decode(private_key).ok()?;
     let key = BigUint::from_bytes_be(&bytes);
@@ -1002,7 +1074,16 @@ fn generate_key_code_required(key: &TomlKey, puzzle_id: &str, expected_address: 
     }
 
     let (hex_val, derived_decrypted) = match (&key.hex, decrypted_wif) {
-        (Some(h), Some(_)) => (Some(h.clone()), None),
+        (Some(h), Some(w)) => {
+            let wif_hex = wif_to_hex(w).unwrap_or_else(|| {
+                panic!("Puzzle '{puzzle_id}' has decrypted WIF that cannot be decoded to hex")
+            });
+            assert_eq!(
+                h, &wif_hex,
+                "Puzzle '{puzzle_id}' has key.hex that does not match key.wif.decrypted"
+            );
+            (Some(h.clone()), None)
+        }
         (Some(h), None) => {
             let derived_wif = hex_to_wif(h, true);
             (Some(h.clone()), derived_wif)
@@ -1242,6 +1323,8 @@ fn main() {
     println!("cargo:rerun-if-changed=data/ballet.jsonc");
     println!("cargo:rerun-if-changed=data/rushwallet.jsonc");
     println!("cargo:rerun-if-changed=data/solvers.jsonc");
+    println!("cargo:rerun-if-changed=data/schemas/collection.schema.json");
+    println!("cargo:rerun-if-changed=data/schemas/definitions.schema.json");
     println!("cargo:rerun-if-changed=assets");
     println!("cargo:rerun-if-changed=.git/HEAD");
     println!("cargo:rerun-if-changed=.git/refs/heads");
@@ -2212,7 +2295,7 @@ fn generate_rushwallet(out_dir: &str, solvers: &HashMap<String, SolverDefinition
         fs::read_to_string("data/rushwallet.jsonc").expect("Failed to read data/rushwallet.jsonc");
     strip(&mut content).expect("Failed to strip comments from rushwallet.jsonc");
     let wrapped: WithSchema<RushwalletFile> =
-        serde_json::from_str(&content).expect("Failed to parse rushwallet.jsonc");
+        parse_validated_collection(&content, "data/rushwallet.jsonc");
     let data = wrapped.inner;
 
     let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());

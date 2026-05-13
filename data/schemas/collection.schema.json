@@ -66,37 +66,6 @@
           }
         }
       }
-    },
-    {
-      "if": {
-        "properties": {
-          "puzzles": {
-            "contains": {
-              "required": ["key"],
-              "properties": {
-                "key": {
-                  "type": "object",
-                  "required": ["bits"]
-                }
-              }
-            }
-          }
-        }
-      },
-      "then": {
-        "properties": {
-          "puzzles": {
-            "items": {
-              "required": ["key"],
-              "properties": {
-                "key": {
-                  "required": ["bits"]
-                }
-              }
-            }
-          }
-        }
-      }
     }
   ],
   "additionalProperties": true,

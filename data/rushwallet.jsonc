@@ -486,7 +486,11 @@
         "kind": "p2pkh",
         "value": "1GwQ9ik3PH6g4BzwShFdwf2AEhUyfQVBpn"
       },
-      "status": "unsolved",
+      "pubkey": {
+        "format": "uncompressed",
+        "value": "044ab4e97848419c137b1c9e652bd4dfafb6f07cfd2e006a4f073c655550386c4c8c39465fc432d30d2ae6b43b4369162903b900de8adeae9f5dc3bf262368fa07"
+      },
+      "status": "claimed",
       "start_date": "2014-09-22 20:17:14",
       "transactions": [
         {
@@ -966,7 +970,11 @@
         "kind": "p2pkh",
         "value": "17FTRDmSymwBvwiBAx3ds4iVHaCbUCNpKS"
       },
-      "status": "unsolved",
+      "pubkey": {
+        "format": "uncompressed",
+        "value": "04a0746f2492fddfbd35285b3cb6f15af41fc787596d7e5a42f98e8b11d7648e8879bed40267dda13e5dcbbf2447c99036a0efca56c89c96707aefa07ce392b384"
+      },
+      "status": "claimed",
       "start_date": "2014-09-22 20:48:06",
       "transactions": [
         {
