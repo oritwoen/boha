@@ -1,9 +1,10 @@
 //! RushWallet - Dmitri Kryptokov's 30 video brainwallet puzzles (2014).
 //!
 //! Each puzzle uses `sha256(passphrase)` as a private-key scalar and the
-//! resulting uncompressed P2PKH address as the target. Twenty-seven
-//! passphrases have been recovered locally from the contest videos and
-//! frame artifacts; three remain unsolved (#13, #26, #30).
+//! resulting uncompressed P2PKH address as the target. Twenty-eight
+//! passphrases have been recovered locally from the contest videos,
+//! frame artifacts, audio, and social clue carriers. Wallet #26 is claimed
+//! on-chain with the passphrase still unknown; wallet #30 remains unclaimed.
 
 #[allow(unused_imports)]
 use crate::{

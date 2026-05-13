@@ -59,15 +59,25 @@ fn add_wif_to_key(key_table: &mut Value, wif: &str) {
     key_table["wif"] = json!({ "decrypted": wif });
 }
 
+fn compressed_for_puzzle(puzzle: &Value) -> bool {
+    puzzle
+        .get("pubkey")
+        .and_then(|pubkey| pubkey.get("format"))
+        .and_then(Value::as_str)
+        .map(|format| format != "uncompressed")
+        .unwrap_or(true)
+}
+
 fn update_puzzles_array(doc: &mut Value) -> usize {
     let mut count = 0;
 
     if let Some(puzzles) = doc.get_mut("puzzles") {
         if let Some(array) = puzzles.as_array_mut() {
             for puzzle in array.iter_mut() {
+                let compressed = compressed_for_puzzle(puzzle);
                 if let Some(key_item) = puzzle.get_mut("key") {
                     if let Some(hex) = needs_wif(key_item) {
-                        if let Some(wif) = hex_to_wif(&hex, true) {
+                        if let Some(wif) = hex_to_wif(&hex, compressed) {
                             add_wif_to_key(key_item, &wif);
                             count += 1;
                         }
@@ -82,9 +92,10 @@ fn update_puzzles_array(doc: &mut Value) -> usize {
 
 fn update_single_puzzle(doc: &mut Value) -> usize {
     if let Some(puzzle) = doc.get_mut("puzzle") {
+        let compressed = compressed_for_puzzle(puzzle);
         if let Some(key_item) = puzzle.get_mut("key") {
             if let Some(hex) = needs_wif(key_item) {
-                if let Some(wif) = hex_to_wif(&hex, true) {
+                if let Some(wif) = hex_to_wif(&hex, compressed) {
                     add_wif_to_key(key_item, &wif);
                     return 1;
                 }

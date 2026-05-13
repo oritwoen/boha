@@ -130,7 +130,7 @@ Data-driven validation (254 tests, 3 test files):
 - bitaps: Shamir Secret Sharing - 2 of 3 shares published, third unknown
 - bitimage: Keys derived from files using SHA256(Base64(file)) as BIP39 entropy
 - hash_collision: Peter Todd's P2SH bounties for finding hash collisions
-- rushwallet: Dmitri Kryptokov / Kryptokit 2014 brainwallet contest, 30 targets, derivation `sha256(passphrase)` → uncompressed P2PKH; 27 passphrases recovered locally, 3 unsolved (#13, #26, #30); all 30 UTXOs funded by `1GShq18eb4V6uBtqgwxkmuPTUHCtyBcNYA`
+- rushwallet: Dmitri Kryptokov / Kryptokit 2014 brainwallet contest, 30 targets, derivation `sha256(passphrase)` → uncompressed P2PKH; 28 passphrases recovered locally, #26 claimed on-chain with passphrase still unknown, #30 unclaimed/unsolved; all 30 UTXOs funded by `1GShq18eb4V6uBtqgwxkmuPTUHCtyBcNYA`
 - warp: Keybase WarpWallet challenges - deterministic brainwallet (scrypt+pbkdf2) security tests
 - zden: Visual puzzles - keys encoded in images/animations
 - arweave: Tiamat's bounties on Arweave blockchain (chronobot.io)

@@ -60,7 +60,7 @@ let p = boha::get("peter_todd/sha256").unwrap();  // alias works
 
 ## rushwallet
 
-Dmitri Kryptokov / Kryptokit's RushWallet brainwallet contest (Sept 2014). 30 P2PKH targets, derivation `sha256(passphrase)` → uncompressed key. 27 solved (passphrases recovered from contest videos / OCR / morse audio carrier), 3 still without a known passphrase (#13, #26, #30). All 30 contest UTXOs were funded by `1GShq18eb4V6uBtqgwxkmuPTUHCtyBcNYA`.
+Dmitri Kryptokov / Kryptokit's RushWallet brainwallet contest (Sept 2014). 30 P2PKH targets, derivation `sha256(passphrase)` → uncompressed key. 28 passphrases recovered from contest videos / OCR / morse audio / social clue carriers; #26 is claimed on-chain with passphrase still unknown, and #30 remains unclaimed/unsolved. All 30 contest UTXOs were funded by `1GShq18eb4V6uBtqgwxkmuPTUHCtyBcNYA`.
 
 ```rust
 let p = rushwallet::get("9").unwrap();

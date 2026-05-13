@@ -18,7 +18,7 @@
   },
   "metadata": {
     "derivation": "sha256(passphrase) -> uncompressed P2PKH",
-    "solved_count": 27,
+    "solved_count": 28,
     "source_url": "https://web.archive.org/web/20150208172337/https://rushwallet.com/contest",
     "total_puzzles": 30
   },
@@ -490,8 +490,18 @@
         "format": "uncompressed",
         "value": "044ab4e97848419c137b1c9e652bd4dfafb6f07cfd2e006a4f073c655550386c4c8c39465fc432d30d2ae6b43b4369162903b900de8adeae9f5dc3bf262368fa07"
       },
-      "status": "claimed",
+      "status": "solved",
+      "key": {
+        "bits": 256,
+        "hex": "f236c7a3bdde16d8264ea2e9d82347721a831a324fc5f42870eed8a720270100",
+        "wif": {
+          "decrypted": "5KexcVAqjA8KcXuU49V2newSVFVQb69BPM1hMft6tGyKQnLTWim",
+          "passphrase": "rushwallet brainwallets are easy to use"
+        }
+      },
       "start_date": "2014-09-22 20:17:14",
+      "solve_date": "2014-10-03 21:02:28",
+      "solve_time": 953114,
       "transactions": [
         {
           "amount": 0.025,
