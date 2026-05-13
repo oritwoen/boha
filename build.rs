@@ -33,6 +33,78 @@ struct WithSchema<T> {
     inner: T,
 }
 
+fn rewrite_schema_refs(value: &mut serde_json::Value) {
+    match value {
+        serde_json::Value::Object(map) => {
+            if let Some(serde_json::Value::String(reference)) = map.get_mut("$ref") {
+                if let Some(fragment) = reference.strip_prefix("./definitions.schema.json#") {
+                    *reference = format!("#{fragment}");
+                }
+            }
+            for child in map.values_mut() {
+                rewrite_schema_refs(child);
+            }
+        }
+        serde_json::Value::Array(items) => {
+            for child in items {
+                rewrite_schema_refs(child);
+            }
+        }
+        _ => {}
+    }
+}
+
+fn validate_collection_schema(value: &serde_json::Value, data_path: &str) {
+    let mut schema: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string("data/schemas/collection.schema.json")
+            .expect("Failed to read data/schemas/collection.schema.json"),
+    )
+    .expect("Failed to parse data/schemas/collection.schema.json");
+    let definitions: serde_json::Value = serde_json::from_str(
+        &fs::read_to_string("data/schemas/definitions.schema.json")
+            .expect("Failed to read data/schemas/definitions.schema.json"),
+    )
+    .expect("Failed to parse data/schemas/definitions.schema.json");
+
+    let schema_defs = schema
+        .get_mut("$defs")
+        .and_then(serde_json::Value::as_object_mut)
+        .expect("collection.schema.json must define $defs");
+    let shared_defs = definitions
+        .get("$defs")
+        .and_then(serde_json::Value::as_object)
+        .expect("definitions.schema.json must define $defs");
+    for (key, definition) in shared_defs {
+        schema_defs.insert(key.clone(), definition.clone());
+    }
+    rewrite_schema_refs(&mut schema);
+
+    let validator =
+        jsonschema::validator_for(&schema).expect("Failed to compile collection schema");
+    let errors: Vec<String> = validator
+        .iter_errors(value)
+        .map(|error| format!("{}: {}", error.instance_path(), error))
+        .collect();
+    if !errors.is_empty() {
+        panic!(
+            "{} failed data/schemas/collection.schema.json validation:\n{}",
+            data_path,
+            errors.join("\n")
+        );
+    }
+}
+
+fn parse_validated_collection<T>(content: &str, data_path: &str) -> WithSchema<T>
+where
+    T: for<'de> Deserialize<'de>,
+{
+    let value: serde_json::Value = serde_json::from_str(content)
+        .unwrap_or_else(|err| panic!("Failed to parse {data_path}: {err}"));
+    validate_collection_schema(&value, data_path);
+    serde_json::from_value(value)
+        .unwrap_or_else(|err| panic!("Failed to deserialize {data_path}: {err}"))
+}
+
 fn bits_from_private_key(private_key: &str) -> Option<u16> {
     let bytes = hex::decode(private_key).ok()?;
     let key = BigUint::from_bytes_be(&bytes);
@@ -643,6 +715,39 @@ struct BalletMetadata {
 }
 
 #[derive(Debug, Deserialize)]
+struct RushwalletMetadata {
+    source_url: Option<String>,
+    solved_count: Option<usize>,
+    total_puzzles: Option<usize>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RushwalletFile {
+    author: Option<AuthorConfig>,
+    metadata: Option<RushwalletMetadata>,
+    puzzles: Vec<RushwalletPuzzle>,
+}
+
+#[derive(Debug, Deserialize)]
+struct RushwalletPuzzle {
+    name: String,
+    address: Address,
+    pubkey: Option<TomlPubkey>,
+    status: String,
+    prize: Option<f64>,
+    currency: Option<String>,
+    key: Option<TomlKey>,
+    start_date: Option<String>,
+    solve_date: Option<String>,
+    solve_time: Option<u64>,
+    source_url: Option<String>,
+    #[serde(default)]
+    transactions: Vec<TomlTransaction>,
+    solver: Option<String>,
+    assets: Option<TomlAssets>,
+}
+
+#[derive(Debug, Deserialize)]
 struct BitimageFile {
     author: Option<AuthorConfig>,
     metadata: Option<BitimageMetadata>,
@@ -977,7 +1082,16 @@ fn generate_key_code_required(key: &TomlKey, puzzle_id: &str, expected_address: 
     }
 
     let (hex_val, derived_decrypted) = match (&key.hex, decrypted_wif) {
-        (Some(h), Some(_)) => (Some(h.clone()), None),
+        (Some(h), Some(w)) => {
+            let wif_hex = wif_to_hex(w).unwrap_or_else(|| {
+                panic!("Puzzle '{puzzle_id}' has decrypted WIF that cannot be decoded to hex")
+            });
+            assert_eq!(
+                h, &wif_hex,
+                "Puzzle '{puzzle_id}' has key.hex that does not match key.wif.decrypted"
+            );
+            (Some(h.clone()), None)
+        }
         (Some(h), None) => {
             let derived_wif = hex_to_wif(h, true);
             (Some(h.clone()), derived_wif)
@@ -1174,6 +1288,7 @@ fn generate_data_version(out_dir: &str) {
         "data/bitimage.jsonc",
         "data/gsmg.jsonc",
         "data/hash_collision.jsonc",
+        "data/rushwallet.jsonc",
         "data/solvers.jsonc",
         "data/warp.jsonc",
         "data/zden.jsonc",
@@ -1215,7 +1330,10 @@ fn main() {
     println!("cargo:rerun-if-changed=data/bitaps.jsonc");
     println!("cargo:rerun-if-changed=data/bitimage.jsonc");
     println!("cargo:rerun-if-changed=data/ballet.jsonc");
+    println!("cargo:rerun-if-changed=data/rushwallet.jsonc");
     println!("cargo:rerun-if-changed=data/solvers.jsonc");
+    println!("cargo:rerun-if-changed=data/schemas/collection.schema.json");
+    println!("cargo:rerun-if-changed=data/schemas/definitions.schema.json");
     println!("cargo:rerun-if-changed=assets");
     println!("cargo:rerun-if-changed=.git/HEAD");
     println!("cargo:rerun-if-changed=.git/refs/heads");
@@ -1232,6 +1350,7 @@ fn main() {
     generate_bitaps(&out_dir, &solvers);
     generate_bitimage(&out_dir, &solvers);
     generate_ballet(&out_dir, &solvers);
+    generate_rushwallet(&out_dir, &solvers);
     generate_warp(&out_dir, &solvers);
 }
 
@@ -2176,6 +2295,173 @@ fn generate_ballet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
     output.push_str("];\n");
 
     fs::write(&dest_path, output).expect("Failed to write ballet_data.rs");
+}
+
+fn validate_rushwallet_metadata(data: &RushwalletFile) {
+    let metadata = data
+        .metadata
+        .as_ref()
+        .expect("rushwallet metadata block is required");
+
+    let total_puzzles = metadata
+        .total_puzzles
+        .expect("rushwallet metadata.total_puzzles is required");
+    assert_eq!(
+        total_puzzles,
+        data.puzzles.len(),
+        "rushwallet metadata total_puzzles={} does not match actual puzzle count={}",
+        total_puzzles,
+        data.puzzles.len()
+    );
+
+    let solved_count = metadata
+        .solved_count
+        .expect("rushwallet metadata.solved_count is required");
+    let actual_solved = data
+        .puzzles
+        .iter()
+        .filter(|puzzle| puzzle.status == "solved")
+        .count();
+    assert_eq!(
+        solved_count, actual_solved,
+        "rushwallet metadata solved_count={} does not match actual solved count={}",
+        solved_count, actual_solved
+    );
+}
+
+fn generate_rushwallet(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {
+    let dest_path = Path::new(out_dir).join("rushwallet_data.rs");
+
+    let mut content =
+        fs::read_to_string("data/rushwallet.jsonc").expect("Failed to read data/rushwallet.jsonc");
+    strip(&mut content).expect("Failed to strip comments from rushwallet.jsonc");
+    let wrapped: WithSchema<RushwalletFile> =
+        parse_validated_collection(&content, "data/rushwallet.jsonc");
+    let data = wrapped.inner;
+
+    let default_source_url = data.metadata.as_ref().and_then(|m| m.source_url.as_ref());
+    validate_rushwallet_metadata(&data);
+
+    for puzzle in &data.puzzles {
+        let puzzle_id = format!("rushwallet/{}", puzzle.name);
+        validate_pubkey_for_claimed_puzzles(
+            &puzzle_id,
+            &puzzle.status,
+            &puzzle.transactions,
+            &puzzle.address.kind,
+            &puzzle.pubkey,
+        );
+    }
+
+    let mut output = String::new();
+    output.push_str(&generate_author_code(&data.author));
+    output.push('\n');
+    output.push_str("static PUZZLES: &[Puzzle] = &[\n");
+
+    for puzzle in &data.puzzles {
+        let status = match puzzle.status.as_str() {
+            "solved" => "Status::Solved",
+            "claimed" => "Status::Claimed",
+            "swept" => "Status::Swept",
+            "expired" => "Status::Expired",
+            _ => "Status::Unsolved",
+        };
+
+        let prize = match puzzle.prize {
+            Some(p) => format!("Some({:.8})", p),
+            None => "None".to_string(),
+        };
+
+        let currency = puzzle
+            .currency
+            .as_ref()
+            .map(|c| format!("Some(\"{}\")", c))
+            .unwrap_or_else(|| "None".to_string());
+
+        let start_date = match &puzzle.start_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_date = match &puzzle.solve_date {
+            Some(d) => format!("Some(\"{}\")", d),
+            None => "None".to_string(),
+        };
+
+        let solve_time = match puzzle.solve_time {
+            Some(t) => format!("Some({})", t),
+            None => "None".to_string(),
+        };
+
+        let source_url = puzzle
+            .source_url
+            .as_ref()
+            .or(default_source_url)
+            .map(|url| format!("Some(\"{}\")", url))
+            .unwrap_or_else(|| "None".to_string());
+
+        let puzzle_id = format!("rushwallet/{}", puzzle.name);
+        let hash160 = format_hash160(&puzzle.address, "bitcoin", &puzzle_id);
+        let witness_program = format_witness_program(&puzzle.address, &puzzle_id);
+        let redeem_script = generate_redeem_script_code(&puzzle.address.redeem_script);
+        let key = generate_key_code(&puzzle.key, &puzzle_id, &puzzle.address.value);
+        let pubkey = format_pubkey(&puzzle.pubkey, &puzzle_id);
+
+        let transactions = generate_transactions_code(&puzzle.transactions);
+        let solver = generate_solver_code(&puzzle.solver, solvers);
+        let assets = generate_assets_code(&puzzle.assets, "rushwallet", &puzzle_id);
+
+        output.push_str(&format!(
+            r#"    Puzzle {{
+        id: "rushwallet/{}",
+        chain: Chain::Bitcoin,
+        address: Address {{
+            value: "{}",
+            chain: Chain::Bitcoin,
+            kind: "{}",
+            hash160: {},
+            witness_program: {},
+            redeem_script: {},
+        }},
+        status: {},
+        pubkey: {},
+        key: {},
+        prize: {},
+        currency: {},
+        start_date: {},
+        solve_date: {},
+        solve_time: {},
+        pre_genesis: false,
+        source_url: {},
+        transactions: {},
+        solver: {},
+        assets: {},
+    }},
+"#,
+            puzzle.name,
+            puzzle.address.value,
+            puzzle.address.kind,
+            hash160,
+            witness_program,
+            redeem_script,
+            status,
+            pubkey,
+            key,
+            prize,
+            currency,
+            start_date,
+            solve_date,
+            solve_time,
+            source_url,
+            transactions,
+            solver,
+            assets,
+        ));
+    }
+
+    output.push_str("];\n");
+
+    fs::write(&dest_path, output).expect("Failed to write rushwallet_data.rs");
 }
 
 fn generate_arweave(out_dir: &str, solvers: &HashMap<String, SolverDefinition>) {

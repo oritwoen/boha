@@ -5,7 +5,7 @@
 
 ## OVERVIEW
 
-Rust library + CLI for crypto puzzle/bounty data. Build-time JSONC→Rust codegen with JSON Schema validation. Nine collections: arweave (11 bounties), b1000 (256 puzzles), ballet (3 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), warp (6 WarpWallet challenges), zden (15 visual puzzles).
+Rust library + CLI for crypto puzzle/bounty data. Build-time JSONC→Rust codegen with JSON Schema validation. Ten collections: arweave (11 bounties), b1000 (256 puzzles), ballet (3 puzzles), bitaps (1 SSSS puzzle), bitimage (2 puzzles), gsmg (1 puzzle), hash_collision (6 bounties), rushwallet (30 brainwallet contest), warp (6 WarpWallet challenges), zden (15 visual puzzles).
 
 ## STRUCTURE
 
@@ -17,9 +17,9 @@ boha/
 │   ├── puzzle.rs           # Puzzle, Address, Key, Status, Chain, Profile structs
 │   ├── balance.rs          # Multi-chain async balance fetch (BTC/LTC/ETH)
 │   ├── verify.rs           # Cryptographic key→address verification (--features cli)
-│   └── collections/        # Nine collection modules with generated data
+│   └── collections/        # Ten collection modules with generated data
 ├── data/
-│   ├── *.jsonc             # Source of truth (arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, warp, zden)
+│   ├── *.jsonc             # Source of truth (arweave, b1000, ballet, bitaps, bitimage, gsmg, hash_collision, rushwallet, warp, zden)
 │   ├── solvers.jsonc       # Solver definitions (referenced by ID in puzzle files)
 │   ├── schemas/            # JSON Schema files for validation
 │   └── cache/              # API response cache for scripts
@@ -130,6 +130,7 @@ Data-driven validation (254 tests, 3 test files):
 - bitaps: Shamir Secret Sharing - 2 of 3 shares published, third unknown
 - bitimage: Keys derived from files using SHA256(Base64(file)) as BIP39 entropy
 - hash_collision: Peter Todd's P2SH bounties for finding hash collisions
+- rushwallet: Dmitri Kryptokov / Kryptokit 2014 brainwallet contest, 30 targets, derivation `sha256(passphrase)` → uncompressed P2PKH; 28 passphrases recovered locally, #26 claimed on-chain with passphrase still unknown, #30 unclaimed/unsolved; all 30 UTXOs funded by `1GShq18eb4V6uBtqgwxkmuPTUHCtyBcNYA`
 - warp: Keybase WarpWallet challenges - deterministic brainwallet (scrypt+pbkdf2) security tests
 - zden: Visual puzzles - keys encoded in images/animations
 - arweave: Tiamat's bounties on Arweave blockchain (chronobot.io)

@@ -143,6 +143,7 @@ ripemd = "0.1"
 k256 = { version = "0.13", features = ["ecdsa"] }
 bip38 = "1.1"
 chrono = "0.4"
+jsonschema = { version = "0.42", default-features = false }
 
 [features]
 default = []

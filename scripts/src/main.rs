@@ -149,7 +149,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     let data_dir = Path::new("../data");
 
-    let files = ["b1000.jsonc", "hash_collision.jsonc"];
+    let files = ["b1000.jsonc", "hash_collision.jsonc", "rushwallet.jsonc"];
 
     for file in &files {
         let path = data_dir.join(file);

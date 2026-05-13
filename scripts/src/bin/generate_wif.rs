@@ -59,39 +59,82 @@ fn add_wif_to_key(key_table: &mut Value, wif: &str) {
     key_table["wif"] = json!({ "decrypted": wif });
 }
 
-fn update_puzzles_array(doc: &mut Value) -> usize {
+fn puzzle_label(puzzle: &Value, fallback: &str) -> String {
+    puzzle
+        .get("name")
+        .and_then(Value::as_str)
+        .map_or_else(|| fallback.to_string(), ToString::to_string)
+}
+
+fn compressed_for_puzzle(puzzle: &Value, label: &str) -> Result<bool, String> {
+    match puzzle
+        .get("pubkey")
+        .and_then(|pubkey| pubkey.get("format"))
+        .and_then(Value::as_str)
+    {
+        Some("compressed") | None => Ok(true),
+        Some("uncompressed") => Ok(false),
+        Some(other) => Err(format!(
+            "puzzle {label} has unsupported pubkey.format '{other}'"
+        )),
+    }
+}
+
+fn update_puzzles_array(doc: &mut Value) -> Result<usize, Box<dyn std::error::Error>> {
     let mut count = 0;
 
     if let Some(puzzles) = doc.get_mut("puzzles") {
         if let Some(array) = puzzles.as_array_mut() {
-            for puzzle in array.iter_mut() {
+            for (idx, puzzle) in array.iter_mut().enumerate() {
+                let fallback = format!("[{idx}]");
+                let label = puzzle_label(puzzle, &fallback);
+                println!("  Processing puzzle {label}");
+
+                let compressed = compressed_for_puzzle(puzzle, &label)?;
                 if let Some(key_item) = puzzle.get_mut("key") {
                     if let Some(hex) = needs_wif(key_item) {
-                        if let Some(wif) = hex_to_wif(&hex, true) {
+                        if let Some(wif) = hex_to_wif(&hex, compressed) {
                             add_wif_to_key(key_item, &wif);
                             count += 1;
+                            println!("    Added wif.decrypted");
+                        } else {
+                            println!("    Skipped: invalid 32-byte hex key");
                         }
+                    } else {
+                        println!("    Skipped: wif.decrypted already present or missing hex");
                     }
+                } else {
+                    println!("    Skipped: missing key block");
                 }
             }
         }
     }
 
-    count
+    Ok(count)
 }
 
-fn update_single_puzzle(doc: &mut Value) -> usize {
+fn update_single_puzzle(doc: &mut Value) -> Result<usize, Box<dyn std::error::Error>> {
     if let Some(puzzle) = doc.get_mut("puzzle") {
+        let label = puzzle_label(puzzle, "single");
+        println!("  Processing puzzle {label}");
+
+        let compressed = compressed_for_puzzle(puzzle, &label)?;
         if let Some(key_item) = puzzle.get_mut("key") {
             if let Some(hex) = needs_wif(key_item) {
-                if let Some(wif) = hex_to_wif(&hex, true) {
+                if let Some(wif) = hex_to_wif(&hex, compressed) {
                     add_wif_to_key(key_item, &wif);
-                    return 1;
+                    println!("    Added wif.decrypted");
+                    return Ok(1);
                 }
+                println!("    Skipped: invalid 32-byte hex key");
+            } else {
+                println!("    Skipped: wif.decrypted already present or missing hex");
             }
+        } else {
+            println!("    Skipped: missing key block");
         }
     }
-    0
+    Ok(0)
 }
 
 fn process_jsonc_file(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
@@ -102,9 +145,9 @@ fn process_jsonc_file(path: &Path) -> Result<(), Box<dyn std::error::Error>> {
         .ok_or_else(|| "Failed to parse JSONC")?;
 
     let count = if doc.get("puzzles").is_some() {
-        update_puzzles_array(&mut doc)
+        update_puzzles_array(&mut doc)?
     } else if doc.get("puzzle").is_some() {
-        update_single_puzzle(&mut doc)
+        update_single_puzzle(&mut doc)?
     } else {
         println!("  No puzzles found");
         return Ok(());
@@ -131,12 +174,15 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         "gsmg.jsonc",
         "bitaps.jsonc",
         "hash_collision.jsonc",
+        "rushwallet.jsonc",
     ];
 
     for file in &files {
         let path = data_dir.join(file);
         if path.exists() {
-            process_jsonc_file(&path)?;
+            if let Err(err) = process_jsonc_file(&path) {
+                eprintln!("Failed to process {}: {err}", path.display());
+            }
         } else {
             eprintln!("File not found: {}", path.display());
         }

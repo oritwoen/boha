@@ -508,7 +508,7 @@ struct PuzzleToProcess {
 fn find_puzzles_needing_pubkey(data_dir: &Path) -> Vec<PuzzleToProcess> {
     let mut puzzles = Vec::new();
 
-    let collections = ["zden", "bitimage", "b1000", "gsmg", "bitaps", "ballet"];
+    let collections = ["zden", "bitimage", "b1000", "gsmg", "bitaps", "ballet", "rushwallet"];
 
     for collection_name in &collections {
         let path = data_dir.join(format!("{}.jsonc", collection_name));

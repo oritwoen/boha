@@ -537,7 +537,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .collect::<Vec<_>>();
 
     let collections = if collections.is_empty() {
-        vec!["b1000", "gsmg", "hash_collision"]
+        vec!["b1000", "gsmg", "hash_collision", "rushwallet"]
     } else {
         collections
     };

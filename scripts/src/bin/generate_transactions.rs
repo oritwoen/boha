@@ -456,6 +456,7 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
             "b1000".to_string(),
             "gsmg".to_string(),
             "hash_collision".to_string(),
+            "rushwallet".to_string(),
             "zden".to_string(),
         ];
     }
