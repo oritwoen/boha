@@ -43,7 +43,7 @@ importers:
         specifier: 1.2.77
         version: 1.2.77
       vue-tsc:
-        specifier: ^3.3.11
+        specifier: 3.3.11
         version: 3.3.11(typescript@5.9.3)
       wrangler:
         specifier: 4.128.0
