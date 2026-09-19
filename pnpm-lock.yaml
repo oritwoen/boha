@@ -10,10 +10,10 @@ importers:
     dependencies:
       '@agntn/chains':
         specifier: 0.3.6
-        version: 0.3.6(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(typebox@1.3.15)(zod@4.6.5)
+        version: 0.3.6(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(typebox@1.3.32)(zod@4.6.5)
       '@agntn/explorers':
         specifier: 0.5.3
-        version: 0.5.3(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(@earendil-works/pi-tui@0.85.1)(@oh-my-pi/pi-coding-agent@18.2.4)(typebox@1.3.15)
+        version: 0.5.3(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(@earendil-works/pi-tui@0.85.1)(@oh-my-pi/pi-coding-agent@18.2.4)(typebox@1.3.32)
       '@agntn/keys':
         specifier: 0.3.0
         version: 0.3.0(zod@4.6.5)
@@ -27,8 +27,8 @@ importers:
         specifier: 0.2.2
         version: 0.2.2
       typebox:
-        specifier: 1.3.15
-        version: 1.3.15
+        specifier: 1.3.32
+        version: 1.3.32
     devDependencies:
       '@agntn/ox':
         specifier: 0.1.0
@@ -3159,11 +3159,11 @@ packages:
     resolution: {integrity: sha512-faYHw0anBbc/kWF3zFTEnxSFOAGUX9GFbOBthvDdLsIlEoWOFOtS0zgCiQYwIskL9iGXZL3kAXD8OoZ4GmMATA==}
     engines: {node: '>= 18'}
 
-  typebox@1.3.15:
-    resolution: {integrity: sha512-gOKAjLqUr+bFGbO5vxCEO5+nHh2wO+swzSIkiJJC0kJ4oLN6f65SrZn6tJYhsYO+qdnpf2NmlQwgsayYoi1NkQ==}
-
   typebox@1.3.23:
     resolution: {integrity: sha512-eMDZIb3EhHxm/tQ+xfbb++B+1KMpquxYoRQ0nHWukMmNxrYHsbRQwW15chb2doi0FdJ/MxDXpgZRFJUyizMkkw==}
+
+  typebox@1.3.32:
+    resolution: {integrity: sha512-iOdeK75dQ3OSdYviLGldHC9jFSo4exAjr5pN0XcLnYkI8bfz7G9v2q55cz+AyWhE9i8oVrHbcvOMCssgfD10Cg==}
 
   typebox@1.3.7:
     resolution: {integrity: sha512-meKuifc33Pccx0O6PdIzYMq3Og8zvP4TIi/a+Bw3AEMZMxOD0+RHGQvpglEe6Zdy3wZ8nqn/j95h8LUZLk/6Hg==}
@@ -3354,12 +3354,12 @@ packages:
 
 snapshots:
 
-  '@agntn/chains@0.3.6(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(typebox@1.3.15)(zod@4.6.5)':
+  '@agntn/chains@0.3.6(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(typebox@1.3.32)(zod@4.6.5)':
     dependencies:
       '@modelcontextprotocol/sdk': 1.30.0(zod@4.6.5)
       citty: 0.2.2
       consola: 3.4.2
-      typebox: 1.3.15
+      typebox: 1.3.32
     optionalDependencies:
       '@earendil-works/pi-coding-agent': 0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5)
     transitivePeerDependencies:
@@ -3367,9 +3367,9 @@ snapshots:
       - supports-color
       - zod
 
-  '@agntn/explorers@0.5.3(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(@earendil-works/pi-tui@0.85.1)(@oh-my-pi/pi-coding-agent@18.2.4)(typebox@1.3.15)':
+  '@agntn/explorers@0.5.3(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(@earendil-works/pi-tui@0.85.1)(@oh-my-pi/pi-coding-agent@18.2.4)(typebox@1.3.32)':
     dependencies:
-      '@agntn/chains': 0.3.6(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(typebox@1.3.15)(zod@4.6.5)
+      '@agntn/chains': 0.3.6(@earendil-works/pi-coding-agent@0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5))(typebox@1.3.32)(zod@4.6.5)
       '@modelcontextprotocol/sdk': 1.30.0(zod@4.6.5)
       citty: 0.2.2
       consola: 3.4.2
@@ -3379,7 +3379,7 @@ snapshots:
       '@earendil-works/pi-coding-agent': 0.85.1(@modelcontextprotocol/sdk@1.30.0(zod@4.6.5))(ws@8.21.3)(zod@4.6.5)
       '@earendil-works/pi-tui': 0.85.1
       '@oh-my-pi/pi-coding-agent': 18.2.4
-      typebox: 1.3.15
+      typebox: 1.3.32
     transitivePeerDependencies:
       - '@cfworker/json-schema'
       - supports-color
@@ -6205,9 +6205,9 @@ snapshots:
       media-typer: 1.1.1
       mime-types: 3.0.2
 
-  typebox@1.3.15: {}
-
   typebox@1.3.23: {}
+
+  typebox@1.3.32: {}
 
   typebox@1.3.7: {}
 
